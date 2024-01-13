@@ -1,8 +1,8 @@
 ---
-name: "\U0001F6E0️ Refactor"
+name: "🛠️ Refactor"
 about: 기능의 변경 없이 코드의 품질을 향상시키기 위한 리팩터링의 경우 이 템플릿을 사용하시면 됩니다.
 title: "[REFACTOR]"
-labels: "\U0001F6E0️ 리팩터링"
+labels: "🛠️ 리팩터링"
 assignees: ''
 
 ---

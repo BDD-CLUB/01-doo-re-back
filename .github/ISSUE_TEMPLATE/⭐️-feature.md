@@ -2,7 +2,7 @@
 name: "⭐️ Feature"
 about: 새로운 기능을 구현하는 데 필요한 작업 또는 변경 사항이 있을 경우 이 템플릿을 사용하시면 됩니다.
 title: "[FEAT]"
-labels: "⭐️ 기능 구현"
+labels: "⭐️ 기능 구현"
 assignees: ''
 
 ---
