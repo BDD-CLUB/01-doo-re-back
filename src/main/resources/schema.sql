@@ -79,7 +79,7 @@ create table crop
     updated_at datetime(6)
 );
 
-create table team_member
+create table member_team
 (
     id         bigint auto_increment primary key,
     team_id    bigint  not null,
