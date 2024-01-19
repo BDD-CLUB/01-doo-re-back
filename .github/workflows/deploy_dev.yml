@@ -1,0 +1,108 @@
+name: Deploy BDD Development Server
+
+on: workflow_dispatch
+
+jobs:
+  deploy_development:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Create Cache Docker Image Directory
+        run: mkdir -p ~/db-docker-image
+
+      - name: Pull DB Image From ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker pull $ECR_REGISTRY/doo-re-dev:${{ secrets.DOORE_DB_TAG }}
+          docker save -o \
+            ~/db-docker-image/doo-re-db.tar \
+            $ECR_REGISTRY/doo-re-dev:${{ secrets.DOORE_DB_TAG }}
+
+        # 메인 브랜치 완성 후 수정 예정
+      - name: Create Docker Env File
+        # working-directory: ./docker 
+        run: |
+          echo '${{ secrets.DOCKER_ENV }}' >> .env
+          echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> .env
+
+        # develop 브랜치에 docker/docker-compose 파일 생성 후 삭제 예정
+      - name: Create Docker Compose File
+        run: |
+          echo '${{ secrets.DOCKER_COMPOSE }}' >> docker-compose.yml
+
+      - name: Create application.yml
+        working-directory: ./src/main/resources
+        env:
+          APPLICATION_YML: ${{ secrets.APPLICATION_YML }}
+        run: |
+          echo '${{ secrets.APPLICATION_YML }}' >> application.yml
+
+      - name: Start Containers
+        run: docker-compose -p doo-re up -d
+
+      - name: Build & Test
+        run: |
+          ./gradlew build --daemon --build-cache --parallel
+          java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
+
+      - name: Compress
+        run: |
+          tar -zcf ${GITHUB_SHA::8}.tar.gz \
+            dependencies \
+            snapshot-dependencies \
+            spring-boot-loader \
+            application
+
+      - name: Upload to S3
+        run: |
+          aws s3 mv --region ${{ secrets.AWS_REGION }} \
+          ${GITHUB_SHA::8}.tar.gz \
+          ${{ secrets.S3_DEV_BACK_LOCATION }}/${GITHUB_SHA::8}.tar.gz
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST_DEV }}
+          username: ${{ secrets.SSH_USERNAME_DEV }}
+          port: ${{ secrets.SSH_PORT_DEV }}
+          key: ${{ secrets.SSH_KEY_DEV }}
+          envs: GITHUB_SHA
+          script: |
+              cd ~/01-doo-re-infrastructure/doo-re/deploy
+              chmod +x ./deploy_server.sh
+              sudo ./deploy_server.sh ${GITHUB_SHA::8} dev
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          author_name: DOO_RE Devlopment Backend CICD
+          fields: repo, commit, message, author, action, took
