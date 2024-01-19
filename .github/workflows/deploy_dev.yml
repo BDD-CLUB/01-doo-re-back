@@ -60,7 +60,7 @@ jobs:
         env:
           APPLICATION_YML: ${{ secrets.APPLICATION_YML }}
         run: |
-          echo '${{ secrets.APPLICATION_YML }}' >> application.yml
+          echo '${{ secrets.APPLICATION_YML }}' > application.yml
 
       - name: Start Containers
         run: docker-compose -p doo-re up -d
