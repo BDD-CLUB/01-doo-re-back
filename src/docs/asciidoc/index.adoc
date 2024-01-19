@@ -1,4 +1,4 @@
-= Spring REST Docs Test
+= DooRe APIs
 :doctype: book
 :source-highlighter: highlightjs
 :toc: left
