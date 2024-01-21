@@ -57,10 +57,19 @@ asciidoctor {
     dependsOn test
 }
 
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
+}
+
 bootJar {
     dependsOn asciidoctor
-    copy {
-        from("${asciidoctor.outputDir}")
-        into 'src/main/resources/static/docs'
+    from("${asciidoctor.outputDir}") {
+        into "static/docs"
     }
+}
+
+build {
+    dependsOn copyDocument
 }
