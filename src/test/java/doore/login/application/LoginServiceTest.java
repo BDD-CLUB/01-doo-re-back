@@ -3,22 +3,17 @@ package doore.login.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
+import doore.helper.ServiceIntegrationTestHelper;
 import doore.login.application.dto.GoogleAccountProfile;
 import doore.login.application.dto.LoginResponse;
-import doore.login.utils.GoogleClient;
 import doore.login.utils.TokenGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest
-class LoginServiceTest {
+class LoginServiceTest extends ServiceIntegrationTestHelper {
     @Autowired
     private LoginService loginService;
-    @MockBean
-    private GoogleClient googleClient;
     @Autowired
     private TokenGenerator tokenGenerator;
 
