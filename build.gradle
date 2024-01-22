@@ -33,13 +33,18 @@ tasks.named('test') {
 }
 
 test {
+    useJUnitPlatform()
     outputs.dir snippetsDir
 }
 
 asciidoctor {
+    doFirst {
+        project.delete(files("src/main/resources/static/docs"))
+    }
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
     dependsOn test
+    baseDirFollowsSourceFile()
 }
 
 tasks.register('copyDocument', Copy) {
