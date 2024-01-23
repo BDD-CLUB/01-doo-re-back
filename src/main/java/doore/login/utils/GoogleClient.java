@@ -1,6 +1,6 @@
 package doore.login.utils;
 
-import static doore.login.exception.LoginExceptionType.NOT_FOUND_GOOGLE_ACCESS_TOKEN;
+import static doore.login.exception.LoginExceptionType.NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE;
 
 import doore.login.application.dto.request.GoogleAccessTokenRequest;
 import doore.login.application.dto.response.GoogleAccessTokenResponse;
@@ -10,7 +10,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GoogleClient {
@@ -42,6 +40,10 @@ public class GoogleClient {
 
     public GoogleAccountProfileResponse getGoogleAccountProfile(final String code) {
         final String accessToken = requestGoogleAccessToken(code);
+        return requestGoogleAccountProfile(accessToken);
+    }
+
+    private GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
@@ -49,7 +51,7 @@ public class GoogleClient {
                 .getBody();
     }
 
-    private String requestGoogleAccessToken(String code) {
+    private String requestGoogleAccessToken(final String code) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -57,11 +59,11 @@ public class GoogleClient {
                 new GoogleAccessTokenRequest(decodedCode, clientId, clientSecret, redirectUri, authorizationCode),
                 headers
         );
-        final GoogleAccessTokenResponse response = restTemplate.exchange(accessTokenUrl, HttpMethod.POST, httpEntity,
-                        GoogleAccessTokenResponse.class)
-                .getBody();
+        final GoogleAccessTokenResponse response = restTemplate.exchange(
+                accessTokenUrl, HttpMethod.POST, httpEntity, GoogleAccessTokenResponse.class
+        ).getBody();
         return Optional.ofNullable(response)
-                .orElseThrow(() -> new LoginException(NOT_FOUND_GOOGLE_ACCESS_TOKEN))
+                .orElseThrow(() -> new LoginException(NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE))
                 .getAccessToken();
     }
 }

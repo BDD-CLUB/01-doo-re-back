@@ -24,6 +24,7 @@ class LoginServiceTest extends ServiceIntegrationTestHelper {
 
     @BeforeEach
     void init() {
+        // TODO: 1/23/24 fixture
         member = memberRepository.save(new Member("아마란스", "1234", "bbb@gmail.com", "https://aaa"));
     }
 
