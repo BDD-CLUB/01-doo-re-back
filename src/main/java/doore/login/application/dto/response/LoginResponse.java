@@ -1,4 +1,4 @@
-package doore.login.application.dto;
+package doore.login.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
