@@ -36,14 +36,14 @@ public class Team extends BaseEntity {
     private Boolean isDeleted;
 
     @Builder
-    private Team(String name, String description, String imageUrl, Boolean isDeleted) {
+    private Team(final String name, final String description, final String imageUrl, final Boolean isDeleted) {
         this.name = name;
         this.description = description != null ? description : "";
         this.imageUrl = imageUrl != null ? imageUrl : "";
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
-    public void update(String name, String description) {
+    public void update(final String name, final String description) {
         this.name = name;
         this.description = description;
     }

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String errorMessage = getErrorMessage(e);
+    public ResponseEntity<ExceptionResponse> methodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        final String errorMessage = getErrorMessage(e);
         return ResponseEntity.badRequest().body(new ExceptionResponse(errorMessage));
     }
 
-    private static String getErrorMessage(BindException e) {
-        BindingResult bindingResult = e.getBindingResult();
+    private static String getErrorMessage(final BindException e) {
+        final BindingResult bindingResult = e.getBindingResult();
         return bindingResult.getFieldErrors()
                 .stream()
                 .map(fieldError -> getErrorMessage(
@@ -30,9 +30,9 @@ public class ExceptionAdvice {
     }
 
     public static String getErrorMessage(
-            String errorField,
-            String invalidValue,
-            String errorMessage
+            final String errorField,
+            final String invalidValue,
+            final String errorMessage
     ) {
         return "[%s] %s : %s".formatted(errorField, invalidValue, errorMessage);
     }
