@@ -46,14 +46,12 @@ public abstract class RestDocsTest {
     }
 
     protected FieldDescriptor stringFieldWithPath(final String path, final String description) {
-        return fieldWithPath(path)
-                .type(JsonFieldType.STRING)
+        return fieldWithPath(path).type(JsonFieldType.STRING)
                 .description(description);
     }
 
     protected FieldDescriptor numberFieldWithPath(final String path, final String description) {
-        return fieldWithPath(path)
-                .type(JsonFieldType.NUMBER)
+        return fieldWithPath(path).type(JsonFieldType.NUMBER)
                 .description(description);
     }
 
