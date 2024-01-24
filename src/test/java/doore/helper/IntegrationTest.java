@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -30,7 +29,6 @@ public abstract class IntegrationTest {
     @BeforeEach
     void setUp(final WebApplicationContext context) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .alwaysDo(MockMvcResultHandlers.print())
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
