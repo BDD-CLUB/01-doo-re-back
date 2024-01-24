@@ -5,11 +5,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import doore.team.application.TeamCommandService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -35,9 +33,6 @@ public abstract class RestDocsTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
-
-    @MockBean
-    protected TeamCommandService teamCommandService;
 
     @BeforeEach
     void setUp(

@@ -8,14 +8,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import doore.restdocs.RestDocsTest;
 import doore.team.api.TeamController;
+import doore.team.application.TeamCommandService;
 import doore.team.application.dto.request.TeamCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 
 @WebMvcTest(TeamController.class)
 public class TeamApiDocsTest extends RestDocsTest {
+
+    @MockBean
+    protected TeamCommandService teamCommandService;
 
     @Test
     @DisplayName("팀을 생성한다.")
@@ -30,8 +35,7 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("name", "팀 이름"),
                 stringFieldWithPath("description", "팀 소개")
         );
-        callPostApi("/teams", request)
-                .andExpect(status().isCreated())
+        callPostApi("/teams", request).andExpect(status().isCreated())
                 .andDo(document("team-create", requestFields));
     }
 }
