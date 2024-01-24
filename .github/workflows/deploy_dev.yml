@@ -68,7 +68,7 @@ jobs:
 
       - name: Build & Test
         run: |
-          ./gradlew build --daemon --build-cache --parallel
+          ./gradlew build --daemon --build-cache && ./gradlew build --daemon --build-cache
           java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
 
       - name: Compress
@@ -94,9 +94,9 @@ jobs:
           key: ${{ secrets.SSH_KEY_DEV }}
           envs: GITHUB_SHA
           script: |
-              cd ~/01-doo-re-infrastructure/doo-re/deploy
-              chmod +x ./deploy_server.sh
-              sudo ./deploy_server.sh ${GITHUB_SHA::8} dev
+            cd ~/01-doo-re-infrastructure/doo-re/deploy
+            chmod +x ./deploy_server.sh
+            sudo ./deploy_server.sh ${GITHUB_SHA::8} dev
 
       - name: Notify Slack
         if: always()
