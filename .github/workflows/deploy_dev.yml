@@ -69,7 +69,7 @@ jobs:
         with:
           gradle-version: 8.5
           arguments: build
-          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' }}
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' && github.ref != 'refs/heads/Feature/#41-CICD_과정_중_캐싱_적용'}}
 
       - name: Compress
         run: |
