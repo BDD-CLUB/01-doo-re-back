@@ -68,7 +68,7 @@ jobs:
 
       - name: Build & Test
         run: |
-          ./gradlew clean build
+          ./gradlew build --daemon --build-cache && ./gradlew build --daemon --build-cache
           java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
 
       - name: Compress
