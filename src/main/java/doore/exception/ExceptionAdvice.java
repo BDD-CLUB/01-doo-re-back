@@ -29,7 +29,7 @@ public class ExceptionAdvice {
                 .collect(Collectors.joining(", "));
     }
 
-    public static String getErrorMessage(
+    private static String getErrorMessage(
             final String errorField,
             final String invalidValue,
             final String errorMessage
