@@ -3,7 +3,7 @@ package doore.team.application;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import doore.integration.IntegrationTest;
+import doore.helper.IntegrationTest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.exception.TeamException;
 import org.junit.jupiter.api.DisplayName;

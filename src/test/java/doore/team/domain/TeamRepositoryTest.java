@@ -2,14 +2,14 @@ package doore.team.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import doore.integration.RepositoryIntegrationTest;
+import doore.helper.RepositorySliceTest;
 import doore.team.TeamFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class TeamRepositoryTest extends RepositoryIntegrationTest {
+public class TeamRepositoryTest extends RepositorySliceTest {
 
     @Autowired
     private TeamRepository teamRepository;

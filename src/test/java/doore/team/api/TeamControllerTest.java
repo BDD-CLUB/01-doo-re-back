@@ -2,7 +2,7 @@ package doore.team.api;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.integration.IntegrationTest;
+import doore.helper.IntegrationTest;
 import doore.team.application.dto.request.TeamCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

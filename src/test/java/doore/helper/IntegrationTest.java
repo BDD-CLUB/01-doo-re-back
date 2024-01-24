@@ -1,4 +1,4 @@
-package doore.integration;
+package doore.helper;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 
