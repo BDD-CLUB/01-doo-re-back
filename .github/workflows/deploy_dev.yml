@@ -69,7 +69,9 @@ jobs:
         with:
           gradle-version: 8.5
           arguments: build
-          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' && github.ref != 'refs/heads/Feature/#41-CICD_과정_중_캐싱_적용'}}
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' && github.ref != 'refs/heads/Feature/#41-CICD_과정_중_캐싱_적용' }}
+
+      - run: java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
 
       - name: Compress
         run: |
