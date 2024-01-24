@@ -26,3 +26,4 @@ cors:
       - "PUT"
       - "DELETE"
       - "PATCH"
+      - "OPTION"
