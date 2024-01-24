@@ -1,8 +1,0 @@
-= DooRe APIs
-:doctype: book
-:source-highlighter: highlightjs
-:toc: left
-:toclevels: 2
-:seclinks:
-
-* link:test.html[테스트 링크]
