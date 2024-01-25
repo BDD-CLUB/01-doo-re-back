@@ -42,6 +42,7 @@ jobs:
           key: db-docker-image-${{ runner.os }}
 
       - name: Pull DB Image From ECR
+        if: steps.db-docker-image.outputs.cache-hit != 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
