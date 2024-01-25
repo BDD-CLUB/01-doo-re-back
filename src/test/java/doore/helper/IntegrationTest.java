@@ -8,7 +8,7 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 @SpringBootTest
 @Sql(value = "/clean.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
-public abstract class ServiceIntegrationTestHelper {
+public abstract class IntegrationTest {
     @MockBean
     protected GoogleClient googleClient;
 }

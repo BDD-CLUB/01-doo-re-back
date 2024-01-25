@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
-import doore.helper.ServiceIntegrationTestHelper;
+import doore.helper.IntegrationTest;
 import doore.login.application.dto.request.GoogleLoginRequest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.domain.Member;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class LoginServiceTest extends ServiceIntegrationTestHelper {
+class LoginTest extends IntegrationTest {
     @Autowired
     private LoginService loginService;
     @Autowired
@@ -29,7 +29,7 @@ class LoginServiceTest extends ServiceIntegrationTestHelper {
     }
 
     @Test
-    @DisplayName("이미 회원가입된 사용자가 구글 로그인 요청 시 로그인 토큰 정보를 반환한다 성공")
+    @DisplayName("[성공] 이미 회원가입된 사용자가 구글 로그인 요청 시 로그인 토큰 정보를 반환한다")
     void 이미_회원가입된_사용자가_구글_로그인_요청_시_로그인_토큰_정보를_반환한다_성공() {
         //given
         final Long expected = member.getId();
@@ -50,7 +50,7 @@ class LoginServiceTest extends ServiceIntegrationTestHelper {
     }
 
     @Test
-    @DisplayName("새로운 회원이 구글 로그인 요청 시 회원 정보를 등록하고 로그인 토큰 정보를 반환한다 성공")
+    @DisplayName("[성공] 새로운 회원이 구글 로그인 요청 시 회원 정보를 등록하고 로그인 토큰 정보를 반환한다")
     void 새로운_회원이_구글_로그인_요청_시_회원_정보를_등록하고_로그인_토큰_정보를_반환한다_성공() {
         //given
         final Long beforeCount = memberRepository.count();

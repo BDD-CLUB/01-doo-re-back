@@ -27,6 +27,11 @@ spring:
             scope:
               - email
               - profile
+
 url:
   access-token: https://oauth2.googleapis.com/token
   profile: https://www.googleapis.com/userinfo/v2/me
+
+jwt:
+  secret-key: secret_key
+  expire-length: 3_600_000_000
