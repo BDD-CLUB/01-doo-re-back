@@ -43,14 +43,6 @@ public class GoogleClient {
         return requestGoogleAccountProfile(accessToken);
     }
 
-    private GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
-        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, GoogleAccountProfileResponse.class)
-                .getBody();
-    }
-
     private String requestGoogleAccessToken(final String code) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
@@ -65,5 +57,13 @@ public class GoogleClient {
         return Optional.ofNullable(response)
                 .orElseThrow(() -> new LoginException(NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE))
                 .getAccessToken();
+    }
+
+    private GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
+        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, GoogleAccountProfileResponse.class)
+                .getBody();
     }
 }
