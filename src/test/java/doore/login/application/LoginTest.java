@@ -42,7 +42,7 @@ class LoginTest extends IntegrationTest {
 
         //when
         final Long actual = loginService.loginByGoogle(request)
-                .getMemberId();
+                .memberId();
 
         //then
         assertThat(actual).usingRecursiveComparison()
@@ -64,7 +64,7 @@ class LoginTest extends IntegrationTest {
 
         //when
         final Long actual = loginService.loginByGoogle(request)
-                .getMemberId();
+                .memberId();
         final Long afterCount = memberRepository.count();
         final Long newMemberId = memberRepository.findByGoogleId(googleId).get().getId();
 

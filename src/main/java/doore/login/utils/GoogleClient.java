@@ -56,7 +56,7 @@ public class GoogleClient {
         ).getBody();
         return Optional.ofNullable(response)
                 .orElseThrow(() -> new LoginException(NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE))
-                .getAccessToken();
+                .accessToken();
     }
 
     private GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {

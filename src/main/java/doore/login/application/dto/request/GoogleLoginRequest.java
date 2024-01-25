@@ -1,14 +1,9 @@
 package doore.login.application.dto.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-@NoArgsConstructor
-public class GoogleLoginRequest {
-    private String code;
-
-    public GoogleLoginRequest(final String code) {
-        this.code = code;
-    }
+public record GoogleLoginRequest(
+        @NotNull(message = "인가 코드는 null일 수 없습니다.")
+        String code
+) {
 }

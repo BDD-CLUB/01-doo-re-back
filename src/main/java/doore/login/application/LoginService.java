@@ -18,7 +18,7 @@ public class LoginService {
     private final JwtTokenGenerator jwtTokenGenerator;
 
     public LoginResponse loginByGoogle(final GoogleLoginRequest request) {
-        final GoogleAccountProfileResponse profile = googleClient.getGoogleAccountProfile(request.getCode());
+        final GoogleAccountProfileResponse profile = googleClient.getGoogleAccountProfile(request.code());
         final Member member = memberCommandService.findOrCreateMemberBy(profile);
         final String token = jwtTokenGenerator.generateToken(String.valueOf(member.getId()));
         return new LoginResponse(member.getId(), token);
