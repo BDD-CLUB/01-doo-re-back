@@ -47,8 +47,4 @@ public class Member extends BaseEntity {
         this.imageUrl = imageUrl;
         this.isDeleted = false;
     }
-
-    public Member(final String name, final String googleId, final String email, final String imageUrl) {
-        this(null, name, googleId, email, imageUrl);
-    }
 }
