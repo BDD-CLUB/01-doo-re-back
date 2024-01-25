@@ -2,7 +2,7 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-= 두레(Doo Re) API 문서
+= TEAM API 문서
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -10,22 +10,11 @@ endif::[]
 :toclevels: 2
 :seclinks:
 
-== *TEAM*
+== API 목록
 
-=== `POST`: Team 생성
+link:../doore.html[API 목록으로 돌아가기]
 
-.HTTP Request
-include::{snippets}/team-create/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/team-create/request-fields.adoc[]
-
-.HTTP Response
-include::{snippets}/team-create/http-response.adoc[]
-
-== *LOGIN*
-
-=== `POST`: 구글 소셜 로그인
+== `POST`: 구글 소셜 로그인
 
 .HTTP Request
 include::{snippets}/login-google/http-request.adoc[]
