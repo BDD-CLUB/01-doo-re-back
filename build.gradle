@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'doore'
@@ -15,11 +16,54 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
     mavenCentral()
 }
+
+/******* Start Spring Rest Docs *******/
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    doFirst {
+        project.delete(files("src/main/resources/static/docs"))
+    }
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
+    baseDirFollowsSourceFile()
+}
+
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into "static/docs"
+    }
+}
+
+build {
+    dependsOn copyDocument
+}
+/******* End Spring Rest Docs *******/
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -28,6 +72,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
@@ -37,8 +82,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-}
 
-tasks.named('test') {
-    useJUnitPlatform()
+    //restdocs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }

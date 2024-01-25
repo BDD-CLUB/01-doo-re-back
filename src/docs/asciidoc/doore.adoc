@@ -1,0 +1,24 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= 두레(Doo Re) API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== *TEAM*
+
+=== `POST`: Team 생성
+
+.HTTP Request
+include::{snippets}/team-create/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/team-create/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/team-create/http-response.adoc[]

@@ -1,0 +1,26 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= TEAM API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `POST`: Team 생성
+
+.HTTP Request
+include::{snippets}/team-create/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/team-create/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/team-create/http-response.adoc[]
