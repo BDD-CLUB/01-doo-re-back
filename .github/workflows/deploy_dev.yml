@@ -34,6 +34,13 @@ jobs:
       - name: Create Cache Docker Image Directory
         run: mkdir -p ~/db-docker-image
 
+      - name: Cache DB Docker Image
+        id: db-docker-image
+        uses: actions/cache@v3
+        with:
+          path: ~/db-docker-image
+          key: db-docker-image-${{ runner.os }}
+
       - name: Pull DB Image From ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
