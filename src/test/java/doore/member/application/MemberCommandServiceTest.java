@@ -30,15 +30,20 @@ class MemberCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 이미 등록된 회원이 있다면 해당 회원을 반환한다")
     void 이미_등록된_회원이_있다면_해당_회원을_반환한다_성공() {
         //given
+        final long beforeCount = memberRepository.count();
         final GoogleAccountProfileResponse profile = new GoogleAccountProfileResponse(member.getGoogleId(),
                 "bbb@gmail.com", true, "아마란스", "마란스", "아", "https://aaa", "ko");
 
         //when
         final Member actual = memberCommandService.findOrCreateMemberBy(profile);
+        final long afterCount = memberRepository.count();
 
         //then
-        assertThat(actual).usingRecursiveComparison()
-                .isEqualTo(member);
+        assertAll(
+                () -> assertThat(actual).usingRecursiveComparison()
+                        .isEqualTo(member),
+                () -> assertThat(afterCount).isEqualTo(beforeCount)
+        );
     }
 
     @Test

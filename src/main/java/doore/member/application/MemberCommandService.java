@@ -16,10 +16,7 @@ public class MemberCommandService {
 
     // TODO: 1/23/24 추후 소셜 로그인 플랫폼이 늘어나는 경우의 확장성 관련해서 논의
     public Member findOrCreateMemberBy(final GoogleAccountProfileResponse profile) {
-        return memberRepository.findByGoogleId(profile.getId())
-                .orElse(memberRepository.save(
-                        new Member(profile.getName(), profile.getId(), profile.getEmail(), profile.getPicture()))
-                );
+        return memberRepository.findByGoogleId(profile.id()).orElseGet(() -> memberRepository.save(
+                new Member(profile.name(), profile.id(), profile.email(), profile.picture())));
     }
-
 }
