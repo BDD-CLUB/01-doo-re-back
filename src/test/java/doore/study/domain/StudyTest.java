@@ -38,7 +38,7 @@ public class StudyTest {
     public void 스터디의_내용을_변경할_수_있다_성공() {
         final Study study = algorithm_study();
         StudyUpdateRequest request = studyUpdateRequest();
-        study.update(request);
+        study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
         assertEquals(study.getName(), request.name());
         assertEquals(study.getDescription(), request.description());
     }

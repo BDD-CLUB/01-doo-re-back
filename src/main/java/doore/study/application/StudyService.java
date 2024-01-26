@@ -47,7 +47,7 @@ public class StudyService {
 
     public void updateStudy(StudyUpdateRequest request, Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        study.update(request);
+        study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
     public void terminateStudy(Long studyId) {

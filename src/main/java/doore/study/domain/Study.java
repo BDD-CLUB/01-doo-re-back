@@ -1,7 +1,6 @@
 package doore.study.domain;
 
 import doore.base.BaseEntity;
-import doore.study.application.dto.request.StudyUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -68,12 +67,12 @@ public class Study extends BaseEntity {
         curriculumItems.addAll(newCurriculumItems);
     }
 
-    public void update(StudyUpdateRequest studyUpdateRequest) {
-        this.name = studyUpdateRequest.name();
-        this.description = studyUpdateRequest.description();
-        this.startDate = studyUpdateRequest.startDate();
-        this.endDate = studyUpdateRequest.endDate();
-        this.status = studyUpdateRequest.status();
+    public void update(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status) {
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
     }
 
     @Builder
