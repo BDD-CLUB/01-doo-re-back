@@ -1,6 +1,6 @@
 package doore.login.application;
 
-import static doore.member.MemberFixture.member;
+import static doore.member.MemberFixture.회원;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
@@ -25,28 +25,28 @@ class LoginServiceTest extends IntegrationTest {
 
     @BeforeEach
     void init() {
-        member = memberRepository.save(member());
+        member = memberRepository.save(회원());
     }
 
     @Test
     @DisplayName("[성공] 이미 회원가입된 사용자가 구글 로그인 요청 시 로그인 토큰 정보를 반환한다")
     void 이미_회원가입된_사용자가_구글_로그인_요청_시_로그인_토큰_정보를_반환한다_성공() {
         //given
-        final Long expected = member.getId();
-        final String code = "valid_code";
-        final GoogleLoginRequest request = new GoogleLoginRequest(code);
+        final Long expectedMemberId = member.getId();
+        final String validCode = "valid_code";
+        final GoogleLoginRequest request = new GoogleLoginRequest(validCode);
         final GoogleAccountProfileResponse profile = new GoogleAccountProfileResponse(
                 member.getGoogleId(), "aaa@gmail.com", true, "아마란스", "마란스", "아", "https://aaa", "ko"
         );
-        given(googleClient.getGoogleAccountProfile(code)).willReturn(profile);
+        given(googleClient.getGoogleAccountProfile(validCode)).willReturn(profile);
 
         //when
-        final Long actual = loginService.loginByGoogle(request)
+        final Long actualMemberId = loginService.loginByGoogle(request)
                 .memberId();
 
         //then
-        assertThat(actual).usingRecursiveComparison()
-                .isEqualTo(expected);
+        assertThat(actualMemberId).usingRecursiveComparison()
+                .isEqualTo(expectedMemberId);
     }
 
     @Test

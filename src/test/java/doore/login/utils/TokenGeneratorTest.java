@@ -20,14 +20,14 @@ class TokenGeneratorTest extends IntegrationTest {
     @DisplayName("[성공] 회원의 아이디를 입력하면 토큰을 생성할 수 있다")
     void 회원의_아이디를_입력하면_토큰을_생성할_수_있다() {
         //given
-        final String memberId = "1";
+        final String extractedMemberId = "1";
 
         //when
-        final String token = tokenGenerator.generateToken(memberId);
-        final String actual = tokenGenerator.extractMemberId(token);
+        final String token = tokenGenerator.generateToken(extractedMemberId);
+        final String actualMemberId = tokenGenerator.extractMemberId(token);
 
         //then
-        assertThat(actual).isEqualTo(memberId);
+        assertThat(actualMemberId).isEqualTo(extractedMemberId);
     }
 
 

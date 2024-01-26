@@ -1,6 +1,6 @@
 package doore.member.application;
 
-import static doore.member.MemberFixture.member;
+import static doore.member.MemberFixture.회원;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -23,7 +23,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
     @BeforeEach
     void init() {
-        member = memberRepository.save(member());
+        member = memberRepository.save(회원());
     }
 
     @Test
