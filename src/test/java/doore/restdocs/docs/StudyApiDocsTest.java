@@ -1,8 +1,8 @@
 package doore.restdocs.docs;
 
-import static doore.study.StudyFixture.algorithm_study;
 import static doore.study.StudyFixture.studyCreateRequest;
 import static doore.study.StudyFixture.studyUpdateRequest;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +49,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 조회한다.")
     public void 스터디를_조회한다() throws Exception {
-        Study study = algorithm_study();
+        Study study = mock(Study.class);
         studyRepository.save(study);
         callGetApi("/studies/1")
                 .andExpect(status().isOk())
@@ -61,7 +61,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 삭제한다.")
     public void 스터디를_삭제한다() throws Exception {
-        Study study = algorithm_study();
+        Study study = mock(Study.class);
         studyRepository.save(study);
         callDeleteApi("/studies/1")
                 .andExpect(status().isNoContent())
@@ -71,7 +71,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 수정한다.")
     public void 스터디를_수정한다() throws Exception {
-        Study study = algorithm_study();
+        Study study = mock(Study.class);
         studyRepository.save(study);
         StudyUpdateRequest request = studyUpdateRequest();
         callPatchApi("/studies/1", request)
@@ -88,7 +88,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 종료한다.")
     public void 스터디를_종료한다() throws Exception {
-        Study study = algorithm_study();
+        Study study = mock(Study.class);
         studyRepository.save(study);
         callPatchApi("/studies/1/termination")
                 .andExpect(status().isNoContent())
