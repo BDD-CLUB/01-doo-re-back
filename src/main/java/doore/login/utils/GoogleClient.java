@@ -65,7 +65,7 @@ public class GoogleClient {
 
     private GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        headers.setBearerAuth(accessToken);
         final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
         return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, GoogleAccountProfileResponse.class)
                 .getBody();

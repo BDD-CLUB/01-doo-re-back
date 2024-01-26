@@ -30,9 +30,8 @@ class TokenGeneratorTest extends IntegrationTest {
         assertThat(actualMemberId).isEqualTo(extractedMemberId);
     }
 
-
     @Test
-    @DisplayName("[실패] 유효하지 않은 토큰을 입력하면 예외가 발생한다 실패")
+    @DisplayName("[실패] 유효하지 않은 토큰을 입력하면 예외가 발생한다")
     void 유효하지_않은_토큰을_입력하면_예외가_발생한다_실패() {
         //given
         final String invalidToken = "invalid_token";
@@ -44,7 +43,5 @@ class TokenGeneratorTest extends IntegrationTest {
         Assertions.assertThatThrownBy(actual)
                 .isInstanceOf(LoginException.class)
                 .hasMessage(LoginExceptionType.INVALID_ACCESS_TOKEN.errorMessage());
-
     }
-
 }
