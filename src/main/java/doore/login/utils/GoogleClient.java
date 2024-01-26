@@ -24,17 +24,21 @@ public class GoogleClient {
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
+
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
+
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String redirectUri;
+
     @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
     private String authorizationCode;
+
     @Value("${url.access-token}")
     private String accessTokenUrl;
+
     @Value("${url.profile}")
     private String profileUrl;
-
 
     private final RestTemplate restTemplate;
 
