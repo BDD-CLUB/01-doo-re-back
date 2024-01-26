@@ -1,8 +1,11 @@
 package doore.restdocs;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,9 +58,38 @@ public abstract class RestDocsTest {
                 .description(description);
     }
 
+    protected FieldDescriptor booleanFieldWithPath(final String path, final String description) {
+        return fieldWithPath(path).type(JsonFieldType.BOOLEAN)
+                .description(description);
+    }
+
+    protected FieldDescriptor arrayFieldWithPath(final String path, final String description) {
+        return fieldWithPath(path).type(JsonFieldType.ARRAY)
+                .description(description);
+    }
+
     protected ResultActions callPostApi(final String url, final Object value) throws Exception {
         return mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(value)));
+    }
+
+    protected ResultActions callPostApi(final String url) throws Exception {
+        return mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    protected ResultActions callPatchApi(final String url, final Object value) throws Exception {
+        return mockMvc.perform(patch(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(value)));
+    }
+
+    protected ResultActions callGetApi(final String url) throws Exception {
+        return mockMvc.perform(get(url));
+    }
+
+    protected ResultActions callDeleteApi(final String url) throws Exception {
+        return mockMvc.perform(delete(url));
     }
 }
