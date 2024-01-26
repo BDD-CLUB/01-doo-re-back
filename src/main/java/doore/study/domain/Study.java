@@ -1,5 +1,7 @@
 package doore.study.domain;
 
+import static doore.study.domain.StudyStatus.ENDED;
+
 import doore.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -76,7 +78,7 @@ public class Study extends BaseEntity {
     }
 
     public boolean isEnded() {
-        return this.status == StudyStatus.ENDED;
+        return this.status == ENDED;
     }
 
     @Builder
@@ -92,5 +94,9 @@ public class Study extends BaseEntity {
         this.cropId = cropId;
         this.curriculumItems = (curriculumItems != null) ? curriculumItems : new ArrayList<>();
         ;
+    }
+
+    public void terminate() {
+        this.status = ENDED;
     }
 }

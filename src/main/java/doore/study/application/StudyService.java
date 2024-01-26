@@ -55,6 +55,6 @@ public class StudyService {
         if (study.isEnded()) {
             throw new StudyException(TERMINATED_STUDY);
         }
-        study.setStatus(ENDED);
+        study.terminate();
     }
 }
