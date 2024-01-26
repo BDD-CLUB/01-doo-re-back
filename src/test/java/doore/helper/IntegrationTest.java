@@ -1,6 +1,9 @@
 package doore.helper;
 
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +38,20 @@ public abstract class IntegrationTest {
 
     protected ResultActions callPostApi(final String url, final Object value) throws Exception {
         return mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(value)));
+    }
+
+    protected ResultActions callDeleteApi(final String url) throws Exception {
+        return mockMvc.perform(delete(url));
+    }
+
+    protected ResultActions callGetApi(final String url) throws Exception {
+        return mockMvc.perform(get(url));
+    }
+
+    protected ResultActions callPatchApi(final String url, final Object value) throws Exception {
+        return mockMvc.perform(patch(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(value)));
     }
