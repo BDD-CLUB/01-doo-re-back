@@ -57,7 +57,7 @@ include::{snippets}/study-update/request-fields.adoc[]
 include::{snippets}/study-update/http-response.adoc[]
 
 
-== `POST`: Study 종료
+== `PATCH`: Study 종료
 
 .HTTP Request
 include::{snippets}/study-terminate/http-request.adoc[]

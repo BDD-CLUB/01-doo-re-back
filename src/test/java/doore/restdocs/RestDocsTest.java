@@ -74,15 +74,15 @@ public abstract class RestDocsTest {
                 .content(objectMapper.writeValueAsString(value)));
     }
 
-    protected ResultActions callPostApi(final String url) throws Exception {
-        return mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON));
-    }
-
     protected ResultActions callPatchApi(final String url, final Object value) throws Exception {
         return mockMvc.perform(patch(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(value)));
+    }
+
+    protected ResultActions callPatchApi(final String url) throws Exception {
+        return mockMvc.perform(patch(url)
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     protected ResultActions callGetApi(final String url) throws Exception {

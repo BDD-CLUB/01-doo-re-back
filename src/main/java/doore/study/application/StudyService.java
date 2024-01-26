@@ -45,12 +45,11 @@ public class StudyService {
         study.update(request);
     }
 
-    public StudyDetailResponse terminateStudy(Long studyId) {
+    public void terminateStudy(Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         if (study.getStatus() == ENDED) {
             throw new StudyException(TERMINATED_STUDY);
         }
         study.setStatus(ENDED);
-        return StudyDetailResponse.from(study);
     }
 }

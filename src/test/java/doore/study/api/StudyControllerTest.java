@@ -96,7 +96,7 @@ public class StudyControllerTest extends IntegrationTest {
         final Study study = algorithm_study();
         studyRepository.save(study);
         String url = "/studies/" + study.getId() + "/termination";
-        callPostApi(url, study).andExpect(status().isOk());
+        callPatchApi(url, study).andExpect(status().isNoContent());
     }
 
 }

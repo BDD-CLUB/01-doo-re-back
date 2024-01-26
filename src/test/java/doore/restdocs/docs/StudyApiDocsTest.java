@@ -90,8 +90,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     public void 스터디를_종료한다() throws Exception {
         Study study = algorithm_study();
         studyRepository.save(study);
-        callPostApi("/studies/1/termination")
-                .andExpect(status().isOk())
+        callPatchApi("/studies/1/termination")
+                .andExpect(status().isNoContent())
                 .andDo(document("study-terminate"));
     }
 }

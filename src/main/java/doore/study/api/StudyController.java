@@ -45,9 +45,9 @@ public class StudyController {
         studyService.updateStudy(studyUpdateRequest, studyId);
     }
 
-    @PostMapping("/studies/{studyId}/termination")
-    @ResponseStatus(HttpStatus.OK)
-    public StudyDetailResponse terminateStudy(@PathVariable Long studyId) {
-        return studyService.terminateStudy(studyId);
+    @PatchMapping("/studies/{studyId}/termination")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void terminateStudy(@PathVariable Long studyId) {
+        studyService.terminateStudy(studyId);
     }
 }
