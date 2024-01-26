@@ -8,13 +8,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 
+import doore.study.application.StudyCommandService;
+import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import doore.restdocs.RestDocsTest;
 import doore.study.api.StudyController;
-import doore.study.application.StudyService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(StudyController.class)
 public class StudyApiDocsTest extends RestDocsTest {
     @MockBean
-    protected StudyService studyService;
+    protected StudyCommandService studyCommandService;
+
+    @MockBean
+    protected StudyQueryService studyQueryService;
 
     @MockBean
     protected StudyRepository studyRepository;

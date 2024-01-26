@@ -1,21 +1,20 @@
 package doore.study.application;
 
-import static doore.study.domain.StudyStatus.ENDED;
-import static doore.study.exception.StudyExceptionType.*;
+import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static doore.study.exception.StudyExceptionType.TERMINATED_STUDY;
 
-import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.StudyDetailResponse;
 import doore.study.application.dto.request.StudyCreateRequest;
+import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
-import doore.team.application.TeamCommandService;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import doore.team.exception.TeamExceptionType;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class StudyService {
+public class StudyCommandService {
     private final StudyRepository studyRepository;
     private final TeamRepository teamRepository;
     private final CurriculumItemRepository curriculumItemRepository;
@@ -37,12 +36,6 @@ public class StudyService {
 
     public void deleteStudy(Long studyId) {
         studyRepository.deleteById(studyId);
-    }
-
-    @Transactional(readOnly = true)
-    public StudyDetailResponse findStudyById(Long studyId) {
-        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        return StudyDetailResponse.from(study);
     }
 
     public void updateStudy(StudyUpdateRequest request, Long studyId) {

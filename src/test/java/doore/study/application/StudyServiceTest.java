@@ -27,7 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudyServiceTest extends IntegrationTest {
     @Autowired
-    StudyService studyService;
+    StudyCommandService studyCommandService;
+    @Autowired
+    StudyQueryService studyQueryService;
     @Autowired
     StudyRepository studyRepository;
     @Autowired
@@ -39,7 +41,7 @@ public class StudyServiceTest extends IntegrationTest {
         StudyCreateRequest studyCreateRequest = studyCreateRequest();
         Team team = team();
         teamRepository.save(team);
-        studyService.createStudy(studyCreateRequest, team.getId());
+        studyCommandService.createStudy(studyCreateRequest, team.getId());
         List<Study> studies = studyRepository.findAll();
         assertThat(studies).hasSize(1);
         Study study = studies.get(0);
@@ -54,7 +56,7 @@ public class StudyServiceTest extends IntegrationTest {
     void 정상적으로_스터디를_삭제할_수_있다() throws Exception {
         Study study = algorithm_study();
         studyRepository.save(study);
-        studyService.deleteStudy(study.getId());
+        studyCommandService.deleteStudy(study.getId());
         List<Study> studies = studyRepository.findAll();
         assertThat(studies).hasSize(0);
     }
@@ -67,14 +69,14 @@ public class StudyServiceTest extends IntegrationTest {
         void 정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
             Study study = algorithm_study();
             studyRepository.save(study);
-            assertEquals(study.getId(), studyService.findStudyById(study.getId()).id());
+            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
         }
 
         @Test
         @DisplayName("존재하지 않는 스터디를 조회할 수 없다.")
         void 존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
             Long notExistingStudyId = 0L;
-            assertThatThrownBy(() -> studyService.findStudyById(notExistingStudyId))
+            assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
         }
@@ -88,7 +90,7 @@ public class StudyServiceTest extends IntegrationTest {
         void 정상적으로_스터디를_종료할_수_있다_성공() throws Exception {
             final Study study = algorithm_study();
             studyRepository.save(study);
-            studyService.terminateStudy(study.getId());
+            studyCommandService.terminateStudy(study.getId());
 
             assertEquals(ENDED, study.getStatus());
         }
@@ -100,7 +102,7 @@ public class StudyServiceTest extends IntegrationTest {
             study.setStatus(ENDED);
             studyRepository.save(study);
 
-            assertThatThrownBy(() -> studyService.terminateStudy(study.getId()))
+            assertThatThrownBy(() -> studyCommandService.terminateStudy(study.getId()))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(TERMINATED_STUDY.errorMessage());
 
@@ -117,7 +119,7 @@ public class StudyServiceTest extends IntegrationTest {
         void 정상적으로_스터디를_수정할_수_있다_성공() throws Exception {
             final Study study = algorithm_study();
             studyRepository.save(study);
-            studyService.updateStudy(request, study.getId());
+            studyCommandService.updateStudy(request, study.getId());
             assertEquals(study.getName(), request.name());
         }
 
@@ -125,7 +127,7 @@ public class StudyServiceTest extends IntegrationTest {
         @DisplayName("존재하지_않는_스터디를_수정할_수_없다.")
         void 존재하지_않는_스터디를_수정할_수_없다_실패() throws Exception {
             Long notExistingStudyId = 0L;
-            assertThatThrownBy(() -> studyService.updateStudy(request, notExistingStudyId))
+            assertThatThrownBy(() -> studyCommandService.updateStudy(request, notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
         }

@@ -1,9 +1,10 @@
 package doore.study.api;
 
+import doore.study.application.StudyCommandService;
+import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.StudyDetailResponse;
 import doore.study.application.dto.request.StudyCreateRequest;
-import doore.study.application.StudyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,35 +20,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class StudyController {
-    private final StudyService studyService;
+    private final StudyCommandService studyCommandService;
+    private final StudyQueryService studyQueryService;
 
     @PostMapping("/teams/{teamId}/studies")
     @ResponseStatus(HttpStatus.CREATED)
     public void createStudy(@Valid @RequestBody StudyCreateRequest studyRequest, @PathVariable Long teamId) {
-        studyService.createStudy(studyRequest, teamId);
+        studyCommandService.createStudy(studyRequest, teamId);
     }
 
     @DeleteMapping("/studies/{studyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStudy(@PathVariable Long studyId) {
-        studyService.deleteStudy(studyId);
+        studyCommandService.deleteStudy(studyId);
     }
 
     @GetMapping("/studies/{studyId}")
     @ResponseStatus(HttpStatus.OK)
     public StudyDetailResponse getStudy(@PathVariable Long studyId) {
-        return studyService.findStudyById(studyId);
+        return studyQueryService.findStudyById(studyId);
     }
 
     @PatchMapping("/studies/{studyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest, @PathVariable Long studyId) {
-        studyService.updateStudy(studyUpdateRequest, studyId);
+        studyCommandService.updateStudy(studyUpdateRequest, studyId);
     }
 
     @PatchMapping("/studies/{studyId}/termination")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void terminateStudy(@PathVariable Long studyId) {
-        studyService.terminateStudy(studyId);
+        studyCommandService.terminateStudy(studyId);
     }
 }
