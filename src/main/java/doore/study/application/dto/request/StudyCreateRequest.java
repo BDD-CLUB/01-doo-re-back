@@ -40,8 +40,8 @@ public record StudyCreateRequest(
 ) {
     @Builder
     public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
-                              StudyStatus status,
-                              Boolean isDeleted, Long cropId, List<CurriculumItemsRequest> curriculumItems) {
+                              StudyStatus status, Boolean isDeleted, Long cropId,
+                              List<CurriculumItemsRequest> curriculumItems) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
