@@ -13,11 +13,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CurriculumItem extends BaseEntity {
 
@@ -43,6 +41,10 @@ public class CurriculumItem extends BaseEntity {
         this.name = name;
         this.itemOrder = itemOrder;
         this.isDeleted = isDeleted;
+        this.study = study;
+    }
+
+    public void saveStudyToCurriculum(Study study) {
         this.study = study;
     }
 }

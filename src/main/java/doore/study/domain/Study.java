@@ -64,7 +64,7 @@ public class Study extends BaseEntity {
             return;
         }
         newCurriculumItems.forEach(newCurriculumItem -> {
-            newCurriculumItem.setStudy(this);
+            newCurriculumItem.saveStudyToCurriculum(this);
         });
         curriculumItems.addAll(newCurriculumItems);
     }
