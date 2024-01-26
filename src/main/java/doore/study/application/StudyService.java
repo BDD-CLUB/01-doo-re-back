@@ -28,7 +28,6 @@ public class StudyService {
         Study study = studyRepository.save(request.toEntityWithoutCurriculum(teamId));
         List<CurriculumItem> curriculumItems = request.toCurriculumListEntity(study);
         curriculumItemRepository.saveAll(curriculumItems);
-        study.createCurriculumItems(curriculumItems);
     }
 
     public void deleteStudy(Long studyId) {
