@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/login")
 @RequiredArgsConstructor
+@Valid
+@RequestMapping("/login")
 public class LoginController {
     private final LoginService loginService;
 
