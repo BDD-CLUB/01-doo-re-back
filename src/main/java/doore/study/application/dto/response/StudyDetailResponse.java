@@ -7,47 +7,31 @@ import doore.study.domain.StudyStatus;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import lombok.Getter;
 
-@Getter
-public class StudyDetailResponse {
+public record StudyDetailResponse(
 
-    Long id;
+        Long id,
 
-    String name;
+        String name,
 
-    String description;
+        String description,
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate startDate;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        LocalDate startDate,
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate endTime;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        LocalDate endTime,
 
-    StudyStatus status;
+        StudyStatus status,
 
-    Boolean isDeleted;
+        Boolean isDeleted,
 
-    Long teamId;
+        Long teamId,
 
-    Long cropId;
+        Long cropId,
 
-    List<CurriculumItemResponse> curriculumItems;
-
-    public StudyDetailResponse(Long id, String name, String description, LocalDate startDate, LocalDate endDate,
-                               StudyStatus status, Boolean isDeleted, Long teamId, Long cropId,
-                               List<CurriculumItemResponse> curriculumItemResponses) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.endTime = endDate;
-        this.status =  status;
-        this.isDeleted = isDeleted;
-        this.teamId = teamId;
-        this.cropId = cropId;
-        this.curriculumItems = curriculumItemResponses;
-    }
+        List<CurriculumItemResponse> curriculumItems
+) {
 
     public static StudyDetailResponse from(Study study) {
         List<CurriculumItem> curriculumItems = study.getCurriculumItems();
