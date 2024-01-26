@@ -61,7 +61,7 @@ public class StudyServiceTest extends IntegrationTest {
         void 정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
             Study study = algorithm_study();
             studyRepository.save(study);
-            assertEquals(study.getId(), studyService.findStudyById(study.getId()).getId());
+            assertEquals(study.getId(), studyService.findStudyById(study.getId()).id());
         }
 
         @Test
