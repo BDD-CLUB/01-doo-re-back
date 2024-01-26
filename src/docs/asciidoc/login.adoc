@@ -2,7 +2,7 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-= TEAM API 문서
+= LOGIN API 문서
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
