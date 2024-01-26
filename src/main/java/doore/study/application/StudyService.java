@@ -52,7 +52,7 @@ public class StudyService {
 
     public void terminateStudy(Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        if (study.getStatus() == ENDED) {
+        if (study.isEnded()) {
             throw new StudyException(TERMINATED_STUDY);
         }
         study.setStatus(ENDED);

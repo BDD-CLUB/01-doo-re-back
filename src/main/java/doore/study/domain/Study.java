@@ -75,6 +75,10 @@ public class Study extends BaseEntity {
         this.status = status;
     }
 
+    public boolean isEnded() {
+        return this.status == StudyStatus.ENDED;
+    }
+
     @Builder
     public Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,
                  Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
