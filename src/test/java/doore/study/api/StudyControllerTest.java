@@ -1,6 +1,7 @@
 package doore.study.api;
 
 import static doore.study.StudyFixture.algorithm_study;
+import static doore.team.TeamFixture.team;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.mock;
 
@@ -9,6 +10,8 @@ import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
+import doore.team.domain.Team;
+import doore.team.domain.TeamRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,6 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class StudyControllerTest extends IntegrationTest {
     @Autowired
     private StudyRepository studyRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
     @Nested
     @DisplayName("스터디 생성 테스트")
@@ -31,11 +36,14 @@ public class StudyControllerTest extends IntegrationTest {
         @Test
         @DisplayName("정상적으로 스터디를 생성한다.")
         void 정상적으로_스터디를_생성한다_성공() throws Exception {
+            final Team team = team();
+            teamRepository.save(team);
+            String url = "/teams/" + team.getId() + "/studies";
             final StudyCreateRequest request = new StudyCreateRequest("알고리즘", "알고리즘 스터디 입니다.",
                     LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"),
                     StudyStatus.IN_PROGRESS, false, 1L, null);
 
-            callPostApi("/teams/1/studies", request).andExpect(status().isCreated());
+            callPostApi(url, request).andExpect(status().isCreated());
         }
 
         @ParameterizedTest

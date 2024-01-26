@@ -11,6 +11,10 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
+import doore.team.application.TeamCommandService;
+import doore.team.domain.TeamRepository;
+import doore.team.exception.TeamException;
+import doore.team.exception.TeamExceptionType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,10 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StudyService {
     private final StudyRepository studyRepository;
+    private final TeamRepository teamRepository;
     private final CurriculumItemRepository curriculumItemRepository;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
-        //todo: 존재하는 팀인지 유효성 검사
+        teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
         Study study = studyRepository.save(request.toEntityWithoutCurriculum(teamId));
         List<CurriculumItem> curriculumItems = request.toCurriculumListEntity(study);
         curriculumItemRepository.saveAll(curriculumItems);

@@ -6,6 +6,7 @@ import static doore.study.StudyFixture.studyUpdateRequest;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.study.exception.StudyExceptionType.TERMINATED_STUDY;
+import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,24 +17,31 @@ import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
+import doore.team.domain.Team;
+import doore.team.domain.TeamRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class StudyServiceTest extends IntegrationTest {
     @Autowired
     StudyService studyService;
     @Autowired
     StudyRepository studyRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     @DisplayName("정상적으로 스터디를 생성할 수 있다.")
     void 정상적으로_스터디를_생성할_수_있다_성공() throws Exception {
         StudyCreateRequest studyCreateRequest = studyCreateRequest();
-        studyService.createStudy(studyCreateRequest, 1L);
-
+        Team team = team();
+        teamRepository.save(team);
+        studyService.createStudy(studyCreateRequest, team.getId());
         List<Study> studies = studyRepository.findAll();
         assertThat(studies).hasSize(1);
         Study study = studies.get(0);
