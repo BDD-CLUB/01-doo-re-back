@@ -39,7 +39,7 @@ public class Member extends BaseEntity {
     private Boolean isDeleted;
 
     @Builder
-    public Member(final Long id, final String name, final String googleId, final String email, final String imageUrl) {
+    private Member(final Long id, final String name, final String googleId, final String email, final String imageUrl) {
         this.id = id;
         this.name = name;
         this.googleId = googleId;
