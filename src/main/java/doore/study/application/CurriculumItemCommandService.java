@@ -26,8 +26,9 @@ public class CurriculumItemCommandService {
     private final StudyRepository studyRepository; // 임시
     private final AtomicInteger index = new AtomicInteger(1);
 
-    public void createCurriculum(CurriculumItemRequest request) {
-        /// 일단 임시. uri가 잘못된 것 같음 -> Study에서 커리큘럼을 찾는 과정이 필요
+    public void createCurriculum(CurriculumItemRequest request, Long studyId) {
+//        Study study = studyRepository.findById(studyId).orElseThrow(); // 임시. 스터디 코드 완성 후 예외처리 할 부분
+        //**********임시*********
         Study study = Study.builder()
                 .name("123")
                 .description("123")
@@ -38,14 +39,14 @@ public class CurriculumItemCommandService {
                 .cropId(1L)
                 .build();
         studyRepository.save(study);
-        ///
-
+        //************************
         CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name(request.name()).itemOrder(index.getAndIncrement()).isDeleted(false).study(study).build();
         curriculumItemRepository.save(curriculumItem);
     }
 
-    public void deleteCurriculum(Long curriculumId) {
+    public void deleteCurriculum(Long curriculumId, Long studyId) {
+//        Study study = studyRepository.findById(studyId).orElseThrow();  // 임시. 스터디 코드 완성 후 예외처리 할 부분
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
 
@@ -58,13 +59,15 @@ public class CurriculumItemCommandService {
         }
     }
 
-    public void updateCurriculum(Long curriculumId, CurriculumItemRequest request) {
+    public void updateCurriculum(Long curriculumId, Long studyId, CurriculumItemRequest request) {
+//        Study study = studyRepository.findById(studyId).orElseThrow();  // 임시. 스터디 코드 완성 후 예외처리 할 부분
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         curriculumItem.update(request.name());
     }
 
-    public void completeCurriculum(Long curriculumId) {
+    public void completeCurriculum(Long curriculumId, Long studyId) {
+//        Study study = studyRepository.findById(studyId).orElseThrow();  // 임시. 스터디 코드 완성 후 예외처리 할 부분
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
@@ -76,7 +79,8 @@ public class CurriculumItemCommandService {
         participantCurriculumItem.complete();
     }
 
-    public void incompleteCurriculum(Long curriculumId) {
+    public void incompleteCurriculum(Long curriculumId, Long studyId) {
+//        Study study = studyRepository.findById(studyId).orElseThrow();  // 임시. 스터디 코드 완성 후 예외처리 할 부분
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()

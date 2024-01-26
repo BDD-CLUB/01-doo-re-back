@@ -18,39 +18,40 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("curriculums")
+@RequestMapping("/studies/{studyId}/curriculums")
 public class CurriculumItemController {
 
     private final CurriculumItemCommandService curriculumItemCommandService;
 
     @PostMapping
-    public ResponseEntity<Void> createCurriculum(@Valid @RequestBody CurriculumItemRequest request) {
-        curriculumItemCommandService.createCurriculum(request);
+    public ResponseEntity<Void> createCurriculum(@PathVariable("studyId") Long studyId, // 임시
+                                                 @Valid @RequestBody CurriculumItemRequest request) {
+        curriculumItemCommandService.createCurriculum(request, studyId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("{curriculumsId}")
-    public ResponseEntity<Void> deleteCurriculum(@PathVariable Long curriculumsId) {
-        curriculumItemCommandService.deleteCurriculum(curriculumsId);
+    @DeleteMapping("/{curriculumsId}")
+    public ResponseEntity<Void> deleteCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId) {
+        curriculumItemCommandService.deleteCurriculum(curriculumsId, studyId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{curriculumsId}")
-    public ResponseEntity<Void> updateCurriculum(@PathVariable Long curriculumsId,
+    @PatchMapping("/{curriculumsId}")
+    public ResponseEntity<Void> updateCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId,
                                                  @Valid @RequestBody CurriculumItemRequest request) {
-        curriculumItemCommandService.updateCurriculum(curriculumsId, request);
+        curriculumItemCommandService.updateCurriculum(curriculumsId, studyId, request);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("{curriculumsId}")
-    public ResponseEntity<Void> completeCurriculum(@PathVariable Long curriculumsId) {
-        curriculumItemCommandService.completeCurriculum(curriculumsId);
+    @PatchMapping("/{curriculumsId}/complete")
+    public ResponseEntity<Void> completeCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId) {
+        curriculumItemCommandService.completeCurriculum(curriculumsId, studyId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{curriculumsId}")
-    public ResponseEntity<Void> incompleteCurriculum(@PathVariable Long curriculumsId) {
-        curriculumItemCommandService.incompleteCurriculum(curriculumsId);
+    @PatchMapping("{curriculumsId}/incomplete")
+    public ResponseEntity<Void> incompleteCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId) {
+        curriculumItemCommandService.incompleteCurriculum(curriculumsId, studyId);
         return ResponseEntity.noContent().build();
     }
 
