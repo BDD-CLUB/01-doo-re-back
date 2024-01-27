@@ -76,8 +76,8 @@ public class StudyApiDocsTest extends RestDocsTest {
         Study study = mock(Study.class);
         studyRepository.save(study);
         StudyUpdateRequest request = studyUpdateRequest();
-        callPatchApi("/studies/1", request)
-                .andExpect(status().isNoContent())
+        callPutApi("/studies/1", request)
+                .andExpect(status().isOk())
                 .andDo(document("study-update", requestFields(
                         stringFieldWithPath("name", "스터디 이름"),
                         stringFieldWithPath("description", "스터디 설명"),

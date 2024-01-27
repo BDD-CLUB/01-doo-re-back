@@ -41,7 +41,7 @@ public record StudyCreateRequest(
         this.startDate = startDate;
         this.endDate = endDate;
         this.cropId = cropId;
-        this.curriculumItems = curriculumItems == null ? Collections.emptyList(): curriculumItems;
+        this.curriculumItems =  Collections.emptyList();
     }
 
     public Study toEntityWithoutCurriculum(Long teamId) {

@@ -6,6 +6,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,6 +84,12 @@ public abstract class RestDocsTest {
     protected ResultActions callPatchApi(final String url) throws Exception {
         return mockMvc.perform(patch(url)
                 .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    protected ResultActions callPutApi(final String url, final Object value) throws Exception {
+        return mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(value)));
     }
 
     protected ResultActions callGetApi(final String url) throws Exception {

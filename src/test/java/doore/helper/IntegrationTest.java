@@ -4,6 +4,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,11 @@ public abstract class IntegrationTest {
         return mockMvc.perform(get(url));
     }
 
+    protected ResultActions callPutApi(final String url, final Object value) throws Exception {
+        return mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(value)));
+    }
     protected ResultActions callPatchApi(final String url, final Object value) throws Exception {
         return mockMvc.perform(patch(url)
                 .contentType(MediaType.APPLICATION_JSON)

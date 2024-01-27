@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -87,7 +89,9 @@ public class Study extends BaseEntity {
         this.isDeleted = isDeleted;
         this.teamId = teamId;
         this.cropId = cropId;
-        this.curriculumItems.addAll(curriculumItems);
+        if (curriculumItems != null) {
+            this.curriculumItems.addAll(curriculumItems);
+        }
     }
 
     public void terminate() {

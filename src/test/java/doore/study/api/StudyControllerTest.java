@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import doore.helper.IntegrationTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.domain.Study;
-import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
@@ -37,7 +36,6 @@ public class StudyControllerTest extends IntegrationTest {
             String url = "/teams/" + team.getId() + "/studies";
             final StudyCreateRequest request = new StudyCreateRequest("알고리즘", "알고리즘 스터디 입니다.",
                     LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L, null);
-
             callPostApi(url, request).andExpect(status().isCreated());
         }
 
@@ -85,7 +83,7 @@ public class StudyControllerTest extends IntegrationTest {
         studyRepository.save(study);
         study.setName("스프링 스터디");
         String url = "/studies/" + study.getId();
-        callPatchApi(url, study).andExpect(status().isNoContent());
+        callPutApi(url, study).andExpect(status().isOk());
     }
 
     @Test
