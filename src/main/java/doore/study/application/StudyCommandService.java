@@ -1,7 +1,7 @@
 package doore.study.application;
 
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.study.exception.StudyExceptionType.TERMINATED_STUDY;
+import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
 
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -46,7 +46,7 @@ public class StudyCommandService {
     public void terminateStudy(Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         if (study.isEnded()) {
-            throw new StudyException(TERMINATED_STUDY);
+            throw new StudyException(ALREADY_TERMINATED_STUDY);
         }
         study.terminate();
     }

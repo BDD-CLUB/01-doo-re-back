@@ -5,7 +5,7 @@ import static doore.study.StudyFixture.studyCreateRequest;
 import static doore.study.StudyFixture.studyUpdateRequest;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.study.exception.StudyExceptionType.TERMINATED_STUDY;
+import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
 import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -132,7 +132,7 @@ public class StudyServiceTest extends IntegrationTest {
 
             assertThatThrownBy(() -> studyCommandService.terminateStudy(study.getId()))
                     .isInstanceOf(StudyException.class)
-                    .hasMessage(TERMINATED_STUDY.errorMessage());
+                    .hasMessage(ALREADY_TERMINATED_STUDY.errorMessage());
 
         }
     }
