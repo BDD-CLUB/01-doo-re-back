@@ -30,18 +30,18 @@ public record StudyCreateRequest(
         @NotNull(message = "작물을 골라주세요.")
         Long cropId,
 
-        @Nullable
+        @NotNull
         List<CurriculumItemsRequest> curriculumItems
 ) {
     @Builder
-    public StudyCreateRequest(String name, String description, LocalDate startDate, @Nullable LocalDate endDate,
+    public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
                               Long cropId, List<CurriculumItemsRequest> curriculumItems) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.cropId = cropId;
-        this.curriculumItems = curriculumItems;
+        this.curriculumItems = curriculumItems == null ? Collections.emptyList(): curriculumItems;
     }
 
     public Study toEntityWithoutCurriculum(Long teamId) {
@@ -58,9 +58,6 @@ public record StudyCreateRequest(
     }
 
     public List<CurriculumItem> toCurriculumListEntity(Study study) {
-        if (this.curriculumItems == null) {
-            return Collections.emptyList();
-        }
         return curriculumItems.stream()
                 .map(curriculumItemsRequest -> curriculumItemsRequest.toEntity(study))
                 .toList();

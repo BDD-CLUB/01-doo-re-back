@@ -56,16 +56,11 @@ public class Study extends BaseEntity {
     private Long cropId;
 
     @OneToMany(mappedBy = "study")
-    private List<CurriculumItem> curriculumItems;
+    private final List<CurriculumItem> curriculumItems = new ArrayList<>();
 
 
     public void createCurriculumItems(List<CurriculumItem> newCurriculumItems) {
-        if (curriculumItems == null) {
-            return;
-        }
-        newCurriculumItems.forEach(newCurriculumItem -> {
-            newCurriculumItem.saveStudyToCurriculum(this);
-        });
+        newCurriculumItems.forEach(newCurriculumItem -> newCurriculumItem.saveStudyToCurriculum(this));
         curriculumItems.addAll(newCurriculumItems);
     }
 
@@ -92,8 +87,7 @@ public class Study extends BaseEntity {
         this.isDeleted = isDeleted;
         this.teamId = teamId;
         this.cropId = cropId;
-        this.curriculumItems = (curriculumItems != null) ? curriculumItems : new ArrayList<>();
-        ;
+        this.curriculumItems.addAll(curriculumItems);
     }
 
     public void terminate() {

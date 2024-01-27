@@ -1,7 +1,6 @@
 package doore.study.application;
 
 import static doore.study.StudyFixture.algorithm_study;
-import static doore.study.StudyFixture.studyCreateRequest;
 import static doore.study.StudyFixture.studyUpdateRequest;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
@@ -21,6 +20,8 @@ import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +47,14 @@ public class StudyServiceTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            studyCreateRequest = studyCreateRequest();
+            studyCreateRequest = StudyCreateRequest.builder()
+                    .name("자바 스터디")
+                    .description("자바 스터디 입니다")
+                    .startDate(LocalDate.parse("2020-02-02"))
+                    .endDate(null)
+                    .cropId(1L)
+                    .curriculumItems(null)
+                    .build();
             team = team();
             teamRepository.save(team);
         }
@@ -75,6 +83,15 @@ public class StudyServiceTest extends IntegrationTest {
                     () -> assertEquals(false, study.getIsDeleted())
             );
 
+        }
+
+        @Test
+        @DisplayName("스터디 생성시 curriculum을 작성하지 않으면 빈 리스트로 생성된다.")
+        void 스터디_생성시_curriculum을_작성하지_않으면_빈_리스트로_생성된다_성공() throws Exception {
+            studyCommandService.createStudy(studyCreateRequest, team.getId());
+            List<Study> studies = studyRepository.findAll();
+            Study study = studies.get(0);
+            assertEquals(Collections.emptyList(),study.getCurriculumItems());
         }
 
     }
