@@ -36,8 +36,7 @@ public class StudyControllerTest extends IntegrationTest {
             teamRepository.save(team);
             String url = "/teams/" + team.getId() + "/studies";
             final StudyCreateRequest request = new StudyCreateRequest("알고리즘", "알고리즘 스터디 입니다.",
-                    LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"),
-                    StudyStatus.IN_PROGRESS, false, 1L, null);
+                    LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L, null);
 
             callPostApi(url, request).andExpect(status().isCreated());
         }
@@ -45,21 +44,16 @@ public class StudyControllerTest extends IntegrationTest {
         @ParameterizedTest
         @DisplayName("필수값이 입력되지 않은 경우 스터디 생성에 실패한다.")
         @CsvSource({
-                ", 알고리즘 스터디입니다., 2022-01-01, 2022-01-05, IN_PROGRESS, false, 1",
-                "알고리즘, , 2022-01-01, 2022-01-05, IN_PROGRESS, false, 1",
-                "알고리즘, 알고리즘 스터디입니다., , 2022-01-05, IN_PROGRESS, false, 1",
-                "알고리즘, 알고리즘 스터디입니다., 2022-01-01, 2022-01-05, , false, 1",
-                "알고리즘, 알고리즘 스터디입니다., 2022-01-01, 2022-01-05, IN_PROGRESS, , 1",
-                "알고리즘, 알고리즘 스터디입니다., 2022-01-01, 2022-01-05, IN_PROGRESS, false, "
+                ", 알고리즘 스터디입니다., 2022-01-01, 2022-01-05, 1",
+                "알고리즘, , 2022-01-01, 2022-01-05, 1",
+                "알고리즘, 알고리즘 스터디입니다., , 2022-01-05, 1",
+                "알고리즘, 알고리즘 스터디입니다., 2022-01-01, 2022-01-05, "
         })
         void 필수값이_입력되지_않은_경우_스터디_생성에_실패한다_실패(String name, String description, String startDate, String endDate,
-                                             String status, Boolean isDeleted, Long cropId)
-                throws Exception {
-            final StudyCreateRequest request = new StudyCreateRequest(
-                    name, description, (startDate != null && !startDate.isEmpty()) ? LocalDate.parse(startDate) : null,
-                    LocalDate.parse(endDate),
-                    (status != null && !status.isEmpty()) ? StudyStatus.valueOf(status) : null, isDeleted, cropId, null
-            );
+                                             Long cropId) throws Exception {
+            final StudyCreateRequest request = new StudyCreateRequest(name, description,
+                    (startDate != null && !startDate.isEmpty()) ? LocalDate.parse(startDate) : null,
+                    LocalDate.parse(endDate), cropId, null);
 
             callPostApi("/teams/1/studies", request).andExpect(status().isBadRequest());
         }

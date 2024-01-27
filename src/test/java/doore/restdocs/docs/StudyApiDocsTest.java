@@ -43,8 +43,6 @@ public class StudyApiDocsTest extends RestDocsTest {
                         stringFieldWithPath("description", "스터디 설명"),
                         stringFieldWithPath("startDate", "시작 날짜"),
                         stringFieldWithPath("endDate", "종료 날짜"),
-                        stringFieldWithPath("status", "현재 상태"),
-                        booleanFieldWithPath("isDeleted", "삭제 여부"),
                         numberFieldWithPath("cropId", "작물 id"),
                         arrayFieldWithPath("curriculumItems", "커리큘럼 아이템 리스트")
                 )));

@@ -1,9 +1,10 @@
 package doore.study.application.dto.request;
 
+import static doore.study.domain.StudyStatus.UPCOMING;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
-import doore.study.domain.StudyStatus;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -26,12 +27,6 @@ public record StudyCreateRequest(
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate endDate,
 
-        @NotNull(message = "현재 상태를 입력해주세요.")
-        StudyStatus status,
-
-        @NotNull
-        Boolean isDeleted,
-
         @NotNull(message = "작물을 골라주세요.")
         Long cropId,
 
@@ -39,15 +34,12 @@ public record StudyCreateRequest(
         List<CurriculumItemsRequest> curriculumItems
 ) {
     @Builder
-    public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
-                              StudyStatus status, Boolean isDeleted, Long cropId,
-                              List<CurriculumItemsRequest> curriculumItems) {
+    public StudyCreateRequest(String name, String description, LocalDate startDate, @Nullable LocalDate endDate,
+                              Long cropId, List<CurriculumItemsRequest> curriculumItems) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.status = status;
-        this.isDeleted = isDeleted;
         this.cropId = cropId;
         this.curriculumItems = curriculumItems;
     }
@@ -58,8 +50,8 @@ public record StudyCreateRequest(
                 .description(this.description())
                 .startDate(this.startDate())
                 .endDate(this.endDate())
-                .status(this.status())
-                .isDeleted(this.isDeleted())
+                .status(UPCOMING)
+                .isDeleted(false)
                 .teamId(teamId)
                 .cropId(this.cropId())
                 .build();

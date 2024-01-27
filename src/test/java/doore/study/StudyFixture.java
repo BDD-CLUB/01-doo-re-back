@@ -30,8 +30,6 @@ public class StudyFixture {
                 .description("알고리즘 스터디 입니다.")
                 .startDate(LocalDate.parse("2023-01-01"))
                 .endDate(LocalDate.parse("2024-01-01"))
-                .status(StudyStatus.IN_PROGRESS)
-                .isDeleted(false)
                 .cropId(1L)
                 .curriculumItems(new ArrayList<CurriculumItemsRequest>())
                 .build();

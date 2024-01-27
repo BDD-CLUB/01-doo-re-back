@@ -9,7 +9,9 @@ import static doore.study.exception.StudyExceptionType.TERMINATED_STUDY;
 import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static doore.study.domain.StudyStatus.UPCOMING;
 
 import doore.helper.IntegrationTest;
 import doore.study.application.dto.request.StudyCreateRequest;
@@ -20,6 +22,7 @@ import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,20 +38,45 @@ public class StudyServiceTest extends IntegrationTest {
     @Autowired
     TeamRepository teamRepository;
 
-    @Test
-    @DisplayName("정상적으로 스터디를 생성할 수 있다.")
-    void 정상적으로_스터디를_생성할_수_있다_성공() throws Exception {
-        StudyCreateRequest studyCreateRequest = studyCreateRequest();
-        Team team = team();
-        teamRepository.save(team);
-        studyCommandService.createStudy(studyCreateRequest, team.getId());
-        List<Study> studies = studyRepository.findAll();
-        assertThat(studies).hasSize(1);
-        Study study = studies.get(0);
-        assertEquals(study.getName(), studyCreateRequest.name());
-        assertEquals(study.getDescription(), studyCreateRequest.description());
-        assertEquals(study.getStartDate(), studyCreateRequest.startDate());
-        assertEquals(study.getEndDate(), studyCreateRequest.endDate());
+    @Nested
+    @DisplayName("스터디 생성 테스트")
+    class StudyCreateTest {
+        StudyCreateRequest studyCreateRequest;
+        Team team;
+
+        @BeforeEach
+        void setUp() {
+            studyCreateRequest = studyCreateRequest();
+            team = team();
+            teamRepository.save(team);
+        }
+
+        @Test
+        @DisplayName("정상적으로 스터디를 생성할 수 있다.")
+        void 정상적으로_스터디를_생성할_수_있다_성공() throws Exception {
+            studyCommandService.createStudy(studyCreateRequest, team.getId());
+            List<Study> studies = studyRepository.findAll();
+            assertThat(studies).hasSize(1);
+            Study study = studies.get(0);
+            assertEquals(study.getName(), studyCreateRequest.name());
+            assertEquals(study.getDescription(), studyCreateRequest.description());
+            assertEquals(study.getStartDate(), studyCreateRequest.startDate());
+            assertEquals(study.getEndDate(), studyCreateRequest.endDate());
+        }
+
+        @Test
+        @DisplayName("스터디의 status와 isDeleted가 초기값으로 초기화 된다.")
+        void 스터디의_status와_isDeleted가_초기값으로_초기화_된다_성공() throws Exception {
+            studyCommandService.createStudy(studyCreateRequest, team.getId());
+            List<Study> studies = studyRepository.findAll();
+            Study study = studies.get(0);
+            assertAll(
+                    () -> assertEquals(UPCOMING, study.getStatus()),
+                    () -> assertEquals(false, study.getIsDeleted())
+            );
+
+        }
+
     }
 
     @Test
