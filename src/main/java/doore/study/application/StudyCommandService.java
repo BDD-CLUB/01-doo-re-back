@@ -55,9 +55,6 @@ public class StudyCommandService {
 
     public void terminateStudy(Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        if (study.isEnded()) {
-            throw new StudyException(ALREADY_TERMINATED_STUDY);
-        }
         study.terminate();
     }
 

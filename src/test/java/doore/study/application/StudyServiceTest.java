@@ -153,19 +153,6 @@ public class StudyServiceTest extends IntegrationTest {
 
             assertEquals(ENDED, study.getStatus());
         }
-
-        @Test
-        @DisplayName("종료된 스터디를 종료할 수 없다.")
-        void 종료된_스터디를_종료할_수_없다_실패() throws Exception {
-            final Study study = algorithm_study();
-            study.setStatus(ENDED);
-            studyRepository.save(study);
-
-            assertThatThrownBy(() -> studyCommandService.terminateStudy(study.getId()))
-                    .isInstanceOf(StudyException.class)
-                    .hasMessage(ALREADY_TERMINATED_STUDY.errorMessage());
-
-        }
     }
 
     @Nested
