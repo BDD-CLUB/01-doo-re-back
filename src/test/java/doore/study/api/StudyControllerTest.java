@@ -81,7 +81,7 @@ public class StudyControllerTest extends IntegrationTest {
     void 정상적으로_스터디를_수정한다_성공() throws Exception {
         final Study study = algorithm_study();
         studyRepository.save(study);
-        study.setName("스프링 스터디");
+        study.update("스프링 스터디",study.getDescription(),study.getStartDate(),study.getEndDate(),study.getStatus());
         String url = "/studies/" + study.getId();
         callPutApi(url, study).andExpect(status().isOk());
     }

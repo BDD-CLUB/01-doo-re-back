@@ -13,18 +13,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Study extends BaseEntity {
 
@@ -62,7 +58,7 @@ public class Study extends BaseEntity {
 
 
     public void createCurriculumItems(List<CurriculumItem> newCurriculumItems) {
-        newCurriculumItems.forEach(newCurriculumItem -> newCurriculumItem.saveStudyToCurriculum(this));
+        newCurriculumItems.forEach(newCurriculumItem -> newCurriculumItem.saveStudy(this));
         curriculumItems.addAll(newCurriculumItems);
     }
 
@@ -74,12 +70,8 @@ public class Study extends BaseEntity {
         this.status = status;
     }
 
-    public boolean isEnded() {
-        return this.status == ENDED;
-    }
-
     @Builder
-    public Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,
+    private Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,
                  Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
         this.name = name;
         this.description = description;
