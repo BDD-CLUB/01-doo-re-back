@@ -1,9 +1,11 @@
 package doore.study.application;
 
+import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
 
+import doore.study.application.dto.request.CurriculumItemsRequest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
@@ -31,8 +33,8 @@ public class StudyCommandService {
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
         checkExistTeam(teamId);
-        Study study = studyRepository.save(request.toEntityWithoutCurriculum(teamId));
-        List<CurriculumItem> curriculumItems = request.toCurriculumListEntity(study);
+        Study study = studyRepository.save(toStudyWithoutCurriculum(request,teamId));
+        List<CurriculumItem> curriculumItems = toCurriculumList(request,study);
         curriculumItemRepository.saveAll(curriculumItems);
     }
 
@@ -65,5 +67,33 @@ public class StudyCommandService {
 
     private void checkExistTeam(Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
+    }
+
+    public Study toStudyWithoutCurriculum( StudyCreateRequest request, Long teamId) {
+        return Study.builder()
+                .name(request.name())
+                .description(request.description())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .status(UPCOMING)
+                .isDeleted(false)
+                .teamId(teamId)
+                .cropId(request.cropId())
+                .build();
+    }
+
+    public List<CurriculumItem> toCurriculumList(StudyCreateRequest request, Study study) {
+        return request.curriculumItems().stream()
+                .map(curriculumItemsRequest -> extractCurriculumItemFromStudy(curriculumItemsRequest,study))
+                .toList();
+    }
+
+    public CurriculumItem extractCurriculumItemFromStudy(CurriculumItemsRequest request, Study study) {
+        return CurriculumItem.builder()
+                .name(request.name())
+                .itemOrder(request.itemOrder())
+                .isDeleted(request.isDeleted())
+                .study(study)
+                .build();
     }
 }

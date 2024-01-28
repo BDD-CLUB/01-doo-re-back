@@ -43,23 +43,4 @@ public record StudyCreateRequest(
         this.cropId = cropId;
         this.curriculumItems =  Collections.emptyList();
     }
-
-    public Study toEntityWithoutCurriculum(Long teamId) {
-        return Study.builder()
-                .name(this.name())
-                .description(this.description())
-                .startDate(this.startDate())
-                .endDate(this.endDate())
-                .status(UPCOMING)
-                .isDeleted(false)
-                .teamId(teamId)
-                .cropId(this.cropId())
-                .build();
-    }
-
-    public List<CurriculumItem> toCurriculumListEntity(Study study) {
-        return curriculumItems.stream()
-                .map(curriculumItemsRequest -> curriculumItemsRequest.toEntity(study))
-                .toList();
-    }
 }

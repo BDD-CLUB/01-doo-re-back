@@ -12,12 +12,4 @@ public record CurriculumItemsRequest(
         @NotNull
         Boolean isDeleted
 ) {
-    public CurriculumItem toEntity(Study study) {
-        return CurriculumItem.builder()
-                .name(this.name())
-                .itemOrder(this.itemOrder())
-                .isDeleted(this.isDeleted())
-                .study(study)
-                .build();
-    }
 }
