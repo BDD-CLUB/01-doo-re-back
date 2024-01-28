@@ -30,7 +30,7 @@ public record StudyCreateRequest(
         @NotNull(message = "작물을 골라주세요.")
         Long cropId,
 
-        @NotNull
+        @NotNull(message = "커리큘럼을 입력해주세요.")
         List<CurriculumItemsRequest> curriculumItems
 ) {
     @Builder
