@@ -30,7 +30,7 @@ public class StudyCommandService {
     private final CurriculumItemRepository curriculumItemRepository;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
-        teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
+        checkExistTeam(teamId);
         Study study = studyRepository.save(request.toEntityWithoutCurriculum(teamId));
         List<CurriculumItem> curriculumItems = request.toCurriculumListEntity(study);
         curriculumItemRepository.saveAll(curriculumItems);
@@ -61,5 +61,9 @@ public class StudyCommandService {
         } catch (IllegalArgumentException e) {
             throw new StudyException(NOT_FOUND_STATUS);
         }
+    }
+
+    private void checkExistTeam(Long teamId) {
+        teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
     }
 }
