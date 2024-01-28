@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 
+@Builder
 public record StudyCreateRequest(
         @NotNull(message = "이름을 입력해주세요.")
         String name,
@@ -33,7 +34,6 @@ public record StudyCreateRequest(
         @NotNull(message = "커리큘럼을 입력해주세요.")
         List<CurriculumItemsRequest> curriculumItems
 ) {
-    @Builder
     public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
                               Long cropId, List<CurriculumItemsRequest> curriculumItems) {
         this.name = name;

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.Builder;
 
+@Builder
 public record StudyUpdateRequest(
         @NotNull(message = "이름을 입력해주세요.")
         String name,
@@ -25,7 +26,6 @@ public record StudyUpdateRequest(
         @NotNull(message = "현재 상태를 입력해주세요.")
         StudyStatus status
 ) {
-    @Builder
     public StudyUpdateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
                               StudyStatus status) {
         this.name = name;
