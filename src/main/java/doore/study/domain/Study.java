@@ -97,4 +97,8 @@ public class Study extends BaseEntity {
     public void terminate() {
         this.status = ENDED;
     }
+
+    public void changeStatus(StudyStatus status) {
+        this.status = status;
+    }
 }

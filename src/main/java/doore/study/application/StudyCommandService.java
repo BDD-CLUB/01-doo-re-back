@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
 
@@ -7,6 +8,7 @@ import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
+import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
@@ -49,5 +51,15 @@ public class StudyCommandService {
             throw new StudyException(ALREADY_TERMINATED_STUDY);
         }
         study.terminate();
+    }
+
+    public void changeStudyStatus(String status, Long studyId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        try {
+            StudyStatus changedStatus = StudyStatus.valueOf(status);
+            study.changeStatus(changedStatus);
+        } catch (IllegalArgumentException e) {
+            throw new StudyException(NOT_FOUND_STATUS);
+        }
     }
 }

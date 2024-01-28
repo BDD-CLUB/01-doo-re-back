@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,6 +52,13 @@ public class StudyController {
     public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest, @PathVariable Long studyId) {
         studyCommandService.updateStudy(studyUpdateRequest, studyId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/studies/{studyId}/status")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> changeStudyStatus(@RequestParam String status, @PathVariable Long studyId) {
+        studyCommandService.changeStudyStatus(status, studyId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/studies/{studyId}/termination")

@@ -88,6 +88,16 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
+    @DisplayName("스터디의 상태를 수정한다.")
+    public void 스터디의_상태를_수정한다() throws Exception {
+        Study study = mock(Study.class);
+        studyRepository.save(study);
+        callPatchApi("/studies/1/status?status=IN_PROGRESS")
+                .andExpect(status().isNoContent())
+                .andDo(document("study-change-status"));
+    }
+
+    @Test
     @DisplayName("스터디를 종료한다.")
     public void 스터디를_종료한다() throws Exception {
         Study study = mock(Study.class);

@@ -87,6 +87,15 @@ public class StudyControllerTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("정상적으로 스터디의 상태를 변경한다.")
+    void 정상적으로_스터디의_상태를_변경한다_성공() throws Exception {
+        final Study study = algorithm_study();
+        studyRepository.save(study);
+        String url = "/studies/" + study.getId() + "/status?status=IN_PROGRESS";
+        callPatchApi(url, study).andExpect(status().isNoContent());
+    }
+
+    @Test
     @DisplayName("정상적으로 스터디를 종료한다.")
     void 정상적으로_스터디를_종료한다_성공() throws Exception {
         final Study study = algorithm_study();

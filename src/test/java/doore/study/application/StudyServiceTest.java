@@ -3,6 +3,7 @@ package doore.study.application;
 import static doore.study.StudyFixture.algorithm_study;
 import static doore.study.StudyFixture.studyUpdateRequest;
 import static doore.study.domain.StudyStatus.ENDED;
+import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
 import static doore.team.TeamFixture.team;
@@ -175,6 +176,20 @@ public class StudyServiceTest extends IntegrationTest {
             assertThatThrownBy(() -> studyCommandService.updateStudy(request, notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("스터디 상태 수정 테스트")
+    class StudyChangeStatusTest {
+        @Test
+        @DisplayName("존재하지 않는 상태로 변경할 수 없다.")
+        void 존재하지_않는_상태로_변경할_수_없다_실패() throws Exception {
+            final Study study = algorithm_study();
+            studyRepository.save(study);
+            assertThatThrownBy(() -> studyCommandService.changeStudyStatus("NOT_EXISTING_STATUS",study.getId()))
+                    .isInstanceOf(StudyException.class)
+                    .hasMessage(NOT_FOUND_STATUS.errorMessage());
         }
     }
 }

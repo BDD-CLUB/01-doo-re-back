@@ -64,3 +64,12 @@ include::{snippets}/study-terminate/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/study-terminate/http-response.adoc[]
+
+
+== `PATCH`: Study 상태 수정
+
+.HTTP Request
+include::{snippets}/study-change-status/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/study-change-status/http-response.adoc[]
