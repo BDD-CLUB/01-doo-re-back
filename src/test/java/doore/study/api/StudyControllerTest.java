@@ -1,6 +1,6 @@
 package doore.study.api;
 
-import static doore.study.StudyFixture.algorithm_study;
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.team.TeamFixture.team;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.mock;
@@ -70,7 +70,7 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 조회한다.")
     void 정상적으로_스터디를_조회한다_성공() throws Exception {
-        final Study study = algorithm_study();
+        final Study study = algorithmStudy();
         studyRepository.save(study);
         String url = "/studies/" + study.getId();
         callGetApi(url).andExpect(status().isOk());
@@ -79,7 +79,7 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 수정한다.")
     void 정상적으로_스터디를_수정한다_성공() throws Exception {
-        final Study study = algorithm_study();
+        final Study study = algorithmStudy();
         studyRepository.save(study);
         study.update("스프링 스터디",study.getDescription(),study.getStartDate(),study.getEndDate(),study.getStatus());
         String url = "/studies/" + study.getId();
@@ -89,7 +89,7 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디의 상태를 변경한다.")
     void 정상적으로_스터디의_상태를_변경한다_성공() throws Exception {
-        final Study study = algorithm_study();
+        final Study study = algorithmStudy();
         studyRepository.save(study);
         String url = "/studies/" + study.getId() + "/status?status=IN_PROGRESS";
         callPatchApi(url, study).andExpect(status().isNoContent());
@@ -98,7 +98,7 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 종료한다.")
     void 정상적으로_스터디를_종료한다_성공() throws Exception {
-        final Study study = algorithm_study();
+        final Study study = algorithmStudy();
         studyRepository.save(study);
         String url = "/studies/" + study.getId() + "/termination";
         callPatchApi(url, study).andExpect(status().isNoContent());

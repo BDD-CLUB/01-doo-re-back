@@ -1,7 +1,5 @@
 package doore.restdocs.docs;
 
-import static doore.study.StudyFixture.studyCreateRequest;
-import static doore.study.StudyFixture.studyUpdateRequest;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -10,9 +8,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
+import doore.study.application.dto.request.CurriculumItemsRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
+import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import doore.restdocs.RestDocsTest;
 import doore.study.api.StudyController;
@@ -35,7 +37,14 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 생성한다.")
     public void 스터디를_생성한다() throws Exception {
-        StudyCreateRequest request = studyCreateRequest();
+        StudyCreateRequest request = StudyCreateRequest.builder()
+                .name("알고리즘")
+                .description("알고리즘 스터디 입니다.")
+                .startDate(LocalDate.parse("2023-01-01"))
+                .endDate(LocalDate.parse("2024-01-01"))
+                .cropId(1L)
+                .curriculumItems(new ArrayList<CurriculumItemsRequest>())
+                .build();
         callPostApi("/teams/1/studies", request)
                 .andExpect(status().isCreated())
                 .andDo(document("study-create", requestFields(
@@ -75,7 +84,13 @@ public class StudyApiDocsTest extends RestDocsTest {
     public void 스터디를_수정한다() throws Exception {
         Study study = mock(Study.class);
         studyRepository.save(study);
-        StudyUpdateRequest request = studyUpdateRequest();
+        StudyUpdateRequest request = StudyUpdateRequest.builder()
+                .name("스프링")
+                .description("스프링 스터디 입니다.")
+                .startDate(LocalDate.parse("2023-01-01"))
+                .endDate(LocalDate.parse("2024-01-01"))
+                .status(StudyStatus.IN_PROGRESS)
+                .build();
         callPutApi("/studies/1", request)
                 .andExpect(status().isOk())
                 .andDo(document("study-update", requestFields(

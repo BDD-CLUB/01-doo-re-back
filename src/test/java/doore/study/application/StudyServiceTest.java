@@ -1,7 +1,6 @@
 package doore.study.application;
 
-import static doore.study.StudyFixture.algorithm_study;
-import static doore.study.StudyFixture.studyUpdateRequest;
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.exception.StudyExceptionType.*;
 import static doore.team.TeamFixture.team;
@@ -15,6 +14,7 @@ import doore.helper.IntegrationTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
+import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
@@ -113,7 +113,7 @@ public class StudyServiceTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 삭제할 수 있다.")
     void 정상적으로_스터디를_삭제할_수_있다() throws Exception {
-        Study study = algorithm_study();
+        Study study = algorithmStudy();
         studyRepository.save(study);
         studyCommandService.deleteStudy(study.getId());
         List<Study> studies = studyRepository.findAll();
@@ -126,7 +126,7 @@ public class StudyServiceTest extends IntegrationTest {
         @Test
         @DisplayName("정상적으로 스터디를 조회할 수 있다.")
         void 정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = algorithm_study();
+            Study study = algorithmStudy();
             studyRepository.save(study);
             assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
         }
@@ -147,7 +147,7 @@ public class StudyServiceTest extends IntegrationTest {
         @Test
         @DisplayName("정상적으로 스터디를 종료할 수 있다.")
         void 정상적으로_스터디를_종료할_수_있다_성공() throws Exception {
-            final Study study = algorithm_study();
+            final Study study = algorithmStudy();
             studyRepository.save(study);
             studyCommandService.terminateStudy(study.getId());
 
@@ -158,12 +158,18 @@ public class StudyServiceTest extends IntegrationTest {
     @Nested
     @DisplayName("스터디 수정 테스트")
     class StudyupdateTest {
-        final StudyUpdateRequest request = studyUpdateRequest();
+        final StudyUpdateRequest request = StudyUpdateRequest.builder()
+                .name("스프링")
+                .description("스프링 스터디 입니다.")
+                .startDate(LocalDate.parse("2023-01-01"))
+                .endDate(LocalDate.parse("2024-01-01"))
+                .status(StudyStatus.IN_PROGRESS)
+                .build();
 
         @Test
         @DisplayName("정상적으로_스터디를_수정할_수_있다.")
         void 정상적으로_스터디를_수정할_수_있다_성공() throws Exception {
-            final Study study = algorithm_study();
+            final Study study = algorithmStudy();
             studyRepository.save(study);
             studyCommandService.updateStudy(request, study.getId());
             assertEquals(study.getName(), request.name());
@@ -185,7 +191,7 @@ public class StudyServiceTest extends IntegrationTest {
         @Test
         @DisplayName("존재하지 않는 상태로 변경할 수 없다.")
         void 존재하지_않는_상태로_변경할_수_없다_실패() throws Exception {
-            final Study study = algorithm_study();
+            final Study study = algorithmStudy();
             studyRepository.save(study);
             assertThatThrownBy(() -> studyCommandService.changeStudyStatus("NOT_EXISTING_STATUS", study.getId()))
                     .isInstanceOf(StudyException.class)
