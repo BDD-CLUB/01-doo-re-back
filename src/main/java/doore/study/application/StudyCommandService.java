@@ -1,9 +1,7 @@
 package doore.study.application;
 
 import static doore.study.domain.StudyStatus.UPCOMING;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
+import static doore.study.exception.StudyExceptionType.*;
 
 import doore.study.application.dto.request.CurriculumItemsRequest;
 import doore.study.application.dto.request.StudyCreateRequest;
@@ -17,6 +15,7 @@ import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import doore.team.exception.TeamExceptionType;
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -33,9 +32,16 @@ public class StudyCommandService {
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
         checkExistTeam(teamId);
-        Study study = studyRepository.save(toStudyWithoutCurriculum(request,teamId));
-        List<CurriculumItem> curriculumItems = toCurriculumList(request,study);
+        checkEndDateValid(request.startDate(), request.endDate());
+        Study study = studyRepository.save(toStudyWithoutCurriculum(request, teamId));
+        List<CurriculumItem> curriculumItems = toCurriculumList(request, study);
         curriculumItemRepository.saveAll(curriculumItems);
+    }
+
+    private void checkEndDateValid(LocalDate startDate, LocalDate endDate) {
+        if (endDate != null && startDate.isAfter(endDate)) {
+            throw new StudyException(INVALID_ENDDATE);
+        }
     }
 
     public void deleteStudy(Long studyId) {
@@ -69,7 +75,7 @@ public class StudyCommandService {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
     }
 
-    public Study toStudyWithoutCurriculum( StudyCreateRequest request, Long teamId) {
+    public Study toStudyWithoutCurriculum(StudyCreateRequest request, Long teamId) {
         return Study.builder()
                 .name(request.name())
                 .description(request.description())
@@ -84,7 +90,7 @@ public class StudyCommandService {
 
     public List<CurriculumItem> toCurriculumList(StudyCreateRequest request, Study study) {
         return request.curriculumItems().stream()
-                .map(curriculumItemsRequest -> extractCurriculumItemFromStudy(curriculumItemsRequest,study))
+                .map(curriculumItemsRequest -> extractCurriculumItemFromStudy(curriculumItemsRequest, study))
                 .toList();
     }
 

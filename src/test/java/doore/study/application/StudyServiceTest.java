@@ -3,9 +3,7 @@ package doore.study.application;
 import static doore.study.StudyFixture.algorithm_study;
 import static doore.study.StudyFixture.studyUpdateRequest;
 import static doore.study.domain.StudyStatus.ENDED;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.study.exception.StudyExceptionType.ALREADY_TERMINATED_STUDY;
+import static doore.study.exception.StudyExceptionType.*;
 import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -92,9 +90,24 @@ public class StudyServiceTest extends IntegrationTest {
             studyCommandService.createStudy(studyCreateRequest, team.getId());
             List<Study> studies = studyRepository.findAll();
             Study study = studies.get(0);
-            assertEquals(Collections.emptyList(),study.getCurriculumItems());
+            assertEquals(Collections.emptyList(), study.getCurriculumItems());
         }
 
+        @Test
+        @DisplayName("스터디 종료일이 스터디 시작일보다 앞설 수 없다.")
+        void 스터디_종료일이_스터디_시작일보다_앞설_수_없다_실패() throws Exception {
+            StudyCreateRequest wrongRequest = StudyCreateRequest.builder()
+                    .name("스터디")
+                    .description("스터디입니다.")
+                    .startDate(LocalDate.parse("2020-02-02"))
+                    .endDate(LocalDate.parse("2000-02-02"))
+                    .cropId(1L)
+                    .curriculumItems(null)
+                    .build();
+            assertThatThrownBy(() -> studyCommandService.createStudy(wrongRequest, team.getId()))
+                    .isInstanceOf(StudyException.class)
+                    .hasMessage(INVALID_ENDDATE.errorMessage());
+        }
     }
 
     @Test
@@ -187,7 +200,7 @@ public class StudyServiceTest extends IntegrationTest {
         void 존재하지_않는_상태로_변경할_수_없다_실패() throws Exception {
             final Study study = algorithm_study();
             studyRepository.save(study);
-            assertThatThrownBy(() -> studyCommandService.changeStudyStatus("NOT_EXISTING_STATUS",study.getId()))
+            assertThatThrownBy(() -> studyCommandService.changeStudyStatus("NOT_EXISTING_STATUS", study.getId()))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STATUS.errorMessage());
         }
