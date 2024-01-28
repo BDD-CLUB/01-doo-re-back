@@ -4,7 +4,7 @@ import doore.base.BaseException;
 import doore.base.BaseExceptionType;
 
 public class StudyException extends BaseException {
-    StudyExceptionType exceptionType;
+    private final StudyExceptionType exceptionType;
 
     public StudyException(final StudyExceptionType exceptionType) {
         super(exceptionType.errorMessage());
