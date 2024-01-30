@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import doore.helper.IntegrationTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.domain.Study;
+import doore.study.domain.StudyRepository;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.time.LocalDate;

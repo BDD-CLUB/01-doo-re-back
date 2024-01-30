@@ -8,8 +8,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
+import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
+import doore.study.domain.StudyRepository;
 import doore.study.domain.StudyStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .startDate(LocalDate.parse("2023-01-01"))
                 .endDate(LocalDate.parse("2024-01-01"))
                 .cropId(1L)
-                .curriculumItems(new ArrayList<CurriculumItemsRequest>())
+                .curriculumItems(new ArrayList<CurriculumItemRequest>())
                 .build();
         callPostApi("/teams/1/studies", request)
                 .andExpect(status().isCreated())
