@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CurriculumItem extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,4 +36,15 @@ public class CurriculumItem extends BaseEntity {
     @JoinColumn(name = "study_id", nullable = false)
     private Study study;
 
+    @Builder
+    private CurriculumItem(String name, Integer itemOrder, Boolean isDeleted, Study study) {
+        this.name = name;
+        this.itemOrder = itemOrder;
+        this.isDeleted = isDeleted;
+        this.study = study;
+    }
+
+    public void saveStudy(Study study) {
+        this.study = study;
+    }
 }
