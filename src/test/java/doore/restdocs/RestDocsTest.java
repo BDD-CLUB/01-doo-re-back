@@ -2,12 +2,16 @@ package doore.restdocs;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import doore.login.application.LoginService;
+import doore.member.application.MemberCommandService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -25,6 +29,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class RestDocsTest {
 
+    @MockBean
+    protected LoginService loginService;
+
+    @MockBean
+    protected MemberCommandService memberCommandService;
+
     @Autowired
     protected RestDocumentationResultHandler restDocs;
 
@@ -40,7 +50,9 @@ public abstract class RestDocsTest {
             final RestDocumentationContextProvider restDocumentation
     ) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))
+                .apply(documentationConfiguration(restDocumentation).operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())
+                        .withResponseDefaults(prettyPrint()))
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }

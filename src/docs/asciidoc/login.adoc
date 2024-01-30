@@ -1,0 +1,29 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= LOGIN API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `POST`: 구글 소셜 로그인
+
+.HTTP Request
+include::{snippets}/login-google/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/login-google/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/login-google/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/login-google/response-fields.adoc[]
