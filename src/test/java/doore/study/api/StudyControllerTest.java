@@ -61,7 +61,8 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 삭제한다.")
     void 정상적으로_스터디를_삭제한다_성공() throws Exception {
-        final Study study = mock(Study.class);
+        final Study study = algorithmStudy();
+        studyRepository.save(study);
         String url = "/studies/" + study.getId();
         callDeleteApi(url).andExpect(status().isNoContent());
     }
@@ -81,7 +82,7 @@ public class StudyControllerTest extends IntegrationTest {
     void 정상적으로_스터디를_수정한다_성공() throws Exception {
         final Study study = algorithmStudy();
         studyRepository.save(study);
-        study.update("스프링 스터디",study.getDescription(),study.getStartDate(),study.getEndDate(),study.getStatus());
+        study.update("스프링 스터디", study.getDescription(), study.getStartDate(), study.getEndDate(), study.getStatus());
         String url = "/studies/" + study.getId();
         callPutApi(url, study).andExpect(status().isOk());
     }

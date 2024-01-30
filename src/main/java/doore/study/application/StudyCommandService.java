@@ -45,21 +45,22 @@ public class StudyCommandService {
     }
 
     public void deleteStudy(Long studyId) {
+        checkExistStudy(studyId);
         studyRepository.deleteById(studyId);
     }
 
     public void updateStudy(StudyUpdateRequest request, Long studyId) {
-        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        Study study = checkExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
     public void terminateStudy(Long studyId) {
-        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        Study study = checkExistStudy(studyId);
         study.terminate();
     }
 
     public void changeStudyStatus(String status, Long studyId) {
-        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        Study study = checkExistStudy(studyId);
         try {
             StudyStatus changedStatus = StudyStatus.valueOf(status);
             study.changeStatus(changedStatus);
@@ -70,6 +71,10 @@ public class StudyCommandService {
 
     private void checkExistTeam(Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
+    }
+
+    public Study checkExistStudy(Long studyId) {
+        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
     public Study toStudyWithoutCurriculum(StudyCreateRequest request, Long teamId) {
