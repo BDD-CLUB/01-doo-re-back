@@ -40,9 +40,9 @@ public class JwtTokenGenerator {
                     .getBody()
                     .get("memberId")
                     .toString();
-        } catch (final ExpiredJwtException error) {
+        } catch (final ExpiredJwtException exception) {
             throw new LoginException(LoginExceptionType.EXPIRED_ACCESS_TOKEN);
-        } catch (final Exception error) {
+        } catch (final Exception exception) {
             throw new LoginException(LoginExceptionType.INVALID_ACCESS_TOKEN);
         }
     }
