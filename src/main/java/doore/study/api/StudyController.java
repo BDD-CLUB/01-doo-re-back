@@ -41,28 +41,24 @@ public class StudyController {
     }
 
     @GetMapping("/studies/{studyId}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StudyDetailResponse> getStudy(@PathVariable Long studyId) {
         StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest, @PathVariable Long studyId) {
         studyCommandService.updateStudy(studyUpdateRequest, studyId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/studies/{studyId}/status")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> changeStudyStatus(@RequestParam String status, @PathVariable Long studyId) {
         studyCommandService.changeStudyStatus(status, studyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/studies/{studyId}/termination")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId) {
         studyCommandService.terminateStudy(studyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
