@@ -30,7 +30,7 @@ class LoginServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 이미 회원가입된 사용자가 구글 로그인 요청 시 로그인 토큰 정보를 반환한다")
-    void 이미_회원가입된_사용자가_구글_로그인_요청_시_로그인_토큰_정보를_반환한다_성공() {
+    void loginByGoogle_이미_회원가입된_사용자가_구글_로그인_요청_시_로그인_토큰_정보를_반환한다_성공() {
         //given
         final Long expectedMemberId = member.getId();
         final String validCode = "valid_code";
@@ -51,7 +51,7 @@ class LoginServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 새로운 회원이 구글 로그인 요청 시 회원 정보를 등록하고 로그인 토큰 정보를 반환한다")
-    void 새로운_회원이_구글_로그인_요청_시_회원_정보를_등록하고_로그인_토큰_정보를_반환한다_성공() {
+    void loginByGoogle_새로운_회원이_구글_로그인_요청_시_회원_정보를_등록하고_로그인_토큰_정보를_반환한다_성공() {
         //given
         final Long beforeCount = memberRepository.count();
         final String code = "valid_code";

@@ -18,7 +18,7 @@ class TokenGeneratorTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 회원의 아이디를 입력하면 토큰을 생성할 수 있다")
-    void 회원의_아이디를_입력하면_토큰을_생성할_수_있다() {
+    void generateToken_회원의_아이디를_입력하면_토큰을_생성할_수_있다_성공() {
         //given
         final String extractedMemberId = "1";
 
@@ -32,7 +32,7 @@ class TokenGeneratorTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 유효하지 않은 토큰을 입력하면 예외가 발생한다")
-    void 유효하지_않은_토큰을_입력하면_예외가_발생한다_실패() {
+    void extractMemberId_유효하지_않은_토큰을_입력하면_예외가_발생한다_실패() {
         //given
         final String invalidToken = "invalid_token";
 

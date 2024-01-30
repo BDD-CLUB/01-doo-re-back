@@ -28,7 +28,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 이미 등록된 회원이 있다면 해당 회원을 반환한다")
-    void 이미_등록된_회원이_있다면_해당_회원을_반환한다_성공() {
+    void findOrCreateMemberBy_이미_등록된_회원이_있다면_해당_회원을_반환한다_성공() {
         //given
         final long beforeCount = memberRepository.count();
         final GoogleAccountProfileResponse profile = new GoogleAccountProfileResponse(member.getGoogleId(),
@@ -48,7 +48,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 등록된 회원이 없다면 회원을 새로 추가하고 반환한다")
-    void 등록된_회원이_없다면_회원을_새로_추가하고_반환한다_성공() {
+    void findOrCreateMemberBy_등록된_회원이_없다면_회원을_새로_추가하고_반환한다_성공() {
         //given
         final Long beforeCount = memberRepository.count();
         final String newMemberGoogleId = "4321";
