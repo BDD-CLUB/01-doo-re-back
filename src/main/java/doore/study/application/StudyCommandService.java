@@ -44,6 +44,32 @@ public class StudyCommandService {
         }
     }
 
+    public Study toStudyWithoutCurriculum(StudyCreateRequest request, Long teamId) {
+        return Study.builder()
+                .name(request.name())
+                .description(request.description())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .status(UPCOMING)
+                .isDeleted(false)
+                .teamId(teamId)
+                .cropId(request.cropId())
+                .build();
+    }
+
+    public List<CurriculumItem> toCurriculumList(StudyCreateRequest request, Study study) {
+        return request.curriculumItems().stream()
+                .map(curriculumItemsRequest -> extractCurriculumItemFromStudy(curriculumItemsRequest, study))
+                .toList();
+    }
+
+    public CurriculumItem extractCurriculumItemFromStudy(CurriculumItemsRequest request, Study study) {
+        return CurriculumItem.builder()
+                .name(request.name())
+                .study(study)
+                .build();
+    }
+
     public void deleteStudy(Long studyId) {
         checkExistStudy(studyId);
         studyRepository.deleteById(studyId);
@@ -75,31 +101,5 @@ public class StudyCommandService {
 
     public Study checkExistStudy(Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-    }
-
-    public Study toStudyWithoutCurriculum(StudyCreateRequest request, Long teamId) {
-        return Study.builder()
-                .name(request.name())
-                .description(request.description())
-                .startDate(request.startDate())
-                .endDate(request.endDate())
-                .status(UPCOMING)
-                .isDeleted(false)
-                .teamId(teamId)
-                .cropId(request.cropId())
-                .build();
-    }
-
-    public List<CurriculumItem> toCurriculumList(StudyCreateRequest request, Study study) {
-        return request.curriculumItems().stream()
-                .map(curriculumItemsRequest -> extractCurriculumItemFromStudy(curriculumItemsRequest, study))
-                .toList();
-    }
-
-    public CurriculumItem extractCurriculumItemFromStudy(CurriculumItemsRequest request, Study study) {
-        return CurriculumItem.builder()
-                .name(request.name())
-                .study(study)
-                .build();
     }
 }
