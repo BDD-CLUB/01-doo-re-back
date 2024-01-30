@@ -77,6 +77,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     // login
     implementation 'io.jsonwebtoken:jjwt:0.9.1'

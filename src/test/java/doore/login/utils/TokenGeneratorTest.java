@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import doore.helper.IntegrationTest;
 import doore.login.exception.LoginException;
 import doore.login.exception.LoginExceptionType;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Slf4j
 class TokenGeneratorTest extends IntegrationTest {
 
     @Autowired
@@ -28,6 +30,7 @@ class TokenGeneratorTest extends IntegrationTest {
 
         //then
         assertThat(actualMemberId).isEqualTo(extractedMemberId);
+        log.info("Access Token : {}", token);
     }
 
     @Test
