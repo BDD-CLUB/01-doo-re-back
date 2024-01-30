@@ -39,7 +39,7 @@ public class CurriculumItem extends BaseEntity {
     private Study study;
 
     @Builder
-    public CurriculumItem(String name, Integer itemOrder, Boolean isDeleted, Study study) {
+    private CurriculumItem(String name, Integer itemOrder, Boolean isDeleted, Study study) {
         this.name = name;
         this.itemOrder = itemOrder;
         this.isDeleted = isDeleted;
@@ -54,4 +54,7 @@ public class CurriculumItem extends BaseEntity {
         this.itemOrder = itemOrder;
     }
 
+    public void saveStudy(Study study) {
+        this.study = study;
+    }
 }

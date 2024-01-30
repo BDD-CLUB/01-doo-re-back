@@ -1,0 +1,75 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= STUDY API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `POST`: Study 생성
+
+.HTTP Request
+include::{snippets}/study-create/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/study-create/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/study-create/http-response.adoc[]
+
+== `GET`: Study 조회
+
+.HTTP Request
+include::{snippets}/study-get/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/study-get/http-response.adoc[]
+
+.Response Body
+include::{snippets}/study-get/response-body.adoc[]
+
+== `DELETE`: Study 삭제
+
+.HTTP Request
+include::{snippets}/study-delete/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/study-delete/http-response.adoc[]
+//todo: 문제 해결
+
+== `PATCH`: Study 수정
+
+.HTTP Request
+include::{snippets}/study-update/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/study-update/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/study-update/http-response.adoc[]
+
+
+== `PATCH`: Study 종료
+
+.HTTP Request
+include::{snippets}/study-terminate/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/study-terminate/http-response.adoc[]
+
+
+== `PATCH`: Study 상태 수정
+
+.HTTP Request
+include::{snippets}/study-change-status/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/study-change-status/http-response.adoc[]

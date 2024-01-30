@@ -22,3 +22,5 @@ include::{snippets}/team-create/request-fields.adoc[]
 
 .HTTP Response
 include::{snippets}/team-create/http-response.adoc[]
+
+link:./login.html[Login API]

@@ -43,14 +43,12 @@ jobs:
             ~/db-docker-image/doo-re-db.tar \
             $ECR_REGISTRY/doo-re-dev:${{ secrets.DOORE_DB_TAG }}
 
-        # 메인 브랜치 완성 후 수정 예정
       - name: Create Docker Env File
         # working-directory: ./docker 
         run: |
           echo '${{ secrets.DOCKER_ENV }}' >> .env
           echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> .env
 
-        # develop 브랜치에 docker/docker-compose 파일 생성 후 삭제 예정
       - name: Create Docker Compose File
         run: |
           echo '${{ secrets.DOCKER_COMPOSE }}' >> docker-compose.yml
@@ -66,10 +64,14 @@ jobs:
       - name: Start Containers
         run: docker-compose -p doo-re up -d
 
-      - name: Build & Test
-        run: |
-          ./gradlew build --daemon --build-cache && ./gradlew build --daemon --build-cache
-          java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
+      - name: Gradle Build & Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: build
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' }}
+
+      - run: java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
 
       - name: Compress
         run: |
