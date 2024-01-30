@@ -57,19 +57,6 @@ public class Study extends BaseEntity {
     private final List<CurriculumItem> curriculumItems = new ArrayList<>();
 
 
-    public void createCurriculumItems(List<CurriculumItem> newCurriculumItems) {
-        newCurriculumItems.forEach(newCurriculumItem -> newCurriculumItem.saveStudy(this));
-        curriculumItems.addAll(newCurriculumItems);
-    }
-
-    public void update(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status) {
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
-    }
-
     @Builder
     private Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,
                  Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
@@ -84,6 +71,19 @@ public class Study extends BaseEntity {
         if (curriculumItems != null) {
             this.curriculumItems.addAll(curriculumItems);
         }
+    }
+
+    public void createCurriculumItems(List<CurriculumItem> newCurriculumItems) {
+        newCurriculumItems.forEach(newCurriculumItem -> newCurriculumItem.saveStudy(this));
+        curriculumItems.addAll(newCurriculumItems);
+    }
+
+    public void update(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status) {
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
     }
 
     public void terminate() {
