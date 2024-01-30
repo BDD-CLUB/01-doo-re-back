@@ -8,11 +8,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
-import doore.study.application.dto.request.CurriculumItemsRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
-import doore.study.domain.repository.StudyRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

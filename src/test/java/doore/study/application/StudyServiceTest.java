@@ -15,7 +15,6 @@ import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
-import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;

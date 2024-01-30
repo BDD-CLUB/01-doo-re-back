@@ -1,8 +1,5 @@
 package doore.study;
 
-import doore.study.application.dto.request.CurriculumItemsRequest;
-import doore.study.application.dto.request.StudyCreateRequest;
-import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
