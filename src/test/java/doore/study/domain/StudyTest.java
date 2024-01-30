@@ -15,19 +15,19 @@ public class StudyTest {
     @DisplayName("커리큘럼을 생성할 수 있다.")
     public void 커리큘럼을_생성할_수_있다_성공() {
         final Study study = algorithmStudy();
-        CurriculumItem curriculumItem1 = CurriculumItem.builder()
+        CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name("커리큘럼 1단계")
                 .itemOrder(1)
                 .isDeleted(false)
                 .study(study)
                 .build();
-        CurriculumItem curriculumItem2 = CurriculumItem.builder()
+        CurriculumItem otherCurriculumItem = CurriculumItem.builder()
                 .name("커리큘럼 2단계")
                 .itemOrder(2)
                 .isDeleted(false)
                 .study(study)
                 .build();
-        List<CurriculumItem> curriculumItems = List.of(curriculumItem1, curriculumItem2);
+        List<CurriculumItem> curriculumItems = List.of(curriculumItem, otherCurriculumItem);
 
         study.createCurriculumItems(curriculumItems);
         assertEquals(curriculumItems, study.getCurriculumItems());
