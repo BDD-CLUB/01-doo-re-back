@@ -94,8 +94,6 @@ public class StudyCommandService {
     public CurriculumItem extractCurriculumItemFromStudy(CurriculumItemsRequest request, Study study) {
         return CurriculumItem.builder()
                 .name(request.name())
-                .itemOrder(request.itemOrder())
-                .isDeleted(request.isDeleted())
                 .study(study)
                 .build();
     }
