@@ -3,6 +3,7 @@ package doore.login.utils;
 import doore.login.exception.LoginException;
 import doore.login.exception.LoginExceptionType;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class JwtTokenGenerator {
                     .getBody()
                     .get("memberId")
                     .toString();
+        } catch (final ExpiredJwtException error) {
+            throw new LoginException(LoginExceptionType.EXPIRED_ACCESS_TOKEN);
         } catch (final Exception error) {
             throw new LoginException(LoginExceptionType.INVALID_ACCESS_TOKEN);
         }
