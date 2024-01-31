@@ -38,8 +38,8 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 커리큘럼을 삭제할 수 없다. [실패]")
-    public void 존재하지_않는_커리큘럼을_삭제할_수_없다_실패() throws Exception {
+    @DisplayName("[실패] 존재하지 않는 커리큘럼을 삭제할 수 없다.")
+    public void deleteCurriculum_존재하지_않는_커리큘럼을_삭제할_수_없다_실패() throws Exception {
         Long invalidCurriculumItemId = 5L;
         assertThatThrownBy(() -> {
             curriculumItemCommandService.deleteCurriculum(invalidCurriculumItemId, study.getId());
@@ -47,8 +47,8 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 커리큘럼을 수정할 수 없다. [실패]")
-    public void 존재하지_않는_커리큘럼을_수정할_수_없다_실패() throws Exception {
+    @DisplayName("[실패] 존재하지 않는 커리큘럼을 수정할 수 없다.")
+    public void updateCurriculum_존재하지_않는_커리큘럼을_수정할_수_없다_실패() throws Exception {
         Long invalidCurriculumItemId = 5L;
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("스프링 MVC 이해").build();
 
@@ -58,8 +58,8 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("커리큘럼을 삭제하면 아이템순서가 수정된다. [성공]")
-    public void 커리큘럼을_삭제하면_아이템순서가_수정된다() throws Exception {
+    @DisplayName("[성공] 커리큘럼을 삭제하면 아이템순서가 수정된다.")
+    public void deleteCurriculum_커리큘럼을_삭제하면_아이템순서가_수정된다() throws Exception {
         curriculumItemRepository.deleteAll();
         List<String> curriculumNames = Arrays.asList("스프링 MVC 이해1", "스프링 MVC 이해2", "스프링 MVC 이해3");
         curriculumNames.forEach(name -> curriculumItemCommandService.createCurriculum(
@@ -74,8 +74,8 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다. [실패]")
-    public void 존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
+    @DisplayName("[실패] 존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다.")
+    public void completeCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
         Long invalidCurriculumItemId = 5L;
 
         assertThatThrownBy(() -> {

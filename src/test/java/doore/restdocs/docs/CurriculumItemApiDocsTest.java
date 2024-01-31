@@ -32,8 +32,8 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     protected CurriculumItemRepository curriculumItemRepository;
 
     @Test
-    @DisplayName("커리큘럼이 정상 등록된다. [성공]")
-    public void 커리큘림이_정상_등록된다_성공() throws Exception {
+    @DisplayName("[성공] 커리큘럼이 정상 등록된다.")
+    public void createCurriculum_커리큘림이_정상_등록된다_성공() throws Exception {
         Long validStudyId = 1L;
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("Spring Study").build();
         doNothing().when(curriculumItemCommandService)
@@ -50,8 +50,8 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("커리큘럼이 정상 삭제된다. [성공]")
-    public void 커리큘럼이_정상_삭제된다_성공() throws Exception {
+    @DisplayName("[성공] 커리큘럼이 정상 삭제된다.")
+    public void deleteCurriculum_커리큘럼이_정상_삭제된다_성공() throws Exception {
         Long validStudyId = 1L;
         Long validCurriculumItemId = 1L;
         doNothing().when(curriculumItemCommandService).deleteCurriculum(eq(validStudyId), eq(validCurriculumItemId));
@@ -63,8 +63,8 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("커리큘럼이 정상 수정된다. [성공]")
-    public void 커리큘럼이_정상_수정된다_성공() throws Exception {
+    @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
+    public void updateCurriculum_커리큘럼이_정상_수정된다_성공() throws Exception {
         Long validStudyId = 1L;
         Long validCurriculumId = 1L;
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("Change Spring Study").build();

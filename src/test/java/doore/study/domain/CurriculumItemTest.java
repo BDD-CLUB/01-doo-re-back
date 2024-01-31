@@ -9,8 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CurriculumItemTest {
 
     @Test
-    @DisplayName("커리큘럼이 정상 수정된다. [성공]")
-    public void 커리큘럼이_정상_수정된다_성공() {
+    @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
+    public void update_커리큘럼이_정상_수정된다_성공() {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
 
         String changeName = "변경된 Spring 스터디";
@@ -20,8 +20,8 @@ public class CurriculumItemTest {
     }
 
     @Test
-    @DisplayName("커리큘럼이 완료 상태로 변경된다. [성공]")
-    public void 커리큘럼이_완료_상태로_변경된다_성공() {
+    @DisplayName("[성공] 커리큘럼이 완료 상태로 변경된다.")
+    public void complete_커리큘럼이_완료_상태로_변경된다_성공() {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
                 .isChecked(false).isDeleted(false).participantId(1L).curriculumItem(curriculumItem).build();
@@ -32,8 +32,8 @@ public class CurriculumItemTest {
     }
 
     @Test
-    @DisplayName("커리큘럼이 미완료 상태로 변경된다. [성공]")
-    public void 커리큘럼이_미완료_상태로_변경된다_성공() {
+    @DisplayName("[성공] 커리큘럼이 미완료 상태로 변경된다.")
+    public void incomplete_커리큘럼이_미완료_상태로_변경된다_성공() {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
                 .isChecked(true).isDeleted(false).participantId(1L).curriculumItem(curriculumItem).build();

@@ -38,16 +38,24 @@ public class CurriculumItemControllerTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("커리큘림이 정상 등록된다. [성공]")
-    public void 커리큘림이_정상_등록된다_성공() throws Exception {
+    @DisplayName("[성공] 커리큘림이 정상 등록된다.")
+    public void createCurriculum_커리큘림이_정상_등록된다_성공() throws Exception {
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("Spring MVC").build();
         String url = "/studies/" + study.getId() + "/curriculums";
         callPostApi(url, request).andExpect(status().isCreated());
     }
 
     @Test
-    @DisplayName("커리큘럼이 정상 삭제된다. [성공]")
-    public void 커리큘럼이_정상_삭제된다_성공() throws Exception {
+    @DisplayName("[실패] 필수 정보를 입력하지 않았다면 커리큘럼 등록은 실패한다.")
+    public void createCurriculum_필수_정보를_입력하지_않았다면_커리큘럼_등록은_실패한다_실패() throws Exception {
+        CurriculumItemRequest request = CurriculumItemRequest.builder().name(null).build();
+        String url = "/studies/" + study.getId() + "/curriculums";
+        callPostApi(url, request).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("[성공] 커리큘럼이 정상 삭제된다.")
+    public void deleteCurriculum_커리큘럼이_정상_삭제된다_성공() throws Exception {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         curriculumItemRepository.save(curriculumItem);
         String url = "/studies/" + study.getId() + "/curriculums/" + curriculumItem.getId();
@@ -55,16 +63,8 @@ public class CurriculumItemControllerTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("필수 정보를 입력하지 않았다면 커리큘럼 등록은 실패한다. [실패]")
-    public void 필수_정보를_입력하지_않았다면_커리큘럼_등록과_수정은_실패한다_실패() throws Exception {
-        CurriculumItemRequest request = CurriculumItemRequest.builder().name(null).build();
-        String url = "/studies/" + study.getId() + "/curriculums";
-        callPostApi(url, request).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("커리큘럼이 정상 수정된다. [성공]")
-    public void 커리큘럼이_정상_수정된다_성공() throws Exception {
+    @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
+    public void updateCurriculum_커리큘럼이_정상_수정된다_성공() throws Exception {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         curriculumItemRepository.save(curriculumItem);
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("Change Spring MVC").build();
