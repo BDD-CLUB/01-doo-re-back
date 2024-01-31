@@ -1,5 +1,7 @@
 package doore.study.domain;
 
+import static jakarta.persistence.CascadeType.REMOVE;
+
 import doore.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
@@ -38,12 +43,17 @@ public class CurriculumItem extends BaseEntity {
     @JoinColumn(name = "study_id", nullable = false)
     private Study study;
 
+    @OneToMany(mappedBy = "curriculumItem", cascade = REMOVE)
+    private List<ParticipantCurriculumItem> participantCurriculumItems = new ArrayList<>();
+
     @Builder
-    private CurriculumItem(String name, Integer itemOrder, Boolean isDeleted, Study study) {
+    public CurriculumItem(String name, Integer itemOrder, Boolean isDeleted, Study study,
+                          List<ParticipantCurriculumItem> participantCurriculumItems) {
         this.name = name;
         this.itemOrder = itemOrder;
         this.isDeleted = isDeleted;
         this.study = study;
+        this.participantCurriculumItems = participantCurriculumItems;
     }
 
     public void update(String title) {

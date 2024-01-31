@@ -24,7 +24,7 @@ public class CurriculumItemController {
     private final CurriculumItemCommandService curriculumItemCommandService;
 
     @PostMapping
-    public ResponseEntity<Void> createCurriculum(@PathVariable("studyId") Long studyId, // 임시
+    public ResponseEntity<Void> createCurriculum(@PathVariable Long studyId,
                                                  @Valid @RequestBody CurriculumItemRequest request) {
         curriculumItemCommandService.createCurriculum(request, studyId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -40,20 +40,19 @@ public class CurriculumItemController {
     public ResponseEntity<Void> updateCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId,
                                                  @Valid @RequestBody CurriculumItemRequest request) {
         curriculumItemCommandService.updateCurriculum(curriculumsId, studyId, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{curriculumsId}/complete")
+    @PatchMapping("/{curriculumsId}/completion")
     public ResponseEntity<Void> completeCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId) {
         curriculumItemCommandService.completeCurriculum(curriculumsId, studyId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{curriculumsId}/incomplete")
+    @PatchMapping("{curriculumsId}/incompletion")
     public ResponseEntity<Void> incompleteCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId) {
         curriculumItemCommandService.incompleteCurriculum(curriculumsId, studyId);
         return ResponseEntity.noContent().build();
     }
-
 
 }
