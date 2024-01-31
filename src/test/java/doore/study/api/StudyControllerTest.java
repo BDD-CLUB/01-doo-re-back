@@ -1,17 +1,22 @@
 package doore.study.api;
 
+import static doore.member.MemberFixture.회원;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.team.TeamFixture.team;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.mock;
 
-import doore.helper.IntegrationTest;
 import doore.study.application.dto.request.StudyCreateRequest;
-import doore.study.domain.Study;
+import doore.member.domain.Member;
+import doore.member.domain.repository.MemberRepository;
 import doore.study.domain.repository.StudyRepository;
-import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
+import doore.study.domain.Study;
+import doore.team.domain.Team;
+import doore.helper.IntegrationTest;
 import java.time.LocalDate;
+import org.springframework.mock.web.MockHttpSession;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,10 +29,23 @@ public class StudyControllerTest extends IntegrationTest {
     private StudyRepository studyRepository;
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    Member member;
+    Study study = mock(Study.class);
+
+    @BeforeEach
+    void setUp() {
+        member = 회원();
+        study = algorithmStudy();
+        memberRepository.save(member);
+        studyRepository.save(study);
+    }
 
     @Nested
     @DisplayName("스터디 생성 테스트")
     class StudyCreateTest {
+
         @Test
         @DisplayName("정상적으로 스터디를 생성한다.")
         void 정상적으로_스터디를_생성한다_성공() throws Exception {
@@ -55,6 +73,7 @@ public class StudyControllerTest extends IntegrationTest {
 
             callPostApi("/teams/1/studies", request).andExpect(status().isBadRequest());
         }
+
     }
 
 
@@ -105,4 +124,32 @@ public class StudyControllerTest extends IntegrationTest {
         callPatchApi(url, study).andExpect(status().isNoContent());
     }
 
+    @Test
+    @DisplayName("[성공] 정상적으로 참여자를 추가할 수 있다.")
+    void saveParticipant_정상적으로_참여자를_추가할_수_있다_성공() throws Exception {
+        String url = "/studies/" + study.getId() + "/members/" + member.getId();
+        callPostApi(url).andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("[성공] 정상적으로 참여자를 삭제할 수 있다.")
+    void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() throws Exception {
+        String url = "/studies/" + study.getId() + "/members/" + member.getId();
+        callDeleteApi(url).andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("[성공] 정상적으로 참여자가 탈퇴할 수 있다.")
+    void withdrawParticipant_정상적으로_참여자가_탈퇴할_수_있다_성공() throws Exception {
+        String url = "/studies/" + study.getId() + "/members";
+        MockHttpSession session = new MockHttpSession();
+        callDeleteApi(url, session).andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("[성공] 정상적으로 참여자를 조회할 수 있다.")
+    void getParticipant_정상적으로_참여자를_조회할_수_있다_성공() throws Exception {
+        String url = "/studies/" + study.getId() + "/members";
+        callGetApi(url).andExpect(status().isOk());
+    }
 }
