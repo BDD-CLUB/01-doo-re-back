@@ -1,5 +1,6 @@
-package doore.study.domain;
+package doore.study.domain.repository;
 
+import doore.study.domain.CurriculumItem;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

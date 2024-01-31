@@ -11,7 +11,7 @@ import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
-import doore.study.domain.StudyRepository;
+import doore.study.domain.repository.StudyRepository;
 import doore.study.domain.StudyStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
