@@ -1,11 +1,14 @@
 package doore.study.api;
 
+import doore.member.domain.Participant;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.StudyDetailResponse;
 import doore.study.application.dto.request.StudyCreateRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
@@ -62,5 +64,29 @@ public class StudyController {
     public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId) {
         studyCommandService.terminateStudy(studyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/studies/{studyId}/members/{memberId}")
+    public ResponseEntity<Void> saveParticipant(@PathVariable Long studyId, @PathVariable Long memberId) {
+        studyCommandService.saveParticipant(studyId, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/studies/{studyId}/members/{memberId}")
+    public ResponseEntity<Void> deleteParticipant(@PathVariable Long studyId, @PathVariable Long memberId) {
+        studyCommandService.deleteParticipant(studyId, memberId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/studies/{studyId}/members")
+    public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, HttpSession session) {
+        studyCommandService.withdrawParticipant(studyId, session);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/studies/{studyId}/members")
+    public ResponseEntity<List<Participant>> getParticipant(@PathVariable Long studyId) {
+        List<Participant> participants = studyQueryService.findAllParticipants(studyId);
+        return ResponseEntity.ok(participants);
     }
 }

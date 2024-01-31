@@ -1,8 +1,10 @@
 package doore.study.application;
 
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.*;
 
+import doore.member.exception.MemberException;
 import doore.study.application.dto.request.CurriculumItemsRequest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -11,13 +13,17 @@ import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.StudyException;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.team.domain.TeamRepository;
+import doore.member.domain.Member;
+import doore.member.domain.Participant;
+import doore.study.exception.StudyException;
 import doore.team.exception.TeamException;
 import doore.team.exception.TeamExceptionType;
 import java.time.LocalDate;
 import java.util.List;
-
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +35,8 @@ public class StudyCommandService {
     private final StudyRepository studyRepository;
     private final TeamRepository teamRepository;
     private final CurriculumItemRepository curriculumItemRepository;
+    private final ParticipantRepository participantRepository;
+    private final MemberRepository memberRepository;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
         checkExistTeam(teamId);
@@ -95,11 +103,39 @@ public class StudyCommandService {
         }
     }
 
+    public void saveParticipant(Long studyId, Long memberId) {
+        checkExistStudy(studyId);
+        Member member = checkExistMember(memberId);
+        Participant participant = Participant.builder()
+                .isCompleted(false)
+                .isDeleted(false)
+                .studyId(studyId)
+                .member(member)
+                .build();
+        participantRepository.save(participant);
+    }
+
+    public void deleteParticipant(Long studyId, Long memberId) {
+        checkExistStudy(studyId);
+        Member member = checkExistMember(memberId);
+        participantRepository.deleteByStudyIdAndMember(studyId, member);
+    }
+
+    public void withdrawParticipant(Long studyId, HttpSession session) {
+        checkExistStudy(studyId);
+        Member member = (Member) session.getAttribute("loginUser");
+        participantRepository.deleteByStudyIdAndMember(studyId, member);
+    }
+
     private void checkExistTeam(Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
     }
 
-    public Study checkExistStudy(Long studyId) {
+    private Study checkExistStudy(Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    }
+
+    private Member checkExistMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }
