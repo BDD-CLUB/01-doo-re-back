@@ -56,7 +56,6 @@ include::{snippets}/study-update/request-fields.adoc[]
 .HTTP Response
 include::{snippets}/study-update/http-response.adoc[]
 
-
 == `PATCH`: Study 종료
 
 .HTTP Request
@@ -65,7 +64,6 @@ include::{snippets}/study-terminate/http-request.adoc[]
 .HTTP Response
 include::{snippets}/study-terminate/http-response.adoc[]
 
-
 == `PATCH`: Study 상태 수정
 
 .HTTP Request
@@ -73,3 +71,35 @@ include::{snippets}/study-change-status/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/study-change-status/http-response.adoc[]
+
+== `POST`: 참여자 추가
+
+.HTTP Request
+include::{snippets}/participant-save/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-save/http-response.adoc[]
+
+== `DELETE`: 참여자 삭제
+
+.HTTP Request
+include::{snippets}/participant-delete/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-delete/http-response.adoc[]
+
+== `DELETE`: 참여자 탈퇴
+
+.HTTP Request
+include::{snippets}/participant-withdraw/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-withdraw/http-response.adoc[]
+
+== `GET`: 참여자 조회
+
+.HTTP Request
+include::{snippets}/participant-get/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-get/http-response.adoc[]
