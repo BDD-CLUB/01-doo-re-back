@@ -15,6 +15,7 @@ import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,10 +32,18 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @MockBean
     protected CurriculumItemRepository curriculumItemRepository;
 
+    private Long validStudyId;
+    private Long validCurriculumItemId;
+
+    @BeforeEach
+    void setUp() {
+        validStudyId = 1L;
+        validCurriculumItemId = 1L;
+    }
+
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 등록된다.")
     public void createCurriculum_커리큘림이_정상_등록된다_성공() throws Exception {
-        Long validStudyId = 1L;
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("Spring Study").build();
         doNothing().when(curriculumItemCommandService)
                 .createCurriculum(any(CurriculumItemRequest.class), eq(validStudyId));
@@ -52,8 +61,6 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 삭제된다.")
     public void deleteCurriculum_커리큘럼이_정상_삭제된다_성공() throws Exception {
-        Long validStudyId = 1L;
-        Long validCurriculumItemId = 1L;
         doNothing().when(curriculumItemCommandService).deleteCurriculum(eq(validStudyId), eq(validCurriculumItemId));
 
         String url = "/studies/" + validStudyId + "/curriculums/" + validCurriculumItemId;
@@ -65,17 +72,15 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
     public void updateCurriculum_커리큘럼이_정상_수정된다_성공() throws Exception {
-        Long validStudyId = 1L;
-        Long validCurriculumId = 1L;
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("Change Spring Study").build();
         doNothing().when(curriculumItemCommandService)
-                .updateCurriculum(eq(validCurriculumId), eq(validStudyId), any(CurriculumItemRequest.class));
+                .updateCurriculum(eq(validCurriculumItemId), eq(validStudyId), any(CurriculumItemRequest.class));
 
         RequestFieldsSnippet requestFields = requestFields(
                 stringFieldWithPath("name", "커리큘럼 이름")
         );
 
-        String url = "/studies/" + validStudyId + "/curriculums/" + validCurriculumId;
+        String url = "/studies/" + validStudyId + "/curriculums/" + validCurriculumItemId;
         callPatchApi(url, request)
                 .andExpect(status().isNoContent())
                 .andDo(document("curriculum-update", requestFields));

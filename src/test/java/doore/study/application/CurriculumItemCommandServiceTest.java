@@ -30,17 +30,18 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     protected StudyRepository studyRepository;
 
     private Study study;
+    private Long invalidCurriculumItemId;
 
     @BeforeEach
     void setUp() {
         study = StudyFixture.algorithmStudy();
         studyRepository.save(study);
+        invalidCurriculumItemId = 5L;
     }
 
     @Test
     @DisplayName("[실패] 존재하지 않는 커리큘럼을 삭제할 수 없다.")
     public void deleteCurriculum_존재하지_않는_커리큘럼을_삭제할_수_없다_실패() throws Exception {
-        Long invalidCurriculumItemId = 5L;
         assertThatThrownBy(() -> {
             curriculumItemCommandService.deleteCurriculum(invalidCurriculumItemId, study.getId());
         }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
@@ -49,7 +50,6 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 존재하지 않는 커리큘럼을 수정할 수 없다.")
     public void updateCurriculum_존재하지_않는_커리큘럼을_수정할_수_없다_실패() throws Exception {
-        Long invalidCurriculumItemId = 5L;
         CurriculumItemRequest request = CurriculumItemRequest.builder().name("스프링 MVC 이해").build();
 
         assertThatThrownBy(() -> {
@@ -75,8 +75,6 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다.")
     public void completeCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
-        Long invalidCurriculumItemId = 5L;
-
         assertThatThrownBy(() -> {
             curriculumItemCommandService.completeCurriculum(invalidCurriculumItemId, study.getId());
         }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
