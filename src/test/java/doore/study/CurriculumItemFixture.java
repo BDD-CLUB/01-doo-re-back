@@ -1,23 +1,10 @@
 package doore.study;
 
+import static doore.study.StudyFixture.createStudy;
+
 import doore.study.domain.CurriculumItem;
-import doore.study.domain.Study;
-import doore.study.domain.repository.StudyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CurriculumItemFixture {
-    private static StudyRepository studyRepository;
-
-    @Autowired
-    public CurriculumItemFixture(StudyRepository studyRepository) {
-        CurriculumItemFixture.studyRepository = studyRepository;
-    }
-
-    public static Study createStudy() {
-        return studyRepository.save(StudyFixture.algorithmStudy());
-    }
 
     public static CurriculumItem curriculumItem() {
         return CurriculumItem.builder()
