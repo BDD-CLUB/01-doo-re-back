@@ -4,10 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.Mockito.mock;
 
 import doore.restdocs.RestDocsTest;
 import doore.study.api.CurriculumItemController;
@@ -44,7 +42,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 등록된다.")
     public void createCurriculum_커리큘림이_정상_등록된다_성공() throws Exception {
-        CurriculumItemRequest request = CurriculumItemRequest.builder().name("Spring Study").build();
+        CurriculumItemRequest request = new CurriculumItemRequest("Spring Study");
         doNothing().when(curriculumItemCommandService)
                 .createCurriculum(any(CurriculumItemRequest.class), eq(validStudyId));
 
@@ -72,7 +70,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
     public void updateCurriculum_커리큘럼이_정상_수정된다_성공() throws Exception {
-        CurriculumItemRequest request = CurriculumItemRequest.builder().name("Change Spring Study").build();
+        CurriculumItemRequest request = new CurriculumItemRequest("Change Spring Study");
         doNothing().when(curriculumItemCommandService)
                 .updateCurriculum(eq(validCurriculumItemId), eq(validStudyId), any(CurriculumItemRequest.class));
 

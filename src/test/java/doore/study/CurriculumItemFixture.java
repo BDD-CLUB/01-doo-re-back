@@ -1,5 +1,6 @@
 package doore.study;
 
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
 
 import doore.study.domain.CurriculumItem;
@@ -11,7 +12,6 @@ public class CurriculumItemFixture {
                 .name("Spring MVC 이해")
                 .itemOrder(1)
                 .study(createStudy())
-                .isDeleted(false)
                 .build();
     }
 
@@ -19,8 +19,7 @@ public class CurriculumItemFixture {
         return CurriculumItem.builder()
                 .name("Spring MVC 이해")
                 .itemOrder(1)
-                .study(StudyFixture.algorithmStudy())
-                .isDeleted(true)
+                .study(algorithmStudy())
                 .build();
     }
 }

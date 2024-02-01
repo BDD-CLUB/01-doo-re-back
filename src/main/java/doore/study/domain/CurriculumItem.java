@@ -18,8 +18,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
@@ -47,11 +45,11 @@ public class CurriculumItem extends BaseEntity {
     private List<ParticipantCurriculumItem> participantCurriculumItems = new ArrayList<>();
 
     @Builder
-    public CurriculumItem(String name, Integer itemOrder, Boolean isDeleted, Study study,
-                          List<ParticipantCurriculumItem> participantCurriculumItems) {
+    private CurriculumItem(String name, Integer itemOrder, Study study,
+                           List<ParticipantCurriculumItem> participantCurriculumItems) {
         this.name = name;
         this.itemOrder = itemOrder;
-        this.isDeleted = isDeleted;
+        this.isDeleted = false;
         this.study = study;
         this.participantCurriculumItems = participantCurriculumItems;
     }

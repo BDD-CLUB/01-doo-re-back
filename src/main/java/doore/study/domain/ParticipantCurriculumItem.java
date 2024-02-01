@@ -13,7 +13,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Entity
@@ -38,10 +37,9 @@ public class ParticipantCurriculumItem extends BaseEntity {
     private CurriculumItem curriculumItem;
 
     @Builder
-    public ParticipantCurriculumItem(Boolean isChecked, Boolean isDeleted, Long participantId,
-                                     CurriculumItem curriculumItem) {
-        this.isChecked = isChecked;
-        this.isDeleted = isDeleted;
+    private ParticipantCurriculumItem(Long participantId, CurriculumItem curriculumItem) {
+        this.isChecked = false;
+        this.isDeleted = false;
         this.participantId = participantId;
         this.curriculumItem = curriculumItem;
     }

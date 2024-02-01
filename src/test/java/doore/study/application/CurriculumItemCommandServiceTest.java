@@ -2,19 +2,14 @@ package doore.study.application;
 
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import doore.helper.IntegrationTest;
 import doore.study.StudyFixture;
 import doore.study.application.dto.request.CurriculumItemRequest;
-import doore.study.domain.CurriculumItem;
-import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.Study;
+import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.CurriculumItemException;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +45,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 존재하지 않는 커리큘럼을 수정할 수 없다.")
     public void updateCurriculum_존재하지_않는_커리큘럼을_수정할_수_없다_실패() throws Exception {
-        CurriculumItemRequest request = CurriculumItemRequest.builder().name("스프링 MVC 이해").build();
+        CurriculumItemRequest request = new CurriculumItemRequest("Spring Study");
 
         assertThatThrownBy(() -> {
             curriculumItemCommandService.updateCurriculum(invalidCurriculumItemId, study.getId(), request);

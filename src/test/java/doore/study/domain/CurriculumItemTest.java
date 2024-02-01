@@ -1,12 +1,19 @@
 package doore.study.domain;
 
-import doore.study.CurriculumItemFixture;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
+import doore.study.CurriculumItemFixture;
+import doore.study.domain.repository.CurriculumItemRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class CurriculumItemTest {
+
+    @Autowired
+    protected CurriculumItemRepository curriculumItemRepository;
 
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
@@ -24,7 +31,9 @@ public class CurriculumItemTest {
     public void complete_커리큘럼이_완료_상태로_변경된다_성공() {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
-                .isChecked(false).isDeleted(false).participantId(1L).curriculumItem(curriculumItem).build();
+                .participantId(1L)
+                .curriculumItem(curriculumItem)
+                .build();
 
         participantCurriculumItem.complete();
 
@@ -36,7 +45,9 @@ public class CurriculumItemTest {
     public void incomplete_커리큘럼이_미완료_상태로_변경된다_성공() {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
-                .isChecked(true).isDeleted(false).participantId(1L).curriculumItem(curriculumItem).build();
+                .participantId(1L)
+                .curriculumItem(curriculumItem)
+                .build();
 
         participantCurriculumItem.incomplete();
 

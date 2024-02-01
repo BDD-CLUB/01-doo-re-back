@@ -33,20 +33,17 @@ public class CurriculumItemCommandService {
 
     public void createCurriculum(CurriculumItemRequest request, Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        List<Participant> participants = participantRepository.findByStudyId(studyId);
+        List<Participant> participants = participantRepository.findAllByStudyId(studyId);
 
         CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name(request.name())
                 .itemOrder(index.getAndIncrement())
-                .isDeleted(false)
                 .study(study)
                 .build();
         curriculumItemRepository.save(curriculumItem);
 
         List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
                 .map(participant -> ParticipantCurriculumItem.builder()
-                        .isChecked(false)
-                        .isDeleted(false)
                         .curriculumItem(curriculumItem)
                         .participantId(participant.getId())
                         .build())
