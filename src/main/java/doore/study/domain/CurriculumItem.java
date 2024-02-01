@@ -42,16 +42,14 @@ public class CurriculumItem extends BaseEntity {
     private Study study;
 
     @OneToMany(mappedBy = "curriculumItem", cascade = REMOVE)
-    private List<ParticipantCurriculumItem> participantCurriculumItems = new ArrayList<>();
+    private final List<ParticipantCurriculumItem> participantCurriculumItems = new ArrayList<>();
 
     @Builder
-    private CurriculumItem(String name, Integer itemOrder, Study study,
-                           List<ParticipantCurriculumItem> participantCurriculumItems) {
+    private CurriculumItem(String name, Integer itemOrder, Study study) {
         this.name = name;
         this.itemOrder = itemOrder;
         this.isDeleted = false;
         this.study = study;
-        this.participantCurriculumItems = participantCurriculumItems;
     }
 
     public void update(String title) {
