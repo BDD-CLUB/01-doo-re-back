@@ -71,7 +71,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다.")
     public void completeCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
         assertThatThrownBy(() -> {
-            curriculumItemCommandService.completeCurriculum(invalidCurriculumItemId, study.getId());
+            curriculumItemCommandService.checkCurriculum(invalidCurriculumItemId, study.getId());
         }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
     }
 }

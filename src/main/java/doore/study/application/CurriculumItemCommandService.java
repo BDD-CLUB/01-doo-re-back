@@ -72,21 +72,14 @@ public class CurriculumItemCommandService {
         curriculumItem.update(request.name());
     }
 
-    public void completeCurriculum(Long curriculumId, Long studyId) {
+    public void checkCurriculum(Long curriculumId, Long studyId) {
         studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findById(
                 curriculumItem.getId()).orElseThrow();
-        participantCurriculumItem.complete();
+        if (participantCurriculumItem.getIsChecked().equals(false)) participantCurriculumItem.complete();
+        else participantCurriculumItem.incomplete();
     }
 
-    public void incompleteCurriculum(Long curriculumId, Long studyId) {
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
-                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findById(
-                curriculumItem.getId()).orElseThrow();
-        participantCurriculumItem.incomplete();
-    }
 }
