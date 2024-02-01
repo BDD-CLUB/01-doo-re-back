@@ -7,13 +7,13 @@ import doore.study.domain.repository.CurriculumItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@Component
+@SpringBootTest
 public class CurriculumItemTest {
 
     @Autowired
-    protected CurriculumItemRepository curriculumItemRepository;
+    private CurriculumItemRepository curriculumItemRepository;
 
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
