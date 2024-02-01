@@ -30,9 +30,9 @@ public class CurriculumItemController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{curriculumsId}")
-    public ResponseEntity<Void> deleteCurriculum(@PathVariable Long curriculumsId, @PathVariable Long studyId) {
-        curriculumItemCommandService.deleteCurriculum(curriculumsId, studyId);
+    @DeleteMapping("/{curriculumId}")
+    public ResponseEntity<Void> deleteCurriculum(@PathVariable Long curriculumId, @PathVariable Long studyId) {
+        curriculumItemCommandService.deleteCurriculum(curriculumId, studyId);
         return ResponseEntity.noContent().build();
     }
 
