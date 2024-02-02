@@ -14,10 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        run: |
-          git submodule update --init --recursive --remote
         with:
-          submodules: true
+          submodules: recursive
           token: ${{ secrets.ACTION_SUBMODULE_TOKEN }}
 
 
