@@ -83,7 +83,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' }}
 
       - name: Execute Gradle build
-        run: ./gradlew build -Pprofile=dev
+        run: SPRING_PROFILES_ACTIVE=dev ./gradlew build
 
       - run: java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
 
