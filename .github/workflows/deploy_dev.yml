@@ -76,12 +76,14 @@ jobs:
       - name: Start Containers
         run: docker-compose -p doo-re up -d
 
-      - name: Gradle Build & Test
+      - name: Gradle Cache
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 8.5
-          arguments: build
           cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' }}
+
+      - name: Execute Gradle build
+        run: ./gradlew build -Pprofile=dev
 
       - run: java -Djarmode=layertools -jar build/libs/doore-0.0.1-SNAPSHOT.jar extract
 
