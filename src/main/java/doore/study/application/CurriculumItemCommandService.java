@@ -51,8 +51,7 @@ public class CurriculumItemCommandService {
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
-    public void deleteCurriculum(Long curriculumId, Long studyId) {
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    public void deleteCurriculum(Long curriculumId) {
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
 
@@ -65,15 +64,13 @@ public class CurriculumItemCommandService {
         }
     }
 
-    public void updateCurriculum(Long curriculumId, Long studyId, CurriculumItemRequest request) {
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    public void updateCurriculum(Long curriculumId, CurriculumItemRequest request) {
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         curriculumItem.update(request.name());
     }
 
-    public void checkCurriculum(Long curriculumId, Long studyId) {
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    public void checkCurriculum(Long curriculumId) {
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findById(

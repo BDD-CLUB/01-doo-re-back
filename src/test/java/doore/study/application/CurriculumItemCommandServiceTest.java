@@ -38,7 +38,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 존재하지 않는 커리큘럼을 삭제할 수 없다.")
     public void deleteCurriculum_존재하지_않는_커리큘럼을_삭제할_수_없다_실패() throws Exception {
         assertThatThrownBy(() -> {
-            curriculumItemCommandService.deleteCurriculum(invalidCurriculumItemId, study.getId());
+            curriculumItemCommandService.deleteCurriculum(invalidCurriculumItemId);
         }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
     }
 
@@ -48,7 +48,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         CurriculumItemRequest request = new CurriculumItemRequest("Spring Study");
 
         assertThatThrownBy(() -> {
-            curriculumItemCommandService.updateCurriculum(invalidCurriculumItemId, study.getId(), request);
+            curriculumItemCommandService.updateCurriculum(invalidCurriculumItemId, request);
         }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
     }
 
@@ -71,7 +71,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다.")
     public void completeCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
         assertThatThrownBy(() -> {
-            curriculumItemCommandService.checkCurriculum(invalidCurriculumItemId, study.getId());
+            curriculumItemCommandService.checkCurriculum(invalidCurriculumItemId);
         }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
     }
 }

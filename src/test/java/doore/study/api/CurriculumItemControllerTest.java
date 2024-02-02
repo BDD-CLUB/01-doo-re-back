@@ -54,7 +54,7 @@ public class CurriculumItemControllerTest extends IntegrationTest {
     public void deleteCurriculum_커리큘럼이_정상_삭제된다_성공() throws Exception {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         curriculumItemRepository.save(curriculumItem);
-        String url = "/studies/" + study.getId() + "/curriculums/" + curriculumItem.getId();
+        String url = "/curriculums/" + curriculumItem.getId();
         callDeleteApi(url).andExpect(status().isNoContent());
     }
 
@@ -64,7 +64,7 @@ public class CurriculumItemControllerTest extends IntegrationTest {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
         curriculumItemRepository.save(curriculumItem);
         CurriculumItemRequest request = new CurriculumItemRequest("Change Spring Study");
-        String url = "/studies/" + study.getId() + "/curriculums/" + curriculumItem.getId();
+        String url = "/curriculums/" + curriculumItem.getId();
         callPatchApi(url, request).andExpect(status().isNoContent());
     }
 

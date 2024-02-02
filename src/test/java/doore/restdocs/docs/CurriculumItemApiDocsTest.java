@@ -59,9 +59,9 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 삭제된다.")
     public void deleteCurriculum_커리큘럼이_정상_삭제된다_성공() throws Exception {
-        doNothing().when(curriculumItemCommandService).deleteCurriculum(eq(validStudyId), eq(validCurriculumItemId));
+        doNothing().when(curriculumItemCommandService).deleteCurriculum(eq(validCurriculumItemId));
 
-        String url = "/studies/" + validStudyId + "/curriculums/" + validCurriculumItemId;
+        String url = "/curriculums/" + validCurriculumItemId;
         callDeleteApi(url)
                 .andExpect(status().isNoContent())
                 .andDo(document("curriculum-delete"));
@@ -72,13 +72,13 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     public void updateCurriculum_커리큘럼이_정상_수정된다_성공() throws Exception {
         CurriculumItemRequest request = new CurriculumItemRequest("Change Spring Study");
         doNothing().when(curriculumItemCommandService)
-                .updateCurriculum(eq(validCurriculumItemId), eq(validStudyId), any(CurriculumItemRequest.class));
+                .updateCurriculum(eq(validCurriculumItemId), any(CurriculumItemRequest.class));
 
         RequestFieldsSnippet requestFields = requestFields(
                 stringFieldWithPath("name", "커리큘럼 이름")
         );
 
-        String url = "/studies/" + validStudyId + "/curriculums/" + validCurriculumItemId;
+        String url = "/curriculums/" + validCurriculumItemId;
         callPatchApi(url, request)
                 .andExpect(status().isNoContent())
                 .andDo(document("curriculum-update", requestFields));
