@@ -18,13 +18,11 @@ public class StudyTest {
         CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name("커리큘럼 1단계")
                 .itemOrder(1)
-                .isDeleted(false)
                 .study(study)
                 .build();
         CurriculumItem otherCurriculumItem = CurriculumItem.builder()
                 .name("커리큘럼 2단계")
                 .itemOrder(2)
-                .isDeleted(false)
                 .study(study)
                 .build();
         List<CurriculumItem> curriculumItems = List.of(curriculumItem, otherCurriculumItem);

@@ -2,9 +2,9 @@ package doore.study.api;
 
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
+import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.StudyDetailResponse;
-import doore.study.application.dto.request.StudyCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
