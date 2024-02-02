@@ -1,0 +1,3 @@
+[submodule "01-doo-re-back-yml-submodule"]
+	path = 01-doo-re-back-yml-submodule
+	url = https://github.com/BDD-CLUB/01-doo-re-back-yml-submodule.git
