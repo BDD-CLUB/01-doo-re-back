@@ -14,10 +14,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        run: |
+          git submodule update --init --recursive --remote
         with:
           submodules: true
           token: ${{ secrets.ACTION_SUBMODULE_TOKEN }}
-        run: git submodule update --init --recursive --remote
 
 
       - name: Configure AWS Credentials
