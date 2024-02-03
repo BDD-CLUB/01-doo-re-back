@@ -1,17 +1,25 @@
 package doore.restdocs.docs;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 
+import doore.member.domain.Member;
+import doore.member.domain.Participant;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.CurriculumItemResponse;
+import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.domain.CurriculumItem;
 import doore.study.domain.StudyStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import doore.restdocs.RestDocsTest;
 import doore.study.api.StudyController;
@@ -54,6 +62,16 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 조회한다.")
     public void 스터디를_조회한다() throws Exception {
+        CurriculumItem curriculumItem = CurriculumItem.builder()
+                .name("챕터 1. 환경설정 완료하기")
+                .itemOrder(0)
+                .study(null)
+                .build();
+        StudyDetailResponse studyDetailResponse = new StudyDetailResponse(1L, "알고리즘", "알고리즘 스터디입니다.",
+                LocalDate.parse("2020-01-01"), LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, 1L, 1L,
+                List.of(CurriculumItemResponse.from(curriculumItem)));
+
+        when(studyQueryService.findStudyById(any())).thenReturn(studyDetailResponse);
         callGetApi("/studies/1")
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -134,6 +152,21 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("참여자를 조회한다.")
     void 참여자를_조회한다_성공() throws Exception {
+        Member member = Member.builder()
+                .id(1L)
+                .name("팜")
+                .email("pom@gmail.com")
+                .googleId("pom@gmail.com")
+                .imageUrl(null)
+                .build();
+        Participant participant = Participant.builder()
+                .studyId(1L)
+                .member(member)
+                .isCompleted(false)
+                .isDeleted(false)
+                .build();
+
+        when(studyQueryService.findAllParticipants(any())).thenReturn(List.of(participant));
         String url = "/studies/1/members";
         callGetApi(url).andExpect(status().isOk())
                 .andDo(document("participant-get"));
