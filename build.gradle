@@ -62,7 +62,6 @@ tasks {
     }
 }
 
-
 /******* End Spring Rest Docs *******/
 
 dependencies {
