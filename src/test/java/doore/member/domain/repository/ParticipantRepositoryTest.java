@@ -59,11 +59,10 @@ public class ParticipantRepositoryTest extends RepositorySliceTest {
         List<Participant> participants = participantRepository.findAllByStudyId(studyId);
 
         //then
-        assertAll(
-                () -> assertThat(participants).hasSize(2),
-                () -> assertTrue(participants.contains(participant1)),
-                () -> assertTrue(participants.contains(participant2))
-        );
+        final List<Participant> expectedParticipants = List.of(participant1, participant2);
+        assertThat(participants)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedParticipants);
     }
 
     @Test
