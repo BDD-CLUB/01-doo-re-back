@@ -1,0 +1,4 @@
+[submodule "src/main/resources/config"]
+	path = src/main/resources/config
+	url = https://github.com/BDD-CLUB/01-doo-re-back-yml-submodule.git
+	update = merge

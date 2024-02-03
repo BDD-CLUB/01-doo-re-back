@@ -10,17 +10,11 @@ endif::[]
 :toclevels: 2
 :seclinks:
 
-== *TEAM*
-
-=== `POST`: Team 생성
-
-.HTTP Request
-include::{snippets}/team-create/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/team-create/request-fields.adoc[]
-
-.HTTP Response
-include::{snippets}/team-create/http-response.adoc[]
 
 link:./login.html[Login API]
+
+link:./curriculumItem.html[CurriculumItem API]
+
+link:./study.html[Study API]
+
+link:./team.html[Team API]
