@@ -1,6 +1,7 @@
 package doore.study.domain;
 
 import static doore.study.domain.StudyStatus.ENDED;
+import static jakarta.persistence.CascadeType.REMOVE;
 
 import doore.base.BaseEntity;
 import jakarta.persistence.Column;
@@ -53,9 +54,8 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private Long cropId;
 
-    @OneToMany(mappedBy = "study")
+    @OneToMany(mappedBy = "study", cascade = REMOVE)
     private final List<CurriculumItem> curriculumItems = new ArrayList<>();
-
 
     @Builder
     private Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,

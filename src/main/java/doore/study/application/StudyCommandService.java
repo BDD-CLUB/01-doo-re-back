@@ -5,20 +5,20 @@ import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.*;
 
 import doore.member.exception.MemberException;
-import doore.study.application.dto.request.CurriculumItemsRequest;
+import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
-import doore.study.domain.Study;
-import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.study.domain.StudyStatus;
+import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
-import doore.study.exception.StudyException;
 import doore.team.exception.TeamException;
 import doore.team.exception.TeamExceptionType;
 import java.time.LocalDate;
@@ -71,7 +71,7 @@ public class StudyCommandService {
                 .toList();
     }
 
-    public CurriculumItem extractCurriculumItemFromStudy(CurriculumItemsRequest request, Study study) {
+    public CurriculumItem extractCurriculumItemFromStudy(CurriculumItemRequest request, Study study) {
         return CurriculumItem.builder()
                 .name(request.name())
                 .study(study)

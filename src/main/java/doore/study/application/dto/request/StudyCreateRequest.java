@@ -32,10 +32,10 @@ public record StudyCreateRequest(
         Long cropId,
 
         @NotNull(message = "커리큘럼을 입력해주세요.")
-        List<CurriculumItemsRequest> curriculumItems
+        List<CurriculumItemRequest> curriculumItems
 ) {
     public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
-                              Long cropId, List<CurriculumItemsRequest> curriculumItems) {
+                              Long cropId, List<CurriculumItemRequest> curriculumItems) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
