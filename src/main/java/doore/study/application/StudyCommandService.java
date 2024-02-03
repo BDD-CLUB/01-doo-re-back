@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.member.exception.MemberExceptionType.EMPTY_AUTHORIZATION;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.*;
@@ -21,9 +22,9 @@ import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.team.exception.TeamException;
 import doore.team.exception.TeamExceptionType;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,9 +122,14 @@ public class StudyCommandService {
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }
 
-    public void withdrawParticipant(Long studyId, HttpSession session) {
+    public void withdrawParticipant(Long studyId, HttpServletRequest request) {
         validateExistStudy(studyId);
-        Member member = (Member) session.getAttribute("loginUser");
+        String memberId = request.getHeader("Authorization");
+        if (memberId == null) {
+            throw new MemberException(EMPTY_AUTHORIZATION);
+        }
+        Member member = memberRepository.findById(Long.parseLong(memberId))
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }
 

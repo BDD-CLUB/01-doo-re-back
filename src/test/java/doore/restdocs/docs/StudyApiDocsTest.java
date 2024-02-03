@@ -137,8 +137,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @DisplayName("참여자가 탈퇴한다.")
     void 참여자가_탈퇴한다_성공() throws Exception {
         String url = "/studies/1/members";
-        MockHttpSession session = new MockHttpSession();
-        callDeleteApi(url, session).andExpect(status().isNoContent())
+        callDeleteApi(url).andExpect(status().isNoContent())
                 .andDo(document("participant-withdraw"));
     }
 

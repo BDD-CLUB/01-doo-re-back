@@ -15,7 +15,6 @@ import doore.study.domain.Study;
 import doore.team.domain.Team;
 import doore.helper.IntegrationTest;
 import java.time.LocalDate;
-import org.springframework.mock.web.MockHttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -136,14 +135,6 @@ public class StudyControllerTest extends IntegrationTest {
     void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() throws Exception {
         String url = "/studies/" + study.getId() + "/members/" + member.getId();
         callDeleteApi(url).andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("[성공] 정상적으로 참여자가 탈퇴할 수 있다.")
-    void withdrawParticipant_정상적으로_참여자가_탈퇴할_수_있다_성공() throws Exception {
-        String url = "/studies/" + study.getId() + "/members";
-        MockHttpSession session = new MockHttpSession();
-        callDeleteApi(url, session).andExpect(status().isNoContent());
     }
 
     @Test

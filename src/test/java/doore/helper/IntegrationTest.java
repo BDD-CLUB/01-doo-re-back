@@ -54,10 +54,6 @@ public abstract class IntegrationTest {
         return mockMvc.perform(post(url));
     }
 
-    protected ResultActions callDeleteApi(final String url, final MockHttpSession session) throws Exception {
-        return mockMvc.perform(delete(url).session(session));
-    }
-
     protected ResultActions callDeleteApi(final String url) throws Exception {
         return mockMvc.perform(delete(url));
     }

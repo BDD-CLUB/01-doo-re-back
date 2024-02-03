@@ -125,8 +125,4 @@ public abstract class RestDocsTest {
     protected ResultActions callDeleteApi(final String url) throws Exception {
         return mockMvc.perform(delete(url));
     }
-
-    protected ResultActions callDeleteApi(final String url, final MockHttpSession session) throws Exception {
-        return mockMvc.perform(delete(url).session(session));
-    }
 }

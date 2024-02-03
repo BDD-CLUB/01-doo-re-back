@@ -4,7 +4,8 @@ import doore.base.BaseExceptionType;
 import org.springframework.http.HttpStatus;
 
 public enum MemberExceptionType implements BaseExceptionType {
-    NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다.");
+    NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
+    EMPTY_AUTHORIZATION(HttpStatus.BAD_REQUEST,"권한이 비어있습니다.");
     private final HttpStatus httpStatus;
     private final String errorMessage;
 

@@ -6,7 +6,7 @@ import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.StudyDetailResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudyController {
     private final StudyCommandService studyCommandService;
     private final StudyQueryService studyQueryService;
+    private final HttpServletRequest request;
 
     @PostMapping("/teams/{teamId}/studies")
     public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest, @PathVariable Long teamId) {
@@ -81,8 +82,8 @@ public class StudyController {
     }
 
     @DeleteMapping("/studies/{studyId}/members")
-    public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, HttpSession session) {
-        studyCommandService.withdrawParticipant(studyId, session);
+    public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, HttpServletRequest request) {
+        studyCommandService.withdrawParticipant(studyId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

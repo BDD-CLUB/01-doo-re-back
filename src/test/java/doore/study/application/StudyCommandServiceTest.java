@@ -10,13 +10,12 @@ import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.TeamFixture.team;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
-import static java.beans.Beans.isInstanceOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
@@ -32,7 +31,7 @@ import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +40,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpSession;
 
 public class StudyCommandServiceTest extends IntegrationTest {
 
@@ -259,11 +257,11 @@ public class StudyCommandServiceTest extends IntegrationTest {
             Long studyId = study.getId();
             Long memberId = member.getId();
             studyCommandService.saveParticipant(studyId, memberId);
-            HttpSession session = new MockHttpSession();
-            session.setAttribute("loginUser", member);
+            HttpServletRequest request = mock(HttpServletRequest.class);
 
             //when
-            studyCommandService.withdrawParticipant(studyId, session);
+            when(request.getHeader("Authorization")).thenReturn(String.valueOf(memberId));
+            studyCommandService.withdrawParticipant(studyId, request);
             List<Participant> participants = studyQueryService.findAllParticipants(studyId);
 
             //then
