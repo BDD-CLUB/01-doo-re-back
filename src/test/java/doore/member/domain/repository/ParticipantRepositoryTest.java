@@ -83,8 +83,6 @@ public class ParticipantRepositoryTest extends RepositorySliceTest {
 
         //when
         participantRepository.deleteByStudyIdAndMember(studyId, member);
-        em.flush();
-        em.clear();
 
         //then
         List<Participant> foundParticipant = participantRepository.findAllByStudyId(studyId);
