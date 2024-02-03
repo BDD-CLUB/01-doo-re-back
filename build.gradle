@@ -52,7 +52,7 @@ tasks {
 
     bootJar {
         dependsOn asciidoctor
-        from("${asciidoctor.outputDir}") {
+        from("${asciidoctor.outputDir}/html5") {
             into "static/docs"
         }
     }
