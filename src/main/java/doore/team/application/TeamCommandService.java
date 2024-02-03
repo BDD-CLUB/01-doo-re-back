@@ -1,7 +1,9 @@
 package doore.team.application;
 
+import static doore.file.domain.FileType.IMAGE;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
+import doore.file.application.S3FileService;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.domain.Team;
@@ -10,6 +12,7 @@ import doore.team.exception.TeamException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -17,26 +20,47 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamCommandService {
 
     private final TeamRepository teamRepository;
+    private final S3FileService s3FileService;
 
-    public void createTeam(final TeamCreateRequest request) {
+    public void createTeam(final TeamCreateRequest request, final MultipartFile file) {
         // TODO: 팀 생성자를 팀 관리자로 등록
-        // TODO: 팀 이미지를 AWS S3에 저장
+        final String imageUrl = s3FileService.uploadFile(file, IMAGE);
         final Team team = Team.builder()
                 .name(request.name())
                 .description(request.description())
+                .imageUrl(imageUrl)
                 .build();
         teamRepository.save(team);
     }
 
     public void updateTeam(final Long teamId, final TeamUpdateRequest request) {
-        final Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+        final Team team = findTeamById(teamId);
         team.update(request.name(), request.description());
     }
 
+    public void updateTeamImage(final Long teamId, final MultipartFile file) {
+        final Team team = findTeamById(teamId);
+
+        if (team.hasImage()) {
+            final String beforeImageUrl = team.getImageUrl();
+            s3FileService.deleteFile(beforeImageUrl);
+
+            final String newImageUrl = s3FileService.uploadFile(file, IMAGE);
+            team.updateImageUrl(newImageUrl);
+            return;
+        }
+        final String imageUrl = s3FileService.uploadFile(file, IMAGE);
+        team.updateImageUrl(imageUrl);
+    }
+
     public void deleteTeam(final Long teamId) {
-        final Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+        final Team team = findTeamById(teamId);
         teamRepository.delete(team);
+        // TODO: 2/2/24 팀이 삭제될 시 연관된 스터디와, 커리큘럼도 삭제
+    }
+
+    private Team findTeamById(final Long teamId) {
+        return teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 }
