@@ -39,7 +39,7 @@ public class StudyCommandService {
     private final MemberRepository memberRepository;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
-        checkExistTeam(teamId);
+        validateExistTeam(teamId);
         checkEndDateValid(request.startDate(), request.endDate());
         Study study = studyRepository.save(toStudyWithoutCurriculum(request, teamId));
         List<CurriculumItem> curriculumItems = toCurriculumList(request, study);
@@ -79,22 +79,22 @@ public class StudyCommandService {
     }
 
     public void deleteStudy(Long studyId) {
-        checkExistStudy(studyId);
+        validateExistStudy(studyId);
         studyRepository.deleteById(studyId);
     }
 
     public void updateStudy(StudyUpdateRequest request, Long studyId) {
-        Study study = checkExistStudy(studyId);
+        Study study = validateExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
     public void terminateStudy(Long studyId) {
-        Study study = checkExistStudy(studyId);
+        Study study = validateExistStudy(studyId);
         study.terminate();
     }
 
     public void changeStudyStatus(String status, Long studyId) {
-        Study study = checkExistStudy(studyId);
+        Study study = validateExistStudy(studyId);
         try {
             StudyStatus changedStatus = StudyStatus.valueOf(status);
             study.changeStatus(changedStatus);
@@ -104,8 +104,8 @@ public class StudyCommandService {
     }
 
     public void saveParticipant(Long studyId, Long memberId) {
-        checkExistStudy(studyId);
-        Member member = checkExistMember(memberId);
+        validateExistStudy(studyId);
+        Member member = validateExistMember(memberId);
         Participant participant = Participant.builder()
                 .isCompleted(false)
                 .isDeleted(false)
@@ -116,26 +116,26 @@ public class StudyCommandService {
     }
 
     public void deleteParticipant(Long studyId, Long memberId) {
-        checkExistStudy(studyId);
-        Member member = checkExistMember(memberId);
+        validateExistStudy(studyId);
+        Member member = validateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }
 
     public void withdrawParticipant(Long studyId, HttpSession session) {
-        checkExistStudy(studyId);
+        validateExistStudy(studyId);
         Member member = (Member) session.getAttribute("loginUser");
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }
 
-    private void checkExistTeam(Long teamId) {
+    private void validateExistTeam(Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
     }
 
-    private Study checkExistStudy(Long studyId) {
+    private Study validateExistStudy(Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
-    private Member checkExistMember(Long memberId) {
+    private Member validateExistMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }
