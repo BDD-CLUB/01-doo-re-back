@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.databind.ObjectMapper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
+import doore.study.application.StudyCommandService;
+import doore.study.application.StudyQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,12 @@ public abstract class RestDocsTest {
     @MockBean
     protected MemberCommandService memberCommandService;
 
+    @MockBean
+    protected StudyCommandService studyCommandService;
+
+    @MockBean
+    protected StudyQueryService studyQueryService;
+
     @Autowired
     protected RestDocumentationResultHandler restDocs;
 
@@ -48,6 +56,7 @@ public abstract class RestDocsTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
 
     @BeforeEach
     void setUp(

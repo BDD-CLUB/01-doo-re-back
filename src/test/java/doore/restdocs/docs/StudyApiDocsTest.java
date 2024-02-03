@@ -9,8 +9,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
-import doore.study.application.StudyCommandService;
-import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.CurriculumItemResponse;
@@ -26,15 +24,10 @@ import doore.study.api.StudyController;
 import doore.study.application.dto.request.StudyCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 
 @WebMvcTest(StudyController.class)
 public class StudyApiDocsTest extends RestDocsTest {
-    @MockBean
-    protected StudyCommandService studyCommandService;
-    @MockBean
-    protected StudyQueryService studyQueryService;
 
     @Test
     @DisplayName("스터디를 생성한다.")
