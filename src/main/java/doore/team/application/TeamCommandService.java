@@ -44,13 +44,9 @@ public class TeamCommandService {
         if (team.hasImage()) {
             final String beforeImageUrl = team.getImageUrl();
             s3FileService.deleteFile(beforeImageUrl);
-
-            final String newImageUrl = s3FileService.uploadFile(file, IMAGE);
-            team.updateImageUrl(newImageUrl);
-            return;
         }
-        final String imageUrl = s3FileService.uploadFile(file, IMAGE);
-        team.updateImageUrl(imageUrl);
+        final String newImageUrl = s3FileService.uploadFile(file, IMAGE);
+        team.updateImageUrl(newImageUrl);
     }
 
     public void deleteTeam(final Long teamId) {
