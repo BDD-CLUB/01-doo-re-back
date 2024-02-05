@@ -1,0 +1,64 @@
+name: Deploy BDD Production Server
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    services:
+      mysql:
+        image: mysql:8.0.28
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: 1234
+          MYSQL_DATABASE: doore
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.ACTION_SUBMODULE_TOKEN }}
+
+      - name: AWS 자격증명 구성
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.PROD_AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: AWS ECR 로그인
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: JDK 설치
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Gradle Build & Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: build
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'ref/heads/develop' }}
+
+      - name: 빌드 결과물 압축
+        run: |
+          tar -zcf ${GITHUB_SHA::8}.tar.gz build/libs/doore-0.0.1-SNAPSHOT.jar
+
+      - name: S3에 업로드
+        run: |
+          aws s3 mv --region ${{ secrets.AWS_REGION }} \
+          ${GITHUB_SHA::8}.tar.gz \
+          ${{ secrets.S3_PROD_BACK_LOCATION }}/${GITHUB_SHA::8}.tar.gz
