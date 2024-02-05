@@ -107,8 +107,8 @@ public class S3FileService {
         throw new IllegalArgumentException("해당하는 파일의 종류가 없습니다.");
     }
 
-    public void deleteFile(String fileName) {
-        String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+    public void deleteFile(final String fileName) {
+        final String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
         amazonS3.deleteObject(bucket, decodedFileName);
     }
 }
