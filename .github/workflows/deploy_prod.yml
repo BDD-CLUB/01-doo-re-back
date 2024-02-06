@@ -69,6 +69,7 @@ jobs:
     runs-on: [ self-hosted, label-prod ]
     steps:
       - name: 쉘 스크립트 실행
+        working-directory: /home/ubuntu
         run: |
           chmod +x /home/ubuntu/deploy.sh
           sudo /home/ubuntu/deploy.sh ${GITHUB_SHA::8}
