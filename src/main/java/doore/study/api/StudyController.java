@@ -83,6 +83,7 @@ public class StudyController {
 
     @DeleteMapping("/studies/{studyId}/members")
     public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, HttpServletRequest request) {
+        //Todo: 이후 권한 로직으로 수정
         studyCommandService.withdrawParticipant(studyId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
