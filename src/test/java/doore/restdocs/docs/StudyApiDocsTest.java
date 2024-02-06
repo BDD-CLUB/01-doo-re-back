@@ -154,8 +154,6 @@ public class StudyApiDocsTest extends RestDocsTest {
         Participant participant = Participant.builder()
                 .studyId(1L)
                 .member(member)
-                .isCompleted(false)
-                .isDeleted(false)
                 .build();
 
         when(studyQueryService.findAllParticipants(any())).thenReturn(List.of(participant));

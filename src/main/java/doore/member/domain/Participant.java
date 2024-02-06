@@ -36,9 +36,9 @@ public class Participant extends BaseEntity {
     private Member member;
 
     @Builder
-    private Participant(Boolean isCompleted, Boolean isDeleted, Long studyId, Member member) {
-        this.isCompleted = isCompleted;
-        this.isDeleted = isDeleted;
+    private Participant(Long studyId, Member member) {
+        this.isCompleted = false;
+        this.isDeleted = false;
         this.studyId = studyId;
         this.member = member;
     }

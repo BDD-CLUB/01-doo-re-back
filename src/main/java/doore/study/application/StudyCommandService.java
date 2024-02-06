@@ -108,8 +108,6 @@ public class StudyCommandService {
         validateExistStudy(studyId);
         Member member = validateExistMember(memberId);
         Participant participant = Participant.builder()
-                .isCompleted(false)
-                .isDeleted(false)
                 .studyId(studyId)
                 .member(member)
                 .build();
