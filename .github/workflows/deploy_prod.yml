@@ -4,6 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build:
+    name: 빌드
     runs-on: ubuntu-22.04
     timeout-minutes: 10
 
@@ -62,3 +63,12 @@ jobs:
           aws s3 mv --region ${{ secrets.AWS_REGION }} \
           ${GITHUB_SHA::8}.tar.gz \
           ${{ secrets.S3_PROD_BACK_LOCATION }}/${GITHUB_SHA::8}.tar.gz
+  deploy:
+    needs: build
+    name: 배포
+    runs-on: [ self-hosted, label-prod ]
+    steps:
+      - name: 쉘 스크립트 실행
+        run: |
+          chmod +x /home/ubuntu/deploy.sh
+          sudo /home/ubuntu/deploy.sh
