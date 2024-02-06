@@ -34,4 +34,12 @@ public class Participant extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Builder
+    private Participant(Long studyId, Member member) {
+        this.isCompleted = false;
+        this.isDeleted = false;
+        this.studyId = studyId;
+        this.member = member;
+    }
 }
