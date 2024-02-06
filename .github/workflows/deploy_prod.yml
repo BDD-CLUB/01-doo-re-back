@@ -68,6 +68,8 @@ jobs:
     name: 배포
     runs-on: [ self-hosted, label-prod ]
     steps:
+      - name: 커밋 아이디 출력
+        run: echo ${GITHUB_SHA::8}
       - name: 쉘 스크립트 실행
         run: |
           chmod +x /home/ubuntu/deploy.sh
