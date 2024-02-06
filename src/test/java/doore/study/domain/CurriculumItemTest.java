@@ -21,7 +21,7 @@ public class CurriculumItemTest {
         CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
 
         String changeName = "변경된 Spring 스터디";
-        curriculumItem.update(changeName);
+        curriculumItem.updateName(changeName);
 
         assertThat(curriculumItem.getName()).isEqualTo(changeName);
     }
