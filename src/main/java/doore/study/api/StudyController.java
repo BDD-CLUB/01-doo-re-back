@@ -20,18 +20,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("")
 @RequiredArgsConstructor
 public class StudyController {
     private final StudyCommandService studyCommandService;
     private final StudyQueryService studyQueryService;
-    private final HttpServletRequest request;
 
     @PostMapping("/teams/{teamId}/studies")
     public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest, @PathVariable Long teamId) {
