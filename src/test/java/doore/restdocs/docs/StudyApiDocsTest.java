@@ -148,7 +148,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .id(1L)
                 .name("팜")
                 .email("pom@gmail.com")
-                .googleId("pom@gmail.com")
+                .googleId("0123456789")
                 .imageUrl(null)
                 .build();
         Participant participant = Participant.builder()
