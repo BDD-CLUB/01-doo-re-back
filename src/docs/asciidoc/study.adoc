@@ -19,6 +19,9 @@ link:../doore.html[API 목록으로 돌아가기]
 .HTTP Request
 include::{snippets}/study-create/http-request.adoc[]
 
+.Path Parameters
+include::{snippets}/study-create/path-parameters.adoc[]
+
 .Request Fields
 include::{snippets}/study-create/request-fields.adoc[]
 
@@ -29,6 +32,9 @@ include::{snippets}/study-create/http-response.adoc[]
 
 .HTTP Request
 include::{snippets}/study-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/study-get/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/study-get/http-response.adoc[]
@@ -41,14 +47,19 @@ include::{snippets}/study-get/response-body.adoc[]
 .HTTP Request
 include::{snippets}/study-delete/http-request.adoc[]
 
+.Path Parameters
+include::{snippets}/study-delete/path-parameters.adoc[]
+
 .HTTP Response
 include::{snippets}/study-delete/http-response.adoc[]
-//todo: 문제 해결
 
 == `PATCH`: Study 수정
 
 .HTTP Request
 include::{snippets}/study-update/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/study-update/path-parameters.adoc[]
 
 .Request Fields
 include::{snippets}/study-update/request-fields.adoc[]
@@ -61,6 +72,9 @@ include::{snippets}/study-update/http-response.adoc[]
 .HTTP Request
 include::{snippets}/study-terminate/http-request.adoc[]
 
+.Path Parameters
+include::{snippets}/study-terminate/path-parameters.adoc[]
+
 .HTTP Response
 include::{snippets}/study-terminate/http-response.adoc[]
 
@@ -68,6 +82,9 @@ include::{snippets}/study-terminate/http-response.adoc[]
 
 .HTTP Request
 include::{snippets}/study-change-status/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/study-change-status/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/study-change-status/http-response.adoc[]
@@ -77,6 +94,9 @@ include::{snippets}/study-change-status/http-response.adoc[]
 .HTTP Request
 include::{snippets}/participant-save/http-request.adoc[]
 
+.Path Parameters
+include::{snippets}/participant-save/path-parameters.adoc[]
+
 .HTTP Response
 include::{snippets}/participant-save/http-response.adoc[]
 
@@ -84,6 +104,9 @@ include::{snippets}/participant-save/http-response.adoc[]
 
 .HTTP Request
 include::{snippets}/participant-delete/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/participant-delete/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/participant-delete/http-response.adoc[]
@@ -93,6 +116,9 @@ include::{snippets}/participant-delete/http-response.adoc[]
 .HTTP Request
 include::{snippets}/participant-withdraw/http-request.adoc[]
 
+.Path Parameters
+include::{snippets}/participant-withdraw/path-parameters.adoc[]
+
 .HTTP Response
 include::{snippets}/participant-withdraw/http-response.adoc[]
 
@@ -100,6 +126,9 @@ include::{snippets}/participant-withdraw/http-response.adoc[]
 
 .HTTP Request
 include::{snippets}/participant-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/participant-get/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/participant-get/http-response.adoc[]
