@@ -1,6 +1,6 @@
 package doore.study.application;
 
-import static doore.member.exception.MemberExceptionType.EMPTY_AUTHORIZATION;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.*;
@@ -126,7 +126,7 @@ public class StudyCommandService {
         validateExistStudy(studyId);
         String memberId = request.getHeader("Authorization");
         if (memberId == null) {
-            throw new MemberException(EMPTY_AUTHORIZATION);
+            throw new MemberException(UNAUTHORIZED);
         }
         Member member = memberRepository.findById(Long.parseLong(memberId))
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
