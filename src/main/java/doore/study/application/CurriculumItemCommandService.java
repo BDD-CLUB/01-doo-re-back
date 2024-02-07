@@ -2,6 +2,7 @@ package doore.study.application;
 
 import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
+import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
 import doore.member.domain.Participant;
@@ -48,7 +49,7 @@ public class CurriculumItemCommandService {
         CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findById(
-                curriculumItem.getId()).orElseThrow(); //todo: 예외처리
+                curriculumItem.getId()).orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
         if (participantCurriculumItem.getIsChecked().equals(false)) {
             participantCurriculumItem.complete();
         } else {
