@@ -14,32 +14,10 @@ endif::[]
 
 link:../doore.html[API 목록으로 돌아가기]
 
-== `POST`: CurriculumItem 생성
+== `POST`: CurriculumItem 관리
 
 .HTTP Request
-include::{snippets}/curriculum-create/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/curriculum-create/request-fields.adoc[]
+include::{snippets}/curriculum-manage/http-request.adoc[]
 
 .HTTP Response
-include::{snippets}/curriculum-create/http-response.adoc[]
-
-== `DELETE`: CurriculumItem 삭제
-
-.HTTP Request
-include::{snippets}/curriculum-delete/http-request.adoc[]
-
-.HTTP Response
-include::{snippets}/curriculum-delete/http-response.adoc[]
-
-== `PATCH`: CurriculumItem 수정
-
-.HTTP Request
-include::{snippets}/curriculum-update/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/curriculum-update/http-request.adoc[]
-
-.HTTP Response
-include::{snippets}/curriculum-update/http-response.adoc[]
+include::{snippets}/curriculum-manage/http-response.adoc[]

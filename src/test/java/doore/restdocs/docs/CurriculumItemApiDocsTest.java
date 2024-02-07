@@ -1,87 +1,59 @@
 package doore.restdocs.docs;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.restdocs.RestDocsTest;
 import doore.study.api.CurriculumItemController;
-import doore.study.application.CurriculumItemCommandService;
-import doore.study.application.dto.request.CurriculumItemRequest;
-import doore.study.domain.repository.CurriculumItemRepository;
-import doore.study.domain.repository.StudyRepository;
+import doore.study.application.dto.request.CurriculumItemManageRequest;
+import doore.study.domain.CurriculumItem;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.http.MediaType;
 
 @WebMvcTest(CurriculumItemController.class)
 public class CurriculumItemApiDocsTest extends RestDocsTest {
-
-    @MockBean
-    protected CurriculumItemCommandService curriculumItemCommandService;
-    @MockBean
-    protected StudyRepository studyRepository;
-    @MockBean
-    protected CurriculumItemRepository curriculumItemRepository;
-
-    private Long validStudyId;
-    private Long validCurriculumItemId;
+    private CurriculumItemManageRequest request;
 
     @BeforeEach
     void setUp() {
-        validStudyId = 1L;
-        validCurriculumItemId = 1L;
+        request = CurriculumItemManageRequest.builder()
+                .curriculumItems(getCurriculumItems())
+                .deletedCurriculumItems(getDeletedCurriculumItems())
+                .build();
+    }
+
+    private List<CurriculumItem> getCurriculumItems() {
+        List<CurriculumItem> curriculumItems = new ArrayList<>();
+        curriculumItems.add(CurriculumItem.builder().id(1L).itemOrder(1).name("Change Spring Study").build());
+        curriculumItems.add(CurriculumItem.builder().id(2L).itemOrder(4).name("CS Study").build());
+        curriculumItems.add(CurriculumItem.builder().id(3L).itemOrder(2).name("Infra Study").build());
+        curriculumItems.add(CurriculumItem.builder().id(4L).itemOrder(3).name("Algorithm Study").build());
+        return curriculumItems;
+    }
+
+    private List<CurriculumItem> getDeletedCurriculumItems() {
+        List<CurriculumItem> deletedCurriculumItems = new ArrayList<>();
+        deletedCurriculumItems.add(CurriculumItem.builder().id(3L).itemOrder(2).name("Infra Study").build());
+        return deletedCurriculumItems;
     }
 
     @Test
-    @DisplayName("[성공] 커리큘럼이 정상 등록된다.")
-    public void createCurriculum_커리큘림이_정상_등록된다_성공() throws Exception {
-        CurriculumItemRequest request = new CurriculumItemRequest("Spring Study");
-        doNothing().when(curriculumItemCommandService)
-                .createCurriculum(any(CurriculumItemRequest.class), eq(validStudyId));
+    @DisplayName("[성공] 커리큘럼 관리가 정상적으로 이루어진다.")
+    public void manageCurriculum_커리큘럼_관리가_정상적으로_이루어진다 () throws Exception {
+        doNothing().when(curriculumItemCommandService).manageCurriculum(any(), any());
 
-        RequestFieldsSnippet requestFields = requestFields(
-                stringFieldWithPath("name", "커리큘럼 이름")
-        );
-
-        String url = "/studies/" + validStudyId + "/curriculums";
-        callPostApi(url, request)
+        mockMvc.perform(post("/studies/{studyId}/curriculums", 1)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andDo(document("curriculum-create", requestFields));
+                .andDo(document("curriculum-manage"));
     }
-
-    @Test
-    @DisplayName("[성공] 커리큘럼이 정상 삭제된다.")
-    public void deleteCurriculum_커리큘럼이_정상_삭제된다_성공() throws Exception {
-        doNothing().when(curriculumItemCommandService).deleteCurriculum(eq(validCurriculumItemId));
-
-        String url = "/curriculums/" + validCurriculumItemId;
-        callDeleteApi(url)
-                .andExpect(status().isNoContent())
-                .andDo(document("curriculum-delete"));
-    }
-
-    @Test
-    @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
-    public void updateCurriculum_커리큘럼이_정상_수정된다_성공() throws Exception {
-        CurriculumItemRequest request = new CurriculumItemRequest("Change Spring Study");
-        doNothing().when(curriculumItemCommandService)
-                .updateCurriculum(eq(validCurriculumItemId), any(CurriculumItemRequest.class));
-
-        RequestFieldsSnippet requestFields = requestFields(
-                stringFieldWithPath("name", "커리큘럼 이름")
-        );
-
-        String url = "/curriculums/" + validCurriculumItemId;
-        callPatchApi(url, request)
-                .andExpect(status().isNoContent())
-                .andDo(document("curriculum-update", requestFields));
-    }
-
 }

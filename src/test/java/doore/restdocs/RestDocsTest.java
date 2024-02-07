@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.databind.ObjectMapper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
+import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
@@ -47,6 +47,9 @@ public abstract class RestDocsTest {
 
     @MockBean
     protected StudyQueryService studyQueryService;
+
+    @MockBean
+    protected CurriculumItemCommandService curriculumItemCommandService;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;
