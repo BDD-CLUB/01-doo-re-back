@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
@@ -15,7 +16,9 @@ import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.CurriculumItemException;
 import doore.study.exception.StudyException;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,7 @@ public class CurriculumItemCommandService {
 
     public void manageCurriculum(CurriculumItemManageRequest request, Long studyId) {
         List<CurriculumItem> curriculumItems = request.curriculumItems();
+        validItemOrderCheck(curriculumItems);
         createCurriculum(studyId, curriculumItems);
         updateCurriculum(curriculumItems);
 
@@ -49,6 +53,20 @@ public class CurriculumItemCommandService {
             participantCurriculumItem.complete();
         } else {
             participantCurriculumItem.incomplete();
+        }
+    }
+
+    private void validItemOrderCheck(List<CurriculumItem> curriculumItems) {
+        Set<Integer> uniqueItemOrders = new HashSet<>();
+
+        for (CurriculumItem item : curriculumItems) {
+            int itemOrder = item.getItemOrder();
+            if (!uniqueItemOrders.add(itemOrder)) {
+                throw new CurriculumItemException(INVALID_ITEM_ORDER);
+            }
+            if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
+                throw new CurriculumItemException(INVALID_ITEM_ORDER);
+            }
         }
     }
 
