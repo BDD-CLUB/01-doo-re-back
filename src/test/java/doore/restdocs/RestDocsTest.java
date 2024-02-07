@@ -1,23 +1,26 @@
 package doore.restdocs;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
+import doore.study.application.StudyCommandService;
+import doore.study.application.StudyQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
@@ -39,6 +42,12 @@ public abstract class RestDocsTest {
     @MockBean
     protected MemberCommandService memberCommandService;
 
+    @MockBean
+    protected StudyCommandService studyCommandService;
+
+    @MockBean
+    protected StudyQueryService studyQueryService;
+
     @Autowired
     protected RestDocumentationResultHandler restDocs;
 
@@ -47,6 +56,7 @@ public abstract class RestDocsTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
 
     @BeforeEach
     void setUp(
@@ -106,6 +116,10 @@ public abstract class RestDocsTest {
 
     protected ResultActions callGetApi(final String url) throws Exception {
         return mockMvc.perform(get(url));
+    }
+
+    protected ResultActions callPostApi(final String url) throws Exception {
+        return mockMvc.perform(post(url));
     }
 
     protected ResultActions callDeleteApi(final String url) throws Exception {
