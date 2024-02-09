@@ -73,3 +73,12 @@ jobs:
         run: |
           chmod +x /home/ubuntu/deploy.sh
           sudo /home/ubuntu/deploy.sh ${GITHUB_SHA::8}
+      - name: Slack으로 결과 전송
+        if: always()
+        uses: 8398a7/action-slack@v3
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          author_name: DOORE Production Backend CICD
+          fields: repo, commit, message, author, action, took
