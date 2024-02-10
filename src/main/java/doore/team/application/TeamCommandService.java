@@ -1,9 +1,8 @@
 package doore.team.application;
 
-import static doore.file.domain.FileType.IMAGE;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
-import doore.file.application.S3FileService;
+import doore.file.application.S3ImageFileService;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.domain.Team;
@@ -20,11 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class TeamCommandService {
 
     private final TeamRepository teamRepository;
-    private final S3FileService s3FileService;
+    private final S3ImageFileService s3ImageFileService;
 
     public void createTeam(final TeamCreateRequest request, final MultipartFile file) {
         // TODO: 팀 생성자를 팀 관리자로 등록
-        final String imageUrl = s3FileService.uploadFile(file, IMAGE);
+        final String imageUrl = s3ImageFileService.upload(file);
         final Team team = Team.builder()
                 .name(request.name())
                 .description(request.description())
@@ -43,9 +42,9 @@ public class TeamCommandService {
 
         if (team.hasImage()) {
             final String beforeImageUrl = team.getImageUrl();
-            s3FileService.deleteFile(beforeImageUrl);
+            s3ImageFileService.deleteFile(beforeImageUrl);
         }
-        final String newImageUrl = s3FileService.uploadFile(file, IMAGE);
+        final String newImageUrl = s3ImageFileService.upload(file);
         team.updateImageUrl(newImageUrl);
     }
 

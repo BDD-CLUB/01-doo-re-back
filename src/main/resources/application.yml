@@ -44,9 +44,9 @@ cors:
 aws:
   s3:
     bucket: test
-    folder:
-      imageFolder: images/
-      documentFolder: documents/
+    path:
+      imagePath: images/
+      documentPath: documents/
   credentials:
     access-key: test
     secret-key: test
