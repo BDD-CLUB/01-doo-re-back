@@ -8,8 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class S3DocumentFileService extends S3FileService {
 
-    @Value("${aws.s3.path.documentPath}")
-    private String documentPath;
+    @Value("${aws.s3.folder.documentFolder}")
+    private String documentFolder;
 
     public S3DocumentFileService(final AmazonS3 amazonS3) {
         super(amazonS3);
@@ -26,7 +26,7 @@ public class S3DocumentFileService extends S3FileService {
     }
 
     @Override
-    String getFilePath() {
-        return documentPath;
+    String getFileFolder() {
+        return documentFolder;
     }
 }

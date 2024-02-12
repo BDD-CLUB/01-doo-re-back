@@ -20,8 +20,8 @@ public class S3ImageFileService extends S3FileService {
 
     private static final List<String> IMAGE_FILE_EXTENSIONS = List.of(".jpg", ".png", ".jpeg", ".gif", ".webp");
 
-    @Value("${aws.s3.path.imagePath}")
-    private String imagePath;
+    @Value("${aws.s3.folder.imageFolder}")
+    private String imageFolder;
 
     public S3ImageFileService(final AmazonS3 amazonS3) {
         super(amazonS3);
@@ -59,7 +59,7 @@ public class S3ImageFileService extends S3FileService {
     }
 
     @Override
-    public String getFilePath() {
-        return imagePath;
+    public String getFileFolder() {
+        return imageFolder;
     }
 }

@@ -42,10 +42,10 @@ public abstract class S3FileService {
     }
 
     protected String createFileName(final String fileExtension) {
-        return getFilePath() + UUID.randomUUID().toString().concat(fileExtension);
+        return getFileFolder() + UUID.randomUUID().toString().concat(fileExtension);
     }
 
-    abstract String getFilePath();
+    abstract String getFileFolder();
 
     public void deleteFile(final String fileName) {
         final String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
