@@ -1,8 +1,11 @@
 package doore.study.application;
 
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.*;
 
+import doore.member.exception.MemberException;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -10,14 +13,18 @@ import doore.study.domain.CurriculumItem;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.study.domain.StudyStatus;
 import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
+import doore.member.domain.Member;
+import doore.member.domain.Participant;
 import doore.team.exception.TeamException;
 import doore.team.exception.TeamExceptionType;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +36,11 @@ public class StudyCommandService {
     private final StudyRepository studyRepository;
     private final TeamRepository teamRepository;
     private final CurriculumItemRepository curriculumItemRepository;
+    private final ParticipantRepository participantRepository;
+    private final MemberRepository memberRepository;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId) {
-        checkExistTeam(teamId);
+        validateExistTeam(teamId);
         checkEndDateValid(request.startDate(), request.endDate());
         Study study = studyRepository.save(toStudyWithoutCurriculum(request, teamId));
         List<CurriculumItem> curriculumItems = toCurriculumList(request, study);
@@ -71,22 +80,22 @@ public class StudyCommandService {
     }
 
     public void deleteStudy(Long studyId) {
-        checkExistStudy(studyId);
+        validateExistStudy(studyId);
         studyRepository.deleteById(studyId);
     }
 
     public void updateStudy(StudyUpdateRequest request, Long studyId) {
-        Study study = checkExistStudy(studyId);
+        Study study = validateExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
     public void terminateStudy(Long studyId) {
-        Study study = checkExistStudy(studyId);
+        Study study = validateExistStudy(studyId);
         study.terminate();
     }
 
     public void changeStudyStatus(String status, Long studyId) {
-        Study study = checkExistStudy(studyId);
+        Study study = validateExistStudy(studyId);
         try {
             StudyStatus changedStatus = StudyStatus.valueOf(status);
             study.changeStatus(changedStatus);
@@ -95,11 +104,42 @@ public class StudyCommandService {
         }
     }
 
-    private void checkExistTeam(Long teamId) {
+    public void saveParticipant(Long studyId, Long memberId) {
+        validateExistStudy(studyId);
+        Member member = validateExistMember(memberId);
+        Participant participant = Participant.builder()
+                .studyId(studyId)
+                .member(member)
+                .build();
+        participantRepository.save(participant);
+    }
+
+    public void deleteParticipant(Long studyId, Long memberId) {
+        validateExistStudy(studyId);
+        Member member = validateExistMember(memberId);
+        participantRepository.deleteByStudyIdAndMember(studyId, member);
+    }
+
+    public void withdrawParticipant(Long studyId, HttpServletRequest request) {
+        validateExistStudy(studyId);
+        String memberId = request.getHeader("Authorization");
+        if (memberId == null) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        Member member = memberRepository.findById(Long.parseLong(memberId))
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+        participantRepository.deleteByStudyIdAndMember(studyId, member);
+    }
+
+    private void validateExistTeam(Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
     }
 
-    public Study checkExistStudy(Long studyId) {
+    private Study validateExistStudy(Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    }
+
+    private Member validateExistMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }

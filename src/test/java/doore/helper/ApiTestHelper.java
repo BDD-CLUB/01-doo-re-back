@@ -33,17 +33,16 @@ public abstract class ApiTestHelper {
                 .content(asJsonString(content)));
     }
 
+    protected ResultActions callPostApi(final String url) throws Exception {
+        return mockMvc.perform(post(url));
+    }
+
     protected ResultActions callDeleteApi(final String url) throws Exception {
         return mockMvc.perform(delete(url));
     }
 
     protected ResultActions callGetApi(final String url) throws Exception {
         return mockMvc.perform(get(url));
-    }
-
-    protected ResultActions callPatchApi(final String url) throws Exception {
-        return mockMvc.perform(patch(url)
-                .contentType(MediaType.APPLICATION_JSON));
     }
 
     protected ResultActions callPatchApi(final String url, final Object content) throws Exception {
