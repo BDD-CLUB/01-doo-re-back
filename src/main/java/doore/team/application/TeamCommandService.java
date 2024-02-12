@@ -24,12 +24,16 @@ public class TeamCommandService {
     public void createTeam(final TeamCreateRequest request, final MultipartFile file) {
         // TODO: 팀 생성자를 팀 관리자로 등록
         final String imageUrl = s3ImageFileService.upload(file);
-        final Team team = Team.builder()
-                .name(request.name())
-                .description(request.description())
-                .imageUrl(imageUrl)
-                .build();
-        teamRepository.save(team);
+        try {
+            final Team team = Team.builder()
+                    .name(request.name())
+                    .description(request.description())
+                    .imageUrl(imageUrl)
+                    .build();
+            teamRepository.save(team);
+        } catch (Exception e) {
+            s3ImageFileService.deleteFile(imageUrl);
+        }
     }
 
     public void updateTeam(final Long teamId, final TeamUpdateRequest request) {
