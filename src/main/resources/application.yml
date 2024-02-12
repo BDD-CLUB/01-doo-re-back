@@ -27,6 +27,10 @@ spring:
             scope:
               - email
               - profile
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
 
 url:
   access-token: https://oauth2.googleapis.com/token
@@ -44,9 +48,9 @@ cors:
 aws:
   s3:
     bucket: test
-    path:
-      imagePath: images/
-      documentPath: documents/
+    folder:
+      imageFolder: images/
+      documentFolder: documents/
   credentials:
     access-key: test
     secret-key: test
