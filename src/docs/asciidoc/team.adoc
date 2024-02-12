@@ -19,8 +19,50 @@ link:../doore.html[API 목록으로 돌아가기]
 .HTTP Request
 include::{snippets}/team-create/http-request.adoc[]
 
-.Request Fields
-include::{snippets}/team-create/request-fields.adoc[]
+.Request Parts
+include::{snippets}/team-create/request-parts.adoc[]
+
+.Request Part's Request Fields
+include::{snippets}/team-create/request-part-request-fields.adoc[]
 
 .HTTP Response
 include::{snippets}/team-create/http-response.adoc[]
+
+== `PUT`: Team 정보 수정
+
+.HTTP Request
+include::{snippets}/team-update/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-update/path-parameters.adoc[]
+
+.Request Fields
+include::{snippets}/team-update/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/team-update/http-response.adoc[]
+
+== `PATCH`: Team 이미지 수정
+
+.HTTP Request
+include::{snippets}/team-image-update/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-image-update/path-parameters.adoc[]
+
+.Request Parts
+include::{snippets}/team-image-update/request-parts.adoc[]
+
+.HTTP Response
+include::{snippets}/team-image-update/http-response.adoc[]
+
+== `DELETE`: Team 삭제
+
+.HTTP Request
+include::{snippets}/team-delete/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-delete/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/team-delete/http-response.adoc[]
