@@ -1,7 +1,8 @@
 package doore.file.application;
 
-import static doore.file.exception.FileExceptionType.INVALID_IMAGE_FILE_FORMAT;
 import static doore.file.exception.FileExceptionType.FAIL_UPLOAD_IMAGE_FILE;
+import static doore.file.exception.FileExceptionType.FILE_IS_NULL;
+import static doore.file.exception.FileExceptionType.INVALID_IMAGE_FILE_FORMAT;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -28,6 +29,8 @@ public class S3ImageFileService extends S3FileService {
 
     @Override
     public String upload(final MultipartFile file) {
+        validateNotNull(file);
+
         final String fileExtension = getFileExtension(file);
         final String newFileName = createFileName(fileExtension);
         final ObjectMetadata objectMetadata = getObjectMetadata(file);
@@ -38,6 +41,12 @@ public class S3ImageFileService extends S3FileService {
             throw new FileException(FAIL_UPLOAD_IMAGE_FILE);
         }
         return newFileName;
+    }
+
+    private void validateNotNull(final MultipartFile file) {
+        if (file == null) {
+            throw new FileException(FILE_IS_NULL);
+        }
     }
 
     @Override
