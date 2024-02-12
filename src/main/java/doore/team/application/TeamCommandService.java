@@ -51,6 +51,9 @@ public class TeamCommandService {
     public void deleteTeam(final Long teamId) {
         final Team team = findTeamById(teamId);
         teamRepository.delete(team);
+        if (team.hasImage()) {
+            s3ImageFileService.deleteFile(team.getImageUrl());
+        }
         // TODO: 2/2/24 팀이 삭제될 시 연관된 스터디와, 커리큘럼도 삭제
     }
 
