@@ -19,10 +19,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("is_deleted = false")
+@SQLDelete(sql = "UPDATE study SET is_deleted = true WHERE id = ?")
 public class Study extends BaseEntity {
 
     @Id
@@ -59,7 +63,7 @@ public class Study extends BaseEntity {
 
     @Builder
     private Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,
-                 Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
+                  Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
