@@ -7,7 +7,7 @@ drop table if exists doore.crop;
 drop table if exists doore.member_team;
 drop table if exists doore.participant;
 drop table if exists doore.garden;
-
+drop table if exists doore.attendance;
 
 
 create table member
@@ -110,5 +110,13 @@ create table garden
     team_id          bigint       not null,
     member_id        bigint       not null,
     created_at       datetime(6),
+    updated_at       datetime(6)
+);
+
+create table attendance
+(
+    id              bigint auto_increment primary key,
+    member_id       bigint not null,
+    created_at      datetime(6),
     updated_at       datetime(6)
 );
