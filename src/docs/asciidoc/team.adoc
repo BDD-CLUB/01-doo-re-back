@@ -66,3 +66,37 @@ include::{snippets}/team-delete/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/team-delete/http-response.adoc[]
+
+== `POST`: Team 초대 링크 생성
+
+NOTE: 유효기간이 1일인 초대 링크가 생성됩니다.
+이미 생성된 초대 링크가 있다면, 초대 링크를 반환합니다.
+
+.HTTP Request
+include::{snippets}/team-create-invite-link/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-create-invite-link/path-parameters.adoc[]
+
+.Request Body's Fields
+include::{snippets}/team-create-invite-link/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/team-create-invite-link/http-response.adoc[]
+
+.Response Body's Fields
+include::{snippets}/team-create-invite-link/response-fields.adoc[]
+
+== `POST`: 초대 링크를 통해 팀 참여
+
+.HTTP Request
+include::{snippets}/team-join/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-join/path-parameters.adoc[]
+
+.Request Body's Fields
+include::{snippets}/team-join/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/team-join/http-response.adoc[]

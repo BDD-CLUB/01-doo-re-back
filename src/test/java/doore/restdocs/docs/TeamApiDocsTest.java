@@ -3,22 +3,27 @@ package doore.restdocs.docs;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 
 import doore.restdocs.RestDocsTest;
 import doore.team.api.TeamController;
 import doore.team.application.dto.request.TeamCreateRequest;
+import doore.team.application.dto.request.TeamInviteLinkRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.TeamInviteLinkResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,6 +32,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.RequestPartFieldsSnippet;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.PathParametersSnippet;
 import org.springframework.restdocs.request.RequestPartsSnippet;
 import org.springframework.web.multipart.MultipartFile;
@@ -130,5 +136,52 @@ public class TeamApiDocsTest extends RestDocsTest {
         );
         mockMvc.perform(delete("/teams/{teamId}", teamId)).andExpect(status().isNoContent())
                 .andDo(document("team-delete", pathParameters));
+    }
+
+    @Test
+    @DisplayName("팀의 초대링크를 생성한다.")
+    public void 팀의_초대링크를_생성한다() throws Exception {
+        // given
+        Long teamId = 1L;
+        final TeamInviteLinkResponse response = new TeamInviteLinkResponse("asdf");
+
+        // when
+        when(teamCommandService.generateTeamInviteLink(eq(teamId))).thenReturn(response);
+
+        // then
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("teamId").description("팀 ID")
+        );
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                stringFieldWithPath("link", "생성된 팀의 초대 링크")
+        );
+        mockMvc.perform(post("/teams/{teamId}/invite-link", teamId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("team-create-invite-link", pathParameters, responseFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("초대링크를 통해 팀에 가입한다.")
+    public void 초대링크를_통해_팀에_가입한다() throws Exception {
+        // given
+        Long teamId = 1L;
+        final TeamInviteLinkRequest request = new TeamInviteLinkRequest("asdf");
+
+        // when
+        doNothing().when(teamCommandService).joinTeam(eq(teamId), any(TeamInviteLinkRequest.class));
+
+        // then
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("teamId").description("팀 ID")
+        );
+        final RequestFieldsSnippet requestFieldsSnippet = requestFields(
+                stringFieldWithPath("link", "팀의 초대 링크")
+        );
+        mockMvc.perform(post("/teams/{teamId}/join", teamId)
+                        .content(asJsonString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andDo(document("team-join", pathParameters, requestFieldsSnippet));
     }
 }
