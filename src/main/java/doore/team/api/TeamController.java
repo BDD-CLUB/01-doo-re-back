@@ -2,7 +2,9 @@ package doore.team.api;
 
 import doore.team.application.TeamCommandService;
 import doore.team.application.dto.request.TeamCreateRequest;
+import doore.team.application.dto.request.TeamInviteLinkRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.TeamInviteLinkResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,5 +61,22 @@ public class TeamController {
     public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId) {
         teamCommandService.deleteTeam(teamId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{teamId}/invite-link")
+    public ResponseEntity<TeamInviteLinkResponse> generateTeamInviteLink(
+            @PathVariable final Long teamId
+    ) {
+        final TeamInviteLinkResponse teamInviteLinkResponse = teamCommandService.generateTeamInviteLink(teamId);
+        return ResponseEntity.ok(teamInviteLinkResponse);
+    }
+
+    @PostMapping("/{teamId}/join")
+    public ResponseEntity<Void> joinTeam(
+            @PathVariable final Long teamId,
+            @Valid @RequestBody final TeamInviteLinkRequest request
+    ) {
+        teamCommandService.joinTeam(teamId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

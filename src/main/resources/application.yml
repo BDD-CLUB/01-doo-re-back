@@ -31,6 +31,10 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 100MB
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 url:
   access-token: https://oauth2.googleapis.com/token
