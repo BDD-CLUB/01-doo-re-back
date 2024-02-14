@@ -16,7 +16,6 @@ import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.CurriculumItemException;
 import doore.study.exception.StudyException;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -125,10 +124,7 @@ public class CurriculumItemCommandService {
     }
 
     private void sortCurriculum() {
-        List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparingInt(CurriculumItem::getItemOrder))
-                .toList();
+        List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
 
         for (int i = 0; i < sortedCurriculum.size(); i++) {
             CurriculumItem item = sortedCurriculum.get(i);
