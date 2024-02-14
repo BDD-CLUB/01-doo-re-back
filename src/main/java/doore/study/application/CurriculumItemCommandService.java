@@ -36,7 +36,8 @@ public class CurriculumItemCommandService {
 
     public void manageCurriculum(CurriculumItemManageRequest request, Long studyId) {
         List<CurriculumItem> curriculumItems = request.curriculumItems();
-        validItemOrderCheck(curriculumItems);
+        validItemOrderDuplicateCheck(curriculumItems);
+        validItemOrderRangeCheck(curriculumItems);
         createCurriculum(studyId, curriculumItems);
         updateCurriculum(curriculumItems);
 
@@ -57,7 +58,7 @@ public class CurriculumItemCommandService {
         }
     }
 
-    private void validItemOrderCheck(List<CurriculumItem> curriculumItems) {
+    private void validItemOrderDuplicateCheck(List<CurriculumItem> curriculumItems) {
         Set<Integer> uniqueItemOrders = new HashSet<>();
 
         for (CurriculumItem item : curriculumItems) {
@@ -65,6 +66,12 @@ public class CurriculumItemCommandService {
             if (!uniqueItemOrders.add(itemOrder)) {
                 throw new CurriculumItemException(INVALID_ITEM_ORDER);
             }
+        }
+    }
+
+    private void validItemOrderRangeCheck(List<CurriculumItem> curriculumItems) {
+        for (CurriculumItem item : curriculumItems) {
+            int itemOrder = item.getItemOrder();
             if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
                 throw new CurriculumItemException(INVALID_ITEM_ORDER);
             }
