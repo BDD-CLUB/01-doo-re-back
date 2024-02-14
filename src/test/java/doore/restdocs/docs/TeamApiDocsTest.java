@@ -21,9 +21,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import doore.restdocs.RestDocsTest;
 import doore.team.api.TeamController;
 import doore.team.application.dto.request.TeamCreateRequest;
-import doore.team.application.dto.request.TeamInviteLinkRequest;
+import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
-import doore.team.application.dto.response.TeamInviteLinkResponse;
+import doore.team.application.dto.response.TeamInviteCodeResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -139,44 +139,44 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀의 초대링크를 생성한다.")
-    public void 팀의_초대링크를_생성한다() throws Exception {
+    @DisplayName("팀의 초대코드를 생성한다.")
+    public void 팀의_초대코드를_생성한다() throws Exception {
         // given
         Long teamId = 1L;
-        final TeamInviteLinkResponse response = new TeamInviteLinkResponse("asdf");
+        final TeamInviteCodeResponse response = new TeamInviteCodeResponse("asdf");
 
         // when
-        when(teamCommandService.generateTeamInviteLink(eq(teamId))).thenReturn(response);
+        when(teamCommandService.generateTeamInviteCode(eq(teamId))).thenReturn(response);
 
         // then
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("팀 ID")
         );
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
-                stringFieldWithPath("link", "생성된 팀의 초대 링크")
+                stringFieldWithPath("code", "생성된 팀의 초대 코드")
         );
-        mockMvc.perform(post("/teams/{teamId}/invite-link", teamId)
+        mockMvc.perform(post("/teams/{teamId}/invite-code", teamId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("team-create-invite-link", pathParameters, responseFieldsSnippet));
+                .andDo(document("team-create-invite-code", pathParameters, responseFieldsSnippet));
     }
 
     @Test
-    @DisplayName("초대링크를 통해 팀에 가입한다.")
-    public void 초대링크를_통해_팀에_가입한다() throws Exception {
+    @DisplayName("초대코드를 통해 팀에 가입한다.")
+    public void 초대코드를_통해_팀에_가입한다() throws Exception {
         // given
         Long teamId = 1L;
-        final TeamInviteLinkRequest request = new TeamInviteLinkRequest("asdf");
+        final TeamInviteCodeRequest request = new TeamInviteCodeRequest("asdf");
 
         // when
-        doNothing().when(teamCommandService).joinTeam(eq(teamId), any(TeamInviteLinkRequest.class));
+        doNothing().when(teamCommandService).joinTeam(eq(teamId), any(TeamInviteCodeRequest.class));
 
         // then
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("팀 ID")
         );
         final RequestFieldsSnippet requestFieldsSnippet = requestFields(
-                stringFieldWithPath("link", "팀의 초대 링크")
+                stringFieldWithPath("code", "팀의 초대 코드")
         );
         mockMvc.perform(post("/teams/{teamId}/join", teamId)
                         .content(asJsonString(request))

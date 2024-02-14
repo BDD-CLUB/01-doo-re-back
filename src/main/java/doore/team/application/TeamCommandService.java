@@ -6,9 +6,9 @@ import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 
 import doore.file.application.S3ImageFileService;
 import doore.team.application.dto.request.TeamCreateRequest;
-import doore.team.application.dto.request.TeamInviteLinkRequest;
+import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
-import doore.team.application.dto.response.TeamInviteLinkResponse;
+import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
@@ -76,24 +76,24 @@ public class TeamCommandService {
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 
-    public TeamInviteLinkResponse generateTeamInviteLink(final Long teamId) {
+    public TeamInviteCodeResponse generateTeamInviteCode(final Long teamId) {
         validateExistTeam(teamId);
 
         final Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isEmpty()) {
             final String randomCode = RandomUtil.generateRandomCode('0', 'z', 10);
             redisUtil.setDataExpire(INVITE_LINK_PREFIX.formatted(teamId), randomCode, RedisUtil.toTomorrow());
-            return new TeamInviteLinkResponse(randomCode);
+            return new TeamInviteCodeResponse(randomCode);
         }
-        return new TeamInviteLinkResponse(link.get());
+        return new TeamInviteCodeResponse(link.get());
     }
 
-    public void joinTeam(final Long teamId, final TeamInviteLinkRequest request) {
+    public void joinTeam(final Long teamId, final TeamInviteCodeRequest request) {
         validateExistTeam(teamId);
 
         Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isPresent()) {
-            validateMatchLink(link.get(), request.link());
+            validateMatchLink(link.get(), request.code());
             // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리.
         }
         throw new TeamException(EXPIRED_LINK);

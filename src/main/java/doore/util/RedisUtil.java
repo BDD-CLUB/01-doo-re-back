@@ -2,6 +2,7 @@ package doore.util;
 
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.Objects.requireNonNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,5 +49,9 @@ public class RedisUtil {
         final LocalDateTime tomorrow = now.plusDays(1);
         final long secondsUntilTomorrow = tomorrow.toEpochSecond(UTC) - now.toEpochSecond(UTC);
         return secondsUntilTomorrow * 1000;
+    }
+
+    public void flushAll() {
+        requireNonNull(redisTemplate.getConnectionFactory()).getConnection().serverCommands();
     }
 }

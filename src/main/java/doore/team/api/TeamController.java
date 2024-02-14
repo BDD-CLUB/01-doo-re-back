@@ -2,9 +2,9 @@ package doore.team.api;
 
 import doore.team.application.TeamCommandService;
 import doore.team.application.dto.request.TeamCreateRequest;
-import doore.team.application.dto.request.TeamInviteLinkRequest;
+import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
-import doore.team.application.dto.response.TeamInviteLinkResponse;
+import doore.team.application.dto.response.TeamInviteCodeResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,18 +63,18 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{teamId}/invite-link")
-    public ResponseEntity<TeamInviteLinkResponse> generateTeamInviteLink(
+    @PostMapping("/{teamId}/invite-code")
+    public ResponseEntity<TeamInviteCodeResponse> generateTeamInviteCode(
             @PathVariable final Long teamId
     ) {
-        final TeamInviteLinkResponse teamInviteLinkResponse = teamCommandService.generateTeamInviteLink(teamId);
-        return ResponseEntity.ok(teamInviteLinkResponse);
+        final TeamInviteCodeResponse teamInviteCodeResponse = teamCommandService.generateTeamInviteCode(teamId);
+        return ResponseEntity.ok(teamInviteCodeResponse);
     }
 
     @PostMapping("/{teamId}/join")
     public ResponseEntity<Void> joinTeam(
             @PathVariable final Long teamId,
-            @Valid @RequestBody final TeamInviteLinkRequest request
+            @Valid @RequestBody final TeamInviteCodeRequest request
     ) {
         teamCommandService.joinTeam(teamId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
