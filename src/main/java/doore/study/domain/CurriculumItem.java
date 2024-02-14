@@ -64,4 +64,16 @@ public class CurriculumItem extends BaseEntity {
     public void saveStudy(Study study) {
         this.study = study;
     }
+
+    public void updateIfNameDifferent(CurriculumItem curriculumItem) {
+        if (!this.name.equals(curriculumItem.getName())) {
+            this.updateName(curriculumItem.getName());
+        }
+    }
+
+    public void updateIfItemOrderDifferent(CurriculumItem curriculumItem) {
+        if (!this.itemOrder.equals(curriculumItem.getItemOrder())) {
+            this.updateItemOrder(curriculumItem.getItemOrder());
+        }
+    }
 }

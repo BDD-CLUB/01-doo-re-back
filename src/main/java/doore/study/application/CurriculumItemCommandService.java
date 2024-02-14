@@ -113,13 +113,8 @@ public class CurriculumItemCommandService {
             CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.getId())
                     .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
 
-            if (!existingItem.getName().equals(requestItem.getName())) {
-                existingItem.updateName(requestItem.getName());
-            }
-
-            if (!existingItem.getItemOrder().equals(requestItem.getItemOrder())) {
-                existingItem.updateItemOrder(requestItem.getItemOrder());
-            }
+            existingItem.updateIfNameDifferent(requestItem);
+            existingItem.updateIfItemOrderDifferent(requestItem);
         }
     }
 
