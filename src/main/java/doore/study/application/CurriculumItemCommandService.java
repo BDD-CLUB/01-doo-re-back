@@ -19,6 +19,7 @@ import doore.study.exception.StudyException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,10 +127,8 @@ public class CurriculumItemCommandService {
     private void sortCurriculum() {
         List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
 
-        for (int i = 0; i < sortedCurriculum.size(); i++) {
-            CurriculumItem item = sortedCurriculum.get(i);
-            item.updateItemOrder(i + 1);
-        }
+        IntStream.range(1, sortedCurriculum.size())
+                .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);
     }
 }
