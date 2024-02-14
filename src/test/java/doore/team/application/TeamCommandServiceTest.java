@@ -16,8 +16,8 @@ public class TeamCommandServiceTest extends IntegrationTest {
     private TeamCommandService teamCommandService;
 
     @Test
-    @DisplayName("찾을 수 없는 팀은 팀 정보를 수정할 수 없다. [실패]")
-    public void 찾을_수_없는_팀은_팀_정보를_수정할_수_없다_실패() {
+    @DisplayName("[실패] 찾을 수 없는 팀은 팀 정보를 수정할 수 없다.")
+    public void updateTeam_찾을_수_없는_팀은_팀_정보를_수정할_수_없다_실패() {
         //given
         final Long invalidId = 0L;
         TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
