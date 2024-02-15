@@ -27,9 +27,9 @@ public class CurriculumItemController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/curriculums/{curriculumId}/check")
-    public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId) {
-        curriculumItemCommandService.checkCurriculum(curriculumId);
+    @PatchMapping("/curriculums/{participantId}/check")
+    public ResponseEntity<Void> checkCurriculum(@PathVariable Long participantId) {
+        curriculumItemCommandService.checkCurriculum(participantId);
         return ResponseEntity.noContent().build();
     }
 
