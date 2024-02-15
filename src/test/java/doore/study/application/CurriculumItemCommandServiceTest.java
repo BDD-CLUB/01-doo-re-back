@@ -6,11 +6,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import doore.helper.IntegrationTest;
+import doore.member.MemberFixture;
+import doore.member.domain.Member;
+import doore.member.domain.Participant;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.study.StudyFixture;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import java.util.ArrayList;
@@ -28,6 +35,12 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     protected CurriculumItemRepository curriculumItemRepository;
     @Autowired
     protected StudyRepository studyRepository;
+    @Autowired
+    protected MemberRepository memberRepository;
+    @Autowired
+    protected ParticipantRepository participantRepository;
+    @Autowired
+    protected ParticipantCurriculumItemRepository participantCurriculumItemRepository;
 
     private Study study;
     private CurriculumItem curriculumItem1;
@@ -82,13 +95,48 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("[성공] 커리큘럼의 상태 변경이 가능하다.")
+    public void checkCurriculum_커리큘럼의_상태_변경이_가능하다() throws Exception {
+        Member member = MemberFixture.회원();
+        memberRepository.save(member);
+        Participant participant = Participant.builder()
+                .member(member)
+                .studyId(study.getId())
+                .build();
+        participantRepository.save(participant);
+
+        curriculumItemCommandService.manageCurriculum(request, study.getId());
+        curriculumItemCommandService.checkCurriculum(participant.getId());
+        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByParticipantId(
+                participant.getId()).orElseThrow();
+
+        assertThat(participantCurriculumItem.getIsChecked()).isEqualTo(true);
+
+        curriculumItemCommandService.checkCurriculum(participant.getId());
+
+        assertThat(participantCurriculumItem.getIsChecked()).isEqualTo(false);
+    }
+
+    @Test
     @DisplayName("[성공] 아이디가 없으면 커리큘럼을 생성한다.")
     public void createCurriculum_아이디가_없으면_커리큘럼을_생성한다() throws Exception {
+        Member member = MemberFixture.회원();
+        memberRepository.save(member);
+        Participant participant = Participant.builder()
+                .member(member)
+                .studyId(study.getId())
+                .build();
+        participantRepository.save(participant);
         curriculumItemCommandService.manageCurriculum(request, study.getId());
         CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
 
         assertThat(resultCurriculumItem.getId()).isEqualTo(4);
         assertThat(resultCurriculumItem.getName()).isEqualTo("Algorithm Study");
+
+        curriculumItemCommandService.checkCurriculum(participant.getId());
+        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByParticipantId(
+                participant.getId()).orElseThrow();
+        assertThat(participantCurriculumItem.getIsChecked()).isEqualTo(true);
     }
 
     @Test
