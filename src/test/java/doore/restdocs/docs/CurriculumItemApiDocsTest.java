@@ -61,9 +61,9 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼 상태가 정상적으로 변경된다.")
     public void checkCurriculum_커리큘럼_상태가_정상적으로_변경된다() throws Exception {
-        doNothing().when(curriculumItemCommandService).checkCurriculum(any());
+        doNothing().when(curriculumItemCommandService).checkCurriculum(any(), any());
 
-        mockMvc.perform(patch("/curriculums/{participantId}/check", 1))
+        mockMvc.perform(patch("/curriculums/{curriculumId}/{participantId}/check", 1, 1))
                 .andExpect(status().isNoContent())
                 .andDo(document("curriculum-check"));
     }

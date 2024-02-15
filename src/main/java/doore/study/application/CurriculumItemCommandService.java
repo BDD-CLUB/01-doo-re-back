@@ -46,9 +46,13 @@ public class CurriculumItemCommandService {
         sortCurriculum();
     }
 
-    public void checkCurriculum(Long participantId) {
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByParticipantId(
-                participantId).orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
+    public void checkCurriculum(Long curriculumId, Long participantId) {
+        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
+                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
+        Participant participant = participantRepository.findById(participantId)
+                .orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
+        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+                curriculumItem.getId(), participant.getId()).orElseThrow();
 
         participantCurriculumItem.checkCompletion();
     }

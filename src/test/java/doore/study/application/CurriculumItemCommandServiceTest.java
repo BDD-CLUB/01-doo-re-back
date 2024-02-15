@@ -90,7 +90,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다.")
     public void checkCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
         assertThatThrownBy(() -> {
-            curriculumItemCommandService.checkCurriculum(invalidCurriculumItemId);
+            curriculumItemCommandService.checkCurriculum(1L, invalidCurriculumItemId);
         }).isInstanceOf(StudyException.class).hasMessage(NOT_FOUND_PARTICIPANT.errorMessage());
     }
 
@@ -99,6 +99,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     public void checkCurriculum_커리큘럼의_상태_변경이_가능하다() throws Exception {
         Member member = MemberFixture.회원();
         memberRepository.save(member);
+
         Participant participant = Participant.builder()
                 .member(member)
                 .studyId(study.getId())
@@ -106,15 +107,16 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         participantRepository.save(participant);
 
         curriculumItemCommandService.manageCurriculum(request, study.getId());
-        curriculumItemCommandService.checkCurriculum(participant.getId());
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByParticipantId(
-                participant.getId()).orElseThrow();
+        CurriculumItem curriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
+        curriculumItemCommandService.checkCurriculum(curriculumItem.getId(), participant.getId());
+        ParticipantCurriculumItem result = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+                curriculumItem.getId(), participant.getId()).orElseThrow();
 
-        assertThat(participantCurriculumItem.getIsChecked()).isEqualTo(true);
+        assertThat(result.getIsChecked()).isEqualTo(true);
 
-        curriculumItemCommandService.checkCurriculum(participant.getId());
+        curriculumItemCommandService.checkCurriculum(curriculumItem.getId(), participant.getId());
 
-        assertThat(participantCurriculumItem.getIsChecked()).isEqualTo(false);
+        assertThat(result.getIsChecked()).isEqualTo(false);
     }
 
     @Test
