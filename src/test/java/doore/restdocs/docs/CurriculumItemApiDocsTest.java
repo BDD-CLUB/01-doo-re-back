@@ -3,6 +3,7 @@ package doore.restdocs.docs;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,7 +48,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 커리큘럼 관리가 정상적으로 이루어진다.")
-    public void manageCurriculum_커리큘럼_관리가_정상적으로_이루어진다 () throws Exception {
+    public void manageCurriculum_커리큘럼_관리가_정상적으로_이루어진다() throws Exception {
         doNothing().when(curriculumItemCommandService).manageCurriculum(any(), any());
 
         mockMvc.perform(post("/studies/{studyId}/curriculums", 1)
@@ -55,5 +56,15 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andDo(document("curriculum-manage"));
+    }
+
+    @Test
+    @DisplayName("[성공] 커리큘럼 상태가 정상적으로 변경된다.")
+    public void checkCurriculum_커리큘럼_상태가_정상적으로_변경된다() throws Exception {
+        doNothing().when(curriculumItemCommandService).checkCurriculum(any());
+
+        mockMvc.perform(patch("/curriculums/{participantId}/check", 1))
+                .andExpect(status().isNoContent())
+                .andDo(document("curriculum-check"));
     }
 }

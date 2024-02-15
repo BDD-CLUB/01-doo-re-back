@@ -21,3 +21,11 @@ include::{snippets}/curriculum-manage/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/curriculum-manage/http-response.adoc[]
+
+== `PATCH`: CurriculumItem 상태 변경
+
+.HTTP Request
+include::{snippets}/curriculum-check/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/curriculum-check/http-response.adoc[]
