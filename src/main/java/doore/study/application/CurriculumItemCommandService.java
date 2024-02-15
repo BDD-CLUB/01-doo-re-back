@@ -36,8 +36,8 @@ public class CurriculumItemCommandService {
 
     public void manageCurriculum(CurriculumItemManageRequest request, Long studyId) {
         List<CurriculumItem> curriculumItems = request.curriculumItems();
-        validItemOrderDuplicateCheck(curriculumItems);
-        validItemOrderRangeCheck(curriculumItems);
+        checkItemOrderDuplicate(curriculumItems);
+        checkItemOrderRange(curriculumItems);
         createCurriculum(studyId, curriculumItems);
         updateCurriculum(curriculumItems);
 
@@ -51,40 +51,39 @@ public class CurriculumItemCommandService {
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findById(
                 curriculumItem.getId()).orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
-        if (participantCurriculumItem.getIsChecked().equals(false)) {
-            participantCurriculumItem.complete();
-        } else {
-            participantCurriculumItem.incomplete();
-        }
+
+        participantCurriculumItem.checkCompletion();
     }
 
-    private void validItemOrderDuplicateCheck(List<CurriculumItem> curriculumItems) {
+    private void checkItemOrderDuplicate(List<CurriculumItem> curriculumItems) {
         Set<Integer> uniqueItemOrders = new HashSet<>();
 
-        for (CurriculumItem item : curriculumItems) {
-            int itemOrder = item.getItemOrder();
-            if (!uniqueItemOrders.add(itemOrder)) {
-                throw new CurriculumItemException(INVALID_ITEM_ORDER);
-            }
-        }
+        curriculumItems.stream()
+                .map(CurriculumItem::getItemOrder)
+                .forEach(itemOrder -> {
+                    if (!uniqueItemOrders.add(itemOrder)) {
+                        throw new CurriculumItemException(INVALID_ITEM_ORDER);
+                    }
+                });
     }
 
-    private void validItemOrderRangeCheck(List<CurriculumItem> curriculumItems) {
-        for (CurriculumItem item : curriculumItems) {
-            int itemOrder = item.getItemOrder();
-            if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
-                throw new CurriculumItemException(INVALID_ITEM_ORDER);
-            }
-        }
+    private void checkItemOrderRange(List<CurriculumItem> curriculumItems) {
+        curriculumItems.stream()
+                .mapToInt(CurriculumItem::getItemOrder)
+                .forEach(itemOrder -> {
+                    if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
+                        throw new CurriculumItemException(INVALID_ITEM_ORDER);
+                    }
+                });
     }
 
     private void createCurriculum(Long studyId, List<CurriculumItem> curriculumItems) {
         curriculumItems.stream()
-                .filter(curriculumItem -> !existsCurriculumItem(curriculumItem.getId()))
+                .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.getId()))
                 .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
     }
 
-    private boolean existsCurriculumItem(Long curriculumItemId) {
+    private boolean isExistsCurriculumItem(Long curriculumItemId) {
         return curriculumItemRepository.existsById(curriculumItemId);
     }
 
@@ -119,9 +118,9 @@ public class CurriculumItemCommandService {
     }
 
     private void deleteCurriculum(List<CurriculumItem> deletedCurriculumItems) {
-        for (CurriculumItem requestItem : deletedCurriculumItems) {
-            curriculumItemRepository.deleteById(requestItem.getId());
-        }
+        deletedCurriculumItems.stream()
+                .map(CurriculumItem::getId)
+                .forEach(curriculumItemRepository::deleteById);
     }
 
     private void sortCurriculum() {
