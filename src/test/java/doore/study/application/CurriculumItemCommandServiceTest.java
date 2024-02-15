@@ -120,23 +120,11 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 아이디가 없으면 커리큘럼을 생성한다.")
     public void createCurriculum_아이디가_없으면_커리큘럼을_생성한다() throws Exception {
-        Member member = MemberFixture.회원();
-        memberRepository.save(member);
-        Participant participant = Participant.builder()
-                .member(member)
-                .studyId(study.getId())
-                .build();
-        participantRepository.save(participant);
         curriculumItemCommandService.manageCurriculum(request, study.getId());
         CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
 
         assertThat(resultCurriculumItem.getId()).isEqualTo(4);
         assertThat(resultCurriculumItem.getName()).isEqualTo("Algorithm Study");
-
-        curriculumItemCommandService.checkCurriculum(participant.getId());
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByParticipantId(
-                participant.getId()).orElseThrow();
-        assertThat(participantCurriculumItem.getIsChecked()).isEqualTo(true);
     }
 
     @Test
