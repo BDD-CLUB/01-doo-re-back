@@ -1,6 +1,6 @@
 package doore.study.application;
 
-import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
+import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,7 +12,6 @@ import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.CurriculumItemException;
 import doore.study.exception.StudyException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     public void checkCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
         assertThatThrownBy(() -> {
             curriculumItemCommandService.checkCurriculum(invalidCurriculumItemId);
-        }).isInstanceOf(CurriculumItemException.class).hasMessage(NOT_FOUND_CURRICULUM_ITEM.errorMessage());
+        }).isInstanceOf(StudyException.class).hasMessage(NOT_FOUND_PARTICIPANT.errorMessage());
     }
 
     @Test
