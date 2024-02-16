@@ -26,7 +26,7 @@ public class AttendanceCommandService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(IllegalArgumentException::new); //todo: new MemberException(NOT_FOUND_MEMBER)
 
-        if (alreadyAttended(member.getId())) {
+        if (isMemberAlreadyAttend(member.getId())) {
             throw new AttendanceException(AttendanceExceptionType.ALREADY_ATTENDED);
         }
         Attendance attendance = Attendance.builder()
@@ -35,7 +35,7 @@ public class AttendanceCommandService {
         attendanceRepository.save(attendance);
     }
 
-    private boolean alreadyAttended(Long memberId) {
+    private boolean isMemberAlreadyAttend(Long memberId) {
         return attendanceRepository.existsByMemberIdAndDate(memberId, LocalDate.now());
     }
 
