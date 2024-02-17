@@ -4,6 +4,7 @@ import doore.team.application.TeamCommandService;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class TeamController {
     public ResponseEntity<Void> createTeam(
             @Valid @RequestPart final TeamCreateRequest request,
             @RequestPart(required = false) final MultipartFile file
-    ) {
+    ) throws IOException {
         teamCommandService.createTeam(request, file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -50,7 +51,7 @@ public class TeamController {
     public ResponseEntity<Void> updateTeamImage(
             @PathVariable final Long teamId,
             @RequestPart(required = false) final MultipartFile file
-    ) {
+    ) throws IOException {
         teamCommandService.updateTeamImage(teamId, file);
         return ResponseEntity.noContent().build();
     }
