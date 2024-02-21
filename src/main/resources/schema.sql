@@ -113,6 +113,7 @@ create table garden
     updated_at       datetime(6)
 );
 
+-- 수정 날짜: 2024-02-16
 create table attendance
 (
     id              bigint auto_increment primary key,
