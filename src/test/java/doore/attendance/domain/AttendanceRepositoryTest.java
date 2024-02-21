@@ -27,6 +27,9 @@ public class AttendanceRepositoryTest extends RepositorySliceTest {
                 .memberId(1L)
                 .build();
 
+        em.flush();
+        em.clear();
+
         attendanceRepository.save(attendance);
 
         assertTrue(attendanceRepository.existsByMemberIdAndDate(1L,LocalDate.now()));
