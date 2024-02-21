@@ -49,8 +49,8 @@ public class AttendanceCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 회원이 없는 경우 출석 할 수 없다.")
     public void createAttendance_회원이_없는_경우_출석을_할_수_없다_성공() {
-        Long notExisitMemberId = 15L;
-        assertThatThrownBy(() -> attendanceCommandService.createAttendance(notExisitMemberId))
+        Long invalidMemberId = 15L;
+        assertThatThrownBy(() -> attendanceCommandService.createAttendance(invalidMemberId))
                 .isInstanceOf(IllegalArgumentException.class); //todo: new MemberException(NOT_FOUND_MEMBER
     }
 
