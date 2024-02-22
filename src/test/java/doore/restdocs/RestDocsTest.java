@@ -7,6 +7,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import doore.helper.ApiTestHelper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
+import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.team.application.TeamCommandService;
@@ -42,6 +43,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected StudyQueryService studyQueryService;
+
+    @MockBean
+    protected CurriculumItemCommandService curriculumItemCommandService;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;

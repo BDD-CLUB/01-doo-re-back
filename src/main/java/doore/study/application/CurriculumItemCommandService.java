@@ -1,21 +1,25 @@
 package doore.study.application;
 
+import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
+import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.study.application.dto.request.CurriculumItemRequest;
+import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
-import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.ParticipantCurriculumItem;
-import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.Study;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.CurriculumItemException;
 import doore.study.exception.StudyException;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,54 +33,103 @@ public class CurriculumItemCommandService {
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
-    private final AtomicInteger index = new AtomicInteger(1);
 
-    public void createCurriculum(CurriculumItemRequest request, Long studyId) {
+    public void manageCurriculum(CurriculumItemManageRequest request, Long studyId) {
+        List<CurriculumItem> curriculumItems = request.curriculumItems();
+        checkItemOrderDuplicate(curriculumItems);
+        checkItemOrderRange(curriculumItems);
+        createCurriculum(studyId, curriculumItems);
+        updateCurriculum(curriculumItems);
+
+        List<CurriculumItem> deletedCurriculumItems = request.deletedCurriculumItems();
+        deleteCurriculum(deletedCurriculumItems);
+        sortCurriculum();
+    }
+
+    public void checkCurriculum(Long curriculumId, Long participantId) {
+        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
+                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
+        Participant participant = participantRepository.findById(participantId)
+                .orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
+        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+                curriculumItem.getId(), participant.getId()).orElseThrow();
+
+        participantCurriculumItem.checkCompletion();
+    }
+
+    private void checkItemOrderDuplicate(List<CurriculumItem> curriculumItems) {
+        Set<Integer> uniqueItemOrders = new HashSet<>();
+
+        curriculumItems.stream()
+                .map(CurriculumItem::getItemOrder)
+                .forEach(itemOrder -> {
+                    if (!uniqueItemOrders.add(itemOrder)) {
+                        throw new CurriculumItemException(INVALID_ITEM_ORDER);
+                    }
+                });
+    }
+
+    private void checkItemOrderRange(List<CurriculumItem> curriculumItems) {
+        curriculumItems.stream()
+                .mapToInt(CurriculumItem::getItemOrder)
+                .forEach(itemOrder -> {
+                    if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
+                        throw new CurriculumItemException(INVALID_ITEM_ORDER);
+                    }
+                });
+    }
+
+    private void createCurriculum(Long studyId, List<CurriculumItem> curriculumItems) {
+        curriculumItems.stream()
+                .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.getId()))
+                .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
+    }
+
+    private boolean isExistsCurriculumItem(Long curriculumItemId) {
+        return curriculumItemRepository.existsById(curriculumItemId);
+    }
+
+    public void createCurriculumItemAndAssignToParticipants(Long studyId, CurriculumItem curriculumItem) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         List<Participant> participants = participantRepository.findAllByStudyId(studyId);
 
-        CurriculumItem curriculumItem = CurriculumItem.builder()
-                .name(request.name())
-                .itemOrder(index.getAndIncrement())
+        CurriculumItem createCurriculumItem = CurriculumItem.builder()
+                .name(curriculumItem.getName())
+                .itemOrder(curriculumItem.getItemOrder())
                 .study(study)
                 .build();
-        curriculumItemRepository.save(curriculumItem);
+        curriculumItemRepository.save(createCurriculumItem);
 
         List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
                 .map(participant -> ParticipantCurriculumItem.builder()
-                        .curriculumItem(curriculumItem)
+                        .curriculumItem(createCurriculumItem)
                         .participantId(participant.getId())
                         .build())
                 .toList();
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
-    public void deleteCurriculum(Long curriculumId) {
-        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
-                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
+    private void updateCurriculum(List<CurriculumItem> curriculumItems) {
+        for (CurriculumItem requestItem : curriculumItems) {
+            CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.getId())
+                    .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
 
-        int deletedOrder = curriculumItem.getItemOrder();
-        curriculumItemRepository.delete(curriculumItem);
-
-        List<CurriculumItem> subsequentItems = curriculumItemRepository.findByItemOrderGreaterThan(deletedOrder);
-        for (CurriculumItem item : subsequentItems) {
-            item.updateOrder(item.getItemOrder() - 1);
+            existingItem.updateIfNameDifferent(requestItem);
+            existingItem.updateIfItemOrderDifferent(requestItem);
         }
     }
 
-    public void updateCurriculum(Long curriculumId, CurriculumItemRequest request) {
-        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
-                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
-        curriculumItem.update(request.name());
+    private void deleteCurriculum(List<CurriculumItem> deletedCurriculumItems) {
+        deletedCurriculumItems.stream()
+                .map(CurriculumItem::getId)
+                .forEach(curriculumItemRepository::deleteById);
     }
 
-    public void checkCurriculum(Long curriculumId) {
-        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
-                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findById(
-                curriculumItem.getId()).orElseThrow(); //todo: 예외처리
-        if (participantCurriculumItem.getIsChecked().equals(false)) participantCurriculumItem.complete();
-        else participantCurriculumItem.incomplete();
-    }
+    private void sortCurriculum() {
+        List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
 
+        IntStream.range(1, sortedCurriculum.size())
+                .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
+        curriculumItemRepository.saveAll(sortedCurriculum);
+    }
 }

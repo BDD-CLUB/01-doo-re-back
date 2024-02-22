@@ -45,22 +45,35 @@ public class CurriculumItem extends BaseEntity {
     private final List<ParticipantCurriculumItem> participantCurriculumItems = new ArrayList<>();
 
     @Builder
-    private CurriculumItem(String name, Integer itemOrder, Study study) {
+    private CurriculumItem(Long id, String name, Integer itemOrder, Study study) {
+        this.id = id;
         this.name = name;
         this.itemOrder = itemOrder;
         this.isDeleted = false;
         this.study = study;
     }
 
-    public void update(String title) {
-        this.name = title;
+    public void updateName(String name) {
+        this.name = name;
     }
 
-    public void updateOrder(Integer itemOrder) {
+    public void updateItemOrder(Integer itemOrder) {
         this.itemOrder = itemOrder;
     }
 
     public void saveStudy(Study study) {
         this.study = study;
+    }
+
+    public void updateIfNameDifferent(CurriculumItem curriculumItem) {
+        if (!this.name.equals(curriculumItem.getName())) {
+            this.updateName(curriculumItem.getName());
+        }
+    }
+
+    public void updateIfItemOrderDifferent(CurriculumItem curriculumItem) {
+        if (!this.itemOrder.equals(curriculumItem.getItemOrder())) {
+            this.updateItemOrder(curriculumItem.getItemOrder());
+        }
     }
 }
