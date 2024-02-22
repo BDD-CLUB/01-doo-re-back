@@ -1,11 +1,15 @@
 package doore.study.api;
 
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+
 import doore.member.domain.Participant;
+import doore.member.exception.MemberException;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -42,10 +46,21 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}")
-    public ResponseEntity<StudyDetailResponse> getStudy(@PathVariable Long studyId) {
+    @GetMapping("/studies/{studyId}/entire")
+    public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId) {
         StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);
+    }
+
+    @GetMapping("/studies/{studyId}")
+    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId, HttpServletRequest request) {
+        String memberId = request.getHeader("Authorization"); //todo: 권한 로직으로 수정
+        if (memberId == null) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        PersonalStudyDetailResponse personalStudyDetailResponse =
+                studyQueryService.getPersonalStudyDetail(studyId, Long.parseLong(memberId));
+        return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}")

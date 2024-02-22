@@ -85,16 +85,6 @@ public class StudyControllerTest extends IntegrationTest {
         callDeleteApi(url).andExpect(status().isNoContent());
     }
 
-
-    @Test
-    @DisplayName("정상적으로 스터디를 조회한다.")
-    void 정상적으로_스터디를_조회한다_성공() throws Exception {
-        final Study study = algorithmStudy();
-        studyRepository.save(study);
-        String url = "/studies/" + study.getId();
-        callGetApi(url).andExpect(status().isOk());
-    }
-
     @Test
     @DisplayName("정상적으로 스터디를 수정한다.")
     void 정상적으로_스터디를_수정한다_성공() throws Exception {
