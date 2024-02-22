@@ -7,6 +7,8 @@ drop table if exists doore.crop;
 drop table if exists doore.member_team;
 drop table if exists doore.participant;
 drop table if exists doore.garden;
+drop table if exists doore.study_role;
+drop table if exists doore.team_role;
 
 
 
@@ -111,4 +113,20 @@ create table garden
     member_id        bigint       not null,
     created_at       datetime(6),
     updated_at       datetime(6)
+);
+
+create table study_role
+(
+    id          bigint auto_increment primary key,
+    study_id    bigint not null,
+    role        varchar(45) not null,
+    member_id   bigint not null
+);
+
+create table team_role
+(
+    id          bigint auto_increment primary key,
+    team_id     bigint not null,
+    role        varchar(45) not null,
+    member_id   bigint not null
 );
