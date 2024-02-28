@@ -3,7 +3,6 @@ package doore.document.application.dto.request;
 import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentType;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 
 public record DocumentCreateRequest(
         @NotNull(message = "제목을 입력해주세요.")

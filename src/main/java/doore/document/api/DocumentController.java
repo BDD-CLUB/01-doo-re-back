@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +39,6 @@ public class DocumentController {
                                                @PathVariable DocumentGroupType groupType,
                                                @PathVariable Long groupId) {
         documentCommandService.createDocument(request, files, groupType, groupId);
-        //todo: 동일 파일 선택 안되게 하는 것도 백엔드에서?
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -2,7 +2,6 @@ package doore.document.application.dto.response;
 
 import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentType;
-import doore.member.domain.Member;
 import java.time.LocalDate;
 import java.util.List;
 

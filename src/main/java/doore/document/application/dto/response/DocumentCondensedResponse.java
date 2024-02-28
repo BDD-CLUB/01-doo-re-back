@@ -1,6 +1,5 @@
 package doore.document.application.dto.response;
 
-import doore.member.domain.Member;
 import java.time.LocalDate;
 
 public record DocumentCondensedResponse(
