@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -138,7 +139,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             studyRepository.save(study);
             studyCommandService.deleteStudy(study.getId());
             List<Study> studies = studyRepository.findAll();
-            assertThat(studies).hasSize(0);
+            assertTrue(studies.get(0).getIsDeleted());
         }
 
 
