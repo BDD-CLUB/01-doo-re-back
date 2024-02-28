@@ -4,10 +4,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.study.domain.StudyStatus;
 import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Embeddable
+
 @Getter
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class StudyResponse {
     Long id;
     String name;
@@ -22,20 +27,4 @@ public class StudyResponse {
     Boolean isDeleted;
     Long teamId;
     Long cropId;
-
-    public StudyResponse() {
-    }
-
-    public StudyResponse(Long id, String name, String description, LocalDate startDate, LocalDate endTime,
-                         StudyStatus status, Boolean isDeleted, Long teamId, Long cropId) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.endTime = endTime;
-        this.status = status;
-        this.isDeleted = isDeleted;
-        this.teamId = teamId;
-        this.cropId = cropId;
-    }
 }
