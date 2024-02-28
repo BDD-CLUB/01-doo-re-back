@@ -4,6 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build:
+    name: 빌드
     runs-on: ubuntu-22.04
     timeout-minutes: 10
 
@@ -18,6 +19,9 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      redis:
+        image: redis
+        options: --health-cmd "redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
 
     permissions:
       id-token: write
@@ -62,3 +66,22 @@ jobs:
           aws s3 mv --region ${{ secrets.AWS_REGION }} \
           ${GITHUB_SHA::8}.tar.gz \
           ${{ secrets.S3_PROD_BACK_LOCATION }}/${GITHUB_SHA::8}.tar.gz
+  deploy:
+    needs: build
+    name: 배포
+    runs-on: [ self-hosted, label-prod ]
+    steps:
+      - name: 쉘 스크립트 실행
+        working-directory: /home/ubuntu
+        run: |
+          chmod +x /home/ubuntu/deploy.sh
+          sudo /home/ubuntu/deploy.sh ${GITHUB_SHA::8}
+      - name: Slack으로 결과 전송
+        if: always()
+        uses: 8398a7/action-slack@v3
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          author_name: DOORE Production Backend CICD
+          fields: repo, commit, message, author, action, took
