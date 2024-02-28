@@ -115,6 +115,7 @@ create table garden
     updated_at       datetime(6)
 );
 
+-- 수정 날짜: 2024-02-29
 create table document
 (
     id               bigint auto_increment primary key,
