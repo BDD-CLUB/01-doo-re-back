@@ -7,6 +7,8 @@ drop table if exists doore.crop;
 drop table if exists doore.member_team;
 drop table if exists doore.participant;
 drop table if exists doore.garden;
+drop table if exists doore.document;
+drop table if exists doore.file;
 
 
 
@@ -111,4 +113,26 @@ create table garden
     member_id        bigint       not null,
     created_at       datetime(6),
     updated_at       datetime(6)
+);
+
+create table document
+(
+    id               bigint auto_increment primary key,
+    name             varchar(255) not null,
+    description      varchar(255) not null,
+    group_type       varchar(255) not null,
+    group_id         bigint       not null,
+    is_deleted       boolean      not null,
+    access_type      varchar(255) not null,
+    type             varchar(255) not null,
+    uploader_id      bigint       not null,
+    created_at       datetime(6),
+    updated_at       datetime(6)
+);
+
+create table file
+(
+    id               bigint auto_increment primary key,
+    url             varchar(255) not null,
+    document_id     bigint       not null
 );

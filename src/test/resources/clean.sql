@@ -7,3 +7,5 @@ truncate table crop;
 truncate table member_team;
 truncate table participant;
 truncate table garden;
+truncate table document;
+truncate table file;
