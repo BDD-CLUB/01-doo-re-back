@@ -45,10 +45,10 @@ public class DocumentQueryService {
     }
 
     private DocumentCondensedResponse toDocumentCondensedResponse(StudyDocument document) {
-        Member uploader = memberRepository.findById(document.getUploaderId())
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+        Long uploaderId = memberRepository.findById(document.getUploaderId())
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
 //        String thumbnailUrl = getThumbnailUrl(document.getType(), document.getFiles().get(0));
-        return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(), document.getCreatedAt().toLocalDate(), uploader);
+        return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(), document.getCreatedAt().toLocalDate(), uploaderId);
     }
 
 //    private String getThumbnailUrl(DocumentType type, File file) {
@@ -94,10 +94,10 @@ public class DocumentQueryService {
             fileResponses.add(fileResponse);
         }
 
-        Member uploader = memberRepository.findById(document.getUploaderId())
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+        Long uploaderId = memberRepository.findById(document.getUploaderId())
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
         return new DocumentDetailResponse(document.getId(), document.getName(), document.getDescription(),
                 document.getAccessType(), document.getType(), fileResponses,
-                document.getCreatedAt().toLocalDate(), uploader);
+                document.getCreatedAt().toLocalDate(), uploaderId);
     }
 }

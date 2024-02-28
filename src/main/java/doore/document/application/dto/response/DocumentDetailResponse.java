@@ -14,6 +14,6 @@ public record DocumentDetailResponse(
         DocumentType type,
         List<FileResponse> files,
         LocalDate date,
-        Member uploader
+        Long uploaderId
 ) {
 }

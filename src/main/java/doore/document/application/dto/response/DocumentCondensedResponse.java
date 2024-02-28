@@ -9,6 +9,6 @@ public record DocumentCondensedResponse(
         String description,
 //        String thumbnailUrl,
         LocalDate date,
-        Member uploader
+        Long uploaderId
 ) {
 }

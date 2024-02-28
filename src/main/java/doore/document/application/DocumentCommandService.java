@@ -7,7 +7,6 @@ import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
-import doore.document.application.dto.request.FileRequest;
 import doore.document.domain.StudyDocument;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
@@ -43,14 +42,14 @@ public class DocumentCommandService {
     public void createDocument(DocumentCreateRequest request, List<MultipartFile> multipartFiles,
                                DocumentGroupType entityPath, Long entityId) {
         validateExistGroup(entityPath, entityId);
-        validateDocumentType(request.type(), request.files(), multipartFiles);
+        validateDocumentType(request.type(), request.url(), multipartFiles);
         StudyDocument document = toDocument(request, entityPath, entityId);
 
         documentRepository.save(document);
 
         if (document.getType().equals(DocumentType.url)) {
             File newFile = File.builder()
-                    .url(request.files().get(0).url())
+                    .url(request.url())
                     .document(document)
                     .build();
             fileRepository.save(newFile);
@@ -72,8 +71,8 @@ public class DocumentCommandService {
         }
     }
 
-    private void validateDocumentType(DocumentType type, List<FileRequest> files, List<MultipartFile> multipartFiles) {
-        if (type.equals(DocumentType.url) && files == null) {
+    private void validateDocumentType(DocumentType type, String url, List<MultipartFile> multipartFiles) {
+        if (type.equals(DocumentType.url) && url == null) {
             throw new DocumentException(LINK_DOCUMENT_NEEDS_FILE);
         }
         if(!type.equals(DocumentType.url) && (multipartFiles == null || multipartFiles.isEmpty())) {

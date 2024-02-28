@@ -17,7 +17,7 @@ public record DocumentCreateRequest(
         @NotNull(message = "자료 유형을 입력해주세요.")
         DocumentType type,
 
-        List<FileRequest> files,
+        String url,
 
         @NotNull(message = "업로더 아이디를 입력해주세요.")
         Long uploaderId
