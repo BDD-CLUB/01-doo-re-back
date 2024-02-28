@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,8 +34,8 @@ public class DocumentController {
     private final DocumentCommandService documentCommandService;
     private final DocumentQueryService documentQueryService;
 
-    @PostMapping("/{groupType}/{groupId}/documents")
-    public ResponseEntity<Void> createDocument(@Valid @RequestBody DocumentCreateRequest request,
+    @PostMapping( "/{groupType}/{groupId}/documents")
+    public ResponseEntity<Void> createDocument(@Valid @RequestPart DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
                                                @PathVariable DocumentGroupType groupType,
                                                @PathVariable Long groupId) {
