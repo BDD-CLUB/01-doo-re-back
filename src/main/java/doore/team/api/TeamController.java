@@ -35,7 +35,7 @@ public class TeamController {
     public ResponseEntity<Void> createTeam(
             @Valid @RequestPart final TeamCreateRequest request,
             @RequestPart(required = false) final MultipartFile file
-    ) throws IOException {
+    ) {
         teamCommandService.createTeam(request, file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -53,7 +53,7 @@ public class TeamController {
     public ResponseEntity<Void> updateTeamImage(
             @PathVariable final Long teamId,
             @RequestPart(required = false) final MultipartFile file
-    ) throws IOException {
+    ) {
         teamCommandService.updateTeamImage(teamId, file);
         return ResponseEntity.noContent().build();
     }
