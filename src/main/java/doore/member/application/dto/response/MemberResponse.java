@@ -4,19 +4,15 @@ import doore.member.domain.Member;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
-public class MemberResponse {
-
-    private final Long id;
-    private final String name;
-    private final String email;
-    private final String imageUrl;
-    private final String role;  // 권한 기능 구현 후 수정 예정
-    private final boolean isDeleted;
+public record MemberResponse(
+        Long id,
+        String name,
+        String email,
+        String imageUrl,
+        String role,  // 권한 기능 구현 후 수정 예정
+        Boolean isDeleted
+) {
 
     public static List<MemberResponse> of(final List<Member> members, Map<Member, String> roleOfMembers) {
         return members.stream()
