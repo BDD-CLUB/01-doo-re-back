@@ -10,6 +10,6 @@ public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
 
     @Query("select mt from MemberTeam mt "
             + "where mt.teamId = :teamId "
-            + "and (mt.member.name like  ':keyword%' or mt.member.email like ':keyword%')")
+            + "and (mt.member.name like  :keyword% or mt.member.email like :keyword%)")
     List<MemberTeam> findAllByTeamIdAndKeyword(final Long teamId, final String keyword);
 }
