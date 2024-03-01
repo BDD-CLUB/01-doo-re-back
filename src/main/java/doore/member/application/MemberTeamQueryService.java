@@ -28,7 +28,8 @@ public class MemberTeamQueryService {
         final List<Member> members = memberTeamRepository.findAllByTeamIdAndKeyword(teamId, keyword)
                 .stream()
                 .map(MemberTeam::getMember)
-                .sorted(Comparator.comparing(Member::getName).thenComparing(member -> member.getName().length()))
+                .sorted(Comparator.comparing(Member::getName))
+                .sorted(Comparator.comparing(member -> member.getName().length()))
                 .collect(Collectors.toList());
         // 추후 role 구현 후 수정 예정
         final Map<Member, String> roleOfMembers = new HashMap<>();
