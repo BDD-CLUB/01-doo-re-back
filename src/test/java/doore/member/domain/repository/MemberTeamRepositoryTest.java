@@ -1,5 +1,13 @@
 package doore.member.domain.repository;
 
+import static doore.member.MemberFixture.보름;
+import static doore.member.MemberFixture.비비아마;
+import static doore.member.MemberFixture.아마;
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.MemberFixture.아마스;
+import static doore.member.MemberFixture.아마어마어마;
+import static doore.member.MemberFixture.짱구;
+
 import doore.helper.RepositorySliceTest;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
@@ -27,13 +35,13 @@ class MemberTeamRepositoryTest extends RepositorySliceTest {
 
     @BeforeEach
     void setup() {
-        아마란스 = memberRepository.save(Member.builder().name("아마란스").email("").imageUrl("").googleId("").build());
-        아마어마어마 = memberRepository.save(Member.builder().name("아마어마어마").email("").imageUrl("").googleId("").build());
-        아마스 = memberRepository.save(Member.builder().name("아마스").email("").imageUrl("").googleId("").build());
-        보름 = memberRepository.save(Member.builder().name("보름").email("").imageUrl("").googleId("").build());
-        짱구 = memberRepository.save(Member.builder().name("짱구").email("").imageUrl("").googleId("").build());
-        비비아마 = memberRepository.save(Member.builder().name("비비아마").email("").imageUrl("").googleId("").build());
-        아마 = memberRepository.save(Member.builder().name("아마").email("").imageUrl("").googleId("").build());
+        아마란스 = memberRepository.save(아마란스());
+        아마어마어마 = memberRepository.save(아마어마어마());
+        아마스 = memberRepository.save(아마스());
+        보름 = memberRepository.save(보름());
+        짱구 = memberRepository.save(짱구());
+        비비아마 = memberRepository.save(비비아마());
+        아마 = memberRepository.save(아마());
 
         memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(아마란스).isDeleted(false).build());
         memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(아마어마어마).isDeleted(false).build());

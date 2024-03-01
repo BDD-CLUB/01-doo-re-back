@@ -1,6 +1,6 @@
 package doore.study.application;
 
-import static doore.member.MemberFixture.회원;
+import static doore.member.MemberFixture.아마란스;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -16,7 +16,6 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @DisplayName("[성공] 참여자를 정상적으로 조회할 수 있다.")
         void findAllParticipants_참여자를_정상적으로_조회할_수_있다_성공() {
             //given
-            Member member = 회원();
+            Member member = 아마란스();
             memberRepository.save(member);
             Study study = algorithmStudy();
             studyRepository.save(study);
