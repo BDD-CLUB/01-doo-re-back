@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class S3DocumentFileService extends S3FileService {
 
-    private static final List<String> DOCUMENT_FILE_EXTENSIONS = List.of(
+    private static final List<String> DOCUMENT_MIME_TYPES = List.of(
             "text/plain", "application/zip", //txt, zip
             "application/pdf", "application/vnd.ms-powerpoint",
             "application/vnd.openxmlformats-officedocument.presentationml.presentation", //pdf, ppt, pptx
@@ -36,7 +36,7 @@ public class S3DocumentFileService extends S3FileService {
 
     @Override
     void validateExtension(String mimeType) {
-        final boolean isValidate = DOCUMENT_FILE_EXTENSIONS.stream()
+        final boolean isValidate = DOCUMENT_MIME_TYPES.stream()
                 .anyMatch(validType -> validType.equalsIgnoreCase(mimeType));
         if (!isValidate) {
             throw new FileException(INVALID_IMAGE_FILE_FORMAT);

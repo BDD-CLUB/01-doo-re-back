@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class S3ImageFileService extends S3FileService {
 
-    private static final List<String> IMAGE_FILE_EXTENSIONS = List.of("image/jpeg", "image/png", "image/gif", "image/webp");
+    private static final List<String> IMAGE_MIME_TYPES = List.of("image/jpeg", "image/png", "image/gif", "image/webp");
 
     @Value("${aws.s3.folder.imageFolder}")
     private String imageFolder;
@@ -29,7 +29,7 @@ public class S3ImageFileService extends S3FileService {
 
     @Override
     public void validateExtension(final String mimeType) {
-        final boolean isValidate = IMAGE_FILE_EXTENSIONS.stream()
+        final boolean isValidate = IMAGE_MIME_TYPES.stream()
                 .anyMatch(validType -> validType.equalsIgnoreCase(mimeType));
         if (!isValidate) {
             throw new FileException(INVALID_IMAGE_FILE_FORMAT);
