@@ -4,15 +4,11 @@ import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.File;
-import doore.document.domain.StudyDocument;
+import doore.document.domain.Document;
 import doore.document.domain.repository.DocumentRepository;
 import doore.document.domain.repository.FileRepository;
-import doore.study.StudyFixture;
-import doore.study.domain.Study;
-import doore.study.domain.repository.StudyRepository;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,8 +71,8 @@ public class DocumentFixture {
         return this;
     }
 
-    public StudyDocument buildStudyDocument() {
-        final StudyDocument studyDocument = StudyDocument.builder()
+    public Document buildDocument() {
+        final Document document = Document.builder()
                 .name(this.name)
                 .description(this.description)
                 .groupType(this.groupType)
@@ -85,23 +81,23 @@ public class DocumentFixture {
                 .uploaderId(this.uploaderId)
                 .type(this.type)
                 .build();
-        return documentRepository.save(studyDocument);
+        return documentRepository.save(document);
     }
 
-    public StudyDocument buildLinkDocument(List<String> urls) {
+    public Document buildLinkDocument(List<String> urls) {
         type(DocumentType.URL);
-        StudyDocument studyDocument = buildStudyDocument();
+        Document document = buildDocument();
         List<File> files = new ArrayList<>();
         for (String url : urls) {
             File file = File.builder()
                     .url(url)
-                    .document(studyDocument)
+                    .document(document)
                     .build();
             files.add(file);
         }
 
         fileRepository.saveAll(files);
-        studyDocument.updateFiles(files);
-        return studyDocument;
+        document.updateFiles(files);
+        return document;
     }
 }

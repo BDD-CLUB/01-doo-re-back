@@ -1,27 +1,23 @@
 package doore.document.application;
 
 import static doore.member.MemberFixture.회원;
-import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.document.DocumentFixture;
-import doore.document.application.DocumentCommandService;
-import doore.document.application.DocumentQueryService;
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
-import doore.document.domain.StudyDocument;
+import doore.document.domain.Document;
 import doore.document.domain.repository.DocumentRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,19 +43,19 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     MemberRepository memberRepository;
 
     Study study;
-    StudyDocument studyDocument;
+    Document document;
 
     @BeforeEach
     void setUp() {
         study = createStudy();
         Member member = 회원();
         memberRepository.save(member);
-        studyDocument = new DocumentFixture()
+        document = new DocumentFixture()
                 .groupType(DocumentGroupType.STUDY)
                 .groupId(study.getId())
                 .type(DocumentType.URL)
                 .uploaderId(member.getId())
-                .buildStudyDocument();
+                .buildDocument();
     }
 
     @Test
@@ -72,10 +68,10 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         //then
         assertAll(
                 () -> assertThat(responses.getSize()).isNotZero(),
-                () -> assertEquals(responses.getContent().get(0).title(), studyDocument.getName()),
-                () -> assertEquals(responses.getContent().get(0).description(), studyDocument.getDescription()),
-                () -> assertEquals(responses.getContent().get(0).date(), studyDocument.getCreatedAt().toLocalDate()),
-                () -> assertEquals(responses.getContent().get(0).uploaderId(), studyDocument.getUploaderId())
+                () -> assertEquals(responses.getContent().get(0).title(), document.getName()),
+                () -> assertEquals(responses.getContent().get(0).description(), document.getDescription()),
+                () -> assertEquals(responses.getContent().get(0).date(), document.getCreatedAt().toLocalDate()),
+                () -> assertEquals(responses.getContent().get(0).uploaderId(), document.getUploaderId())
         );
     }
 
@@ -83,13 +79,13 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 학습자료 상세를 조회할 수 있다.")
     public void getDocument_정상적으로_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        DocumentDetailResponse response = documentQueryService.getDocument(studyDocument.getId());
+        DocumentDetailResponse response = documentQueryService.getDocument(document.getId());
         //then
         assertAll(
-                () -> assertEquals(response.title(), studyDocument.getName()),
-                () -> assertEquals(response.description(), studyDocument.getDescription()),
-                () -> assertEquals(response.date(), studyDocument.getCreatedAt().toLocalDate()),
-                () -> assertEquals(response.accessType(), studyDocument.getAccessType())
+                () -> assertEquals(response.title(), document.getName()),
+                () -> assertEquals(response.description(), document.getDescription()),
+                () -> assertEquals(response.date(), document.getCreatedAt().toLocalDate()),
+                () -> assertEquals(response.accessType(), document.getAccessType())
         );
     }
 

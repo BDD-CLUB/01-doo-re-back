@@ -6,7 +6,7 @@ import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.application.dto.response.FileResponse;
-import doore.document.domain.StudyDocument;
+import doore.document.domain.Document;
 import doore.document.exception.DocumentException;
 import java.util.ArrayList;
 import doore.document.domain.DocumentGroupType;
@@ -35,7 +35,7 @@ public class DocumentQueryService {
                 .map(this::toDocumentCondensedResponse);
     }
 
-    private DocumentCondensedResponse toDocumentCondensedResponse(StudyDocument document) {
+    private DocumentCondensedResponse toDocumentCondensedResponse(Document document) {
         Long uploaderId = memberRepository.findById(document.getUploaderId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
         return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(),
@@ -43,12 +43,12 @@ public class DocumentQueryService {
     }
 
     public DocumentDetailResponse getDocument(Long documentId) {
-        StudyDocument studyDocument = documentRepository.findById(documentId)
+        Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
-        return toDocumentDetailResponse(studyDocument);
+        return toDocumentDetailResponse(document);
     }
 
-    private DocumentDetailResponse toDocumentDetailResponse(StudyDocument document) {
+    private DocumentDetailResponse toDocumentDetailResponse(Document document) {
         List<FileResponse> fileResponses = new ArrayList<>();
         for (File file : document.getFiles()) {
             FileResponse fileResponse = new FileResponse(file.getId(), file.getUrl());

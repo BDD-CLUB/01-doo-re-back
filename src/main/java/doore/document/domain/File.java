@@ -26,10 +26,10 @@ public class File {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id", nullable = false)
-    StudyDocument document;
+    Document document;
 
     @Builder
-    public File(String url, StudyDocument document) {
+    public File(String url, Document document) {
         this.url = url;
         this.document = document;
     }

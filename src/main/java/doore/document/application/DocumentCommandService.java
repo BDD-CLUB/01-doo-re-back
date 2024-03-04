@@ -7,7 +7,7 @@ import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
-import doore.document.domain.StudyDocument;
+import doore.document.domain.Document;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.File;
@@ -43,7 +43,7 @@ public class DocumentCommandService {
                                DocumentGroupType groupType, Long groupId) {
         validateExistGroup(groupType, groupId);
         validateDocumentType(request.type(), request.url(), multipartFiles);
-        StudyDocument document = toDocument(request, groupType, groupId);
+        Document document = toDocument(request, groupType, groupId);
 
         documentRepository.save(document);
 
@@ -80,8 +80,8 @@ public class DocumentCommandService {
         }
     }
 
-    private StudyDocument toDocument(DocumentCreateRequest request, DocumentGroupType groupType, Long groupId) {
-        return StudyDocument.builder()
+    private Document toDocument(DocumentCreateRequest request, DocumentGroupType groupType, Long groupId) {
+        return Document.builder()
                 .name(request.title())
                 .description(request.description())
                 .groupType(groupType)
@@ -111,7 +111,7 @@ public class DocumentCommandService {
         return urls;
     }
 
-    private List<File> saveFiles(List<String> filePaths, StudyDocument document) {
+    private List<File> saveFiles(List<String> filePaths, Document document) {
         List<File> files = new ArrayList<>();
         for (String filePath : filePaths) {
             File newfile = File.builder()
@@ -126,7 +126,7 @@ public class DocumentCommandService {
     }
 
     public void updateDocument(DocumentUpdateRequest request, Long documentId) {
-        StudyDocument document = validateExistDocument(documentId);
+        Document document = validateExistDocument(documentId);
         document.update(request.title(), request.description(), request.accessType());
     }
 
@@ -135,7 +135,7 @@ public class DocumentCommandService {
         documentRepository.deleteById(documentId);
     }
 
-    private StudyDocument validateExistDocument(Long documentId) {
+    private Document validateExistDocument(Long documentId) {
         return documentRepository.findById(documentId).orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
     }
 }

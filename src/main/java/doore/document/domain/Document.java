@@ -25,7 +25,7 @@ import org.hibernate.annotations.SQLDelete;
 @Table(name = "document")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE document SET is_deleted = true where id = ?")
-public class StudyDocument extends BaseEntity {
+public class Document extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,8 +63,8 @@ public class StudyDocument extends BaseEntity {
     private Boolean isDeleted;
 
     @Builder
-    private StudyDocument(String name, String description, DocumentGroupType groupType, Long groupId,
-                          DocumentAccessType accessType, DocumentType type, Long uploaderId) {
+    private Document(String name, String description, DocumentGroupType groupType, Long groupId,
+                     DocumentAccessType accessType, DocumentType type, Long uploaderId) {
         this.name = name;
         this.description = description;
         this.groupType = groupType;

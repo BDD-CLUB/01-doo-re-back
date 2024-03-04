@@ -16,7 +16,7 @@ import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
 import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentType;
-import doore.document.domain.StudyDocument;
+import doore.document.domain.Document;
 import doore.document.domain.repository.DocumentRepository;
 import doore.document.exception.DocumentException;
 import doore.helper.IntegrationTest;
@@ -70,22 +70,22 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
                     DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
 
-            MultipartFile document = new MockMultipartFile(
+            MultipartFile file = new MockMultipartFile(
                     fileName,
                     fileName + "." + contentType,
                     contentType,
                     fileInputStream);
 
-            documentCommandService.createDocument(fileRequest, List.of(document), STUDY,
+            documentCommandService.createDocument(fileRequest, List.of(file), STUDY,
                     study.getId());
 
             //then
-            List<StudyDocument> studyDocument = documentRepository.findAll();
+            List<Document> documents = documentRepository.findAll();
             assertAll(
-                    () -> assertThat(studyDocument).hasSize(1),
-                    () -> assertThat(studyDocument.get(0).getFiles()).hasSize(1),
-                    () -> assertTrue(studyDocument.get(0).getFiles().get(0).getUrl().startsWith(folderName)),
-                    () -> assertEquals(studyDocument.get(0).getName(), fileRequest.title())
+                    () -> assertThat(documents).hasSize(1),
+                    () -> assertThat(documents.get(0).getFiles()).hasSize(1),
+                    () -> assertTrue(documents.get(0).getFiles().get(0).getUrl().startsWith(folderName)),
+                    () -> assertEquals(documents.get(0).getName(), fileRequest.title())
             );
         }
 
@@ -111,12 +111,12 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     study.getId());
 
             //then
-            List<StudyDocument> studyDocument = documentRepository.findAll();
+            List<Document> document = documentRepository.findAll();
             assertAll(
-                    () -> assertThat(studyDocument).hasSize(1),
-                    () -> assertThat(studyDocument.get(0).getFiles()).hasSize(1),
-                    () -> assertTrue(studyDocument.get(0).getFiles().get(0).getUrl().startsWith(folderName)),
-                    () -> assertEquals(studyDocument.get(0).getName(), imageRequest.title())
+                    () -> assertThat(document).hasSize(1),
+                    () -> assertThat(document.get(0).getFiles()).hasSize(1),
+                    () -> assertTrue(document.get(0).getFiles().get(0).getUrl().startsWith(folderName)),
+                    () -> assertEquals(document.get(0).getName(), imageRequest.title())
             );
         }
 
@@ -130,12 +130,12 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             documentCommandService.createDocument(urlRequest, null, STUDY, study.getId());
 
             //then
-            List<StudyDocument> studyDocument = documentRepository.findAll();
+            List<Document> document = documentRepository.findAll();
             assertAll(
-                    () -> assertThat(studyDocument).hasSize(1),
-                    () -> assertThat(studyDocument.get(0).getFiles()).hasSize(1),
-                    () -> assertEquals(studyDocument.get(0).getFiles().get(0).getUrl(), urlPath),
-                    () -> assertEquals(studyDocument.get(0).getName(), urlRequest.title())
+                    () -> assertThat(document).hasSize(1),
+                    () -> assertThat(document.get(0).getFiles()).hasSize(1),
+                    () -> assertEquals(document.get(0).getFiles().get(0).getUrl(), urlPath),
+                    () -> assertEquals(document.get(0).getName(), urlRequest.title())
             );
         }
 
@@ -167,10 +167,10 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     study.getId());
 
             //then
-            List<StudyDocument> studyDocument = documentRepository.findAll();
+            List<Document> document = documentRepository.findAll();
             assertAll(
-                    () -> assertThat(studyDocument).hasSize(1),
-                    () -> assertThat(studyDocument.get(0).getFiles()).hasSize(2)
+                    () -> assertThat(document).hasSize(1),
+                    () -> assertThat(document.get(0).getFiles()).hasSize(2)
             );
         }
 
@@ -208,18 +208,18 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 학습자료를 업데이트 할 수 있다.")
     void updateDocument_정상적으로_학습자료를_업데이트_할_수_있다_성공() {
         //given
-        StudyDocument studyDocument = new DocumentFixture().buildStudyDocument();
+        Document document = new DocumentFixture().buildDocument();
 
         //when
         DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
                 DocumentAccessType.ALL);
-        documentCommandService.updateDocument(updatedRequest, studyDocument.getId());
+        documentCommandService.updateDocument(updatedRequest, document.getId());
 
         //then
         assertAll(
-                () -> assertEquals(updatedRequest.title(), studyDocument.getName()),
-                () -> assertEquals(updatedRequest.description(), studyDocument.getDescription()),
-                () -> assertEquals(updatedRequest.accessType(), studyDocument.getAccessType())
+                () -> assertEquals(updatedRequest.title(), document.getName()),
+                () -> assertEquals(updatedRequest.description(), document.getDescription()),
+                () -> assertEquals(updatedRequest.accessType(), document.getAccessType())
         );
     }
 
@@ -228,13 +228,13 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 학습자료를 정상적으로 삭제할 수 있다.")
     void deleteDocument_학습자료를_정상적으로_삭제할_수_있다() {
         //given
-        StudyDocument studyDocument = new DocumentFixture().buildStudyDocument();
+        Document document = new DocumentFixture().buildDocument();
         assertThat(documentRepository.findAll()).hasSize(1);
         //when
-        documentCommandService.deleteDocument(studyDocument.getId());
+        documentCommandService.deleteDocument(document.getId());
 
         //then
-        List<StudyDocument> studyDocuments = documentRepository.findAll();
-        assertTrue(studyDocuments.get(0).getIsDeleted());
+        List<Document> documents = documentRepository.findAll();
+        assertTrue(documents.get(0).getIsDeleted());
     }
 }
