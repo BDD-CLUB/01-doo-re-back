@@ -4,10 +4,16 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
+import doore.document.application.DocumentCommandService;
+import doore.document.application.DocumentQueryService;
 import doore.attendance.application.AttendanceCommandService;
 import doore.helper.ApiTestHelper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
+import doore.member.application.MemberTeamQueryService;
+import doore.study.application.CurriculumItemCommandService;
+import doore.study.application.ParticipantCommandService;
+import doore.study.application.ParticipantQueryService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.team.application.TeamCommandService;
@@ -36,6 +42,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
     protected MemberCommandService memberCommandService;
 
     @MockBean
+    protected MemberTeamQueryService memberTeamQueryService;
+
+    @MockBean
     protected TeamCommandService teamCommandService;
 
     @MockBean
@@ -45,7 +54,22 @@ public abstract class RestDocsTest extends ApiTestHelper {
     protected StudyQueryService studyQueryService;
 
     @MockBean
+    protected ParticipantCommandService participantCommandService;
+
+    @MockBean
+    protected ParticipantQueryService participantQueryService;
+
+    @MockBean
     protected AttendanceCommandService attendanceCommandService;
+
+    @MockBean
+    protected CurriculumItemCommandService curriculumItemCommandService;
+
+    @MockBean
+    protected DocumentQueryService documentQueryService;
+
+    @MockBean
+    protected DocumentCommandService documentCommandService;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;
@@ -70,6 +94,11 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     protected FieldDescriptor numberFieldWithPath(final String path, final String description) {
         return fieldWithPath(path).type(JsonFieldType.NUMBER)
+                .description(description);
+    }
+
+    protected FieldDescriptor booleanFieldWithPath(final String path, final String description) {
+        return fieldWithPath(path).type(JsonFieldType.BOOLEAN)
                 .description(description);
     }
 

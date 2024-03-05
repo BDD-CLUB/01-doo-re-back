@@ -1,7 +1,5 @@
 package doore.study.application;
 
-import static doore.member.MemberFixture.회원;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.domain.StudyStatus.UPCOMING;
@@ -14,15 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import doore.helper.IntegrationTest;
-import doore.member.domain.Member;
-import doore.member.domain.Participant;
 import doore.member.domain.repository.MemberRepository;
-import doore.member.domain.repository.ParticipantRepository;
-import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
@@ -31,7 +25,7 @@ import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import doore.team.exception.TeamException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -49,8 +43,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
     StudyQueryService studyQueryService;
     @Autowired
     StudyRepository studyRepository;
-    @Autowired
-    ParticipantRepository participantRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -138,7 +130,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             studyRepository.save(study);
             studyCommandService.deleteStudy(study.getId());
             List<Study> studies = studyRepository.findAll();
-            assertThat(studies).hasSize(0);
+            assertTrue(studies.get(0).getIsDeleted());
         }
 
 
@@ -201,86 +193,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
         }
     }
 
-    @Nested
-    @DisplayName("참여자 Command 테스트")
-    class participantTest {
-
-        Member member;
-        Study study;
-
-        @BeforeEach
-        void setUp() {
-            member = 회원();
-            study = algorithmStudy();
-            memberRepository.save(member);
-            studyRepository.save(study);
-        }
-
-        @Test
-        @DisplayName("[성공] 정상적으로 참여자를 추가할 수 있다.")
-        void saveParticipant_정상적으로_참여자를_추가할_수_있다_성공() {
-            //Given
-            Long studyId = study.getId();
-            Long memberId = member.getId();
-
-            //when
-            studyCommandService.saveParticipant(studyId, memberId);
-
-            //then
-            List<Participant> participants = studyQueryService.findAllParticipants(studyId);
-            assertAll(
-                    () -> assertThat(participants).hasSize(1),
-                    () -> assertEquals(memberId, participants.get(0).getMember().getId())
-            );
-        }
-
-        @Test
-        @DisplayName("[성공] 정상적으로 참여자를 삭제할 수 있다.")
-        void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() {
-            //Given
-            Long studyId = study.getId();
-            Long memberId = member.getId();
-            studyCommandService.saveParticipant(studyId, memberId);
-
-            //when
-            studyCommandService.deleteParticipant(studyId, memberId);
-            List<Participant> participants = studyQueryService.findAllParticipants(studyId);
-
-            //then
-            assertThat(participants).hasSize(0);
-        }
-
-        @Test
-        @DisplayName("[성공] 정상적으로 참여자가 탈퇴 할 수 있다.")
-        void withdrawParticipant_정상적으로_참여자가_탈퇴할_수_있다_성공() {
-            //Given
-            Long studyId = study.getId();
-            Long memberId = member.getId();
-            studyCommandService.saveParticipant(studyId, memberId);
-            HttpServletRequest request = mock(HttpServletRequest.class);
-
-            //when
-            when(request.getHeader("Authorization")).thenReturn(String.valueOf(memberId));
-            studyCommandService.withdrawParticipant(studyId, request);
-            List<Participant> participants = studyQueryService.findAllParticipants(studyId);
-
-            //then
-            assertThat(participants).hasSize(0);
-
-        }
-    }
-
-    @DisplayName("[실패] 존재하지 않는 회원인 경우 실패한다.")
-    void notExistMember_존재하지_않는_회원인_경우_실패한다_실패() {
-        Study study = algorithmStudy();
-        studyRepository.save(study);
-        Long notExistingMemberId = 50L;
-
-        assertThatThrownBy(() -> studyCommandService.saveParticipant(study.getId(), notExistingMemberId))
-                .isInstanceOf(MemberException.class)
-                .hasMessage(NOT_FOUND_MEMBER.errorMessage());
-    }
-
     @DisplayName("[실패] 존재하지 않는 스터디인 경우 실패한다.")
     void notExistStudy_존재하지_않는_스터디인_경우_실패한다_실패() {
         Long notExistingStudyId = 50L;
@@ -289,12 +201,13 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 .hasMessage(NOT_FOUND_STUDY.errorMessage());
     }
 
+    @Test
     @DisplayName("[실패] 존재하지 않는 팀인 경우 실패한다.")
     void notExistTeam_존재하지_않는_팀인_경우_실패한다_실패() {
         Long notExistingTeamId = 50L;
         StudyCreateRequest studyCreateRequest = mock(StudyCreateRequest.class);
         assertThatThrownBy(() -> studyCommandService.createStudy(studyCreateRequest, notExistingTeamId))
-                .isInstanceOf(StudyException.class)
+                .isInstanceOf(TeamException.class)
                 .hasMessage(NOT_FOUND_TEAM.errorMessage());
     }
 }

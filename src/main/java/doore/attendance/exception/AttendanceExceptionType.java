@@ -4,7 +4,8 @@ import doore.base.BaseExceptionType;
 import org.springframework.http.HttpStatus;
 
 public enum AttendanceExceptionType implements BaseExceptionType {
-    ALREADY_ATTENDED(HttpStatus.BAD_REQUEST, "이미 출석한 회원입니다.");
+    ALREADY_ATTENDED(HttpStatus.BAD_REQUEST, "이미 출석한 회원입니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String errorMessage;

@@ -2,8 +2,11 @@ package doore.team.api;
 
 import doore.team.application.TeamCommandService;
 import doore.team.application.dto.request.TeamCreateRequest;
+import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.TeamInviteCodeResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,5 +62,22 @@ public class TeamController {
     public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId) {
         teamCommandService.deleteTeam(teamId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{teamId}/invite-code")
+    public ResponseEntity<TeamInviteCodeResponse> generateTeamInviteCode(
+            @PathVariable final Long teamId
+    ) {
+        final TeamInviteCodeResponse teamInviteCodeResponse = teamCommandService.generateTeamInviteCode(teamId);
+        return ResponseEntity.ok(teamInviteCodeResponse);
+    }
+
+    @PostMapping("/{teamId}/join")
+    public ResponseEntity<Void> joinTeam(
+            @PathVariable final Long teamId,
+            @Valid @RequestBody final TeamInviteCodeRequest request
+    ) {
+        teamCommandService.joinTeam(teamId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
