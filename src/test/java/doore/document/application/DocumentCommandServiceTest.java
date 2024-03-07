@@ -51,7 +51,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
-                DocumentType.document, null, mock(Member.class).getId());
+                DocumentType.DOCUMENT, null, mock(Member.class).getId());
         study = algorithmStudy();
         studyRepository.save(study);
     }
@@ -68,7 +68,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             FileInputStream fileInputStream = new FileInputStream(filePath);
 
             DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                    DocumentAccessType.TEAM, DocumentType.document, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.DOCUMENT, null, mock(Member.class).getId());
 
             MultipartFile document = new MockMultipartFile(
                     fileName,
@@ -99,7 +99,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             FileInputStream fileInputStream = new FileInputStream(filePath);
 
             DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
-                    DocumentAccessType.TEAM, DocumentType.image, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.IMAGE, null, mock(Member.class).getId());
 
             MultipartFile image = new MockMultipartFile(
                     fileName,
@@ -125,7 +125,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         void createDocument_정상적으로_링크_학습자료를_생성할_수_있다_성공() {
             String urlPath = "https://github.com/BDD-CLUB";
             DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
-                    DocumentAccessType.TEAM, DocumentType.url, urlPath, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.URL, urlPath, mock(Member.class).getId());
 
             documentCommandService.createDocument(urlRequest, null, STUDY, study.getId());
 
@@ -150,7 +150,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
             DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
                     DocumentAccessType.TEAM,
-                    DocumentType.image, null, mock(Member.class).getId());
+                    DocumentType.IMAGE, null, mock(Member.class).getId());
 
             MultipartFile image = new MockMultipartFile(
                     fileName,
@@ -179,7 +179,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         public void validateDocumentType_링크_학습자료에는_링크를_입력해야_한다_실패() {
             //given
             DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
-                    DocumentAccessType.TEAM, DocumentType.url, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.URL, null, mock(Member.class).getId());
 
             //when&then
             assertThatThrownBy(() ->
@@ -193,7 +193,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         public void 파일과_이미지_학습자료에는_파일이_첨부돼야_한다_실패() {
             //given
             DocumentCreateRequest ImageRequest = new DocumentCreateRequest("사진 자료", "사진 자료입니다.",
-                    DocumentAccessType.TEAM, DocumentType.image, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.IMAGE, null, mock(Member.class).getId());
 
             //when&then
             assertThatThrownBy(() ->

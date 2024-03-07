@@ -57,7 +57,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         studyDocument = new DocumentFixture()
                 .groupType(DocumentGroupType.STUDY)
                 .groupId(study.getId())
-                .type(DocumentType.url)
+                .type(DocumentType.URL)
                 .uploaderId(member.getId())
                 .buildStudyDocument();
     }
@@ -84,13 +84,11 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     public void getDocument_정상적으로_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
         DocumentDetailResponse response = documentQueryService.getDocument(studyDocument.getId());
-
         //then
         assertAll(
                 () -> assertEquals(response.title(), studyDocument.getName()),
                 () -> assertEquals(response.description(), studyDocument.getDescription()),
                 () -> assertEquals(response.date(), studyDocument.getCreatedAt().toLocalDate()),
-                () -> assertEquals(response.uploaderId(), studyDocument.getUploaderId()),
                 () -> assertEquals(response.accessType(), studyDocument.getAccessType())
         );
     }

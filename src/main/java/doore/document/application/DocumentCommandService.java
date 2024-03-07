@@ -47,7 +47,7 @@ public class DocumentCommandService {
 
         documentRepository.save(document);
 
-        if (document.getType().equals(DocumentType.url)) {
+        if (document.getType().equals(DocumentType.URL)) {
             File newFile = File.builder()
                     .url(request.url())
                     .document(document)
@@ -55,7 +55,7 @@ public class DocumentCommandService {
             fileRepository.save(newFile);
             document.updateFiles(List.of(newFile));
         }
-        if (!document.getType().equals(DocumentType.url)) {
+        if (!document.getType().equals(DocumentType.URL)) {
             List<String> filePaths = uploadFileToS3(document.getType(), multipartFiles);
             List<File> newFiles = saveFile(filePaths, document);
             document.updateFiles(newFiles);
@@ -72,10 +72,10 @@ public class DocumentCommandService {
     }
 
     private void validateDocumentType(DocumentType type, String url, List<MultipartFile> multipartFiles) {
-        if (type.equals(DocumentType.url) && url == null) {
+        if (type.equals(DocumentType.URL) && url == null) {
             throw new DocumentException(LINK_DOCUMENT_NEEDS_FILE);
         }
-        if (!type.equals(DocumentType.url) && (multipartFiles == null || multipartFiles.isEmpty())) {
+        if (!type.equals(DocumentType.URL) && (multipartFiles == null || multipartFiles.isEmpty())) {
             throw new DocumentException(NO_FILE_ATTACHED);
         }
     }
@@ -96,12 +96,12 @@ public class DocumentCommandService {
         List<String> urls = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             String url = "";
-            if (type.equals(DocumentType.image)) {
+            if (type.equals(DocumentType.IMAGE)) {
                 url = s3ImageFileService.upload(multipartFile);
                 urls.add(url);
                 continue;
             }
-            if (type.equals(DocumentType.document)) {
+            if (type.equals(DocumentType.DOCUMENT)) {
                 url = s3DocumentFileService.upload(multipartFile);
                 urls.add(url);
                 continue;

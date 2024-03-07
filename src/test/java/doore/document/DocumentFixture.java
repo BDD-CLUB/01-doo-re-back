@@ -27,7 +27,7 @@ public class DocumentFixture {
     private DocumentGroupType groupType = DocumentGroupType.TEAM;
     private Long groupId = 1L;
     private DocumentAccessType accessType = DocumentAccessType.ALL;
-    private DocumentType type = DocumentType.url;
+    private DocumentType type = DocumentType.URL;
     private Long uploaderId = 1L;
 
     @Autowired
@@ -89,7 +89,7 @@ public class DocumentFixture {
     }
 
     public StudyDocument buildLinkDocument(List<String> urls) {
-        type(DocumentType.url);
+        type(DocumentType.URL);
         StudyDocument studyDocument = buildStudyDocument();
         List<File> files = new ArrayList<>();
         for (String url : urls) {

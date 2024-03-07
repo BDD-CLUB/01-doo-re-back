@@ -1,6 +1,6 @@
 package doore.document.domain;
 
 public enum DocumentType {
-    image, document, url,
+    IMAGE, DOCUMENT, URL,
     ;
 }

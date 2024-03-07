@@ -1,11 +1,8 @@
 package doore.restdocs.docs;
 
 import static doore.document.domain.DocumentAccessType.*;
-import static doore.document.domain.DocumentType.image;
+import static doore.document.domain.DocumentType.IMAGE;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -14,6 +11,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -29,9 +27,7 @@ import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.application.dto.response.FileResponse;
 import doore.document.domain.DocumentAccessType;
-import doore.document.domain.DocumentGroupType;
 import doore.restdocs.RestDocsTest;
-import doore.team.application.dto.request.TeamCreateRequest;
 import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.util.List;
@@ -47,7 +43,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 
 @WebMvcTest(DocumentController.class)
 public class DocumentDocsTest extends RestDocsTest {
@@ -55,7 +50,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 생성한다.")
     public void 학습자료를_생성한다() throws Exception {
         DocumentCreateRequest request = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                DocumentAccessType.TEAM, image, null, 1L);
+                DocumentAccessType.TEAM, IMAGE, null, 1L);
         final MockPart mockPart = getMockPart("request", request);
         mockPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
@@ -128,8 +123,8 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료를_조회한다() throws Exception {
         //given
         FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        DocumentDetailResponse documentDetailResponse = new DocumentDetailResponse(1L, "학습자료", "학습자료입니다.", ALL, image,
-                List.of(fileResponse), LocalDate.parse("2024-02-28"), 1L);
+        DocumentDetailResponse documentDetailResponse = new DocumentDetailResponse(1L, "학습자료", "학습자료입니다.", ALL, IMAGE,
+                List.of(fileResponse), LocalDate.parse("2024-02-28"), "김땡떙");
 
         //when
         when(documentQueryService.getDocument(any())).thenReturn(documentDetailResponse);
@@ -138,8 +133,21 @@ public class DocumentDocsTest extends RestDocsTest {
         mockMvc.perform(get("/{documentId}", 1))
                 .andExpect(status().isOk())
                 .andDo(document("document-get", pathParameters(
-                        parameterWithName("documentId").description("학습자료 id")
-                )));
+                                parameterWithName("documentId").description("학습자료 id")
+                        ),
+                        responseFields(
+                                numberFieldWithPath("id", "학습자료 id"),
+                                stringFieldWithPath("title", "학습자료 제목"),
+                                stringFieldWithPath("description", "학습자료 소개"),
+                                stringFieldWithPath("accessType", "학습자료 공개 범위(TEAM, ALL)"),
+                                stringFieldWithPath("type", "학습자료 타입(IMAGE, DOCUMENT, URL)"),
+                                arrayFieldWithPath("files", "학습자료 첨부파일"),
+                                numberFieldWithPath("files[].id", "첨부파일 id"),
+                                stringFieldWithPath("files[].url", "첨부파일 URL"),
+                                stringFieldWithPath("date", "학습자료 업로드 날짜"),
+                                stringFieldWithPath("uploader", "학습자료 업로더")
+                        )
+                ));
     }
 
     @Test
