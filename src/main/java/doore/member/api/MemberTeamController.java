@@ -18,7 +18,7 @@ public class MemberTeamController {
     private final MemberTeamQueryService memberTeamQueryService;
 
     @GetMapping("/teams/{teamId}/members")
-    public ResponseEntity<List<MemberResponse>> getMemberTeam(@PathVariable Long teamId,
+    public ResponseEntity<List<MemberResponse>> getMemberTeam(@PathVariable final Long teamId,
                                                               @RequestParam(value = "keyword", required = false) final String keyword) {
         final List<MemberResponse> memberResponses = memberTeamQueryService.findMemberTeams(teamId, keyword);
         return ResponseEntity.ok(memberResponses);

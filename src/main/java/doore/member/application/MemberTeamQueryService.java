@@ -21,7 +21,7 @@ public class MemberTeamQueryService {
     private final MemberTeamRepository memberTeamRepository;
 
     public List<MemberResponse> findMemberTeams(final Long teamId, final String keyword) {
-        if (keyword == null || keyword.isBlank()) {
+        if (keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
         }
 
@@ -30,7 +30,7 @@ public class MemberTeamQueryService {
                 .map(MemberTeam::getMember)
                 .sorted(Comparator.comparing(Member::getName))
                 .sorted(Comparator.comparing(member -> member.getName().length()))
-                .collect(Collectors.toList());
+                .toList();
         // 추후 role 구현 후 수정 예정
         final Map<Member, String> roleOfMembers = new HashMap<>();
         members.stream()
