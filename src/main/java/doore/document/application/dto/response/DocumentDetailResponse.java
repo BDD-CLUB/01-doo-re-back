@@ -13,6 +13,6 @@ public record DocumentDetailResponse(
         DocumentType type,
         List<FileResponse> files,
         LocalDate date,
-        Long uploaderId
+        String uploader
 ) {
 }

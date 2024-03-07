@@ -55,10 +55,8 @@ public class DocumentQueryService {
             fileResponses.add(fileResponse);
         }
 
-        Long uploaderId = memberRepository.findById(document.getUploaderId())
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
         return new DocumentDetailResponse(document.getId(), document.getName(), document.getDescription(),
                 document.getAccessType(), document.getType(), fileResponses,
-                document.getCreatedAt().toLocalDate(), uploaderId);
+                document.getCreatedAt().toLocalDate(), "팜");
     }
 }
