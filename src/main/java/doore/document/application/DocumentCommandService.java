@@ -101,7 +101,7 @@ public class DocumentCommandService {
                 urls.add(url);
                 continue;
             }
-            if (type.equals(DocumentType.DOCUMENT)) {
+            if (type.equals(DocumentType.FILE)) {
                 url = s3DocumentFileService.upload(multipartFile);
                 urls.add(url);
                 continue;

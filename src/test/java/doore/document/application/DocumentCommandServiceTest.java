@@ -1,7 +1,7 @@
 package doore.document.application;
 
 import static doore.document.domain.DocumentGroupType.STUDY;
-import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_FILE;
+import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_URL;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +51,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
-                DocumentType.DOCUMENT, null, mock(Member.class).getId());
+                DocumentType.FILE, null, mock(Member.class).getId());
         study = algorithmStudy();
         studyRepository.save(study);
     }
@@ -68,7 +68,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             FileInputStream fileInputStream = new FileInputStream(filePath);
 
             DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                    DocumentAccessType.TEAM, DocumentType.DOCUMENT, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
 
             MultipartFile document = new MockMultipartFile(
                     fileName,
@@ -185,7 +185,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             assertThatThrownBy(() ->
                     documentCommandService.createDocument(urlRequest, null, STUDY, study.getId()))
                     .isInstanceOf(DocumentException.class)
-                    .hasMessage(LINK_DOCUMENT_NEEDS_FILE.errorMessage());
+                    .hasMessage(LINK_DOCUMENT_NEEDS_URL.errorMessage());
         }
 
         @Test
