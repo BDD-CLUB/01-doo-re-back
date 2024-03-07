@@ -8,8 +8,11 @@ import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.domain.DocumentGroupType;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,10 +47,14 @@ public class DocumentController {
     }
 
     @GetMapping("/{groupType}/{groupId}/documents")
-    public ResponseEntity<List<DocumentCondensedResponse>> getAllDocument(
-            @PathVariable DocumentGroupType groupType, @PathVariable Long groupId) {
-        List<DocumentCondensedResponse> condensedDocuments =
-                documentQueryService.getAllDocument(groupType, groupId);
+    public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
+            @PathVariable DocumentGroupType groupType,
+            @PathVariable Long groupId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "4") @PositiveOrZero int size) {
+        Page<DocumentCondensedResponse> condensedDocuments =
+                documentQueryService.getAllDocument(groupType, groupId, PageRequest.of(page, size));
+        System.out.println(condensedDocuments.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }
 

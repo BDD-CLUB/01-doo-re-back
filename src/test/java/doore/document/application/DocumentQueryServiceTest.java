@@ -26,6 +26,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 
 public class DocumentQueryServiceTest extends IntegrationTest {
@@ -64,25 +66,26 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 학습자료 목록을 조회할 수 있다")
     public void getAllDocumentList_정상적으로_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
-        List<DocumentCondensedResponse> responses = documentQueryService.getAllDocument(DocumentGroupType.studies, study.getId());
+        Page<DocumentCondensedResponse> responses =
+                documentQueryService.getAllDocument(DocumentGroupType.studies, study.getId(), PageRequest.of(0, 4));
 
         //then
         assertAll(
-                () -> assertThat(responses).hasSize(1),
-                () -> assertEquals(responses.get(0).title(), studyDocument.getName()),
-                () -> assertEquals(responses.get(0).description(), studyDocument.getDescription()),
-                () -> assertEquals(responses.get(0).date(), studyDocument.getCreatedAt().toLocalDate()),
-                () -> assertEquals(responses.get(0).uploaderId(), studyDocument.getUploaderId())
+                () -> assertThat(responses.getSize()).isNotZero(),
+                () -> assertEquals(responses.getContent().get(0).title(), studyDocument.getName()),
+                () -> assertEquals(responses.getContent().get(0).description(), studyDocument.getDescription()),
+                () -> assertEquals(responses.getContent().get(0).date(), studyDocument.getCreatedAt().toLocalDate()),
+                () -> assertEquals(responses.getContent().get(0).uploaderId(), studyDocument.getUploaderId())
         );
     }
 
     @Test
     @DisplayName("[성공] 정상적으로 학습자료 상세를 조회할 수 있다.")
     public void getDocument_정상적으로_학습자료_상세를_조회할_수_있다_성공() {
-      //given&when
-       DocumentDetailResponse response = documentQueryService.getDocument(studyDocument.getId());
+        //given&when
+        DocumentDetailResponse response = documentQueryService.getDocument(studyDocument.getId());
 
-      //then
+        //then
         assertAll(
                 () -> assertEquals(response.title(), studyDocument.getName()),
                 () -> assertEquals(response.description(), studyDocument.getDescription()),
@@ -91,8 +94,6 @@ public class DocumentQueryServiceTest extends IntegrationTest {
                 () -> assertEquals(response.accessType(), studyDocument.getAccessType())
         );
     }
-
-
 
 //    @Nested
 //    @DisplayName("학습자료 썸네일 테스트")

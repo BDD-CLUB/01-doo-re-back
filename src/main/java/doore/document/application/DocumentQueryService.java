@@ -16,6 +16,8 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.exception.MemberException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,16 +29,17 @@ public class DocumentQueryService {
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
 
-    public List<DocumentCondensedResponse> getAllDocument(DocumentGroupType groupType, Long groupId) {
-        return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId).stream()
-                .map(this::toDocumentCondensedResponse)
-                .toList();
+    public Page<DocumentCondensedResponse> getAllDocument(
+            DocumentGroupType groupType, Long groupId, Pageable pageable) {
+        return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
+                .map(this::toDocumentCondensedResponse);
     }
 
     private DocumentCondensedResponse toDocumentCondensedResponse(StudyDocument document) {
         Long uploaderId = memberRepository.findById(document.getUploaderId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
-        return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(), document.getCreatedAt().toLocalDate(), uploaderId);
+        return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(),
+                document.getCreatedAt().toLocalDate(), uploaderId);
     }
 
     public DocumentDetailResponse getDocument(Long documentId) {
