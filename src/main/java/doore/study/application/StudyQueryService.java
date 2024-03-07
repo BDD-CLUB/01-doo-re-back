@@ -1,7 +1,14 @@
 package doore.study.application;
 
+import static doore.crop.exception.CropExceptionType.NOT_FOUND_CROP;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
+import doore.crop.domain.Crop;
+import doore.crop.domain.repository.CropRepository;
+import doore.crop.exception.CropException;
+import doore.crop.exception.CropExceptionType;
+import doore.crop.response.CropReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.personalStudyResponse.PersonalCurriculumItemResponse;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
@@ -12,8 +19,6 @@ import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
-import doore.member.domain.Participant;
-import doore.member.domain.repository.ParticipantRepository;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
@@ -31,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyQueryService {
     private final StudyRepository studyRepository;
     private final TeamRepository teamRepository;
+    private final CropRepository cropRepository;
 
     public StudyDetailResponse findStudyById(Long studyId) {
         Study study = getStudy(studyId);
@@ -85,12 +91,16 @@ public class StudyQueryService {
 
     private StudyResponse toStudyResponse(Study study) {
         Team team = teamRepository.findById(study.getTeamId())
-                .orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
+                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
         TeamReferenceResponse teamReferenceResponse =
                 new TeamReferenceResponse(team.getId(), team.getName(), team.getDescription(), team.getImageUrl());
+        Crop crop = cropRepository.findById(study.getCropId()).orElseThrow(() -> new CropException(NOT_FOUND_CROP));
+        CropReferenceResponse cropReferenceResponse =
+                new CropReferenceResponse(crop.getId(), crop.getName(), crop.getImageUrl());
 
         return new StudyResponse(study.getId(), study.getName(), study.getDescription(), study.getStartDate(),
-                study.getEndDate(), study.getStatus(), study.getIsDeleted(), teamReferenceResponse, study.getCropId());
+                study.getEndDate(), study.getStatus(), study.getIsDeleted(), teamReferenceResponse,
+                cropReferenceResponse);
     }
 
     private Study getStudy(Long studyId) {

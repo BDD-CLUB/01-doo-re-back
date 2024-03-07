@@ -1,6 +1,7 @@
 package doore.study.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import doore.crop.response.CropReferenceResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import jakarta.persistence.Embeddable;
@@ -27,5 +28,5 @@ public class StudyResponse {
     StudyStatus status;
     Boolean isDeleted;
     TeamReferenceResponse teamReference;
-    Long cropId;
+    CropReferenceResponse cropReference;
 }

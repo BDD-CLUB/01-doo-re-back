@@ -1,5 +1,8 @@
 package doore.study;
 
+import static doore.crop.CropFixture.createCrop;
+
+import doore.crop.domain.repository.CropRepository;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
@@ -16,6 +19,7 @@ public class StudyFixture {
     private static StudyRepository studyRepository;
     private static TeamRepository teamRepository;
     private static Long teamId = 1L;
+    private static Long cropId = 1L;
 
     @Autowired
     public StudyFixture(StudyRepository studyRepository, TeamRepository teamRepository) {
@@ -25,6 +29,7 @@ public class StudyFixture {
 
     public static Study createStudy() {
         teamId = teamRepository.save(TeamFixture.team()).getId();
+        cropId = createCrop().getId();
         return studyRepository.save(StudyFixture.algorithmStudy());
     }
 
@@ -37,7 +42,7 @@ public class StudyFixture {
                 .teamId(teamId)
                 .status(StudyStatus.IN_PROGRESS)
                 .isDeleted(false)
-                .cropId(1L)
+                .cropId(cropId)
                 .curriculumItems(new ArrayList<CurriculumItem>())
                 .build();
     }

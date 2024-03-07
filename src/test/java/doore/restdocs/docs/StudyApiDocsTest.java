@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 
+import doore.crop.response.CropReferenceResponse;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.study.application.dto.request.CurriculumItemRequest;
@@ -120,9 +121,13 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     private StudyResponse getStudyResponse() {
-        TeamReferenceResponse teamReferenceResponse = new TeamReferenceResponse(1L,"개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
+        TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
+        CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
+
         return new StudyResponse(1L, "알고리즘", "알고리즘 스터디입니다.", LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse, 1L);
+                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
+                cropReferenceResponse);
     }
 
     @Test
