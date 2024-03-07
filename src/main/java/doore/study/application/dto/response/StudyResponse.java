@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 
 @Getter
-@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudyResponse {
