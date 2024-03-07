@@ -54,7 +54,8 @@ public class DocumentCommandService {
                     .build();
             fileRepository.save(newFile);
             document.updateFiles(List.of(newFile));
-        } else {
+        }
+        if (!document.getType().equals(DocumentType.url)) {
             List<String> filePaths = uploadFileToS3(document.getType(), multipartFiles);
             List<File> newFiles = saveFile(filePaths, document);
             document.updateFiles(newFiles);
