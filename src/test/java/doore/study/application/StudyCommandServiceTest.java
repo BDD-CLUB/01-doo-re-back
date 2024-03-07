@@ -1,6 +1,6 @@
 package doore.study.application;
 
-import static doore.member.MemberFixture.회원;
+import static doore.member.MemberFixture.아마란스;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
@@ -210,7 +210,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            member = 회원();
+            member = 아마란스();
             study = algorithmStudy();
             memberRepository.save(member);
             studyRepository.save(study);

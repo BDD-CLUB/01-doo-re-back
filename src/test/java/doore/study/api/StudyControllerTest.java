@@ -1,19 +1,19 @@
 package doore.study.api;
 
-import static doore.member.MemberFixture.회원;
+import static doore.member.MemberFixture.아마란스;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.team.TeamFixture.team;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.study.application.dto.request.StudyCreateRequest;
+import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
-import doore.study.domain.repository.StudyRepository;
-import doore.team.domain.TeamRepository;
+import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.domain.Study;
+import doore.study.domain.repository.StudyRepository;
 import doore.team.domain.Team;
-import doore.helper.IntegrationTest;
+import doore.team.domain.TeamRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ public class StudyControllerTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        member = 회원();
+        member = 아마란스();
         study = algorithmStudy();
         memberRepository.save(member);
         studyRepository.save(study);

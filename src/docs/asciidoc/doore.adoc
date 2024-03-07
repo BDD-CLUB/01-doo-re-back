@@ -10,7 +10,6 @@ endif::[]
 :toclevels: 2
 :seclinks:
 
-
 link:./login.html[Login API]
 
 link:./curriculumItem.html[CurriculumItem API]
@@ -18,3 +17,5 @@ link:./curriculumItem.html[CurriculumItem API]
 link:./study.html[Study API]
 
 link:./team.html[Team API]
+
+link:./memberTeam.html[팀원 API]

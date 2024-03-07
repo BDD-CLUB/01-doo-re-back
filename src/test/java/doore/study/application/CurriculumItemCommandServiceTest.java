@@ -97,7 +97,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 커리큘럼의 상태 변경이 가능하다.")
     public void checkCurriculum_커리큘럼의_상태_변경이_가능하다() throws Exception {
-        Member member = MemberFixture.회원();
+        Member member = MemberFixture.아마란스();
         memberRepository.save(member);
 
         Participant participant = Participant.builder()
