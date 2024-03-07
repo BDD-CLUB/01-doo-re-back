@@ -2,6 +2,7 @@ package doore.study.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.study.domain.StudyStatus;
+import doore.team.application.dto.response.TeamReferenceResponse;
 import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,6 @@ public class StudyResponse {
     LocalDate endTime;
     StudyStatus status;
     Boolean isDeleted;
-    Long teamId;
+    TeamReferenceResponse teamReference;
     Long cropId;
 }

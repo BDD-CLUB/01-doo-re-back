@@ -14,6 +14,11 @@ import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.team.application.dto.response.TeamReferenceResponse;
+import doore.team.domain.Team;
+import doore.team.domain.TeamRepository;
+import doore.team.exception.TeamException;
+import doore.team.exception.TeamExceptionType;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StudyQueryService {
     private final StudyRepository studyRepository;
-    private final ParticipantRepository participantRepository;
+    private final TeamRepository teamRepository;
 
     public StudyDetailResponse findStudyById(Long studyId) {
         Study study = getStudy(studyId);
@@ -35,10 +40,6 @@ public class StudyQueryService {
         return new StudyDetailResponse(studyResponse, curriculumItemResponses);
     }
 
-    public List<Participant> findAllParticipants(Long studyId) {
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        return participantRepository.findAllByStudyId(studyId);
-    }
 
     public PersonalStudyDetailResponse getPersonalStudyDetail(Long studyId, Long memberId) {
         Study study = getStudy(studyId);
@@ -83,9 +84,13 @@ public class StudyQueryService {
     }
 
     private StudyResponse toStudyResponse(Study study) {
-        return new StudyResponse(study.getId(), study.getName(), study.getDescription(),
-                study.getStartDate(), study.getEndDate(), study.getStatus(), study.getIsDeleted(), study.getTeamId(),
-                study.getCropId());
+        Team team = teamRepository.findById(study.getTeamId())
+                .orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
+        TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(team.getId(), team.getName(), team.getDescription(), team.getImageUrl());
+
+        return new StudyResponse(study.getId(), study.getName(), study.getDescription(), study.getStartDate(),
+                study.getEndDate(), study.getStatus(), study.getIsDeleted(), teamReferenceResponse, study.getCropId());
     }
 
     private Study getStudy(Long studyId) {
