@@ -41,12 +41,12 @@ public abstract class S3FileService {
         try (final InputStream inputStream = file.getInputStream()) {
             amazonS3.putObject(new PutObjectRequest(bucket, newFileName, inputStream, objectMetadata));
         } catch (final IOException exception) {
-            throw new FileException(FailUploadErrorMessage());
+            throw new FileException(failUploadErrorMessage());
         }
         return newFileName;
     }
 
-    abstract FileExceptionType FailUploadErrorMessage();
+    abstract FileExceptionType failUploadErrorMessage();
 
     protected String getFileExtension(final MultipartFile file) {
         final String originalFileName = file.getOriginalFilename();

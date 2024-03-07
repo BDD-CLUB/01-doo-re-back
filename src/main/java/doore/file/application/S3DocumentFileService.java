@@ -30,7 +30,7 @@ public class S3DocumentFileService extends S3FileService {
     }
 
     @Override
-    protected FileExceptionType FailUploadErrorMessage() {
+    protected FileExceptionType failUploadErrorMessage() {
         return FAIL_UPLOAD_DOCUMENT_FILE;
     }
 

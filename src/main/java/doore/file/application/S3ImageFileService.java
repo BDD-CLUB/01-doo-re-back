@@ -23,7 +23,7 @@ public class S3ImageFileService extends S3FileService {
     }
 
     @Override
-    protected FileExceptionType FailUploadErrorMessage() {
+    protected FileExceptionType failUploadErrorMessage() {
         return FAIL_UPLOAD_IMAGE_FILE;
     }
 
