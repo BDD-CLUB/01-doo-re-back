@@ -46,7 +46,7 @@ public class DocumentController {
                                                @RequestPart(required = false) final List<MultipartFile> files,
                                                @PathVariable String groupType,
                                                @PathVariable Long groupId) {
-        DocumentGroupType group = checkGroupType(groupType);
+        DocumentGroupType group = DocumentGroupType.value(groupType);
         documentCommandService.createDocument(request, files, group, groupId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -57,24 +57,14 @@ public class DocumentController {
             @PathVariable Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "4") @PositiveOrZero int size) {
-        DocumentGroupType group = checkGroupType(groupType);
+        DocumentGroupType group = DocumentGroupType.value(groupType);
         Page<DocumentCondensedResponse> condensedDocuments =
                 documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
         System.out.println(condensedDocuments.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }
 
-    private DocumentGroupType checkGroupType(String groupType) {
-        if (groupType.equals("studies")) {
-            return DocumentGroupType.STUDY;
-        }
-        if (groupType.equals("teams")) {
-            return DocumentGroupType.TEAM;
-        }
-        throw new DocumentException(NOT_FOUND_GROUP_TYPE);
-    }
-
-    @GetMapping(("/{documentId}"))
+    @GetMapping("/{documentId}")
     public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable Long documentId) {
         DocumentDetailResponse response = documentQueryService.getDocument(documentId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
