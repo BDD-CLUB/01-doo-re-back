@@ -18,7 +18,8 @@ public class S3DocumentFileService extends S3FileService {
             "application/pdf", "application/vnd.ms-powerpoint",
             "application/vnd.openxmlformats-officedocument.presentationml.presentation", //pdf, ppt, pptx
             "video/mp4", "video/x-msvideo", "video/webm", //mp4, avi, webm
-            "audio/mpeg", "audio/wav", "audio/webm"// mp3, wav, webm
+            "audio/mpeg", "audio/wav", "audio/webm",// mp3, wav, webm
+            "image/jpeg", "image/png", "image/gif", "image/webp" //jpeg, jpg, png, gif, webp
     );
 
     @Value("${aws.s3.folder.documentFolder}")

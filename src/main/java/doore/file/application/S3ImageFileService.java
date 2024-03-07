@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class S3ImageFileService extends S3FileService {
 
-    private static final List<String> IMAGE_FILE_EXTENSIONS = List.of("image/jpeg", "image/png", "image/jpeg", "image/gif", "image/webp");
+    private static final List<String> IMAGE_FILE_EXTENSIONS = List.of("image/jpeg", "image/png", "image/gif", "image/webp");
 
     @Value("${aws.s3.folder.imageFolder}")
     private String imageFolder;
