@@ -56,8 +56,8 @@ public class DocumentCommandService {
             document.updateFiles(List.of(newFile));
         }
         if (!document.getType().equals(DocumentType.URL)) {
-            List<String> filePaths = uploadFileToS3(document.getType(), multipartFiles);
-            List<File> newFiles = saveFile(filePaths, document);
+            List<String> filePaths = uploadFilesToS3(document.getType(), multipartFiles);
+            List<File> newFiles = saveFiles(filePaths, document);
             document.updateFiles(newFiles);
         }
     }
@@ -92,7 +92,7 @@ public class DocumentCommandService {
                 .build();
     }
 
-    private List<String> uploadFileToS3(DocumentType type, List<MultipartFile> multipartFiles) {
+    private List<String> uploadFilesToS3(DocumentType type, List<MultipartFile> multipartFiles) {
         List<String> urls = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             String url = "";
@@ -111,7 +111,7 @@ public class DocumentCommandService {
         return urls;
     }
 
-    private List<File> saveFile(List<String> filePaths, StudyDocument document) {
+    private List<File> saveFiles(List<String> filePaths, StudyDocument document) {
         List<File> files = new ArrayList<>();
         for (String filePath : filePaths) {
             File newfile = File.builder()
