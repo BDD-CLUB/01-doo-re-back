@@ -25,6 +25,7 @@ import doore.study.application.dto.response.totalStudyResponse.CurriculumItemRes
 import doore.study.application.dto.response.totalStudyResponse.ParticipantCurriculumItemResponse;
 import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
 import doore.study.domain.StudyStatus;
+import doore.team.application.dto.response.TeamReferenceResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,8 +120,9 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     private StudyResponse getStudyResponse() {
+        TeamReferenceResponse teamReferenceResponse = new TeamReferenceResponse(1L,"개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
         return new StudyResponse(1L, "알고리즘", "알고리즘 스터디입니다.", LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, 1L, 1L);
+                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse, 1L);
     }
 
     @Test
@@ -186,66 +188,6 @@ public class StudyApiDocsTest extends RestDocsTest {
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/studies/{studyId}/termination", 1))
                 .andExpect(status().isNoContent())
                 .andDo(document("study-terminate", pathParameters(
-                        parameterWithName("studyId")
-                                .description("스터디 id"))
-                ));
-    }
-
-    @Test
-    @DisplayName("참여자를 추가한다.")
-    void 참여자를_추가한다_성공() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/members/{memberId}", 1, 1))
-                .andExpect(status().isCreated())
-                .andDo(document("participant-save", pathParameters(
-                                parameterWithName("studyId").description("스터디 id"),
-                                parameterWithName("memberId").description("회원 id")
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("참여자를 삭제한다.")
-    void 참여자를_삭제한다_성공() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members/{memberId}", 1, 1))
-                .andExpect(status().isNoContent())
-                .andDo(document("participant-delete", pathParameters(
-                                parameterWithName("studyId").description("스터디 id"),
-                                parameterWithName("memberId").description("회원 id")
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("참여자가 탈퇴한다.")
-    void 참여자가_탈퇴한다_성공() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members", 1))
-                .andExpect(status().isNoContent())
-                .andDo(document("participant-withdraw", pathParameters(
-                        parameterWithName("studyId")
-                                .description("스터디 id"))
-                ));
-    }
-
-    @Test
-    @DisplayName("참여자를 조회한다.")
-    void 참여자를_조회한다_성공() throws Exception {
-        Member member = Member.builder()
-                .id(1L)
-                .name("팜")
-                .email("pom@gmail.com")
-                .googleId("0123456789")
-                .imageUrl(null)
-                .build();
-        Participant participant = Participant.builder()
-                .studyId(1L)
-                .member(member)
-                .build();
-
-        when(studyQueryService.findAllParticipants(any())).thenReturn(List.of(participant));
-
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1))
-                .andExpect(status().isOk())
-                .andDo(document("participant-get", pathParameters(
                         parameterWithName("studyId")
                                 .description("스터디 id"))
                 ));

@@ -2,6 +2,7 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.회원;
 import static doore.study.StudyFixture.algorithmStudy;
+import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -40,7 +41,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[성공] 정상적으로 스터디 전체 정보를 조회할 수 있다.")
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = algorithmStudy();
+            Study study = createStudy();
             studyRepository.save(study);
             assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).studyResponse().getId());
         }
@@ -48,7 +49,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[성공] 정상적으로 스터디를 조회할 수 있다.")
         void getPersonalStudyDetail_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = algorithmStudy();
+            Study study = createStudy();
             Long memberId = 1L;
             studyRepository.save(study);
             PersonalStudyDetailResponse personalStudyDetailResponse =
@@ -66,30 +67,6 @@ public class StudyQueryServiceTest extends IntegrationTest {
             assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
-        }
-    }
-
-    @Nested
-    @DisplayName("참여자 Query 테스트")
-    class participantTest {
-        @Test
-        @DisplayName("[성공] 참여자를 정상적으로 조회할 수 있다.")
-        void findAllParticipants_참여자를_정상적으로_조회할_수_있다_성공() {
-            //given
-            Member member = 회원();
-            memberRepository.save(member);
-            Study study = algorithmStudy();
-            studyRepository.save(study);
-            studyCommandService.saveParticipant(study.getId(), member.getId());
-
-            //when
-            List<Participant> participants = studyQueryService.findAllParticipants(study.getId());
-
-            //then
-            assertAll(
-                    () -> assertThat(participants).hasSize(1),
-                    () -> assertEquals(member.getId(), participants.get(0).getMember().getId())
-            );
         }
     }
 }

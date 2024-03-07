@@ -2,10 +2,12 @@ package doore.study.api;
 
 import static doore.member.MemberFixture.회원;
 import static doore.study.StudyFixture.algorithmStudy;
+import static doore.study.StudyFixture.createStudy;
 import static doore.team.TeamFixture.team;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.mock;
 
+import doore.member.domain.repository.ParticipantRepository;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
@@ -25,8 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudyControllerTest extends IntegrationTest {
     @Autowired
-    private StudyRepository studyRepository;
-    @Autowired
     private TeamRepository teamRepository;
     @Autowired
     MemberRepository memberRepository;
@@ -36,9 +36,8 @@ public class StudyControllerTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         member = 회원();
-        study = algorithmStudy();
+        study = createStudy();
         memberRepository.save(member);
-        studyRepository.save(study);
     }
 
     @Nested
@@ -79,8 +78,6 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 삭제한다.")
     void 정상적으로_스터디를_삭제한다_성공() throws Exception {
-        final Study study = algorithmStudy();
-        studyRepository.save(study);
         String url = "/studies/" + study.getId();
         callDeleteApi(url).andExpect(status().isNoContent());
     }
@@ -88,8 +85,6 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 수정한다.")
     void 정상적으로_스터디를_수정한다_성공() throws Exception {
-        final Study study = algorithmStudy();
-        studyRepository.save(study);
         study.update("스프링 스터디", study.getDescription(), study.getStartDate(), study.getEndDate(), study.getStatus());
         String url = "/studies/" + study.getId();
         callPutApi(url, study).andExpect(status().isOk());
@@ -98,8 +93,6 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디의 상태를 변경한다.")
     void 정상적으로_스터디의_상태를_변경한다_성공() throws Exception {
-        final Study study = algorithmStudy();
-        studyRepository.save(study);
         String url = "/studies/" + study.getId() + "/status?status=IN_PROGRESS";
         callPatchApi(url, study).andExpect(status().isNoContent());
     }
@@ -107,8 +100,6 @@ public class StudyControllerTest extends IntegrationTest {
     @Test
     @DisplayName("정상적으로 스터디를 종료한다.")
     void 정상적으로_스터디를_종료한다_성공() throws Exception {
-        final Study study = algorithmStudy();
-        studyRepository.save(study);
         String url = "/studies/" + study.getId() + "/termination";
         callPatchApi(url, study).andExpect(status().isNoContent());
     }
