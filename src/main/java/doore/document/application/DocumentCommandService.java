@@ -40,10 +40,10 @@ public class DocumentCommandService {
     private final S3DocumentFileService s3DocumentFileService;
 
     public void createDocument(DocumentCreateRequest request, List<MultipartFile> multipartFiles,
-                               DocumentGroupType entityPath, Long entityId) {
-        validateExistGroup(entityPath, entityId);
+                               DocumentGroupType groupType, Long groupId) {
+        validateExistGroup(groupType, groupId);
         validateDocumentType(request.type(), request.url(), multipartFiles);
-        StudyDocument document = toDocument(request, entityPath, entityId);
+        StudyDocument document = toDocument(request, groupType, groupId);
 
         documentRepository.save(document);
 
@@ -73,7 +73,7 @@ public class DocumentCommandService {
 
     private void validateDocumentType(DocumentType type, String url, List<MultipartFile> multipartFiles) {
         if (type.equals(DocumentType.URL) && url == null) {
-            throw new DocumentException(LINK_DOCUMENT_NEEDS_FILE);
+            throw new DocumentException(LINK_DOCUMENT_NEEDS_URL);
         }
         if (!type.equals(DocumentType.URL) && (multipartFiles == null || multipartFiles.isEmpty())) {
             throw new DocumentException(NO_FILE_ATTACHED);
