@@ -24,9 +24,9 @@ public class DocumentFixture {
 
     private String name = "학습자료 파일";
     private String description = "";
-    private DocumentGroupType groupType = DocumentGroupType.teams;
+    private DocumentGroupType groupType = DocumentGroupType.TEAM;
     private Long groupId = 1L;
-    private DocumentAccessType accessType = DocumentAccessType.all;
+    private DocumentAccessType accessType = DocumentAccessType.ALL;
     private DocumentType type = DocumentType.url;
     private Long uploaderId = 1L;
 

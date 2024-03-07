@@ -59,14 +59,13 @@ public class DocumentCommandService {
             List<File> newFiles = saveFile(filePaths, document);
             document.updateFiles(newFiles);
         }
-
     }
 
     private void validateExistGroup(DocumentGroupType groupType, Long groupId) {
-        if (groupType.equals(teams)) {
+        if (groupType.equals(TEAM)) {
             teamRepository.findById(groupId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
         }
-        if (groupType.equals(studies)) {
+        if (groupType.equals(STUDY)) {
             studyRepository.findById(groupId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         }
     }
@@ -75,7 +74,7 @@ public class DocumentCommandService {
         if (type.equals(DocumentType.url) && url == null) {
             throw new DocumentException(LINK_DOCUMENT_NEEDS_FILE);
         }
-        if(!type.equals(DocumentType.url) && (multipartFiles == null || multipartFiles.isEmpty())) {
+        if (!type.equals(DocumentType.url) && (multipartFiles == null || multipartFiles.isEmpty())) {
             throw new DocumentException(NO_FILE_ATTACHED);
         }
     }

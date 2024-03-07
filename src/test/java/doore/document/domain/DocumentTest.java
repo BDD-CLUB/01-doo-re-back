@@ -27,7 +27,7 @@ public class DocumentTest {
         //when
         String newName = "수정된 자료명";
         String newDescription = "수정된 설명";
-        DocumentAccessType newAccessType = DocumentAccessType.all;
+        DocumentAccessType newAccessType = DocumentAccessType.ALL;
         studyDocument.update(newName, newDescription, newAccessType);
 
         //then

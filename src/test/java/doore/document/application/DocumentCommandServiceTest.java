@@ -1,5 +1,6 @@
 package doore.document.application;
 
+import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_FILE;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
 import static doore.study.StudyFixture.algorithmStudy;
@@ -14,7 +15,6 @@ import doore.document.DocumentFixture;
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
 import doore.document.domain.DocumentAccessType;
-import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.StudyDocument;
 import doore.document.domain.repository.DocumentRepository;
@@ -50,7 +50,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.teams,
+        documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
                 DocumentType.document, null, mock(Member.class).getId());
         study = algorithmStudy();
         studyRepository.save(study);
@@ -68,7 +68,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             FileInputStream fileInputStream = new FileInputStream(filePath);
 
             DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                    DocumentAccessType.teams, DocumentType.document, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.document, null, mock(Member.class).getId());
 
             MultipartFile document = new MockMultipartFile(
                     fileName,
@@ -76,7 +76,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     contentType,
                     fileInputStream);
 
-            documentCommandService.createDocument(fileRequest, List.of(document), DocumentGroupType.studies,
+            documentCommandService.createDocument(fileRequest, List.of(document), STUDY,
                     study.getId());
 
             //then
@@ -99,7 +99,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             FileInputStream fileInputStream = new FileInputStream(filePath);
 
             DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
-                    DocumentAccessType.teams, DocumentType.image, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.image, null, mock(Member.class).getId());
 
             MultipartFile image = new MockMultipartFile(
                     fileName,
@@ -107,7 +107,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     contentType,
                     fileInputStream);
 
-            documentCommandService.createDocument(imageRequest, List.of(image), DocumentGroupType.studies,
+            documentCommandService.createDocument(imageRequest, List.of(image), STUDY,
                     study.getId());
 
             //then
@@ -125,9 +125,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         void createDocument_정상적으로_링크_학습자료를_생성할_수_있다_성공() {
             String urlPath = "https://github.com/BDD-CLUB";
             DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
-                    DocumentAccessType.teams, DocumentType.url, urlPath, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.url, urlPath, mock(Member.class).getId());
 
-            documentCommandService.createDocument(urlRequest, null, DocumentGroupType.studies, study.getId());
+            documentCommandService.createDocument(urlRequest, null, STUDY, study.getId());
 
             //then
             List<StudyDocument> studyDocument = documentRepository.findAll();
@@ -149,7 +149,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             FileInputStream fileInputStream2 = new FileInputStream(filePath);
 
             DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
-                    DocumentAccessType.teams,
+                    DocumentAccessType.TEAM,
                     DocumentType.image, null, mock(Member.class).getId());
 
             MultipartFile image = new MockMultipartFile(
@@ -163,7 +163,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     contentType,
                     fileInputStream2);
 
-            documentCommandService.createDocument(imageRequest, List.of(image, image2), DocumentGroupType.studies,
+            documentCommandService.createDocument(imageRequest, List.of(image, image2), STUDY,
                     study.getId());
 
             //then
@@ -179,11 +179,11 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         public void validateDocumentType_링크_학습자료에는_링크를_입력해야_한다_실패() {
             //given
             DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
-                    DocumentAccessType.teams, DocumentType.url, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.url, null, mock(Member.class).getId());
 
             //when&then
             assertThatThrownBy(() ->
-                    documentCommandService.createDocument(urlRequest, null, DocumentGroupType.studies, study.getId()))
+                    documentCommandService.createDocument(urlRequest, null, STUDY, study.getId()))
                     .isInstanceOf(DocumentException.class)
                     .hasMessage(LINK_DOCUMENT_NEEDS_FILE.errorMessage());
         }
@@ -193,11 +193,11 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         public void 파일과_이미지_학습자료에는_파일이_첨부돼야_한다_실패() {
             //given
             DocumentCreateRequest ImageRequest = new DocumentCreateRequest("사진 자료", "사진 자료입니다.",
-                    DocumentAccessType.teams, DocumentType.image, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.image, null, mock(Member.class).getId());
 
             //when&then
             assertThatThrownBy(() ->
-                    documentCommandService.createDocument(ImageRequest, null, DocumentGroupType.studies, study.getId()))
+                    documentCommandService.createDocument(ImageRequest, null, STUDY, study.getId()))
                     .isInstanceOf(DocumentException.class)
                     .hasMessage(NO_FILE_ATTACHED.errorMessage());
         }
@@ -212,7 +212,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
         //when
         DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
-                DocumentAccessType.all);
+                DocumentAccessType.ALL);
         documentCommandService.updateDocument(updatedRequest, studyDocument.getId());
 
         //then

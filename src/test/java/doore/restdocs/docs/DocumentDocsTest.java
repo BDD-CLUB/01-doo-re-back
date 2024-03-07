@@ -55,7 +55,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 생성한다.")
     public void 학습자료를_생성한다() throws Exception {
         DocumentCreateRequest request = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                DocumentAccessType.teams, image, null, 1L);
+                DocumentAccessType.TEAM, image, null, 1L);
         final MockPart mockPart = getMockPart("request", request);
         mockPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
@@ -66,7 +66,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 new FileInputStream("src/test/resources/images/testImage.png")
         );
 
-        mockMvc.perform(multipart("/{groupType}/{groupId}/documents", teams, 1)
+        mockMvc.perform(multipart("/{groupType}/{groupId}/documents", "teams", 1)
                         .part(mockPart)
                         .file(file)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -111,7 +111,7 @@ public class DocumentDocsTest extends RestDocsTest {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("page", "0");
         params.add("size", "4");
-        mockMvc.perform(get("/{groupType}/{groupId}/documents", teams, 1).params(params))
+        mockMvc.perform(get("/{groupType}/{groupId}/documents", "teams", 1).params(params))
                 .andExpect(status().isOk())
                 .andDo(document("document-get-list", pathParameters(
                                 parameterWithName("groupType").description("학습자료가 속한 그룹(teams/studies)"),
@@ -128,7 +128,7 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료를_조회한다() throws Exception {
         //given
         FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        DocumentDetailResponse documentDetailResponse = new DocumentDetailResponse(1L, "학습자료", "학습자료입니다.", all, image,
+        DocumentDetailResponse documentDetailResponse = new DocumentDetailResponse(1L, "학습자료", "학습자료입니다.", ALL, image,
                 List.of(fileResponse), LocalDate.parse("2024-02-28"), 1L);
 
         //when
@@ -146,7 +146,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 수정한다.")
     public void 학습자료를_수정한다() throws Exception {
         //given
-        DocumentUpdateRequest request = new DocumentUpdateRequest("수정된 제목", "수정된 설명", teams);
+        DocumentUpdateRequest request = new DocumentUpdateRequest("수정된 제목", "수정된 설명", TEAM);
 
         //then
         mockMvc.perform(put("/{documentId}", 1)

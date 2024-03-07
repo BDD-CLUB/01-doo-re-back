@@ -1,5 +1,7 @@
 package doore.document.api;
 
+import static doore.document.exception.DocumentExceptionType.NOT_FOUND_GROUP_TYPE;
+
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
 import doore.document.application.dto.request.DocumentCreateRequest;
@@ -7,9 +9,11 @@ import doore.document.application.dto.request.DocumentUpdateRequest;
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.domain.DocumentGroupType;
+import doore.document.exception.DocumentException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
+import javax.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,25 +41,37 @@ public class DocumentController {
     private final DocumentCommandService documentCommandService;
     private final DocumentQueryService documentQueryService;
 
-    @PostMapping( "/{groupType}/{groupId}/documents")
+    @PostMapping("/{groupType}/{groupId}/documents")
     public ResponseEntity<Void> createDocument(@Valid @RequestPart DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
-                                               @PathVariable DocumentGroupType groupType,
+                                               @PathVariable String groupType,
                                                @PathVariable Long groupId) {
-        documentCommandService.createDocument(request, files, groupType, groupId);
+        DocumentGroupType group = checkGroupType(groupType);
+        documentCommandService.createDocument(request, files, group, groupId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{groupType}/{groupId}/documents")
     public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
-            @PathVariable DocumentGroupType groupType,
+            @PathVariable String groupType,
             @PathVariable Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "4") @PositiveOrZero int size) {
+        DocumentGroupType group = checkGroupType(groupType);
         Page<DocumentCondensedResponse> condensedDocuments =
-                documentQueryService.getAllDocument(groupType, groupId, PageRequest.of(page, size));
+                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
         System.out.println(condensedDocuments.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
+    }
+
+    private DocumentGroupType checkGroupType(String groupType) {
+        if (groupType.equals("studies")) {
+            return DocumentGroupType.STUDY;
+        }
+        if (groupType.equals("teams")) {
+            return DocumentGroupType.TEAM;
+        }
+        throw new DocumentException(NOT_FOUND_GROUP_TYPE);
     }
 
     @GetMapping(("/{documentId}"))

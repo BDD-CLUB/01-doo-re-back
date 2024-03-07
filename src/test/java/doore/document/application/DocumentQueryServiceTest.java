@@ -55,7 +55,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         Member member = 회원();
         memberRepository.save(member);
         studyDocument = new DocumentFixture()
-                .groupType(DocumentGroupType.studies)
+                .groupType(DocumentGroupType.STUDY)
                 .groupId(study.getId())
                 .type(DocumentType.url)
                 .uploaderId(member.getId())
@@ -67,7 +67,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     public void getAllDocumentList_정상적으로_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
         Page<DocumentCondensedResponse> responses =
-                documentQueryService.getAllDocument(DocumentGroupType.studies, study.getId(), PageRequest.of(0, 4));
+                documentQueryService.getAllDocument(DocumentGroupType.STUDY, study.getId(), PageRequest.of(0, 4));
 
         //then
         assertAll(
