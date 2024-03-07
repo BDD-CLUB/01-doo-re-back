@@ -32,6 +32,7 @@ import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentGroupType;
 import doore.restdocs.RestDocsTest;
 import doore.team.application.dto.request.TeamCreateRequest;
+import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
@@ -58,7 +59,12 @@ public class DocumentDocsTest extends RestDocsTest {
         final MockPart mockPart = getMockPart("request", request);
         mockPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        final MockMultipartFile file = getMockImageFile();
+        final MockMultipartFile file = new MockMultipartFile(
+                "files",
+                "testImage.png",
+                "image/png",
+                new FileInputStream("src/test/resources/images/testImage.png")
+        );
 
         mockMvc.perform(multipart("/{groupType}/{groupId}/documents", teams, 1)
                         .part(mockPart)
@@ -72,7 +78,7 @@ public class DocumentDocsTest extends RestDocsTest {
                                 parameterWithName("groupId").description("학습자료가 속한 그룹 id")
                         ), requestParts(
                                 partWithName("request").description("학습자료 정보"),
-                                partWithName("file").description("첨부 파일들")
+                                partWithName("files").description("첨부 파일들")
                         ), requestPartFields(
                                 "request",
                                 stringFieldWithPath("title", "학습자료 제목"),
