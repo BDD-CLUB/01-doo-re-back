@@ -1,10 +1,9 @@
 package doore.study.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import doore.crop.response.CropReferenceResponse;
+import doore.crop.domain.dto.response.CropReferenceResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
-import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
