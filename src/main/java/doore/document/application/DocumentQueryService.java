@@ -54,9 +54,20 @@ public class DocumentQueryService {
             FileResponse fileResponse = new FileResponse(file.getId(), file.getUrl());
             fileResponses.add(fileResponse);
         }
+        String uploaderName = memberRepository.findById(document.getId())
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
+                .getName();
 
-        return new DocumentDetailResponse(document.getId(), document.getName(), document.getDescription(),
-                document.getAccessType(), document.getType(), fileResponses,
-                document.getCreatedAt().toLocalDate(), "팜");
+        return DocumentDetailResponse
+                .builder()
+                .id(document.getId())
+                .title(document.getName())
+                .description(document.getDescription())
+                .accessType(document.getAccessType())
+                .type(document.getType())
+                .files(fileResponses)
+                .date(document.getCreatedAt().toLocalDate())
+                .uploader(uploaderName)
+                .build();
     }
 }

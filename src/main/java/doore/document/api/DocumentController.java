@@ -60,7 +60,6 @@ public class DocumentController {
         DocumentGroupType group = DocumentGroupType.value(groupType);
         Page<DocumentCondensedResponse> condensedDocuments =
                 documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
-        System.out.println(condensedDocuments.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }
 

@@ -123,8 +123,16 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료를_조회한다() throws Exception {
         //given
         FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        DocumentDetailResponse documentDetailResponse = new DocumentDetailResponse(1L, "학습자료", "학습자료입니다.", ALL, IMAGE,
-                List.of(fileResponse), LocalDate.parse("2024-02-28"), "김땡떙");
+        DocumentDetailResponse documentDetailResponse = DocumentDetailResponse.builder()
+                .id(1L)
+                .title("학습자료")
+                .description("학습자료 입니다.")
+                .accessType(ALL)
+                .type(IMAGE)
+                .files(List.of(fileResponse))
+                .date(LocalDate.parse("2024-02-28"))
+                .uploader("김땡땡")
+                .build();
 
         //when
         when(documentQueryService.getDocument(any())).thenReturn(documentDetailResponse);
