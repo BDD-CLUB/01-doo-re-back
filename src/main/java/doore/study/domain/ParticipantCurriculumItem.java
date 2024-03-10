@@ -51,4 +51,12 @@ public class ParticipantCurriculumItem extends BaseEntity {
     public void incomplete() {
         this.isChecked = false;
     }
+
+    public void checkCompletion() {
+        if (isChecked) {
+            incomplete();
+        } else {
+            complete();
+        }
+    }
 }
