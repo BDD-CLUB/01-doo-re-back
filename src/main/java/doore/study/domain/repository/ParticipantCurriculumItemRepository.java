@@ -15,10 +15,4 @@ public interface ParticipantCurriculumItemRepository extends JpaRepository<Parti
             + "and pci.isDeleted = false "
             + "and ci.isDeleted = false ")
     int getTotalCheckedCurriculumNumberFromStudy(Long studyId);
-
-    @Query(value = "select COUNT(*) from ParticipantCurriculumItem pci "
-            + "join CurriculumItem ci on pci.curriculumItem.id = ci.id "
-            + "where ci.study.id = :studyId "
-            + "and pci.participantId = :participantId")
-    boolean countByParticipantIdAndStudyId(Long studyId, Long participantId);
 }

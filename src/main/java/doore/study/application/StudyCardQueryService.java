@@ -3,10 +3,10 @@ package doore.study.application;
 import static doore.study.exception.StudyExceptionType.NOT_A_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
+import doore.member.domain.repository.ParticipantRepository;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
-import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyCardQueryService {
     private final StudyRepository studyRepository;
     private final StudyQueryService studyQueryService;
-    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private final ParticipantRepository participantRepository;
 
     public List<PersonalStudyDetailResponse> getStudyCards(Long memberId) {
         List<Study> joinedStudies = studyRepository.findAllByMemberIdAndStatus(memberId, StudyStatus.ENDED);
@@ -41,6 +41,6 @@ public class StudyCardQueryService {
     }
 
     private boolean memberNotJoined(Long studyId, Long memberId) {
-        return participantCurriculumItemRepository.countByParticipantIdAndStudyId(studyId, memberId);
+        return participantRepository.existsByStudyIdAndId(studyId, memberId);
     }
 }
