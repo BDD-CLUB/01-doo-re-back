@@ -4,7 +4,8 @@ import doore.document.exception.DocumentException;
 import doore.document.exception.DocumentExceptionType;
 
 public enum DocumentGroupType {
-    STUDY("studies"), TEAM("teams"),
+    STUDY("studies"),
+    TEAM("teams"),
     ;
 
     private String groupType;
