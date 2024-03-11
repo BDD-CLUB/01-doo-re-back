@@ -1,6 +1,6 @@
 package doore.study.application;
 
-import static doore.member.MemberFixture.회원;
+import static doore.member.MemberFixture.아마란스;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -35,7 +35,7 @@ public class ParticipantQueryTest extends IntegrationTest {
         @DisplayName("[성공] 참여자를 정상적으로 조회할 수 있다.")
         void findAllParticipants_참여자를_정상적으로_조회할_수_있다_성공() {
             //given
-            Member member = 회원();
+            Member member = 아마란스();
             memberRepository.save(member);
             Study study = algorithmStudy();
             studyRepository.save(study);

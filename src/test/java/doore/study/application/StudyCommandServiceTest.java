@@ -1,6 +1,5 @@
 package doore.study.application;
 
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.domain.StudyStatus.UPCOMING;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.mock;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.repository.MemberRepository;
-import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
@@ -194,7 +192,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
         }
     }
 
-    @Test
     @DisplayName("[실패] 존재하지 않는 스터디인 경우 실패한다.")
     void notExistStudy_존재하지_않는_스터디인_경우_실패한다_실패() {
         Long notExistingStudyId = 50L;

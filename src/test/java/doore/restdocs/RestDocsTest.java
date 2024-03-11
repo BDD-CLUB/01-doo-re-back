@@ -4,9 +4,11 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
+import doore.attendance.application.AttendanceCommandService;
 import doore.helper.ApiTestHelper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
+import doore.member.application.MemberTeamQueryService;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
@@ -38,6 +40,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
     protected MemberCommandService memberCommandService;
 
     @MockBean
+    protected MemberTeamQueryService memberTeamQueryService;
+
+    @MockBean
     protected TeamCommandService teamCommandService;
 
     @MockBean
@@ -51,6 +56,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected ParticipantQueryService participantQueryService;
+
+    @MockBean
+    protected AttendanceCommandService attendanceCommandService;
 
     @MockBean
     protected CurriculumItemCommandService curriculumItemCommandService;
@@ -78,6 +86,11 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     protected FieldDescriptor numberFieldWithPath(final String path, final String description) {
         return fieldWithPath(path).type(JsonFieldType.NUMBER)
+                .description(description);
+    }
+
+    protected FieldDescriptor booleanFieldWithPath(final String path, final String description) {
+        return fieldWithPath(path).type(JsonFieldType.BOOLEAN)
                 .description(description);
     }
 

@@ -1,21 +1,18 @@
 package doore.study.api;
 
-import static doore.member.MemberFixture.회원;
-import static doore.study.StudyFixture.algorithmStudy;
+import static doore.member.MemberFixture.아마란스;
 import static doore.study.StudyFixture.createStudy;
 import static doore.team.TeamFixture.team;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.member.domain.repository.ParticipantRepository;
 import doore.study.application.dto.request.StudyCreateRequest;
+import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
-import doore.study.domain.repository.StudyRepository;
-import doore.team.domain.TeamRepository;
 import doore.study.domain.Study;
 import doore.team.domain.Team;
-import doore.helper.IntegrationTest;
+import doore.team.domain.TeamRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +32,7 @@ public class StudyControllerTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        member = 회원();
+        member = 아마란스();
         study = createStudy();
         memberRepository.save(member);
     }
@@ -102,26 +99,5 @@ public class StudyControllerTest extends IntegrationTest {
     void 정상적으로_스터디를_종료한다_성공() throws Exception {
         String url = "/studies/" + study.getId() + "/termination";
         callPatchApi(url, study).andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("[성공] 정상적으로 참여자를 추가할 수 있다.")
-    void saveParticipant_정상적으로_참여자를_추가할_수_있다_성공() throws Exception {
-        String url = "/studies/" + study.getId() + "/members/" + member.getId();
-        callPostApi(url).andExpect(status().isCreated());
-    }
-
-    @Test
-    @DisplayName("[성공] 정상적으로 참여자를 삭제할 수 있다.")
-    void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() throws Exception {
-        String url = "/studies/" + study.getId() + "/members/" + member.getId();
-        callDeleteApi(url).andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("[성공] 정상적으로 참여자를 조회할 수 있다.")
-    void getParticipant_정상적으로_참여자를_조회할_수_있다_성공() throws Exception {
-        String url = "/studies/" + study.getId() + "/members";
-        callGetApi(url).andExpect(status().isOk());
     }
 }

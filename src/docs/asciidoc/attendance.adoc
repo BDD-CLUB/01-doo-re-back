@@ -1,0 +1,26 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= ATTENDANCE API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `POST`: Attendance 생성
+
+.HTTP Request
+include::{snippets}/attendance-create/http-request.adoc[]
+
+.Request Header
+include::{snippets}/attendance-create/request-headers.adoc[]
+
+.HTTP Response
+include::{snippets}/attendance-create/http-response.adoc[]
