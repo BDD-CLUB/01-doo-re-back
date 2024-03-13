@@ -28,19 +28,31 @@ include::{snippets}/study-create/request-fields.adoc[]
 .HTTP Response
 include::{snippets}/study-create/http-response.adoc[]
 
-== `GET`: Study 조회
+== `GET`: Study 전체 정보 조회
 
 .HTTP Request
-include::{snippets}/study-get/http-request.adoc[]
+include::{snippets}/study-get-all/http-request.adoc[]
 
 .Path Parameters
-include::{snippets}/study-get/path-parameters.adoc[]
+include::{snippets}/study-get-all/path-parameters.adoc[]
 
 .HTTP Response
-include::{snippets}/study-get/http-response.adoc[]
+include::{snippets}/study-get-all/http-response.adoc[]
 
-.Response Body
-include::{snippets}/study-get/response-body.adoc[]
+== `GET`: Study 개인 정보 조회
+
+.HTTP Request
+include::{snippets}/study-get-personal/http-request.adoc[]
+
+.Request Header
+include::{snippets}/study-get-personal/request-headers.adoc[]
+
+.Path Parameters
+include::{snippets}/study-get-personal/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/study-get-personal/http-response.adoc[]
+
 
 == `DELETE`: Study 삭제
 
@@ -89,46 +101,3 @@ include::{snippets}/study-change-status/path-parameters.adoc[]
 .HTTP Response
 include::{snippets}/study-change-status/http-response.adoc[]
 
-== `POST`: 참여자 추가
-
-.HTTP Request
-include::{snippets}/participant-save/http-request.adoc[]
-
-.Path Parameters
-include::{snippets}/participant-save/path-parameters.adoc[]
-
-.HTTP Response
-include::{snippets}/participant-save/http-response.adoc[]
-
-== `DELETE`: 참여자 삭제
-
-.HTTP Request
-include::{snippets}/participant-delete/http-request.adoc[]
-
-.Path Parameters
-include::{snippets}/participant-delete/path-parameters.adoc[]
-
-.HTTP Response
-include::{snippets}/participant-delete/http-response.adoc[]
-
-== `DELETE`: 참여자 탈퇴
-
-.HTTP Request
-include::{snippets}/participant-withdraw/http-request.adoc[]
-
-.Path Parameters
-include::{snippets}/participant-withdraw/path-parameters.adoc[]
-
-.HTTP Response
-include::{snippets}/participant-withdraw/http-response.adoc[]
-
-== `GET`: 참여자 조회
-
-.HTTP Request
-include::{snippets}/participant-get/http-request.adoc[]
-
-.Path Parameters
-include::{snippets}/participant-get/path-parameters.adoc[]
-
-.HTTP Response
-include::{snippets}/participant-get/http-response.adoc[]

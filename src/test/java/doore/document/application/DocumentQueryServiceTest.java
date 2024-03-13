@@ -1,6 +1,6 @@
 package doore.document.application;
 
-import static doore.member.MemberFixture.회원;
+import static doore.member.MemberFixture.아마란스;
 import static doore.study.StudyFixture.createStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,7 +48,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         study = createStudy();
-        Member member = 회원();
+        Member member = 아마란스();
         memberRepository.save(member);
         document = new DocumentFixture()
                 .groupType(DocumentGroupType.STUDY)

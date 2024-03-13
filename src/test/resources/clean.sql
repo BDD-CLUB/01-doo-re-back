@@ -9,3 +9,4 @@ truncate table participant;
 truncate table garden;
 truncate table document;
 truncate table file;
+truncate table attendance;

@@ -1,11 +1,15 @@
 package doore.study.api;
 
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+
 import doore.member.domain.Participant;
+import doore.member.exception.MemberException;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -42,10 +46,21 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}")
-    public ResponseEntity<StudyDetailResponse> getStudy(@PathVariable Long studyId) {
+    @GetMapping("/studies/{studyId}/all")
+    public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId) {
         StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);
+    }
+
+    @GetMapping("/studies/{studyId}")
+    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId, HttpServletRequest request) {
+        String memberId = request.getHeader("Authorization"); //todo: 권한 로직으로 수정
+        if (memberId == null) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        PersonalStudyDetailResponse personalStudyDetailResponse =
+                studyQueryService.getPersonalStudyDetail(studyId, Long.parseLong(memberId));
+        return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}")
@@ -64,30 +79,5 @@ public class StudyController {
     public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId) {
         studyCommandService.terminateStudy(studyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @PostMapping("/studies/{studyId}/members/{memberId}")
-    public ResponseEntity<Void> saveParticipant(@PathVariable Long studyId, @PathVariable Long memberId) {
-        studyCommandService.saveParticipant(studyId, memberId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @DeleteMapping("/studies/{studyId}/members/{memberId}")
-    public ResponseEntity<Void> deleteParticipant(@PathVariable Long studyId, @PathVariable Long memberId) {
-        studyCommandService.deleteParticipant(studyId, memberId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @DeleteMapping("/studies/{studyId}/members")
-    public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, HttpServletRequest request) {
-        //Todo: 이후 권한 로직으로 수정
-        studyCommandService.withdrawParticipant(studyId, request);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @GetMapping("/studies/{studyId}/members")
-    public ResponseEntity<List<Participant>> getParticipant(@PathVariable Long studyId) {
-        List<Participant> participants = studyQueryService.findAllParticipants(studyId);
-        return ResponseEntity.ok(participants);
     }
 }
