@@ -2,6 +2,8 @@ package doore.restdocs.docs;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -47,11 +49,12 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("참여자가 탈퇴한다.")
     void 참여자가_탈퇴한다_성공() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members", 1))
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members", 1)
+                        .header("Authorization", "1"))
                 .andExpect(status().isNoContent())
-                .andDo(document("participant-withdraw", pathParameters(
-                        parameterWithName("studyId")
-                                .description("스터디 id"))
+                .andDo(document("participant-withdraw",
+                        pathParameters(parameterWithName("studyId").description("스터디 id")),
+                        requestHeaders(headerWithName("Authorization").description("member id"))
                 ));
     }
 
@@ -75,8 +78,7 @@ public class ParticipantApiDocsTest extends RestDocsTest {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1))
                 .andExpect(status().isOk())
                 .andDo(document("participant-get", pathParameters(
-                        parameterWithName("studyId")
-                                .description("스터디 id"))
+                        parameterWithName("studyId").description("스터디 id"))
                 ));
     }
 }

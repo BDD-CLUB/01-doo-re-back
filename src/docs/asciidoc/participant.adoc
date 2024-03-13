@@ -44,6 +44,9 @@ include::{snippets}/participant-withdraw/http-request.adoc[]
 .Path Parameters
 include::{snippets}/participant-withdraw/path-parameters.adoc[]
 
+.Request Header
+include::{snippets}/participant-withdraw/request-headers.adoc[]
+
 .HTTP Response
 include::{snippets}/participant-withdraw/http-response.adoc[]
 
