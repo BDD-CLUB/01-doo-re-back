@@ -41,13 +41,9 @@ public class ParticipantCommandService {
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }
 
-    public void withdrawParticipant(Long studyId, HttpServletRequest request) {
+    public void withdrawParticipant(Long studyId, Long memberId) {
         validateExistStudy(studyId);
-        String memberId = request.getHeader("Authorization");
-        if (memberId == null) {
-            throw new MemberException(UNAUTHORIZED);
-        }
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }

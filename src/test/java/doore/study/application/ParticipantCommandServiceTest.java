@@ -92,11 +92,9 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             Long studyId = study.getId();
             Long memberId = member.getId();
             participantCommandService.saveParticipant(studyId, memberId);
-            HttpServletRequest request = mock(HttpServletRequest.class);
 
             //when
-            when(request.getHeader("Authorization")).thenReturn(String.valueOf(memberId));
-            participantCommandService.withdrawParticipant(studyId, request);
+            participantCommandService.withdrawParticipant(studyId, memberId);
             List<Participant> participants = participantQueryService.findAllParticipants(studyId);
 
             //then

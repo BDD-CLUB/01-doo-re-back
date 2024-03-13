@@ -1,6 +1,9 @@
 package doore.study.api;
 
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+
 import doore.member.domain.Participant;
+import doore.member.exception.MemberException;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +38,11 @@ public class ParticipantController {
     @DeleteMapping("/studies/{studyId}/members")
     public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, HttpServletRequest request) {
         //Todo: 이후 권한 로직으로 수정
-        participantCommandService.withdrawParticipant(studyId, request);
+        String memberId = request.getHeader("Authorization");
+        if (memberId == null) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        participantCommandService.withdrawParticipant(studyId, Long.parseLong(memberId));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
