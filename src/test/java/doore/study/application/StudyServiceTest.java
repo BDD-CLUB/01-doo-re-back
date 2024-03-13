@@ -1,6 +1,7 @@
 package doore.study.application;
 
 import static doore.study.StudyFixture.algorithmStudy;
+import static doore.study.StudyFixture.createStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.exception.StudyExceptionType.*;
 import static doore.team.TeamFixture.team;
@@ -126,9 +127,9 @@ public class StudyServiceTest extends IntegrationTest {
         @Test
         @DisplayName("정상적으로 스터디를 조회할 수 있다.")
         void 정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = algorithmStudy();
+            Study study = createStudy();
             studyRepository.save(study);
-            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
+            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).studyResponse().getId());
         }
 
         @Test

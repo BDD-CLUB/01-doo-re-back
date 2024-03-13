@@ -1,0 +1,62 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= PARTICIPANT API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `POST`: 참여자 추가
+
+.HTTP Request
+include::{snippets}/participant-save/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/participant-save/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-save/http-response.adoc[]
+
+== `DELETE`: 참여자 삭제
+
+.HTTP Request
+include::{snippets}/participant-delete/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/participant-delete/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-delete/http-response.adoc[]
+
+== `DELETE`: 참여자 탈퇴
+
+.HTTP Request
+include::{snippets}/participant-withdraw/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/participant-withdraw/path-parameters.adoc[]
+
+.Request Header
+include::{snippets}/participant-withdraw/request-headers.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-withdraw/http-response.adoc[]
+
+== `GET`: 참여자 조회
+
+.HTTP Request
+include::{snippets}/participant-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/participant-get/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/participant-get/http-response.adoc[]

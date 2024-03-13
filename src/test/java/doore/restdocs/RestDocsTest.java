@@ -10,6 +10,8 @@ import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberTeamQueryService;
 import doore.study.application.CurriculumItemCommandService;
+import doore.study.application.ParticipantCommandService;
+import doore.study.application.ParticipantQueryService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.team.application.TeamCommandService;
@@ -48,6 +50,12 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected StudyQueryService studyQueryService;
+
+    @MockBean
+    protected ParticipantCommandService participantCommandService;
+
+    @MockBean
+    protected ParticipantQueryService participantQueryService;
 
     @MockBean
     protected AttendanceCommandService attendanceCommandService;
