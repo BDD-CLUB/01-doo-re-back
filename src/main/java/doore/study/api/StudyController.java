@@ -46,7 +46,7 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}/entire")
+    @GetMapping("/studies/{studyId}/all")
     public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId) {
         StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);

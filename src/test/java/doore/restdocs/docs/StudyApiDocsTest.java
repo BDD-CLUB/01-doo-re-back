@@ -77,9 +77,9 @@ public class StudyApiDocsTest extends RestDocsTest {
 
         when(studyQueryService.findStudyById(any())).thenReturn(studyDetailResponse);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/entire", 1))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/all", 1))
                 .andExpect(status().isOk())
-                .andDo(document("study-get-entire", pathParameters(
+                .andDo(document("study-get-all", pathParameters(
                         parameterWithName("studyId")
                                 .description("스터디 id"))
                 ));

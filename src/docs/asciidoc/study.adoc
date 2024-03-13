@@ -31,13 +31,13 @@ include::{snippets}/study-create/http-response.adoc[]
 == `GET`: Study 전체 정보 조회
 
 .HTTP Request
-include::{snippets}/study-get-entire/http-request.adoc[]
+include::{snippets}/study-get-all/http-request.adoc[]
 
 .Path Parameters
-include::{snippets}/study-get-entire/path-parameters.adoc[]
+include::{snippets}/study-get-all/path-parameters.adoc[]
 
 .HTTP Response
-include::{snippets}/study-get-entire/http-response.adoc[]
+include::{snippets}/study-get-all/http-response.adoc[]
 
 == `GET`: Study 개인 정보 조회
 
