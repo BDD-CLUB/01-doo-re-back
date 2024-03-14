@@ -4,6 +4,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
+import doore.document.application.DocumentCommandService;
+import doore.document.application.DocumentQueryService;
 import doore.attendance.application.AttendanceCommandService;
 import doore.helper.ApiTestHelper;
 import doore.login.application.LoginService;
@@ -62,6 +64,12 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected CurriculumItemCommandService curriculumItemCommandService;
+
+    @MockBean
+    protected DocumentQueryService documentQueryService;
+
+    @MockBean
+    protected DocumentCommandService documentCommandService;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;

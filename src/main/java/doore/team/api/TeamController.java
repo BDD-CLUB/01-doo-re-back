@@ -6,6 +6,7 @@ import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
