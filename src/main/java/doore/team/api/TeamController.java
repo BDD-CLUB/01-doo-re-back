@@ -85,7 +85,7 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/ranks")
+    @GetMapping
     public ResponseEntity<List<TeamRankResponse>> getTeams(){
         final List<TeamRankResponse> teamRankResponses = teamQueryService.getTeamRanks();
         return ResponseEntity.ok(teamRankResponses);
