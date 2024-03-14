@@ -21,7 +21,7 @@ public class MemberTeamQueryService {
     private final MemberTeamRepository memberTeamRepository;
 
     public List<MemberResponse> findMemberTeams(final Long teamId, final String keyword) {
-        if (keyword.isBlank()) {
+        if (keyword == null || keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
         }
 
