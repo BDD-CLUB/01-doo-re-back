@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import doore.helper.IntegrationTest;
@@ -23,7 +24,7 @@ import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -129,7 +130,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             studyRepository.save(study);
             studyCommandService.deleteStudy(study.getId());
             List<Study> studies = studyRepository.findAll();
-            assertThat(studies).hasSize(0);
+            assertTrue(studies.get(0).getIsDeleted());
         }
 
 

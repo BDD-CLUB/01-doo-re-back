@@ -1,0 +1,73 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= DOCUMENT API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `POST`: Document 생성
+.Path Parameters
+include::{snippets}/document-create/path-parameters.adoc[]
+
+.Request Part
+include::{snippets}/document-create/request-parts.adoc[]
+
+.Request Part Request Fields
+include::{snippets}/document-create/request-part-request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/document-create/http-response.adoc[]
+
+== `GET`: Document 목록 조회
+.Http Request
+include::{snippets}/document-get-list/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/document-get-list/path-parameters.adoc[]
+
+.Http Response
+include::{snippets}/document-get-list/http-response.adoc[]
+
+== `GET`: Document 조회
+.Http Request
+include::{snippets}/document-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/document-get/path-parameters.adoc[]
+
+.Http Response
+include::{snippets}/document-get/http-response.adoc[]
+
+== `PUT`: Document 수정
+
+.HTTP Request
+include::{snippets}/document-update/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/document-update/path-parameters.adoc[]
+
+.Request Fields
+include::{snippets}/document-update/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/document-update/http-response.adoc[]
+
+== `DELETE`: Document 삭제
+
+.HTTP Request
+include::{snippets}/document-delete/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/document-delete/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/document-delete/http-response.adoc[]
