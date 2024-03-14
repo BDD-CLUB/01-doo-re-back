@@ -10,7 +10,7 @@ import doore.helper.IntegrationTest;
 import doore.team.TeamFixture;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;

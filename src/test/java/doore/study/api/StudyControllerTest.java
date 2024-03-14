@@ -12,7 +12,7 @@ import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.domain.Study;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

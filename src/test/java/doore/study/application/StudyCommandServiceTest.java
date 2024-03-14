@@ -24,7 +24,7 @@ import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import java.time.LocalDate;
 import java.util.Collections;

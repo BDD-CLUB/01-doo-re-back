@@ -18,7 +18,7 @@ import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.ArrayList;
 import java.util.List;

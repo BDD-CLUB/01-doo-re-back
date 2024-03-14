@@ -10,7 +10,7 @@ import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import doore.util.RandomUtil;
 import doore.util.RedisUtil;
