@@ -20,14 +20,11 @@ public class CropFixture {
     public CropFixture(CropRepository cropRepository) {
         CropFixture.cropRepository = cropRepository;
     }
-    public static Crop createCrop() {
-        return cropRepository.save(CropFixture.rice());
-    }
-
     public static Crop rice() {
-        return Crop.builder()
+        Crop rice = Crop.builder()
                 .name("벼")
                 .imageUrl("https://~")
                 .build();
+        return cropRepository.save(rice);
     }
 }

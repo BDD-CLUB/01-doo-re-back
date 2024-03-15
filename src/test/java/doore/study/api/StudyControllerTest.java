@@ -1,11 +1,11 @@
 package doore.study.api;
 
 import static doore.member.MemberFixture.아마란스;
-import static doore.study.StudyFixture.createStudy;
 import static doore.team.TeamFixture.team;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import doore.study.StudyFixture;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
@@ -33,7 +33,7 @@ public class StudyControllerTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         member = 아마란스();
-        study = createStudy();
+        study = StudyFixture.builder().studyBuild();
         memberRepository.save(member);
     }
 
