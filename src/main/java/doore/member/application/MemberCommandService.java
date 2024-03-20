@@ -1,5 +1,7 @@
 package doore.member.application;
 
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
@@ -49,18 +51,26 @@ public class MemberCommandService {
     }
 
     public void transferTeamMaster(Long teamId, Long memberId) {
-        //todo: 원래 팀장 직위는?
         validMember(memberId);
         validTeam(teamId);
+
+        TeamRole previousTeamMasterRole = teamRoleRepository.findTeamRoleByTeamIdAndTeamRoleType(teamId, ROLE_팀장)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        previousTeamMasterRole.updatePreviousTeamMaster();
+
         TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         teamRole.updateTeamMaster();
     }
 
     public void transferStudyMaster(Long studyId, Long memberId) {
-        //todo: 원래 스터디장 직위는?
         validMember(memberId);
         validStudy(studyId);
+
+        StudyRole previousStudyMasterRole = studyRoleRepository.findStudyRoleByStudyIdAndStudyRoleType(studyId,
+                ROLE_스터디장).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
+        previousStudyMasterRole.updatePreviousStudyMaster();
+
         StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         studyRole.updateStudyMaster();

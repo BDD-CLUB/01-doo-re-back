@@ -10,9 +10,11 @@ import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import doore.helper.IntegrationTest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
+import doore.member.MemberFixture;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -110,6 +112,64 @@ class MemberCommandServiceTest extends IntegrationTest {
                 .orElseThrow();
 
         assertThat(changedTeamRole.getTeamRoleType()).isEqualTo(ROLE_팀장);
+    }
+
+    @Test
+    @DisplayName("[성공] 팀장 직위가 정상적으로 위임되면 원래 팀장은 팀원이 된다")
+    void transferTeamMaster_팀장_직위가_정상적으로_위임되면_원래_팀장은_팀원이_된다_성공() {
+        Team team = TeamFixture.team();
+        teamRepository.save(team);
+        Member newMember = MemberFixture.회원();
+        memberRepository.save(newMember);
+
+        TeamRole previousTeamMasterRole = TeamRole.builder()
+                .teamId(team.getId())
+                .teamRoleType(ROLE_팀장)
+                .memberId(newMember.getId())
+                .build();
+        teamRoleRepository.save(previousTeamMasterRole);
+
+        TeamRole teamRole = TeamRole.builder()
+                .teamId(team.getId())
+                .teamRoleType(ROLE_팀원)
+                .memberId(member.getId())
+                .build();
+        teamRoleRepository.save(teamRole);
+
+        memberCommandService.transferTeamMaster(team.getId(), member.getId());
+        TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(), member.getId())
+                .orElseThrow();
+
+        assertNotEquals(previousTeamMasterRole.getTeamRoleType(), changedTeamRole.getTeamRoleType());
+    }
+
+    @Test
+    @DisplayName("[성공] 스터디장 직위가 정상적으로 위임되면 원래 스터디장은 스터디원이 된다")
+    void transferStudyMaster_스터디장_직위가_정상적으로_위임되면_원래_스터디장은_스터디원이_된다_성공() {
+        Study study = StudyFixture.algorithmStudy();
+        studyRepository.save(study);
+        Member newMember = MemberFixture.회원();
+        memberRepository.save(newMember);
+
+        StudyRole previousStudyMasterRole = StudyRole.builder()
+                .studyId(study.getId())
+                .studyRoleType(ROLE_스터디장)
+                .memberId(newMember.getId())
+                .build();
+        studyRoleRepository.save(previousStudyMasterRole);
+
+        StudyRole studyRole = StudyRole.builder()
+                .studyId(study.getId())
+                .studyRoleType(ROLE_스터디원)
+                .memberId(member.getId())
+                .build();
+        studyRoleRepository.save(studyRole);
+
+        memberCommandService.transferStudyMaster(study.getId(), member.getId());
+        StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
+                member.getId()).orElseThrow();
+
+        assertNotEquals(previousStudyMasterRole.getStudyRoleType(), changedStudyRole.getStudyRoleType());
     }
 
     @Test

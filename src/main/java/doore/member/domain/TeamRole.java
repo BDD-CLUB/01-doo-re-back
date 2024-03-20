@@ -1,5 +1,6 @@
 package doore.member.domain;
 
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 
 import jakarta.persistence.Column;
@@ -40,6 +41,10 @@ public class TeamRole {
         this.teamId = teamId;
         this.teamRoleType = teamRoleType;
         this.memberId = memberId;
+    }
+
+    public void updatePreviousTeamMaster() {
+        this.teamRoleType = ROLE_팀원;
     }
 
     public void updateTeamMaster() {

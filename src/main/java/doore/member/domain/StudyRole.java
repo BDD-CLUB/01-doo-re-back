@@ -1,5 +1,6 @@
 package doore.member.domain;
 
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 
 import jakarta.persistence.Column;
@@ -40,6 +41,10 @@ public class StudyRole {
         this.studyId = studyId;
         this.studyRoleType = studyRoleType;
         this.memberId = memberId;
+    }
+
+    public void updatePreviousStudyMaster() {
+        this.studyRoleType = ROLE_스터디원;
     }
 
     public void updateStudyMaster() {
