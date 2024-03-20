@@ -1,5 +1,7 @@
 package doore.member.domain;
 
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,4 +34,15 @@ public class StudyRole {
 
     @Column(nullable = false)
     private Long memberId;
+
+    @Builder
+    private StudyRole(Long studyId, StudyRoleType studyRoleType, Long memberId) {
+        this.studyId = studyId;
+        this.studyRoleType = studyRoleType;
+        this.memberId = memberId;
+    }
+
+    public void updateStudyMaster() {
+        this.studyRoleType = ROLE_스터디장;
+    }
 }
