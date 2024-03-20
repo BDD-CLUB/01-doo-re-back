@@ -3,6 +3,7 @@ package doore.restdocs.docs;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +34,16 @@ public class MemberApiDocsTest extends RestDocsTest {
         mockMvc.perform(patch("/study/{studyId}/mandate", 1))
                 .andExpect(status().isNoContent())
                 .andDo(document("transfer-study-master"));
+    }
+
+    @Test
+    @DisplayName("[성공] 유효한 요청이면 회원 탈퇴에 성공한다.")
+    void deleteMember_유효한_요청이면_회원_탈퇴에_성공한다() throws Exception {
+        doNothing().when(memberCommandService).deleteMember(any());
+
+        mockMvc.perform(delete("/members"))
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-member"));
     }
 
 }

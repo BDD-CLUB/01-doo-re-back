@@ -29,3 +29,11 @@ include::{snippets}/transfer-study-master/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/transfer-study-master/http-response.adoc[]
+
+== `DELETE`: 회원 탈퇴
+
+.HTTP Request
+include::{snippets}/delete-member/http-response.adoc[]
+
+.HTTP Response
+include::{snippets}/delete-member/http-response.adoc[]
