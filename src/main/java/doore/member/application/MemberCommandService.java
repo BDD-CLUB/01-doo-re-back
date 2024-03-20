@@ -76,6 +76,12 @@ public class MemberCommandService {
         studyRole.updateStudyMaster();
     }
 
+    public void deleteMember(Long memberId) {
+        // todo: 삭제로직체크
+        validMember(memberId);
+        memberRepository.deleteById(memberId);
+    }
+
     private Member validMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
