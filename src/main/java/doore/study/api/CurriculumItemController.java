@@ -20,6 +20,7 @@ public class CurriculumItemController {
 
     private final CurriculumItemCommandService curriculumItemCommandService;
 
+//    @Secured("ROLE_스터디장")
     @PostMapping("/studies/{studyId}/curriculums")
     public ResponseEntity<Void> manageCurriculum(@PathVariable Long studyId,
                                                  @Valid @RequestBody CurriculumItemManageRequest request) {
@@ -27,6 +28,7 @@ public class CurriculumItemController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+//    @Secured({"ROLE_스터디장", "ROLE_스터디원"})
     @PatchMapping("/curriculums/{curriculumId}/{participantId}/check")
     public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId, @PathVariable Long participantId) {
         curriculumItemCommandService.checkCurriculum(curriculumId, participantId);
