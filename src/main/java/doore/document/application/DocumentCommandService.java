@@ -136,8 +136,8 @@ public class DocumentCommandService {
     }
 
     public void deleteDocument(Long documentId) {
-        validateExistDocument(documentId);
-        gardenCommandService.deleteGarden(documentId, GardenType.DOCUMENT_UPLOAD);
+        Document document = validateExistDocument(documentId);
+        gardenCommandService.deleteGarden(document);
         documentRepository.deleteById(documentId);
     }
 

@@ -18,14 +18,21 @@ public class GardenCommandService {
         Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).create(document);
         gardenRepository.save(garden);
     }
+    public void deleteGarden(Document document) {
+        Long contributionId = document.getId();
+        GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
+        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
+    }
 
     public void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
         Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName()).create(participantCurriculumItem);
         gardenRepository.save(garden);
     }
 
-    public void deleteGarden(Long contributionId, GardenType gardenType) {
+    public void deleteGarden(ParticipantCurriculumItem participantCurriculumItem) {
+        Long contributionId = participantCurriculumItem.getId();
+        GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
         gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
-
+    
 }
