@@ -44,4 +44,16 @@ public class TeamRepositoryTest extends RepositorySliceTest {
         //then
         assertThat(result).isEmpty();
     }
+
+    @Test
+    @DisplayName("")
+    void findAllByMemberId_특정_회원이_참여중인_팀의_목록을_조회한다_성공() {
+        //given
+        // TODO: 3/21/24
+
+        //when
+
+        //then
+
+    }
 }
