@@ -10,7 +10,7 @@ import doore.team.domain.Team;
 import java.time.LocalDate;
 import java.util.List;
 
-public record StudyDetailResponse(
+public record StudySimpleResponse(
 
         Long id,
         String name,
@@ -23,12 +23,12 @@ public record StudyDetailResponse(
         Boolean isDeleted,
         TeamReferenceResponse teamReference,
         CropReferenceResponse cropReferenc,
-        List<CurriculumItemResponse> curriculumItems
+        List<CurriculumItemReferenceResponse> curriculumItems
 ) {
-    public static StudyDetailResponse of(final Study study, final Team team, final Crop crop) {
-        return new StudyDetailResponse(study.getId(), study.getName(), study.getDescription(), study.getStartDate(),
+    public static StudySimpleResponse of(final Study study, final Team team, final Crop crop) {
+        return new StudySimpleResponse(study.getId(), study.getName(), study.getDescription(), study.getStartDate(),
                 study.getEndDate(), study.getStatus(), study.getIsDeleted(),
                 TeamReferenceResponse.from(team), CropReferenceResponse.from(crop),
-                CurriculumItemResponse.from(study.getCurriculumItems()));
+                CurriculumItemReferenceResponse.from(study.getCurriculumItems()));
     }
 }
