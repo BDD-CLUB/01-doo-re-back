@@ -6,6 +6,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
@@ -19,19 +20,23 @@ import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.personalStudyResponse.PersonalCurriculumItemResponse;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.totalStudyResponse.CurriculumItemReferenceResponse;
 import doore.study.application.dto.response.totalStudyResponse.CurriculumItemResponse;
 import doore.study.application.dto.response.totalStudyResponse.ParticipantCurriculumItemResponse;
 import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
+import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 @WebMvcTest(StudyController.class)
 public class StudyApiDocsTest extends RestDocsTest {
@@ -190,6 +195,55 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .andDo(document("study-terminate", pathParameters(
                         parameterWithName("studyId")
                                 .description("스터디 id"))
+                ));
+    }
+
+    @Test
+    @DisplayName("나의 스터디 목록을 조회한다.")
+    public void 나의_스터디_목록을_조회한다() throws Exception {
+        final Long memberId = 1L;
+        final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
+        final TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
+        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
+        final CurriculumItemReferenceResponse curriculumItemReferenceResponse = new CurriculumItemReferenceResponse(
+                1L, "chapter1. greedy", 1, false);
+        final StudySimpleResponse response = new StudySimpleResponse(1L, "알고리즘", "알고리즘 스터디입니다.",
+                LocalDate.parse("2020-01-01"),
+                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
+                cropReferenceResponse, List.of(curriculumItemReferenceResponse));
+
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                numberFieldWithPath("[].id", "스터디의 ID"),
+                stringFieldWithPath("[].name", "스터디의 이름"),
+                stringFieldWithPath("[].description", "스터디의 설명"),
+                stringFieldWithPath("[].startDate", "스터디의 시작일"),
+                stringFieldWithPath("[].endDate", "스터디의 종료일"),
+                stringFieldWithPath("[].status", "스터디의 진행 상태"),
+                booleanFieldWithPath("[].isDeleted", "스터디의 삭제 여부"),
+                numberFieldWithPath("[].teamReference.id", "스터디가 속한 팀의 ID"),
+                stringFieldWithPath("[].teamReference.name", "스터디가 속한 팀의 이름"),
+                stringFieldWithPath("[].teamReference.description", "스터디가 속한 팀의 설명"),
+                stringFieldWithPath("[].teamReference.imageUrl", "스터디가 속한 팀의 이미지 url"),
+                numberFieldWithPath("[].cropReference.id", "스터디의 작물의 ID"),
+                stringFieldWithPath("[].cropReference.name", "스터디의 작물의 이름"),
+                stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
+                numberFieldWithPath("[].curriculumItems[].id", "스터디의 커리큘럼 ID"),
+                stringFieldWithPath("[].curriculumItems[].name", "스터디의 커리큘럼 이름"),
+                numberFieldWithPath("[].curriculumItems[].itemOrder", "스터디의 커리큘럼 순서번호"),
+                booleanFieldWithPath("[].curriculumItems[].isDeleted", "스터디의 커리큘럼 삭제여부")
+        );
+
+        when(studyQueryService.findMyStudies(memberId)).thenReturn(List.of(response));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/members/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN))
+                .andExpect(status().isOk())
+                .andDo(document("my-studies",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 id")
+                        ),
+                        responseFieldsSnippet
                 ));
     }
 }

@@ -18,11 +18,11 @@ public record StudyDetailResponse(
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate startDate,
         @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate endTime,
+        LocalDate endDate,
         StudyStatus status,
         Boolean isDeleted,
         TeamReferenceResponse teamReference,
-        CropReferenceResponse cropReferenc,
+        CropReferenceResponse cropReference,
         List<CurriculumItemResponse> curriculumItems
 ) {
     public static StudyDetailResponse of(final Study study, final Team team, final Crop crop) {
