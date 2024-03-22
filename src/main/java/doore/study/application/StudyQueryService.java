@@ -3,6 +3,7 @@ package doore.study.application;
 import static doore.crop.exception.CropExceptionType.NOT_FOUND_CROP;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
+import static java.util.stream.Collectors.groupingBy;
 
 import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
@@ -17,12 +18,16 @@ import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
+import doore.study.persistence.StudyDao;
+import doore.study.persistence.dto.StudyInformation;
+import doore.study.persistence.dto.StudyOverview;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +39,7 @@ public class StudyQueryService {
     private final StudyRepository studyRepository;
     private final TeamRepository teamRepository;
     private final CropRepository cropRepository;
+    private final StudyDao studyDao;
 
     public StudyDetailResponse findStudyById(Long studyId) {
         Study study = getStudy(studyId);
@@ -96,10 +102,19 @@ public class StudyQueryService {
     }
 
     public List<StudySimpleResponse> findMyStudies(final Long memberId) {
-        return studyRepository.findAllByMemberId(memberId)
-                .stream()
-                .map(study -> StudySimpleResponse.of(study, Team.builder().build(), Crop.builder().build()))
-                .collect(Collectors.toList());
-        // TODO: 3/21/24 team과 crop을 어떻게 가지고 올지 고민하기
+        final List<StudyOverview> studyOverviews = studyDao.findMyStudy(memberId);
+        final Map<StudyInformation, List<StudyOverview>> map = studyOverviews.stream()
+                .collect(groupingBy(StudyOverview::getStudyInformation));
+        return map.entrySet().stream()
+                .peek(entry -> {
+                    if (entry.getValue().stream().anyMatch(overview -> overview.getCurriculumName() == null)) {
+                        entry.setValue(Collections.emptyList());
+                    }
+                    entry.setValue(entry.getValue().stream()
+                            .sorted(Comparator.comparing(StudyOverview::getCurriculumItemOrder))
+                            .toList());
+                })
+                .map(entry -> StudySimpleResponse.of(entry.getKey(), entry.getValue()))
+                .toList();
     }
 }
