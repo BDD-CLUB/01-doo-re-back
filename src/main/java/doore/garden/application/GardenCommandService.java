@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class GardenCommandService {
     private final GardenRepository gardenRepository;
     public void createGarden(Document document) {
-        Garden garden = GardenType.valueOf(document.getClass().getSimpleName()).getSupplier().get().create(document);
+        Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).create(document);
         gardenRepository.save(garden);
     }
 
     public void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
-        Garden garden = GardenType.valueOf(participantCurriculumItem.getClass().getSimpleName()).getSupplier().get().create(participantCurriculumItem);
+        Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName()).create(participantCurriculumItem);
         gardenRepository.save(garden);
     }
 
