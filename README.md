@@ -72,9 +72,27 @@
 - **학습자료**: 스터디에서 공부한 내용을 학습자료 형태로 업로드 할 수 있습니다. 스터디에 업로드한 학습자료는 팀에도 공유됩니다.
 - ~북마크: 업로드된 학습자료를 북마크할 수 있습니다.~
 
+<img width="1986" alt="스터디페이지- 사이드바 closed" src="https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/aa1ccb01-e81c-4bc0-a5eb-8448fe50b6bf">
+
+![수료증 페이지 (1)](https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/bb8e650c-179e-426b-b652-dcf806154e6b)
+
+
+### 학습자료
+데모 이후 개발
+
 ![마이페이지](https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/71449deb-8bcb-4ea3-900c-8fef86b930d8)
 ### 마이페이지
 데모 이후 개발
+
+
+
+![수료증 페이지](https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/4d4c805a-a662-4ce4-97f5-8e9f501a4c4a)
+![수료증 페이지 (2)](https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/ab57de7b-7c31-480b-ac12-4bedacf62b69)
+
+### 수료증
+데모 이후 개발
+
+
 
 <img width="1986" alt="알림페이지 (1)" src="https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/4a4949fb-015d-47ca-97ef-3566b17a6b2f">
 
