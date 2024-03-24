@@ -4,9 +4,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
+import doore.attendance.application.AttendanceCommandService;
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
-import doore.attendance.application.AttendanceCommandService;
 import doore.helper.ApiTestHelper;
 import doore.login.application.LoginService;
 import doore.member.application.MemberCommandService;
@@ -17,6 +17,7 @@ import doore.study.application.ParticipantQueryService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.team.application.TeamCommandService;
+import doore.team.application.TeamQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected DocumentCommandService documentCommandService;
+
+    @MockBean
+    protected TeamQueryService teamQueryService;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;

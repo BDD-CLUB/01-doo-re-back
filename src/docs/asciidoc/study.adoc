@@ -101,3 +101,16 @@ include::{snippets}/study-change-status/path-parameters.adoc[]
 .HTTP Response
 include::{snippets}/study-change-status/http-response.adoc[]
 
+== `GET`: 나의 Study 목록 조회
+
+.HTTP Request
+include::{snippets}/my-studies/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/my-studies/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/my-studies/http-response.adoc[]
+
+.HTTP Response
+include::{snippets}/my-studies/response-fields.adoc[]

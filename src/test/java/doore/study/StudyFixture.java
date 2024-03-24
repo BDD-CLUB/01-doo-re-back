@@ -2,7 +2,6 @@ package doore.study;
 
 import static doore.crop.CropFixture.createCrop;
 
-import doore.crop.domain.repository.CropRepository;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
