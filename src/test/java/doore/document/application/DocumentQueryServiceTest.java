@@ -13,6 +13,7 @@ import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.Document;
 import doore.document.domain.repository.DocumentRepository;
+import doore.document.domain.repository.FileRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
@@ -40,6 +41,9 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     DocumentRepository documentRepository;
 
     @Autowired
+    FileRepository fileRepository;
+
+    @Autowired
     MemberRepository memberRepository;
 
     Study study;
@@ -50,7 +54,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         study = createStudy();
         Member member = 아마란스();
         memberRepository.save(member);
-        document = new DocumentFixture()
+        document = new DocumentFixture(documentRepository,fileRepository)
                 .groupType(DocumentGroupType.STUDY)
                 .groupId(study.getId())
                 .type(DocumentType.URL)

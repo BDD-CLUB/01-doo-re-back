@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.document.DocumentFixture;
 import doore.document.domain.repository.DocumentRepository;
+import doore.document.domain.repository.FileRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,14 @@ public class DocumentTest {
 
     @Autowired
     DocumentRepository documentRepository;
+    @Autowired
+    FileRepository fileRepository;
 
     @Test
     @DisplayName("[성공] 학습자료가 정상적으로 수정된다.")
     public void 학습자료가_정상적으로_수정된다_성공() {
         //given
-        Document document = new DocumentFixture()
+        Document document = new DocumentFixture(documentRepository,fileRepository)
                 .buildDocument();
 
         //when
@@ -43,7 +46,7 @@ public class DocumentTest {
     public void 학습자료의_파일이_정상적으로_수정된다_성공() {
         //given
         String url = "blog link";
-        Document document = new DocumentFixture()
+        Document document = new DocumentFixture(documentRepository,fileRepository)
                 .buildLinkDocument(List.of(url));
 
         //when

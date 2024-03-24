@@ -18,6 +18,7 @@ import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.Document;
 import doore.document.domain.repository.DocumentRepository;
+import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
@@ -44,6 +45,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Autowired
     DocumentRepository documentRepository;
+
+    @Autowired
+    FileRepository fileRepository;
 
     DocumentCreateRequest documentRequest;
     Study study;
@@ -208,7 +212,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 학습자료를 업데이트 할 수 있다.")
     void updateDocument_정상적으로_학습자료를_업데이트_할_수_있다_성공() {
         //given
-        Document document = new DocumentFixture().buildDocument();
+        Document document = new DocumentFixture(documentRepository,fileRepository).buildDocument();
 
         //when
         DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
@@ -228,7 +232,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 학습자료를 정상적으로 삭제할 수 있다.")
     void deleteDocument_학습자료를_정상적으로_삭제할_수_있다() {
         //given
-        Document document = new DocumentFixture().buildDocument();
+        Document document = new DocumentFixture(documentRepository,fileRepository).buildDocument();
         assertThat(documentRepository.findAll()).hasSize(1);
         //when
         documentCommandService.deleteDocument(document.getId());

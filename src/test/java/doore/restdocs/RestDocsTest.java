@@ -17,6 +17,7 @@ import doore.study.application.ParticipantQueryService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.team.application.TeamCommandService;
+import doore.team.application.TeamQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected TeamCommandService teamCommandService;
+
+    @MockBean
+    protected TeamQueryService teamQueryService;
 
     @MockBean
     protected StudyCommandService studyCommandService;

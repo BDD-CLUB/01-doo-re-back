@@ -12,7 +12,7 @@ public interface DocumentRepository extends JpaRepository<Document,Long> {
             + "where document.groupType = 'TEAM' "
             + "and document.groupId = :teamId "
             + "and document.isDeleted = false "
-            + "and Date(document.createdAt) = CURRENT DATE ")
+            + "and Date(document.createdAt) = CURDATE() ")
     int getTodayUploadedDocumentFromTeam(Long teamId);
 
     @Query(value = "select COUNT(*) from Document document "
