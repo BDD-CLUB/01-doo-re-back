@@ -25,7 +25,7 @@ public class TeamQueryService {
         List<TeamRankPoint> teamRankPoints = new ArrayList<>();
 
         calculatePoint(teamRankPoints);
-        teamRankPoints.sort(Comparator.comparing(TeamRankPoint::getRankPoint));
+        teamRankPoints.sort(Comparator.comparing(TeamRankPoint::getRankPoint, Comparator.reverseOrder()));
         return provideRank(teamRankPoints);
     }
 
