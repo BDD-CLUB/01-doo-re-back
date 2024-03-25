@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DocumentFixture {
 
-    private DocumentRepository documentRepository;
-    private FileRepository fileRepository;
+    private static DocumentRepository documentRepository;
+    private static FileRepository fileRepository;
 
     private String name = "학습자료 파일";
     private String description = "";
@@ -28,12 +28,15 @@ public class DocumentFixture {
 
     @Autowired
     public DocumentFixture(DocumentRepository documentRepository, FileRepository fileRepository) {
-        this.documentRepository = documentRepository;
-        this.fileRepository = fileRepository;
+        DocumentFixture.documentRepository = documentRepository;
+        DocumentFixture.fileRepository = fileRepository;
     }
 
-    public DocumentFixture() {
+    private DocumentFixture() {
+    }
 
+    public static DocumentFixture builder() {
+        return new DocumentFixture();
     }
 
     public DocumentFixture name(String name) {

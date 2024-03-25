@@ -54,7 +54,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         study = createStudy();
         Member member = 아마란스();
         memberRepository.save(member);
-        document = new DocumentFixture(documentRepository,fileRepository)
+        document = DocumentFixture.builder()
                 .groupType(DocumentGroupType.STUDY)
                 .groupId(study.getId())
                 .type(DocumentType.URL)

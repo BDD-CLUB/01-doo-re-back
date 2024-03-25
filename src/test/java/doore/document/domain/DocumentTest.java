@@ -24,8 +24,7 @@ public class DocumentTest {
     @DisplayName("[성공] 학습자료가 정상적으로 수정된다.")
     public void 학습자료가_정상적으로_수정된다_성공() {
         //given
-        Document document = new DocumentFixture(documentRepository,fileRepository)
-                .buildDocument();
+        Document document = DocumentFixture.builder().buildDocument();
 
         //when
         String newName = "수정된 자료명";
@@ -46,8 +45,7 @@ public class DocumentTest {
     public void 학습자료의_파일이_정상적으로_수정된다_성공() {
         //given
         String url = "blog link";
-        Document document = new DocumentFixture(documentRepository,fileRepository)
-                .buildLinkDocument(List.of(url));
+        Document document = DocumentFixture.builder().buildLinkDocument(List.of(url));
 
         //when
         String newUrl = "new link";
