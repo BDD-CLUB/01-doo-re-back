@@ -97,3 +97,14 @@ include::{snippets}/team-join/request-fields.adoc[]
 
 .HTTP Response
 include::{snippets}/team-join/http-response.adoc[]
+
+== `GET`: 팀 랭킹(팀 록록) 조회
+
+.HTTP Request
+include::{snippets}/team-get-rank/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/team-get-rank/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/team-get-rank/response-fields.adoc[]

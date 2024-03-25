@@ -16,6 +16,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.restdocs.RestDocsTest;
@@ -24,6 +25,9 @@ import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
+import doore.team.application.dto.response.TeamRankResponse;
+import doore.team.application.dto.response.TeamReferenceResponse;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -183,5 +187,38 @@ public class TeamApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(document("team-join", pathParameters, requestFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("팀 랭킹을 조회한다.")
+    public void 팀_랭킹을_조회한다() throws Exception {
+        // given
+        TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(1L, "team1", "this is team 1", "profile pic url");
+        TeamReferenceResponse otherTeamReferenceResponse =
+                new TeamReferenceResponse(2L, "team2", "this is team 2", "profile pic url");
+        TeamReferenceResponse thirdTeamReferenceResponse =
+                new TeamReferenceResponse(3L, "team3", "this is team 3", "profile pic url");
+
+        TeamRankResponse teamRankResponse = new TeamRankResponse(1, 5, teamReferenceResponse);
+        TeamRankResponse otherTeamRankResponse = new TeamRankResponse(2, 3, otherTeamReferenceResponse);
+        TeamRankResponse thirdTeamRankResponse = new TeamRankResponse(2, 3, thirdTeamReferenceResponse);
+        List<TeamRankResponse> teamRankResponses = List.of(teamRankResponse, otherTeamRankResponse,
+                thirdTeamRankResponse);
+
+        when(teamQueryService.getTeamRanks()).thenReturn(teamRankResponses);
+
+        // when && then
+        mockMvc.perform(get("/teams"))
+                .andExpect(status().isOk())
+                .andDo(document("team-get-rank", responseFields(
+                                numberFieldWithPath("[].rank", "팀 랭크"),
+                                numberFieldWithPath("[].rankPoint", "팀 점수"),
+                                numberFieldWithPath("[].teamReferenceResponse.id", "팀 id"),
+                                stringFieldWithPath("[].teamReferenceResponse.name", "팀 이름"),
+                                stringFieldWithPath("[].teamReferenceResponse.description", "팀 소개"),
+                                stringFieldWithPath("[].teamReferenceResponse.imageUrl", "팀 프로필 사진 링크")
+                        )
+                ));
     }
 }
