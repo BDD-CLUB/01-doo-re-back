@@ -1,6 +1,7 @@
 package doore.study.application;
 
 import static doore.study.exception.StudyExceptionType.NOT_A_PARTICIPANT;
+import static doore.study.exception.StudyExceptionType.NOT_ENDED_STUDY;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
 import doore.member.domain.repository.ParticipantRepository;
@@ -32,15 +33,23 @@ public class StudyCardQueryService {
         return endedStudyResponses;
     }
 
-    public PersonalStudyDetailResponse getStudyCard(Long studyCardId, Long memberId) {
-        Study study = studyRepository.findById(studyCardId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    public PersonalStudyDetailResponse getStudyCard(Long studyId, Long memberId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         if (memberNotJoined(study.getId(), memberId)) {
             throw new StudyException(NOT_A_PARTICIPANT);
         }
-        return studyQueryService.getPersonalStudyDetail(study.getId(),memberId);
+        if (isNotEndedStudy(studyId)) {
+            throw new StudyException(NOT_ENDED_STUDY);
+        }
+        return studyQueryService.getPersonalStudyDetail(study.getId(), memberId);
+    }
+
+    private boolean isNotEndedStudy(Long studyId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        return !(study.getStatus() == StudyStatus.ENDED);
     }
 
     private boolean memberNotJoined(Long studyId, Long memberId) {
-        return participantRepository.existsByStudyIdAndId(studyId, memberId);
+        return !participantRepository.existsByStudyIdAndMemberId(studyId, memberId);
     }
 }

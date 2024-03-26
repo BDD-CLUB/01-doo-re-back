@@ -11,5 +11,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
     List<Participant> findAllByStudyId(Long studyId);
 
-    boolean existsByStudyIdAndId(Long studyId, Long participantId);
+    boolean existsByStudyIdAndMemberId(Long studyId, Long memberId);
 }
