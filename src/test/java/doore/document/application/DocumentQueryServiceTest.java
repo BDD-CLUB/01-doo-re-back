@@ -1,7 +1,6 @@
 package doore.document.application;
 
 import static doore.member.MemberFixture.아마란스;
-import static doore.study.StudyFixture.createStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,12 +11,11 @@ import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.Document;
-import doore.document.domain.repository.DocumentRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
+import doore.study.StudyFixture;
 import doore.study.domain.Study;
-import doore.study.domain.repository.StudyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,12 +32,6 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     DocumentCommandService documentCommandService;
 
     @Autowired
-    StudyRepository studyRepository;
-
-    @Autowired
-    DocumentRepository documentRepository;
-
-    @Autowired
     MemberRepository memberRepository;
 
     Study study;
@@ -47,7 +39,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        study = createStudy();
+        study = StudyFixture.builder().studyBuild();
         Member member = 아마란스();
         memberRepository.save(member);
         document = new DocumentFixture()

@@ -37,15 +37,15 @@ public class StudyCardController {
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponses);
     }
 
-    @GetMapping("/selected")
-    public ResponseEntity<List<StudyCardResponse>> getSelectedStudyCards(@RequestParam List<Long> studyCardIds, HttpServletRequest request) {
+    @GetMapping("/selections")
+    public ResponseEntity<List<StudyCardResponse>> getSelectedStudyCards(@RequestParam List<Long> studyIds, HttpServletRequest request) {
         String memberId = request.getHeader("Authorization");
         if (memberId == null) {
             throw new MemberException(UNAUTHORIZED);
         }
 
         List<StudyCardResponse> studyCardResponses = new ArrayList<>();
-        for (Long id : studyCardIds) {
+        for (Long id : studyIds) {
            StudyCardResponse studyCardResponse = toStudyCardResponse(id,Long.parseLong(memberId));
             studyCardResponses.add(studyCardResponse);
         }
@@ -53,20 +53,20 @@ public class StudyCardController {
         return ResponseEntity.status(HttpStatus.OK).body(studyCardResponses);
     }
 
-    @GetMapping("/{studyCardId}")
+    @GetMapping("/{studyId}")
     public ResponseEntity<StudyCardResponse> getStudyCard(
-            @PathVariable Long studyCardId, HttpServletRequest request) {
+            @PathVariable Long studyId, HttpServletRequest request) {
         String memberId = request.getHeader("Authorization");
         if (memberId == null) {
             throw new MemberException(UNAUTHORIZED);
         }
-        StudyCardResponse studyCardResponse = toStudyCardResponse(studyCardId, Long.parseLong(memberId));
+        StudyCardResponse studyCardResponse = toStudyCardResponse(studyId, Long.parseLong(memberId));
         return ResponseEntity.status(HttpStatus.OK).body(studyCardResponse);
     }
 
-    private StudyCardResponse toStudyCardResponse(Long studyCardId, Long memberId) {
+    private StudyCardResponse toStudyCardResponse(Long studyId, Long memberId) {
         PersonalStudyDetailResponse studyResponses =
-                studyCardQueryService.getStudyCard(studyCardId, memberId);
+                studyCardQueryService.getStudyCard(studyId, memberId);
         List<DocumentDetailResponse> documentResponses =
                 documentQueryService.getUploadedDocumentsByMember(memberId);
         return new StudyCardResponse(studyResponses, documentResponses);

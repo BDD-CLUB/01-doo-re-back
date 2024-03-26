@@ -45,7 +45,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @WebMvcTest(DocumentController.class)
-public class DocumentDocsTest extends RestDocsTest {
+public class DocumentApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("학습자료를 생성한다.")
     public void 학습자료를_생성한다() throws Exception {
