@@ -61,7 +61,7 @@ public class Study extends BaseEntity {
 
     @Builder
     private Study(String name, String description, LocalDate startDate, LocalDate endDate, StudyStatus status,
-                 Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
+                  Boolean isDeleted, Long teamId, Long cropId, List<CurriculumItem> curriculumItems) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;

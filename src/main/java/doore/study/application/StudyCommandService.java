@@ -80,6 +80,7 @@ public class StudyCommandService {
     public void deleteStudy(Long studyId) {
         validateExistStudy(studyId);
         studyRepository.deleteById(studyId);
+        //todo: 연관된 커리큘럼을 함께 삭제
     }
 
     public void updateStudy(StudyUpdateRequest request, Long studyId) {

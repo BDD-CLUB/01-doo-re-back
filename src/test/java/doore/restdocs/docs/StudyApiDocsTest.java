@@ -1,7 +1,6 @@
 package doore.restdocs.docs;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -12,9 +11,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 
-import doore.crop.response.CropReferenceResponse;
-import doore.member.domain.Member;
-import doore.member.domain.Participant;
+import doore.crop.domain.dto.response.CropReferenceResponse;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.StudyResponse;

@@ -1,13 +1,15 @@
 package doore.study.application;
 
-import static doore.study.StudyFixture.createStudy;
+import static doore.crop.CropFixture.rice;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.repository.MemberRepository;
+import doore.study.StudyFixture;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
@@ -34,17 +36,15 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[성공] 정상적으로 스터디 전체 정보를 조회할 수 있다.")
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = createStudy();
-            studyRepository.save(study);
+            Study study = StudyFixture.builder().teamId(team().getId()).cropId(rice().getId()).studyBuild();
             assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).studyResponse().getId());
         }
 
         @Test
         @DisplayName("[성공] 정상적으로 스터디를 조회할 수 있다.")
         void getPersonalStudyDetail_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = createStudy();
+            Study study = StudyFixture.builder().teamId(team().getId()).cropId(rice().getId()).studyBuild();
             Long memberId = 1L;
-            studyRepository.save(study);
             PersonalStudyDetailResponse personalStudyDetailResponse =
                     studyQueryService.getPersonalStudyDetail(study.getId(), memberId);
             assertAll(

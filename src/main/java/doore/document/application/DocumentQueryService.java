@@ -48,6 +48,11 @@ public class DocumentQueryService {
         return toDocumentDetailResponse(document);
     }
 
+    public List<DocumentDetailResponse> getUploadedDocumentsByMember(Long memberId) {
+        List<Document> documents = documentRepository.findAllByUploaderId(memberId);
+        return documents.stream().map(this::toDocumentDetailResponse).toList();
+    }
+
     private DocumentDetailResponse toDocumentDetailResponse(Document document) {
         List<FileResponse> fileResponses = new ArrayList<>();
         for (File file : document.getFiles()) {

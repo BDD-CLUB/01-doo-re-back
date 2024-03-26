@@ -1,0 +1,55 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= STUDYCARD API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `GET`: StudyCard 상세 조회
+
+.HTTP Request
+include::{snippets}/studyCard-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/studyCard-get/path-parameters.adoc[]
+
+.Request Header
+include::{snippets}/studyCard-get/request-headers.adoc[]
+
+.HTTP Response
+include::{snippets}/studyCard-get/http-response.adoc[]
+
+
+== `GET`: StudyCard 목록 조회
+
+.HTTP Request
+include::{snippets}/studyCard-get-list/http-request.adoc[]
+
+.Request Header
+include::{snippets}/studyCard-get-list/request-headers.adoc[]
+
+.HTTP Response
+include::{snippets}/studyCard-get-list/http-response.adoc[]
+
+== `GET`: 선택한 StudyCard 목록 조회
+
+.HTTP Request
+include::{snippets}/studyCard-get-selectedList/http-request.adoc[]
+
+.Request Header
+include::{snippets}/studyCard-get-selectedList/request-headers.adoc[]
+
+.Query Parameters
+include::{snippets}/studyCard-get-selectedList/query-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/studyCard-get-selectedList/http-response.adoc[]
