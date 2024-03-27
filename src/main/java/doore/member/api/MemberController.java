@@ -18,7 +18,6 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
 
-    //    @Secured("ROLE_팀장")
     @PatchMapping("/teams/{teamsId}/mandate")
     public ResponseEntity<Void> transferTeamMaster(@PathVariable Long teamsId,
                                                    @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -31,7 +30,6 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    //    @Secured("ROLE_스터디장")
     @PatchMapping("/study/{studyId}/mandate")
     public ResponseEntity<Void> transferStudyMaster(@PathVariable Long studyId,
                                                     @AuthenticationPrincipal MemberDetails memberDetails) {
