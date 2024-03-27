@@ -1,12 +1,12 @@
 package doore.member.application;
 
-import static doore.member.MemberFixture.회원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
+import static doore.member.MemberFixture.아마란스;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -54,7 +54,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
     @BeforeEach
     void init() {
-        member = memberRepository.save(회원());
+        member = memberRepository.save(아마란스());
         team = teamRepository.save(TeamFixture.team());
         study = studyRepository.save(StudyFixture.algorithmStudy());
         previousTeamMasterRole = TeamRole.builder()
@@ -69,6 +69,26 @@ class MemberCommandServiceTest extends IntegrationTest {
                 .memberId(member.getId())
                 .build();
         studyRoleRepository.save(previousStudyMasterRole);
+    }
+
+    @Test
+    @DisplayName("[성공] 이미 등록된 회원이 있다면 해당 회원을 반환한다")
+    void findOrCreateMemberBy_이미_등록된_회원이_있다면_해당_회원을_반환한다_성공() {
+        //given
+        final long beforeCount = memberRepository.count();
+        final GoogleAccountProfileResponse profile = new GoogleAccountProfileResponse(member.getGoogleId(),
+                "bbb@gmail.com", true, "아마란스", "마란스", "아", "https://aaa", "ko");
+
+        //when
+        final Member actual = memberCommandService.findOrCreateMemberBy(profile);
+        final long afterCount = memberRepository.count();
+
+        //then
+        assertAll(
+                () -> assertThat(actual).usingRecursiveComparison()
+                        .isEqualTo(member),
+                () -> assertThat(afterCount).isEqualTo(beforeCount)
+        );
     }
 
     @Test
@@ -94,7 +114,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 팀장 직위가 정상적으로 위임된다")
     void transferTeamMaster_팀장_직위가_정상적으로_위임된다_성공() {
-        Member newMember = memberRepository.save(회원());
+        Member newMember = memberRepository.save(아마란스());
         TeamRole teamRole = TeamRole.builder()
                 .teamId(team.getId())
                 .teamRoleType(ROLE_팀원)
@@ -112,7 +132,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 팀장 직위가 정상적으로 위임되면 원래 팀장은 팀원이 된다")
     void transferTeamMaster_팀장_직위가_정상적으로_위임되면_원래_팀장은_팀원이_된다_성공() {
-        Member newMember = memberRepository.save(회원());
+        Member newMember = memberRepository.save(아마란스());
         TeamRole teamRole = TeamRole.builder()
                 .teamId(team.getId())
                 .teamRoleType(ROLE_팀원)
@@ -131,7 +151,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 스터디장 직위가 정상적으로 위임된다")
     void transferStudyMaster_스터디장_직위가_정상적으로_위임된다_성공() {
-        Member newMember = memberRepository.save(회원());
+        Member newMember = memberRepository.save(아마란스());
         StudyRole studyRole = StudyRole.builder()
                 .studyId(study.getId())
                 .studyRoleType(ROLE_스터디원)
@@ -149,7 +169,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 스터디장 직위가 정상적으로 위임되면 원래 스터디장은 스터디원이 된다")
     void transferStudyMaster_스터디장_직위가_정상적으로_위임되면_원래_스터디장은_스터디원이_된다_성공() {
-        Member newMember = memberRepository.save(회원());
+        Member newMember = memberRepository.save(아마란스());
         StudyRole studyRole = StudyRole.builder()
                 .studyId(study.getId())
                 .studyRoleType(ROLE_스터디원)

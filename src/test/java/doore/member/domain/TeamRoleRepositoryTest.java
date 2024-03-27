@@ -29,7 +29,7 @@ public class TeamRoleRepositoryTest extends RepositorySliceTest {
     void findTeamRoleByTeamIdAndMemberId_팀_정보와_멤버_정보가_유효하다면_팀_내_역할을_조회할_수_있다() {
         Team team = TeamFixture.team();
         teamRepository.save(team);
-        Member member = MemberFixture.회원();
+        Member member = MemberFixture.아마란스();
         memberRepository.save(member);
         TeamRole teamRole = TeamRole.builder()
                 .teamId(team.getId())

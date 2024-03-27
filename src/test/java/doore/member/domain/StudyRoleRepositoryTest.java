@@ -29,7 +29,7 @@ public class StudyRoleRepositoryTest extends RepositorySliceTest {
     void findStudyRoleByStudyIdAndMemberId_스터디_정보와_멤버_정보가_유효하다면_스터디_내_역할을_조회할_수_있다() {
         Study study = StudyFixture.algorithmStudy();
         studyRepository.save(study);
-        Member member = MemberFixture.회원();
+        Member member = MemberFixture.아마란스();
         memberRepository.save(member);
         StudyRole studyRole = StudyRole.builder()
                 .studyId(study.getId())

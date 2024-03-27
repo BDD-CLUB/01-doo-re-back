@@ -1,12 +1,21 @@
 package doore.file.application;
 
+import static doore.file.exception.FileExceptionType.FILE_IS_NULL;
+import static doore.file.exception.FileExceptionType.INVALID_FILE_ACCESS;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import doore.file.exception.FileException;
+import doore.file.exception.FileExceptionType;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,17 +31,38 @@ public abstract class S3FileService {
     @Value("${aws.s3.bucket}")
     protected String bucket;
 
-    abstract String upload(final MultipartFile file);
+    public String upload(final MultipartFile file) {
+        validateNotNull(file);
+
+        final String fileExtension = getFileExtension(file);
+        final String newFileName = createFileName(fileExtension);
+        final ObjectMetadata objectMetadata = getObjectMetadata(file);
+
+        try (final InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, newFileName, inputStream, objectMetadata));
+        } catch (final IOException exception) {
+            throw new FileException(failUploadErrorMessage());
+        }
+        return newFileName;
+    }
+
+    abstract FileExceptionType failUploadErrorMessage();
 
     protected String getFileExtension(final MultipartFile file) {
         final String originalFileName = file.getOriginalFilename();
         final int extensionIndex = Objects.requireNonNull(originalFileName)
                 .lastIndexOf(EXTENSION_DELIMITER);
-        validateExtension(extensionIndex, originalFileName);
+
+        try {
+            String mimeType = new Tika().detect(file.getInputStream());
+            validateExtension(mimeType);
+        } catch (IOException e) {
+            throw new FileException(INVALID_FILE_ACCESS);
+        }
         return originalFileName.substring(extensionIndex);
     }
 
-    abstract void validateExtension(int extensionIndex, String originalFileName);
+    abstract void validateExtension(String mimeType);
 
     protected ObjectMetadata getObjectMetadata(final MultipartFile multipartFile) {
         final ObjectMetadata metadata = new ObjectMetadata();
@@ -46,6 +76,12 @@ public abstract class S3FileService {
     }
 
     abstract String getFileFolder();
+
+    protected void validateNotNull(final MultipartFile file) {
+        if (file == null) {
+            throw new FileException(FILE_IS_NULL);
+        }
+    }
 
     public void deleteFile(final String fileName) {
         final String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
