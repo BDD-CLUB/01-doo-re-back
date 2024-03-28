@@ -50,7 +50,7 @@ public class GardenApiDocsTest extends RestDocsTest {
         //then
         mockMvc.perform(get("/garden/{teamId}", 1))
                 .andExpect(status().isOk())
-                .andDo(document("get-full-garden",
+                .andDo(document("garden-get-all",
                         pathParameters(parameterWithName("teamId").description("팀 id")),
                         responseFields(
                                 numberFieldWithPath("[].dayOfYear", "1년 중 몇번째 날인가(0~365)"),

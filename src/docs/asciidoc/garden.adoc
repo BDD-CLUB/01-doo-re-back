@@ -1,0 +1,30 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= ATTENDANCE API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+
+== `GET`: 1년치 잔디 조회
+
+.HTTP Request
+include::{snippets}/garden-get-all/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/garden-get-all/path-parameters.adoc[]
+
+.Response Body
+include::{snippets}/garden-get-all/response-body.adoc[]
+
+.Response Fields
+include::{snippets}/garden-get-all/response-fields.adoc[]
