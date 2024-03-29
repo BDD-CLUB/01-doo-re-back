@@ -10,3 +10,5 @@ truncate table garden;
 truncate table document;
 truncate table file;
 truncate table attendance;
+truncate table team_role;
+truncate table study_role;

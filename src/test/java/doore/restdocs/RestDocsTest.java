@@ -6,9 +6,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 
 import doore.attendance.api.AttendanceController;
 import doore.document.api.DocumentController;
+import doore.attendance.application.AttendanceCommandService;
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
-import doore.attendance.application.AttendanceCommandService;
 import doore.helper.ApiTestHelper;
 import doore.login.api.LoginController;
 import doore.login.application.LoginService;
@@ -18,6 +18,8 @@ import doore.member.application.MemberTeamQueryService;
 import doore.study.api.CurriculumItemController;
 import doore.study.api.ParticipantController;
 import doore.study.api.StudyController;
+import doore.login.utils.JwtTokenGenerator;
+import doore.member.domain.repository.MemberRepository;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
@@ -25,6 +27,7 @@ import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.team.api.TeamController;
 import doore.team.application.TeamCommandService;
+import doore.team.application.TeamQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +92,16 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected ParticipantQueryService participantQueryService;
+
+
+    @MockBean
+    protected TeamQueryService teamQueryService;
+
+    @MockBean
+    protected JwtTokenGenerator jwtTokenGenerator;
+
+    @MockBean
+    protected MemberRepository memberRepository;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;

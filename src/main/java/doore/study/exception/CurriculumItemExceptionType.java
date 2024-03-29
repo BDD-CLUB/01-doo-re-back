@@ -9,6 +9,7 @@ public enum CurriculumItemExceptionType implements BaseExceptionType {
 
     NOT_FOUND_CURRICULUM_ITEM(HttpStatus.NOT_FOUND, "존재하지 않는 커리큘럼입니다."),
     INVALID_ITEM_ORDER(HttpStatus.BAD_REQUEST, "유효하지 않은 아이템 순서입니다."),
+    CANNOT_CREATE_CURRICULUM_ITEM(HttpStatus.BAD_REQUEST, "커리큘럼 아이템 개수 제한을 초과하였습니다."),
     ;
 
     private final HttpStatus httpStatus;

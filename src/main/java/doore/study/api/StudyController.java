@@ -2,7 +2,6 @@ package doore.study.api;
 
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
-import doore.member.domain.Participant;
 import doore.member.exception.MemberException;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
@@ -10,6 +9,7 @@ import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
 import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
+import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -35,7 +35,8 @@ public class StudyController {
     private final StudyQueryService studyQueryService;
 
     @PostMapping("/teams/{teamId}/studies")
-    public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest, @PathVariable Long teamId) {
+    public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest,
+                                            @PathVariable Long teamId) {
         studyCommandService.createStudy(studyRequest, teamId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -53,7 +54,8 @@ public class StudyController {
     }
 
     @GetMapping("/studies/{studyId}")
-    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId, HttpServletRequest request) {
+    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId,
+                                                                HttpServletRequest request) {
         String memberId = request.getHeader("Authorization"); //todo: 권한 로직으로 수정
         if (memberId == null) {
             throw new MemberException(UNAUTHORIZED);
@@ -64,7 +66,8 @@ public class StudyController {
     }
 
     @PutMapping("/studies/{studyId}")
-    public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest, @PathVariable Long studyId) {
+    public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest,
+                                            @PathVariable Long studyId) {
         studyCommandService.updateStudy(studyUpdateRequest, studyId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -79,5 +82,11 @@ public class StudyController {
     public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId) {
         studyCommandService.terminateStudy(studyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/studies/members/{memberId}")
+    public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId) {
+        // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증
+        return ResponseEntity.ok(studyQueryService.findMyStudies(memberId));
     }
 }

@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.study.exception.CurriculumItemExceptionType.CANNOT_CREATE_CURRICULUM_ITEM;
 import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
@@ -7,6 +8,7 @@ import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.ParticipantCurriculumItem;
@@ -35,13 +37,13 @@ public class CurriculumItemCommandService {
     private final ParticipantRepository participantRepository;
 
     public void manageCurriculum(CurriculumItemManageRequest request, Long studyId) {
-        List<CurriculumItem> curriculumItems = request.curriculumItems();
+        List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
         checkItemOrderDuplicate(curriculumItems);
         checkItemOrderRange(curriculumItems);
         createCurriculum(studyId, curriculumItems);
         updateCurriculum(curriculumItems);
 
-        List<CurriculumItem> deletedCurriculumItems = request.deletedCurriculumItems();
+        List<CurriculumItemManageDetailRequest> deletedCurriculumItems = request.deletedCurriculumItems();
         deleteCurriculum(deletedCurriculumItems);
         sortCurriculum();
     }
@@ -57,11 +59,11 @@ public class CurriculumItemCommandService {
         participantCurriculumItem.checkCompletion();
     }
 
-    private void checkItemOrderDuplicate(List<CurriculumItem> curriculumItems) {
+    private void checkItemOrderDuplicate(List<CurriculumItemManageDetailRequest> curriculumItems) {
         Set<Integer> uniqueItemOrders = new HashSet<>();
 
         curriculumItems.stream()
-                .map(CurriculumItem::getItemOrder)
+                .map(CurriculumItemManageDetailRequest::itemOrder)
                 .forEach(itemOrder -> {
                     if (!uniqueItemOrders.add(itemOrder)) {
                         throw new CurriculumItemException(INVALID_ITEM_ORDER);
@@ -69,9 +71,9 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void checkItemOrderRange(List<CurriculumItem> curriculumItems) {
+    private void checkItemOrderRange(List<CurriculumItemManageDetailRequest> curriculumItems) {
         curriculumItems.stream()
-                .mapToInt(CurriculumItem::getItemOrder)
+                .mapToInt(CurriculumItemManageDetailRequest::itemOrder)
                 .forEach(itemOrder -> {
                     if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
                         throw new CurriculumItemException(INVALID_ITEM_ORDER);
@@ -79,9 +81,12 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void createCurriculum(Long studyId, List<CurriculumItem> curriculumItems) {
+    private void createCurriculum(Long studyId, List<CurriculumItemManageDetailRequest> curriculumItems) {
+        if (curriculumItemRepository.findAll().size() >= 99) {
+            throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
+        }
         curriculumItems.stream()
-                .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.getId()))
+                .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.id()))
                 .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
     }
 
@@ -89,13 +94,14 @@ public class CurriculumItemCommandService {
         return curriculumItemRepository.existsById(curriculumItemId);
     }
 
-    public void createCurriculumItemAndAssignToParticipants(Long studyId, CurriculumItem curriculumItem) {
+    public void createCurriculumItemAndAssignToParticipants(Long studyId,
+                                                            CurriculumItemManageDetailRequest curriculumItemRequest) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         List<Participant> participants = participantRepository.findAllByStudyId(studyId);
 
         CurriculumItem createCurriculumItem = CurriculumItem.builder()
-                .name(curriculumItem.getName())
-                .itemOrder(curriculumItem.getItemOrder())
+                .name(curriculumItemRequest.name())
+                .itemOrder(curriculumItemRequest.itemOrder())
                 .study(study)
                 .build();
         curriculumItemRepository.save(createCurriculumItem);
@@ -109,19 +115,20 @@ public class CurriculumItemCommandService {
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
-    private void updateCurriculum(List<CurriculumItem> curriculumItems) {
-        for (CurriculumItem requestItem : curriculumItems) {
-            CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.getId())
+
+    private void updateCurriculum(List<CurriculumItemManageDetailRequest> curriculumItems) {
+        for (CurriculumItemManageDetailRequest requestItem : curriculumItems) {
+            CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.id())
                     .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
 
-            existingItem.updateIfNameDifferent(requestItem);
-            existingItem.updateIfItemOrderDifferent(requestItem);
+            existingItem.updateIfNameDifferent(requestItem.name());
+            existingItem.updateIfItemOrderDifferent(requestItem.itemOrder());
         }
     }
 
-    private void deleteCurriculum(List<CurriculumItem> deletedCurriculumItems) {
+    private void deleteCurriculum(List<CurriculumItemManageDetailRequest> deletedCurriculumItems) {
         deletedCurriculumItems.stream()
-                .map(CurriculumItem::getId)
+                .map(CurriculumItemManageDetailRequest::id)
                 .forEach(curriculumItemRepository::deleteById);
     }
 
