@@ -10,21 +10,17 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.member.api.MemberTeamController;
 import doore.member.application.dto.response.MemberResponse;
 import doore.restdocs.RestDocsTest;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.QueryParametersSnippet;
 
-@WebMvcTest(MemberTeamController.class)
 public class MemberTeamApiDocsTest extends RestDocsTest {
-
     @Test
     @DisplayName("팀원 목록을 조회한다.")
     public void 팀원_목록을_조회한다() throws Exception {

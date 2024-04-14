@@ -15,6 +15,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import doore.crop.response.CropReferenceResponse;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
+import doore.study.application.StudyCommandService;
+import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.StudyResponse;
@@ -28,16 +30,13 @@ import doore.team.application.dto.response.TeamReferenceResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import doore.restdocs.RestDocsTest;
-import doore.study.api.StudyController;
 import doore.study.application.dto.request.StudyCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
-@WebMvcTest(StudyController.class)
 public class StudyApiDocsTest extends RestDocsTest {
 
     @Test

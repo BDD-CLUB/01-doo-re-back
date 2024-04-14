@@ -12,14 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.restdocs.RestDocsTest;
-import doore.study.api.ParticipantController;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
-@WebMvcTest(ParticipantController.class)
 public class ParticipantApiDocsTest extends RestDocsTest {
 
     @Test

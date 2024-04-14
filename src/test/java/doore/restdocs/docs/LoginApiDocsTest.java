@@ -7,17 +7,14 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.login.api.LoginController;
 import doore.login.application.dto.request.GoogleLoginRequest;
 import doore.login.application.dto.response.LoginResponse;
 import doore.restdocs.RestDocsTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
-@WebMvcTest(LoginController.class)
 public class LoginApiDocsTest extends RestDocsTest {
 
     @Test
