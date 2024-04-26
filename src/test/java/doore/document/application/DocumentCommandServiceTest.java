@@ -57,6 +57,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @MockBean
     S3ImageFileService s3ImageFileService;
+
     @MockBean
     S3DocumentFileService s3DocumentFileService;
 
