@@ -116,22 +116,6 @@ create table garden
     updated_at       datetime(6)
 );
 
-create table study_role
-(
-    id          bigint auto_increment primary key,
-    study_id    bigint not null,
-    role        varchar(45) not null,
-    member_id   bigint not null
-);
-
-create table team_role
-(
-    id        bigint auto_increment primary key,
-    team_id   bigint      not null,
-    role      varchar(45) not null,
-    member_id bigint      not null
-);
-
 -- 수정 날짜: 2024-02-16
 create table attendance
 (
@@ -162,4 +146,20 @@ create table file
     id          bigint auto_increment primary key,
     url         varchar(255) not null,
     document_id bigint       not null
+);
+
+create table study_role
+(
+    id          bigint auto_increment primary key,
+    study_id    bigint not null,
+    role        varchar(45) not null,
+    member_id   bigint not null
+);
+
+create table team_role
+(
+    id        bigint auto_increment primary key,
+    team_id   bigint      not null,
+    role      varchar(45) not null,
+    member_id bigint      not null
 );
