@@ -1,12 +1,13 @@
 package doore.member.application;
 
+import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.아마란스;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
-import static doore.member.MemberFixture.아마란스;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -122,7 +123,7 @@ class MemberCommandServiceTest extends IntegrationTest {
                 .build();
         teamRoleRepository.save(teamRole);
 
-        memberCommandService.transferTeamMaster(team.getId(), newMember.getId());
+        memberCommandService.transferTeamMaster(team.getId(), newMember.getId(), member.getId());
         TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(), newMember.getId())
                 .orElseThrow();
 
@@ -141,7 +142,7 @@ class MemberCommandServiceTest extends IntegrationTest {
         teamRoleRepository.save(teamRole);
         assertThat(previousTeamMasterRole.getTeamRoleType()).isEqualTo(ROLE_팀장);
 
-        memberCommandService.transferTeamMaster(team.getId(), newMember.getId());
+        memberCommandService.transferTeamMaster(team.getId(), newMember.getId(), member.getId());
         TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(), member.getId())
                 .orElseThrow();
 
@@ -159,7 +160,7 @@ class MemberCommandServiceTest extends IntegrationTest {
                 .build();
         studyRoleRepository.save(studyRole);
 
-        memberCommandService.transferStudyMaster(study.getId(), newMember.getId());
+        memberCommandService.transferStudyMaster(study.getId(), newMember.getId(), member.getId());
         StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
                 newMember.getId()).orElseThrow();
 
@@ -178,7 +179,7 @@ class MemberCommandServiceTest extends IntegrationTest {
         studyRoleRepository.save(studyRole);
         assertThat(previousStudyMasterRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
 
-        memberCommandService.transferStudyMaster(study.getId(), newMember.getId());
+        memberCommandService.transferStudyMaster(study.getId(), newMember.getId(), member.getId());
         StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
                 member.getId()).orElseThrow();
 
@@ -193,7 +194,7 @@ class MemberCommandServiceTest extends IntegrationTest {
         teamRepository.save(team);
 
         assertThatThrownBy(() -> {
-            memberCommandService.transferTeamMaster(team.getId(), invalidMemberId);
+            memberCommandService.transferTeamMaster(team.getId(), invalidMemberId, member.getId());
         }).isInstanceOf(MemberException.class).hasMessage(NOT_FOUND_MEMBER.errorMessage());
     }
 
@@ -203,8 +204,27 @@ class MemberCommandServiceTest extends IntegrationTest {
         Long invalidTeamId = 10L;
 
         assertThatThrownBy(() -> {
-            memberCommandService.transferTeamMaster(invalidTeamId, member.getId());
+            memberCommandService.transferTeamMaster(invalidTeamId, member.getId(), member.getId());
         }).isInstanceOf(TeamException.class).hasMessage(NOT_FOUND_TEAM.errorMessage());
     }
 
+    @Test
+    @DisplayName("[실패] 팀장이 아닌 사람이 팀장 위임을 시도하면 실패한다")
+    void transferTeamMaster_팀장이_아닌_사람이_팀장_위임을_시도하면_실패한다() {
+        Member notTeamMasterMember = memberRepository.save(미나());
+
+        assertThatThrownBy(() -> {
+            memberCommandService.transferTeamMaster(team.getId(), member.getId(), notTeamMasterMember.getId());
+        });
+    }
+
+    @Test
+    @DisplayName("[실패] 스터디장이 아닌 사람이 스터디장 위임을 시도하면 실패한다")
+    void transferStudyMaster_스터디장이_아닌_사람이_스터디장_위임을_시도하면_실패한다() {
+        Member notStudyMasterMember = memberRepository.save(미나());
+
+        assertThatThrownBy(() -> {
+            memberCommandService.transferStudyMaster(study.getId(), member.getId(), notStudyMasterMember.getId());
+        });
+    }
 }

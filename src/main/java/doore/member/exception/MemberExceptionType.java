@@ -8,6 +8,8 @@ public enum MemberExceptionType implements BaseExceptionType {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     NOT_FOUND_MEMBER_ROLE_IN_TEAM(HttpStatus.NOT_FOUND, "팀 내 해당 회원의 직위를 찾을 수 없습니다."),
     NOT_FOUND_MEMBER_ROLE_IN_STUDY(HttpStatus.NOT_FOUND, "스터디 내 해당 회원의 직위를 찾을 수 없습니다."),
+    NOT_FOUND_MEMBER_IN_TEAM(HttpStatus.NOT_FOUND, "팀 내 해당 회원을 찾을 수 없습니다."),
+    NOT_FOUND_MEMBER_IN_STUDY(HttpStatus.NOT_FOUND, "스터디 내 해당 회원을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

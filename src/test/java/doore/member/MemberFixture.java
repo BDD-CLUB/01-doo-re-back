@@ -72,4 +72,13 @@ public class MemberFixture {
                 .googleId("48729483")
                 .build();
     }
+
+    public static Member 미나() {
+        return Member.builder()
+                .name("미나")
+                .googleId("알려고")
+                .email("하지마@naver.com")
+                .imageUrl("http://bbb")
+                .build();
+    }
 }

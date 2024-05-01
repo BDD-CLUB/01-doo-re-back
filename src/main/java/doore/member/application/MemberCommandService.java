@@ -3,8 +3,10 @@ package doore.member.application;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_IN_TEAM;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
@@ -50,28 +52,40 @@ public class MemberCommandService {
                                 .build()));
     }
 
-    public void transferTeamMaster(Long teamId, Long memberId) {
-        validMember(memberId);
+    public void transferTeamMaster(Long teamId, Long newTeamMasterId, Long memberId) {
+        validMember(newTeamMasterId);
         validTeam(teamId);
+
+        TeamRole checkTeamMaster = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_IN_TEAM));
+        if (!checkTeamMaster.getTeamRoleType().equals(ROLE_팀장)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
 
         TeamRole previousTeamMasterRole = teamRoleRepository.findTeamRoleByTeamIdAndTeamRoleType(teamId, ROLE_팀장)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         previousTeamMasterRole.updatePreviousTeamMaster();
 
-        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamMasterId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         teamRole.updateTeamMaster();
     }
 
-    public void transferStudyMaster(Long studyId, Long memberId) {
-        validMember(memberId);
+    public void transferStudyMaster(Long studyId, Long newStudyMasterId, Long memberId) {
+        validMember(newStudyMasterId);
         validStudy(studyId);
+
+        StudyRole checkStudyMaster = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
+        if (!checkStudyMaster.getStudyRoleType().equals(ROLE_스터디장)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
 
         StudyRole previousStudyMasterRole = studyRoleRepository.findStudyRoleByStudyIdAndStudyRoleType(studyId,
                 ROLE_스터디장).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         previousStudyMasterRole.updatePreviousStudyMaster();
 
-        StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+        StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyMasterId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         studyRole.updateStudyMaster();
     }
