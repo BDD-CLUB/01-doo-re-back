@@ -53,8 +53,8 @@ public class MemberCommandService {
     }
 
     public void transferTeamLeader(Long teamId, Long newTeamLeaderId, Long memberId) {
-        validMember(newTeamLeaderId);
-        validTeam(teamId);
+        validateExistMember(newTeamLeaderId);
+        validateExistTeam(teamId);
 
         TeamRole checkTeamLeader = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_IN_TEAM));
@@ -72,8 +72,8 @@ public class MemberCommandService {
     }
 
     public void transferStudyLeader(Long studyId, Long newStudyLeaderId, Long memberId) {
-        validMember(newStudyLeaderId);
-        validStudy(studyId);
+        validateExistMember(newStudyLeaderId);
+        validateExistStudy(studyId);
 
         StudyRole checkStudyLeader = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
@@ -92,19 +92,19 @@ public class MemberCommandService {
 
     public void deleteMember(Long memberId) {
         // todo: 삭제로직체크
-        validMember(memberId);
+        validateExistMember(memberId);
         memberRepository.deleteById(memberId);
     }
 
-    private Member validMember(Long memberId) {
+    private Member validateExistMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private Team validTeam(Long teamId) {
+    private Team validateExistTeam(Long teamId) {
         return teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 
-    private Study validStudy(Long studyId) {
+    private Study validateExistStudy(Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 }
