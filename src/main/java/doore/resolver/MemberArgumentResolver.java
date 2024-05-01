@@ -1,9 +1,11 @@
 package doore.resolver;
 
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+
 import doore.login.utils.AuthorizationExtractor;
 import doore.login.utils.JwtTokenGenerator;
-import doore.member.application.MemberQueryService;
-import doore.member.domain.Member;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.exception.MemberException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -18,11 +20,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenGenerator jwtTokenGenerator;
-    private final MemberQueryService memberQueryService;
+    private final MemberRepository memberRepository;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.getParameterType().equals(Member.class);
+        return parameter.getParameterType().equals(LoginMember.class);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
         final String token = AuthorizationExtractor.extract(request);
         final Long memberId = Long.parseLong(jwtTokenGenerator.extractMemberId(token));
 
-        return memberQueryService.findById(memberId);
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
 }
