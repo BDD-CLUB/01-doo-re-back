@@ -52,42 +52,42 @@ public class MemberCommandService {
                                 .build()));
     }
 
-    public void transferTeamMaster(Long teamId, Long newTeamMasterId, Long memberId) {
-        validMember(newTeamMasterId);
+    public void transferTeamLeader(Long teamId, Long newTeamLeaderId, Long memberId) {
+        validMember(newTeamLeaderId);
         validTeam(teamId);
 
-        TeamRole checkTeamMaster = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+        TeamRole checkTeamLeader = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_IN_TEAM));
-        if (!checkTeamMaster.getTeamRoleType().equals(ROLE_팀장)) {
+        if (!checkTeamLeader.getTeamRoleType().equals(ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
         }
 
-        TeamRole previousTeamMasterRole = teamRoleRepository.findTeamRoleByTeamIdAndTeamRoleType(teamId, ROLE_팀장)
+        TeamRole previousTeamLeaderRole = teamRoleRepository.findTeamRoleByTeamIdAndTeamRoleType(teamId, ROLE_팀장)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        previousTeamMasterRole.updatePreviousTeamMaster();
+        previousTeamLeaderRole.updatePreviousTeamLeader();
 
-        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamMasterId)
+        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        teamRole.updateTeamMaster();
+        teamRole.updateTeamLeader();
     }
 
-    public void transferStudyMaster(Long studyId, Long newStudyMasterId, Long memberId) {
-        validMember(newStudyMasterId);
+    public void transferStudyLeader(Long studyId, Long newStudyLeaderId, Long memberId) {
+        validMember(newStudyLeaderId);
         validStudy(studyId);
 
-        StudyRole checkStudyMaster = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+        StudyRole checkStudyLeader = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!checkStudyMaster.getStudyRoleType().equals(ROLE_스터디장)) {
+        if (!checkStudyLeader.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
 
-        StudyRole previousStudyMasterRole = studyRoleRepository.findStudyRoleByStudyIdAndStudyRoleType(studyId,
+        StudyRole previousStudyLeaderRole = studyRoleRepository.findStudyRoleByStudyIdAndStudyRoleType(studyId,
                 ROLE_스터디장).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        previousStudyMasterRole.updatePreviousStudyMaster();
+        previousStudyLeaderRole.updatePreviousStudyLeader();
 
-        StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyMasterId)
+        StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        studyRole.updateStudyMaster();
+        studyRole.updateStudyLeader();
     }
 
     public void deleteMember(Long memberId) {

@@ -18,22 +18,22 @@ public class MemberApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 유효한 요청이면 팀장 권한이 정상적으로 위임된다.")
-    void transferTeamMaster_유효한_요청이면_팀장_권한이_정상적으로_위임된다() throws Exception {
-        doNothing().when(memberCommandService).transferTeamMaster(any(), any());
+    void transferTeamLeader_유효한_요청이면_팀장_권한이_정상적으로_위임된다() throws Exception {
+        doNothing().when(memberCommandService).transferTeamLeader(any(), any(), any());
 
         mockMvc.perform(patch("/teams/{teamsId}/mandate", 1))
                 .andExpect(status().isNoContent())
-                .andDo(document("transfer-team-master"));
+                .andDo(document("transfer-team-Leader"));
     }
 
     @Test
     @DisplayName("[성공] 유효한 요청이면 스터디장 권한이 정상적으로 위임된다.")
-    void transferStudyMaster_유효한_요청이면_스터디장_권한이_정상적으로_위임된다() throws Exception {
-        doNothing().when(memberCommandService).transferStudyMaster(any(), any());
+    void transferStudyLeader_유효한_요청이면_스터디장_권한이_정상적으로_위임된다() throws Exception {
+        doNothing().when(memberCommandService).transferStudyLeader(any(), any(), any());
 
         mockMvc.perform(patch("/study/{studyId}/mandate", 1))
                 .andExpect(status().isNoContent())
-                .andDo(document("transfer-study-master"));
+                .andDo(document("transfer-study-Leader"));
     }
 
     @Test

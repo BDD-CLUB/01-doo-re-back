@@ -18,17 +18,17 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
 
-    @PatchMapping("/teams/{teamsId}/mandate/{newTeamMasterId}")
-    public ResponseEntity<Void> transferTeamMaster(@PathVariable Long teamsId, @PathVariable Long newTeamMasterId,
+    @PatchMapping("/teams/{teamsId}/mandate/{newTeamLeaderId}")
+    public ResponseEntity<Void> transferTeamLeader(@PathVariable Long teamsId, @PathVariable Long newTeamLeaderId,
                                                    @LoginMember Member member) {
-        memberCommandService.transferTeamMaster(teamsId, newTeamMasterId, member.getId());
+        memberCommandService.transferTeamLeader(teamsId, newTeamLeaderId, member.getId());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/study/{studyId}/mandate/{newStudyMasterId}")
-    public ResponseEntity<Void> transferStudyMaster(@PathVariable Long studyId, @PathVariable Long newStudyMasterId,
+    @PatchMapping("/study/{studyId}/mandate/{newStudyLeaderId}")
+    public ResponseEntity<Void> transferStudyLeader(@PathVariable Long studyId, @PathVariable Long newStudyLeaderId,
                                                     @LoginMember Member member) {
-        memberCommandService.transferStudyMaster(studyId, newStudyMasterId, member.getId());
+        memberCommandService.transferStudyLeader(studyId, newStudyLeaderId, member.getId());
         return ResponseEntity.noContent().build();
     }
 

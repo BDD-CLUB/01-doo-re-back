@@ -43,11 +43,11 @@ public class StudyRole {
         this.memberId = memberId;
     }
 
-    public void updatePreviousStudyMaster() {
+    public void updatePreviousStudyLeader() {
         this.studyRoleType = ROLE_스터디원;
     }
 
-    public void updateStudyMaster() {
+    public void updateStudyLeader() {
         this.studyRoleType = ROLE_스터디장;
     }
 }
