@@ -9,8 +9,10 @@ import doore.document.application.DocumentQueryService;
 import doore.attendance.application.AttendanceCommandService;
 import doore.helper.ApiTestHelper;
 import doore.login.application.LoginService;
+import doore.login.utils.JwtTokenGenerator;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberTeamQueryService;
+import doore.member.domain.repository.MemberRepository;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
@@ -70,6 +72,12 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected DocumentCommandService documentCommandService;
+
+    @MockBean
+    protected JwtTokenGenerator jwtTokenGenerator;
+
+    @MockBean
+    protected MemberRepository memberRepository;
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;
