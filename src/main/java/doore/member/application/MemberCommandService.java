@@ -91,9 +91,8 @@ public class MemberCommandService {
     }
 
     public void deleteMember(Long memberId) {
-        // todo: 삭제로직체크
-        validateExistMember(memberId);
-        memberRepository.deleteById(memberId);
+        Member member = validateExistMember(memberId);
+        memberRepository.delete(member);
     }
 
     private Member validateExistMember(Long memberId) {
