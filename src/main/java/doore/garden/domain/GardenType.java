@@ -1,7 +1,18 @@
 package doore.garden.domain;
 
+import java.util.function.Supplier;
+import lombok.Getter;
+
+@Getter
 public enum GardenType {
-    TEAM_DOCUMENT_UPLOAD,
-    STUDY_DOCUMENT_UPLOAD,
-    COMPLETE_STUDY_CURRICULUM
+    DOCUMENT_UPLOAD("Document",ContributionGardens::new),
+    COMPLETE_STUDY_CURRICULUM("ParticipantCurriculumItem", ContributionGardens::new);
+
+    private final String type;
+    private final Supplier<GardenInterface> supplier;
+
+    GardenType(String type, Supplier<GardenInterface> supplier) {
+        this.type = type;
+        this.supplier = supplier;
+    }
 }

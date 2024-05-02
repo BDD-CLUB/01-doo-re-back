@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,4 +41,15 @@ public class Garden extends BaseEntity {
     @Column(nullable = false)
     private Long memberId;
 
+    @Builder
+    private Garden(LocalDate contributedDate, GardenType type, Long contributionId,
+                  Long teamId,
+                  Long memberId) {
+        this.contributedDate = contributedDate;
+        this.type = type;
+        this.isDeleted = false;
+        this.contributionId = contributionId;
+        this.teamId = teamId;
+        this.memberId = memberId;
+    }
 }
