@@ -36,7 +36,7 @@ public class MemberApiDocsTest extends RestDocsTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/study/{studyId}/mandate/{newStudyLeaderId}", 1, 1))
                 .andExpect(status().isNoContent())
-                .andDo(document("transfer-study-Leader",pathParameters(
+                .andDo(document("transfer-study-Leader", pathParameters(
                         parameterWithName("studyId").description("스터디 id"),
                         parameterWithName("newStudyLeaderId").description("변경될 스터디장 id"))));
     }
