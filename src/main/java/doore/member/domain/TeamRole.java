@@ -43,11 +43,11 @@ public class TeamRole {
         this.memberId = memberId;
     }
 
-    public void updatePreviousTeamLeader() {
+    public void updatePreviousTeamLeaderRole() {
         this.teamRoleType = ROLE_팀원;
     }
 
-    public void updateTeamLeader() {
+    public void updateTeamLeaderRole() {
         this.teamRoleType = ROLE_팀장;
     }
 

@@ -64,11 +64,11 @@ public class MemberCommandService {
 
         TeamRole previousTeamLeaderRole = teamRoleRepository.findTeamRoleByTeamIdAndTeamRoleType(teamId, ROLE_팀장)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        previousTeamLeaderRole.updatePreviousTeamLeader();
+        previousTeamLeaderRole.updatePreviousTeamLeaderRole();
 
         TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        teamRole.updateTeamLeader();
+        teamRole.updateTeamLeaderRole();
     }
 
     public void transferStudyLeader(Long studyId, Long newStudyLeaderId, Long memberId) {
@@ -83,11 +83,11 @@ public class MemberCommandService {
 
         StudyRole previousStudyLeaderRole = studyRoleRepository.findStudyRoleByStudyIdAndStudyRoleType(studyId,
                 ROLE_스터디장).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        previousStudyLeaderRole.updatePreviousStudyLeader();
+        previousStudyLeaderRole.updatePreviousStudyLeaderRole();
 
         StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        studyRole.updateStudyLeader();
+        studyRole.updateStudyLeaderRole();
     }
 
     public void deleteMember(Long memberId) {
