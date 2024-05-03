@@ -61,10 +61,7 @@ public class MemberCommandService {
         if (!checkTeamLeader.getTeamRoleType().equals(ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
         }
-
-        TeamRole previousTeamLeaderRole = teamRoleRepository.findTeamRoleByTeamIdAndTeamRoleType(teamId, ROLE_팀장)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        previousTeamLeaderRole.updatePreviousTeamLeaderRole();
+        checkTeamLeader.updatePreviousTeamLeaderRole();
 
         TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
@@ -80,10 +77,7 @@ public class MemberCommandService {
         if (!checkStudyLeader.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
-
-        StudyRole previousStudyLeaderRole = studyRoleRepository.findStudyRoleByStudyIdAndStudyRoleType(studyId,
-                ROLE_스터디장).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        previousStudyLeaderRole.updatePreviousStudyLeaderRole();
+        checkStudyLeader.updatePreviousStudyLeaderRole();
 
         StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
