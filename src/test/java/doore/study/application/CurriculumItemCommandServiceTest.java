@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +12,7 @@ import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.study.StudyFixture;
+import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.ParticipantCurriculumItem;
@@ -52,8 +53,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        study = StudyFixture.algorithmStudy();
-        studyRepository.save(study);
+        study = studyRepository.save(algorithmStudy());
 
         invalidCurriculumItemId = 5L;
         invalidStudyId = 5L;
@@ -71,18 +71,22 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
                 .build();
     }
 
-    private List<CurriculumItem> getCurriculumItems() {
-        List<CurriculumItem> curriculumItems = new ArrayList<>();
-        curriculumItems.add(CurriculumItem.builder().id(1L).itemOrder(1).name("Change Spring Study").build());
-        curriculumItems.add(CurriculumItem.builder().id(2L).itemOrder(4).name("CS Study").build());
-        curriculumItems.add(CurriculumItem.builder().id(3L).itemOrder(2).name("Infra Study").build());
-        curriculumItems.add(CurriculumItem.builder().id(4L).itemOrder(3).name("Algorithm Study").build());
+    private List<CurriculumItemManageDetailRequest> getCurriculumItems() {
+        List<CurriculumItemManageDetailRequest> curriculumItems = new ArrayList<>();
+        curriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(1L).itemOrder(1).name("Change Spring Study").build());
+        curriculumItems.add(CurriculumItemManageDetailRequest.builder().id(2L).itemOrder(4).name("CS Study").build());
+        curriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
+        curriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(4L).itemOrder(3).name("Algorithm Study").build());
         return curriculumItems;
     }
 
-    private List<CurriculumItem> getDeletedCurriculumItems() {
-        List<CurriculumItem> deletedCurriculumItems = new ArrayList<>();
-        deletedCurriculumItems.add(CurriculumItem.builder().id(3L).itemOrder(2).name("Infra Study").build());
+    private List<CurriculumItemManageDetailRequest> getDeletedCurriculumItems() {
+        List<CurriculumItemManageDetailRequest> deletedCurriculumItems = new ArrayList<>();
+        deletedCurriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
         return deletedCurriculumItems;
     }
 
@@ -105,7 +109,6 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
                 .studyId(study.getId())
                 .build();
         participantRepository.save(participant);
-
         curriculumItemCommandService.manageCurriculum(request, study.getId());
         CurriculumItem curriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
         curriculumItemCommandService.checkCurriculum(curriculumItem.getId(), participant.getId());
@@ -152,7 +155,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         curriculumItemCommandService.manageCurriculum(request, study.getId());
         CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(1L).orElseThrow();
 
-        assertThat(resultCurriculumItem.getName()).isEqualTo(request.curriculumItems().get(0).getName());
+        assertThat(resultCurriculumItem.getName()).isEqualTo(request.curriculumItems().get(0).name());
     }
 
     @Test
