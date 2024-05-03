@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.study.exception.CurriculumItemExceptionType.CANNOT_CREATE_CURRICULUM_ITEM;
 import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
@@ -81,6 +82,9 @@ public class CurriculumItemCommandService {
     }
 
     private void createCurriculum(Long studyId, List<CurriculumItemManageDetailRequest> curriculumItems) {
+        if (curriculumItemRepository.findAll().size() >= 99) {
+            throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
+        }
         curriculumItems.stream()
                 .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.id()))
                 .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
