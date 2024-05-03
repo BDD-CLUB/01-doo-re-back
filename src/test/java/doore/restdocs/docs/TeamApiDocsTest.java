@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -24,9 +25,12 @@ import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
+import doore.team.application.dto.response.TeamReferenceResponse;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -183,5 +187,38 @@ public class TeamApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(document("team-join", pathParameters, requestFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("나의 팀 목록을 조회한다")
+    void 나의_팀_목록을_조회한다() throws Exception {
+        //given
+        final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
+        final Long memberId = 1L;
+        final List<TeamReferenceResponse> response = List.of(
+                new TeamReferenceResponse(1L, "BDD", "개발 동아리입니다", "image.png"),
+                new TeamReferenceResponse(3L, "KEEPER", "보안 동아리입니다", "image.png")
+        );
+
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("memberId").description("팀 목록을 조회하고자 하는 회원 ID")
+        );
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                numberFieldWithPath("[].id", "팀의 ID"),
+                stringFieldWithPath("[].name", "팀의 이름"),
+                stringFieldWithPath("[].description", "팀의 설명"),
+                stringFieldWithPath("[].imageUrl", "팀의 프로필 이미지 url")
+        );
+
+        //when
+        when(teamQueryService.findMyTeams(memberId)).thenReturn(response);
+
+        //then
+        mockMvc.perform(get("/teams/members/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("my-teams", pathParameters, responseFieldsSnippet));
+
     }
 }
