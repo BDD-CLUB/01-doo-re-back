@@ -22,6 +22,12 @@ include::{snippets}/curriculum-manage/http-request.adoc[]
 .HTTP Response
 include::{snippets}/curriculum-manage/http-response.adoc[]
 
+.Path Parameters
+include::{snippets}/curriculum-manage/path-parameters.adoc[]
+
+.Request Fields
+include::{snippets}/curriculum-manage/request-fields.adoc[]
+
 == `PATCH`: CurriculumItem 상태 변경
 
 .HTTP Request
@@ -29,3 +35,6 @@ include::{snippets}/curriculum-check/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/curriculum-check/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/curriculum-check/path-parameters.adoc[]
