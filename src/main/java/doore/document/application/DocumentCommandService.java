@@ -16,6 +16,8 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
+import doore.garden.application.GardenCommandService;
+import doore.garden.domain.GardenType;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
@@ -38,6 +40,7 @@ public class DocumentCommandService {
     private final FileRepository fileRepository;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
+    private final GardenCommandService gardenCommandService;
 
     public void createDocument(DocumentCreateRequest request, List<MultipartFile> multipartFiles,
                                DocumentGroupType groupType, Long groupId) {
@@ -60,6 +63,8 @@ public class DocumentCommandService {
             List<File> newFiles = saveFiles(filePaths, document);
             document.updateFiles(newFiles);
         }
+
+        gardenCommandService.createGarden(document);
     }
 
     private void validateExistGroup(DocumentGroupType groupType, Long groupId) {
@@ -132,6 +137,7 @@ public class DocumentCommandService {
 
     public void deleteDocument(Long documentId) {
         validateExistDocument(documentId);
+        gardenCommandService.deleteGarden(documentId, GardenType.DOCUMENT_UPLOAD);
         documentRepository.deleteById(documentId);
     }
 

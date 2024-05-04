@@ -5,6 +5,8 @@ import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRIC
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
+import doore.garden.application.GardenCommandService;
+import doore.garden.domain.GardenType;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
@@ -33,6 +35,7 @@ public class CurriculumItemCommandService {
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
+    private final GardenCommandService gardenCommandService;
 
     public void manageCurriculum(CurriculumItemManageRequest request, Long studyId) {
         List<CurriculumItem> curriculumItems = request.curriculumItems();
@@ -55,6 +58,10 @@ public class CurriculumItemCommandService {
                 curriculumItem.getId(), participant.getId()).orElseThrow();
 
         participantCurriculumItem.checkCompletion();
+        if (participantCurriculumItem.getIsChecked()) {
+            gardenCommandService.createGarden(participantCurriculumItem);
+        }
+        gardenCommandService.deleteGarden(participantCurriculumItem.getId(), GardenType.COMPLETE_STUDY_CURRICULUM);
     }
 
     private void checkItemOrderDuplicate(List<CurriculumItem> curriculumItems) {

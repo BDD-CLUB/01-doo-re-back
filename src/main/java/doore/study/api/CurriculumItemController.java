@@ -1,5 +1,6 @@
 package doore.study.api;
 
+import doore.garden.application.GardenCommandService;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import jakarta.validation.Valid;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CurriculumItemController {
 
     private final CurriculumItemCommandService curriculumItemCommandService;
+    private final GardenCommandService gardenCommandService;
 
     @PostMapping("/studies/{studyId}/curriculums")
     public ResponseEntity<Void> manageCurriculum(@PathVariable Long studyId,
@@ -30,6 +32,7 @@ public class CurriculumItemController {
     @PatchMapping("/curriculums/{curriculumId}/{participantId}/check")
     public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId, @PathVariable Long participantId) {
         curriculumItemCommandService.checkCurriculum(curriculumId, participantId);
+
         return ResponseEntity.noContent().build();
     }
 
