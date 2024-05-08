@@ -65,15 +65,15 @@ public class CurriculumItem extends BaseEntity {
         this.study = study;
     }
 
-    public void updateIfNameDifferent(CurriculumItem curriculumItem) {
-        if (!this.name.equals(curriculumItem.getName())) {
-            this.updateName(curriculumItem.getName());
+    public void updateIfNameDifferent(String name) {
+        if (!this.name.equals(name)) {
+            this.updateName(name);
         }
     }
 
-    public void updateIfItemOrderDifferent(CurriculumItem curriculumItem) {
-        if (!this.itemOrder.equals(curriculumItem.getItemOrder())) {
-            this.updateItemOrder(curriculumItem.getItemOrder());
+    public void updateIfItemOrderDifferent(Integer itemOrder) {
+        if (!this.itemOrder.equals(itemOrder)) {
+            this.updateItemOrder(itemOrder);
         }
     }
 }

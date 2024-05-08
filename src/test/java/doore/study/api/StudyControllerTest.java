@@ -6,10 +6,10 @@ import static doore.team.TeamFixture.team;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.study.application.dto.request.StudyCreateRequest;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
+import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.domain.Study;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
@@ -100,4 +100,6 @@ public class StudyControllerTest extends IntegrationTest {
         String url = "/studies/" + study.getId() + "/termination";
         callPatchApi(url, study).andExpect(status().isNoContent());
     }
+
+    // TODO: 3/22/24 자신이 아닌 다른 사람의 스터디 목록을 조회하려 하면 권한 예외가 발생한다.
 }

@@ -16,4 +16,5 @@ public class TeamControllerTest extends IntegrationTest {
 
         callPostApi("/teams", request).andExpect(status().isBadRequest());
     }
+    // TODO: 3/22/24 자기 자신이 아닌 회원의 팀 목록을 조회할 경우 예외를 반환한다.
 }
