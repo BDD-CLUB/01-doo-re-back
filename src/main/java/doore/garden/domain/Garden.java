@@ -13,12 +13,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
-@Where(clause = "isDeleted = false")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE garden SET is_deleted = true where id = ?")
 public class Garden extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
