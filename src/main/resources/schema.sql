@@ -107,8 +107,6 @@ create table garden
 (
     id               bigint auto_increment primary key,
     contributed_date date         not null,
-    dayOfWeek        int          not null,
-    weekOfYear       int          not null,
     type             varchar(255) not null,
     is_deleted       boolean      not null,
     contribution_id  bigint       not null,
