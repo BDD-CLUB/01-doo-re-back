@@ -53,7 +53,7 @@ public class ParticipantCurriculumItem extends BaseEntity {
         this.isChecked = false;
     }
 
-    public boolean checkCompletion() {
+    public void checkCompletion() {
         if (isChecked) {
             incomplete();
         } else {
