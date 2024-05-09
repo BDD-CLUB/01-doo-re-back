@@ -13,9 +13,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
+@Where(clause = "isDeleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Garden extends BaseEntity {
     @Id
@@ -43,8 +45,7 @@ public class Garden extends BaseEntity {
 
     @Builder
     private Garden(LocalDate contributedDate, GardenType type, Long contributionId,
-                  Long teamId,
-                  Long memberId) {
+                   Long teamId, Long memberId) {
         this.contributedDate = contributedDate;
         this.type = type;
         this.isDeleted = false;
