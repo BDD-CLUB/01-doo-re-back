@@ -1,5 +1,8 @@
 package doore.garden.application.dto.response;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 import lombok.Builder;
 
 public record DayGardenResponse(
@@ -14,5 +17,21 @@ public record DayGardenResponse(
         this.dayOfWeek = dayOfWeek;
         this.weekOfYear = weekOfYear;
         this.attributeNumber = attributeNumber;
+    }
+
+    public static DayGardenResponse of(LocalDate date, int contributeNumber) {
+        int weekOfYear = getWeekOfYear(date)-1;
+        int dayOfWeek = date.getDayOfWeek().getValue() - 1;
+        return DayGardenResponse.builder()
+                .dayOfYear(date.getDayOfYear() - 1)
+                .weekOfYear(weekOfYear)
+                .dayOfWeek(dayOfWeek)
+                .attributeNumber(contributeNumber)
+                .build();
+    }
+
+    private static int getWeekOfYear(LocalDate date) {
+        WeekFields weekFields = WeekFields.of(Locale.KOREA);
+        return date.get(weekFields.weekOfWeekBasedYear());
     }
 }
