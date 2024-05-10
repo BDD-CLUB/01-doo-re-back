@@ -1,6 +1,6 @@
 package doore.garden.domain;
 
-import static doore.garden.domain.GardenType.COMPLETE_STUDY_CURRICULUM;
+import static doore.garden.domain.GardenType.STUDY_CURRICULUM_COMPLETION;
 
 import doore.document.domain.Document;
 import doore.study.domain.ParticipantCurriculumItem;
@@ -24,7 +24,7 @@ public class ContributionGarden {
                 .contributionId(participantCurriculumItem.getId())
                 .memberId(participantCurriculumItem.getParticipantId())
                 .teamId(participantCurriculumItem.getCurriculumItem().getStudy().getTeamId())
-                .type(COMPLETE_STUDY_CURRICULUM)
+                .type(STUDY_CURRICULUM_COMPLETION)
                 .build();
     }
 

@@ -61,9 +61,10 @@ public class CurriculumItemCommandService {
 
         participantCurriculumItem.checkCompletion();
         if (participantCurriculumItem.getIsChecked()) {
-            gardenCommandService.createGarden(participantCurriculumItem);
+            gardenCommandService.deleteGarden(participantCurriculumItem);
+            return;
         }
-        gardenCommandService.deleteGarden(participantCurriculumItem.getId(), GardenType.COMPLETE_STUDY_CURRICULUM);
+        gardenCommandService.createGarden(participantCurriculumItem);
     }
 
     private void checkItemOrderDuplicate(List<CurriculumItemManageDetailRequest> curriculumItems) {
