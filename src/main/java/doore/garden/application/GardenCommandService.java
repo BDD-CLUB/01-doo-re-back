@@ -34,5 +34,4 @@ public class GardenCommandService {
         GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
         gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
-    
 }

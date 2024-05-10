@@ -17,7 +17,6 @@ import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
 import doore.garden.application.GardenCommandService;
-import doore.garden.domain.GardenType;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
