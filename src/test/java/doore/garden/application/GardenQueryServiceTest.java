@@ -58,7 +58,7 @@ public class GardenQueryServiceTest extends IntegrationTest {
 
         //then
         assertEquals(3, allGardens.size());
-        assertEquals(1, gardenResponses.size());
+        assertEquals(1, gardenResponses.size()); //올해의 텃밭 데이터만 가져온다, 우리 팀의 텃밭 데이터만 가져온다.
     }
 
    @Test
