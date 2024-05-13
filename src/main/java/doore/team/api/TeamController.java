@@ -84,9 +84,10 @@ public class TeamController {
     @PostMapping("/{teamId}/join")
     public ResponseEntity<Void> joinTeam(
             @PathVariable final Long teamId,
-            @Valid @RequestBody final TeamInviteCodeRequest request
+            @Valid @RequestBody final TeamInviteCodeRequest request,
+            @LoginMember Member member
     ) {
-        teamCommandService.joinTeam(teamId, request);
+        teamCommandService.joinTeam(teamId, request, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

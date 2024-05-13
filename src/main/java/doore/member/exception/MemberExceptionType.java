@@ -10,6 +10,8 @@ public enum MemberExceptionType implements BaseExceptionType {
     NOT_FOUND_MEMBER_ROLE_IN_STUDY(HttpStatus.NOT_FOUND, "스터디 내 해당 회원의 직위를 찾을 수 없습니다."),
     NOT_FOUND_MEMBER_IN_TEAM(HttpStatus.NOT_FOUND, "팀 내 해당 회원을 찾을 수 없습니다."),
     NOT_FOUND_MEMBER_IN_STUDY(HttpStatus.NOT_FOUND, "스터디 내 해당 회원을 찾을 수 없습니다."),
+    ALREADY_JOIN_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "이미 가입된 팀원입니다."),
+    ALREADY_JOIN_STUDY_MEMBER(HttpStatus.BAD_REQUEST, "이미 가입된 스터디원입니다."),
     ;
 
     private final HttpStatus httpStatus;

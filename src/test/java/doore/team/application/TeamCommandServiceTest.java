@@ -2,7 +2,9 @@ package doore.team.application;
 
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마스;
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.ALREADY_JOIN_TEAM_MEMBER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
@@ -78,11 +80,29 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 팀장이 아니라면 팀 정보를 수정할 수 없다.")
     public void updateTeam_팀장이_아니라면_팀_정보를_수정할_수_없다_실패(){
         final Long notTeamLeaderMemberId = memberRepository.save(아마스()).getId();
+        final TeamRole notTeamLeaderRole = TeamRole.builder()
+                .teamRoleType(ROLE_팀원)
+                .teamId(teamId)
+                .memberId(notTeamLeaderMemberId)
+                .build();
+        teamRoleRepository.save(notTeamLeaderRole);
+
         TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
 
         assertThatThrownBy(() -> {
             teamCommandService.updateTeam(teamId, request, notTeamLeaderMemberId);
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
+    @Disabled // TODO: 만료된 초대 링크 수정
+    @DisplayName("[실패] 이미 가입된 팀원이라면 팀 가입을 할 수 없다.")
+    public void joinTeam_이미_가입된_팀원이라면_팀_가입을_할_수_없다_실패(){
+        var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+
+        assertThatThrownBy(() -> {
+            teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId);
+        }).isInstanceOf(MemberException.class).hasMessage(ALREADY_JOIN_TEAM_MEMBER.errorMessage());
     }
 
     @Test
@@ -120,7 +140,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
         var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
 
         //when & then
-        assertDoesNotThrow(() -> teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode)));
+        assertDoesNotThrow(() -> teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId));
     }
 
     @Test
@@ -131,7 +151,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
 
         //when & then
         assertThatThrownBy(() -> {
-            teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest("invalid code"));
+            teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest("invalid code"), memberId);
         }).isInstanceOf(TeamException.class)
                 .hasMessage(NOT_MATCH_LINK.errorMessage());
     }

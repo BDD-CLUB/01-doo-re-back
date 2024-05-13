@@ -1,7 +1,10 @@
 package doore.team.application;
 
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.ALREADY_JOIN_TEAM_MEMBER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.EXPIRED_LINK;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
@@ -109,13 +112,21 @@ public class TeamCommandService {
         return new TeamInviteCodeResponse(link.get());
     }
 
-    public void joinTeam(final Long teamId, final TeamInviteCodeRequest request) {
+    public void joinTeam(final Long teamId, final TeamInviteCodeRequest request, final Long memberId) {
         validateExistTeam(teamId);
+        validateMember(memberId);
 
         Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isPresent()) {
             validateMatchLink(link.get(), request.code());
-            // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리.
+            // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리. (2024/5/13 완료)
+            duplicateCheckTeamMember(memberId);
+            TeamRole teamRole = TeamRole.builder()
+                    .teamId(teamId)
+                    .teamRoleType(ROLE_팀원)
+                    .memberId(memberId)
+                    .build();
+            teamRoleRepository.save(teamRole);
         }
         throw new TeamException(EXPIRED_LINK);
     }
@@ -127,10 +138,18 @@ public class TeamCommandService {
     }
 
     private void validateMember(final Long memberId) {
-         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private void validateTeamLeader(final Long memberId){
-        teamRoleRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    private void validateTeamLeader(final Long memberId) {
+        TeamRole teamRole = teamRoleRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        if (!teamRole.getTeamRoleType().equals(ROLE_팀장)){
+            throw new MemberException(UNAUTHORIZED);
+        }
+    }
+
+    private void duplicateCheckTeamMember(final Long memberId) {
+        teamRoleRepository.findById(memberId).orElseThrow(() -> new MemberException(ALREADY_JOIN_TEAM_MEMBER));
     }
 }

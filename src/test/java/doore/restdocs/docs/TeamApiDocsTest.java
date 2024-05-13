@@ -170,7 +170,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final TeamInviteCodeRequest request = new TeamInviteCodeRequest("asdf");
 
         // when
-        doNothing().when(teamCommandService).joinTeam(eq(teamId), any(TeamInviteCodeRequest.class));
+        doNothing().when(teamCommandService).joinTeam(eq(teamId), any(TeamInviteCodeRequest.class), any());
 
         // then
         final PathParametersSnippet pathParameters = pathParameters(
