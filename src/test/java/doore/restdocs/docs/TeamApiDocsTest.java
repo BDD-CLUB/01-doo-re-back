@@ -82,7 +82,7 @@ public class TeamApiDocsTest extends RestDocsTest {
 
         // when
         Long teamId = 1L;
-        doNothing().when(teamCommandService).updateTeam(eq(teamId), any(TeamUpdateRequest.class));
+        doNothing().when(teamCommandService).updateTeam(eq(teamId), any(TeamUpdateRequest.class), any());
 
         // then
         final RequestFieldsSnippet requestFields = requestFields(

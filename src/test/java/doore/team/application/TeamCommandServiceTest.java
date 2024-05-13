@@ -1,5 +1,7 @@
 package doore.team.application;
 
+import static doore.member.MemberFixture.미나;
+import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,6 +9,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import doore.helper.IntegrationTest;
+import doore.member.domain.TeamRole;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.TeamRoleRepository;
 import doore.team.TeamFixture;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
@@ -24,15 +29,27 @@ public class TeamCommandServiceTest extends IntegrationTest {
 
     @Autowired
     private TeamCommandService teamCommandService;
-
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private TeamRoleRepository teamRoleRepository;
 
     private Long teamId;
+    private Long memberId;
+    private TeamRole teamRole;
 
     @BeforeEach
     void setUp() {
         teamId = teamRepository.save(TeamFixture.team()).getId();
+        memberId = memberRepository.save(미나()).getId();
+        teamRole = TeamRole.builder()
+                .teamRoleType(ROLE_팀장)
+                .teamId(teamId)
+                .memberId(memberId)
+                .build();
+        teamRoleRepository.save(teamRole);
     }
 
     @AfterEach
@@ -49,7 +66,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
 
         //when & then
         assertThatThrownBy(() -> {
-            teamCommandService.updateTeam(invalidId, request);
+            teamCommandService.updateTeam(invalidId, request, memberId);
         }).isInstanceOf(TeamException.class)
                 .hasMessage(NOT_FOUND_TEAM.errorMessage());
     }

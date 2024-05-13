@@ -2,6 +2,7 @@ package doore.team.application;
 
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.EXPIRED_LINK;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
@@ -62,7 +63,8 @@ public class TeamCommandService {
         }
     }
 
-    public void updateTeam(final Long teamId, final TeamUpdateRequest request) {
+    public void updateTeam(final Long teamId, final TeamUpdateRequest request, final Long memberId) {
+        validateTeamLeader(memberId);
         final Team team = validateExistTeam(teamId);
         team.update(request.name(), request.description());
     }
@@ -123,5 +125,9 @@ public class TeamCommandService {
 
     private void validateMember(final Long memberId) {
          memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    private void validateTeamLeader(final Long memberId){
+        teamRoleRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }
