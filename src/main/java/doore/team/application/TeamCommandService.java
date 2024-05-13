@@ -1,10 +1,16 @@
 package doore.team.application;
 
+import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.team.exception.TeamExceptionType.EXPIRED_LINK;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 
 import doore.file.application.S3ImageFileService;
+import doore.member.domain.TeamRole;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.TeamRoleRepository;
+import doore.member.exception.MemberException;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
@@ -26,13 +32,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class TeamCommandService {
 
     private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
+    private final TeamRoleRepository teamRoleRepository;
     private final S3ImageFileService s3ImageFileService;
     private final RedisUtil redisUtil;
 
     private static final String INVITE_LINK_PREFIX = "teamId=%d";
 
-    public void createTeam(final TeamCreateRequest request, final MultipartFile file) {
-        // TODO: 팀 생성자를 팀 관리자로 등록
+    public void createTeam(final TeamCreateRequest request, final MultipartFile file, final Long memberId) {
+        // TODO: 팀 생성자를 팀 관리자로 등록 (2024/5/9 완료)
+        validateMember(memberId);
         final String imageUrl = s3ImageFileService.upload(file);
         try {
             final Team team = Team.builder()
@@ -41,6 +50,13 @@ public class TeamCommandService {
                     .imageUrl(imageUrl)
                     .build();
             teamRepository.save(team);
+
+            final TeamRole teamRole = TeamRole.builder()
+                    .memberId(memberId)
+                    .teamId(team.getId())
+                    .teamRoleType(ROLE_팀장)
+                    .build();
+            teamRoleRepository.save(teamRole);
         } catch (Exception e) {
             s3ImageFileService.deleteFile(imageUrl);
         }
@@ -103,5 +119,9 @@ public class TeamCommandService {
         if (!link.equals(userLink)) {
             throw new TeamException(NOT_MATCH_LINK);
         }
+    }
+
+    private void validateMember(final Long memberId) {
+         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }

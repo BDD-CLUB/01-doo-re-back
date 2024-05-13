@@ -1,5 +1,7 @@
 package doore.team.api;
 
+import doore.member.domain.Member;
+import doore.resolver.LoginMember;
 import doore.team.application.TeamCommandService;
 import doore.team.application.TeamQueryService;
 import doore.team.application.dto.request.TeamCreateRequest;
@@ -38,9 +40,10 @@ public class TeamController {
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> createTeam(
             @Valid @RequestPart final TeamCreateRequest request,
-            @RequestPart(required = false) final MultipartFile file
+            @RequestPart(required = false) final MultipartFile file,
+            @LoginMember Member member
     ) {
-        teamCommandService.createTeam(request, file);
+        teamCommandService.createTeam(request, file, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

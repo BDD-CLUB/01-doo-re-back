@@ -54,7 +54,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final MockMultipartFile file = getMockImageFile();
 
         // when
-        doNothing().when(teamCommandService).createTeam(any(TeamCreateRequest.class), any(MultipartFile.class));
+        doNothing().when(teamCommandService).createTeam(any(TeamCreateRequest.class), any(MultipartFile.class), any());
 
         // then
         final RequestPartFieldsSnippet requestPartFields = requestPartFields(
