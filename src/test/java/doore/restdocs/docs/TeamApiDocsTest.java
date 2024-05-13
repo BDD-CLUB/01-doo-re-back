@@ -104,7 +104,7 @@ public class TeamApiDocsTest extends RestDocsTest {
 
         // when
         Long teamId = 1L;
-        doNothing().when(teamCommandService).updateTeamImage(eq(teamId), any(MultipartFile.class));
+        doNothing().when(teamCommandService).updateTeamImage(eq(teamId), any(MultipartFile.class), any());
 
         // then
         final RequestPartsSnippet requestParts = requestParts(
@@ -129,7 +129,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     public void 팀을_삭제한다() throws Exception {
         // when
         Long teamId = 1L;
-        doNothing().when(teamCommandService).deleteTeam(eq(teamId));
+        doNothing().when(teamCommandService).deleteTeam(eq(teamId), any());
 
         // then
         final PathParametersSnippet pathParameters = pathParameters(

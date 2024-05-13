@@ -60,15 +60,16 @@ public class TeamController {
     @PatchMapping("/{teamId}/image")
     public ResponseEntity<Void> updateTeamImage(
             @PathVariable final Long teamId,
-            @RequestPart(required = false) final MultipartFile file
+            @RequestPart(required = false) final MultipartFile file,
+            @LoginMember Member member
     ) {
-        teamCommandService.updateTeamImage(teamId, file);
+        teamCommandService.updateTeamImage(teamId, file, member.getId());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{teamId}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId) {
-        teamCommandService.deleteTeam(teamId);
+    public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId, @LoginMember Member member) {
+        teamCommandService.deleteTeam(teamId, member.getId());
         return ResponseEntity.noContent().build();
     }
 

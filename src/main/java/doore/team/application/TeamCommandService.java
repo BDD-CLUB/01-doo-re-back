@@ -69,7 +69,8 @@ public class TeamCommandService {
         team.update(request.name(), request.description());
     }
 
-    public void updateTeamImage(final Long teamId, final MultipartFile file) {
+    public void updateTeamImage(final Long teamId, final MultipartFile file, final Long memberId) {
+        validateTeamLeader(memberId);
         final Team team = validateExistTeam(teamId);
 
         if (team.hasImage()) {
@@ -80,13 +81,15 @@ public class TeamCommandService {
         team.updateImageUrl(newImageUrl);
     }
 
-    public void deleteTeam(final Long teamId) {
+    public void deleteTeam(final Long teamId, final Long memberId) {
+        validateTeamLeader(memberId);
         final Team team = validateExistTeam(teamId);
         teamRepository.delete(team);
         if (team.hasImage()) {
             s3ImageFileService.deleteFile(team.getImageUrl());
         }
         // TODO: 2/2/24 팀이 삭제될 시 연관된 스터디와, 커리큘럼도 삭제
+
     }
 
     private Team validateExistTeam(final Long teamId) {
