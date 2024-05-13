@@ -1,7 +1,9 @@
 package doore.team.application;
 
 import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.아마스;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,6 +14,7 @@ import doore.helper.IntegrationTest;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.TeamRoleRepository;
+import doore.member.exception.MemberException;
 import doore.team.TeamFixture;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
@@ -69,6 +72,17 @@ public class TeamCommandServiceTest extends IntegrationTest {
             teamCommandService.updateTeam(invalidId, request, memberId);
         }).isInstanceOf(TeamException.class)
                 .hasMessage(NOT_FOUND_TEAM.errorMessage());
+    }
+
+    @Test
+    @DisplayName("[실패] 팀장이 아니라면 팀 정보를 수정할 수 없다.")
+    public void updateTeam_팀장이_아니라면_팀_정보를_수정할_수_없다_실패(){
+        final Long notTeamLeaderMemberId = memberRepository.save(아마스()).getId();
+        TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
+
+        assertThatThrownBy(() -> {
+            teamCommandService.updateTeam(teamId, request, notTeamLeaderMemberId);
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 
     @Test
