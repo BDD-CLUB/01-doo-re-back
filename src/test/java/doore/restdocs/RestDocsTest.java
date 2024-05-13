@@ -4,25 +4,34 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
+import doore.attendance.api.AttendanceController;
+import doore.document.api.DocumentController;
 import doore.attendance.application.AttendanceCommandService;
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
 import doore.helper.ApiTestHelper;
+import doore.login.api.LoginController;
 import doore.login.application.LoginService;
-import doore.login.utils.JwtTokenGenerator;
+import doore.member.api.MemberTeamController;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberTeamQueryService;
+import doore.study.api.CurriculumItemController;
+import doore.study.api.ParticipantController;
+import doore.study.api.StudyController;
+import doore.login.utils.JwtTokenGenerator;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
+import doore.team.api.TeamController;
 import doore.team.application.TeamCommandService;
 import doore.team.application.TeamQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -36,7 +45,38 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Import(RestDocsConfiguration.class)
 @ExtendWith(RestDocumentationExtension.class)
+@WebMvcTest({
+        ParticipantController.class,
+        StudyController.class,
+        MemberTeamController.class,
+        TeamController.class,
+        DocumentController.class,
+        AttendanceController.class,
+        CurriculumItemController.class,
+        LoginController.class,
+})
 public abstract class RestDocsTest extends ApiTestHelper {
+
+    @MockBean
+    protected DocumentQueryService documentQueryService;
+
+    @MockBean
+    protected DocumentCommandService documentCommandService;
+
+    @MockBean
+    protected CurriculumItemCommandService curriculumItemCommandService;
+
+    @MockBean
+    protected TeamCommandService teamCommandService;
+
+    @MockBean
+    protected AttendanceCommandService attendanceCommandService;
+
+    @MockBean
+    protected StudyCommandService studyCommandService;
+
+    @MockBean
+    protected StudyQueryService studyQueryService;
 
     @MockBean
     protected LoginService loginService;
@@ -48,31 +88,11 @@ public abstract class RestDocsTest extends ApiTestHelper {
     protected MemberTeamQueryService memberTeamQueryService;
 
     @MockBean
-    protected TeamCommandService teamCommandService;
-
-    @MockBean
-    protected StudyCommandService studyCommandService;
-
-    @MockBean
-    protected StudyQueryService studyQueryService;
-
-    @MockBean
     protected ParticipantCommandService participantCommandService;
 
     @MockBean
     protected ParticipantQueryService participantQueryService;
 
-    @MockBean
-    protected AttendanceCommandService attendanceCommandService;
-
-    @MockBean
-    protected CurriculumItemCommandService curriculumItemCommandService;
-
-    @MockBean
-    protected DocumentQueryService documentQueryService;
-
-    @MockBean
-    protected DocumentCommandService documentCommandService;
 
     @MockBean
     protected TeamQueryService teamQueryService;

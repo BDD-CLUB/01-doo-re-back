@@ -20,7 +20,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.restdocs.RestDocsTest;
-import doore.team.api.TeamController;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
@@ -29,7 +28,6 @@ import doore.team.application.dto.response.TeamReferenceResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -41,7 +39,6 @@ import org.springframework.restdocs.request.PathParametersSnippet;
 import org.springframework.restdocs.request.RequestPartsSnippet;
 import org.springframework.web.multipart.MultipartFile;
 
-@WebMvcTest(TeamController.class)
 public class TeamApiDocsTest extends RestDocsTest {
 
     @Test

@@ -23,7 +23,6 @@ public class JwtTokenGenerator {
         claims.put("memberId", id);
         final Date now = new Date();
         final Date expiredDate = new Date(now.getTime() + expireTimeMilliSecond);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)

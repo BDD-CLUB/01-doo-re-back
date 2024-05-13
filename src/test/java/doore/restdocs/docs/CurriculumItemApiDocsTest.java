@@ -10,23 +10,18 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.restdocs.RestDocsTest;
-import doore.study.api.CurriculumItemController;
 import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
-import doore.study.domain.Study;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
-@WebMvcTest(CurriculumItemController.class)
 public class CurriculumItemApiDocsTest extends RestDocsTest {
     private CurriculumItemManageRequest request;
-    private Study study;
 
     @BeforeEach
     void setUp() {

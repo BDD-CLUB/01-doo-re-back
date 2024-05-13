@@ -20,7 +20,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.document.api.DocumentController;
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
 import doore.document.application.dto.response.DocumentCondensedResponse;
@@ -34,7 +33,6 @@ import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +42,8 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-@WebMvcTest(DocumentController.class)
 public class DocumentDocsTest extends RestDocsTest {
+
     @Test
     @DisplayName("학습자료를 생성한다.")
     public void 학습자료를_생성한다() throws Exception {
