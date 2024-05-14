@@ -45,7 +45,7 @@ public class TeamCommandService {
 
     public void createTeam(final TeamCreateRequest request, final MultipartFile file, final Long memberId) {
         // TODO: 팀 생성자를 팀 관리자로 등록 (2024/5/9 완료)
-        validateMember(memberId);
+        validateExistMember(memberId);
         final String imageUrl = s3ImageFileService.upload(file);
         try {
             final Team team = Team.builder()
@@ -67,13 +67,13 @@ public class TeamCommandService {
     }
 
     public void updateTeam(final Long teamId, final TeamUpdateRequest request, final Long memberId) {
-        validateTeamLeader(memberId);
+        validateExistTeamLeader(memberId);
         final Team team = validateExistTeam(teamId);
         team.update(request.name(), request.description());
     }
 
     public void updateTeamImage(final Long teamId, final MultipartFile file, final Long memberId) {
-        validateTeamLeader(memberId);
+        validateExistTeamLeader(memberId);
         final Team team = validateExistTeam(teamId);
 
         if (team.hasImage()) {
@@ -85,7 +85,7 @@ public class TeamCommandService {
     }
 
     public void deleteTeam(final Long teamId, final Long memberId) {
-        validateTeamLeader(memberId);
+        validateExistTeamLeader(memberId);
         final Team team = validateExistTeam(teamId);
         teamRepository.delete(team);
         if (team.hasImage()) {
@@ -114,7 +114,7 @@ public class TeamCommandService {
 
     public void joinTeam(final Long teamId, final TeamInviteCodeRequest request, final Long memberId) {
         validateExistTeam(teamId);
-        validateMember(memberId);
+        validateExistMember(memberId);
 
         Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isPresent()) {
@@ -137,11 +137,11 @@ public class TeamCommandService {
         }
     }
 
-    private void validateMember(final Long memberId) {
+    private void validateExistMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private void validateTeamLeader(final Long memberId) {
+    private void validateExistTeamLeader(final Long memberId) {
         TeamRole teamRole = teamRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
