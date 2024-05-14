@@ -144,7 +144,7 @@ public class TeamCommandService {
     private void validateTeamLeader(final Long memberId) {
         TeamRole teamRole = teamRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        if (!teamRole.getTeamRoleType().equals(ROLE_팀장)){
+        if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
