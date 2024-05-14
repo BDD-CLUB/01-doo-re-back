@@ -1,6 +1,7 @@
 package doore.team.application;
 
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.member.domain.repository.MemberRepository;
 import doore.member.exception.MemberException;
@@ -18,8 +19,9 @@ public class TeamQueryService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
 
-    public List<TeamReferenceResponse> findMyTeams(final Long memberId) {
+    public List<TeamReferenceResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
         validateMember(memberId);
+        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         return teamRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(TeamReferenceResponse::from)
@@ -28,5 +30,11 @@ public class TeamQueryService {
 
     private void validateMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    private void checkSameMemberIdAndTokenMemberId(final Long memberId, final Long tokenMemberId) {
+        if (!memberId.equals(tokenMemberId)){
+            throw new MemberException(UNAUTHORIZED);
+        }
     }
 }
