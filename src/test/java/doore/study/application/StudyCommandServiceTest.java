@@ -1,5 +1,7 @@
 package doore.study.application;
 
+import static doore.member.MemberFixture.미나;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.domain.StudyStatus.UPCOMING;
@@ -16,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import doore.helper.IntegrationTest;
+import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.StudyRoleRepository;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
@@ -47,9 +51,18 @@ public class StudyCommandServiceTest extends IntegrationTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @Autowired
+    StudyRoleRepository studyRoleRepository;
+
+    private Long memberId;
+
+    @BeforeEach
+    void setUp() {
+        memberId = memberRepository.save(미나()).getId();
+    }
 
     @Nested
-    @DisplayName("[스터디 Command 테스트")
+    @DisplayName("스터디 Command 테스트")
     class studyTest {
         @Nested
         @DisplayName("스터디 생성 테스트")
@@ -74,7 +87,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             @Test
             @DisplayName("[성공] 정상적으로 스터디를 생성할 수 있다.")
             void createStudy_정상적으로_스터디를_생성할_수_있다_성공() throws Exception {
-                studyCommandService.createStudy(studyCreateRequest, team.getId());
+                studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 List<Study> studies = studyRepository.findAll();
                 assertThat(studies).hasSize(1);
                 Study study = studies.get(0);
@@ -87,7 +100,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             @Test
             @DisplayName("[성공] 스터디의 status와 isDeleted가 초기값으로 초기화 된다.")
             void createStudy_스터디의_status와_isDeleted가_초기값으로_초기화_된다_성공() throws Exception {
-                studyCommandService.createStudy(studyCreateRequest, team.getId());
+                studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 List<Study> studies = studyRepository.findAll();
                 Study study = studies.get(0);
                 assertAll(
@@ -100,7 +113,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             @Test
             @DisplayName("[성공] 스터디 생성시 curriculum을 작성하지 않으면 빈 리스트로 생성된다.")
             void createStudy_스터디_생성시_curriculum을_작성하지_않으면_빈_리스트로_생성된다_성공() throws Exception {
-                studyCommandService.createStudy(studyCreateRequest, team.getId());
+                studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 List<Study> studies = studyRepository.findAll();
                 Study study = studies.get(0);
                 assertEquals(Collections.emptyList(), study.getCurriculumItems());
@@ -117,9 +130,18 @@ public class StudyCommandServiceTest extends IntegrationTest {
                         .cropId(1L)
                         .curriculumItems(null)
                         .build();
-                assertThatThrownBy(() -> studyCommandService.createStudy(wrongRequest, team.getId()))
+                assertThatThrownBy(() -> studyCommandService.createStudy(wrongRequest, team.getId(), memberId))
                         .isInstanceOf(StudyException.class)
                         .hasMessage(INVALID_ENDDATE.errorMessage());
+            }
+
+            @Test
+            @DisplayName("[성공] 스터디 생성자는 스터디장 권한이 부여된다.")
+            void createStudy_스터디_생성자는_스터디장_권한이_부여된다_성공() throws Exception {
+                studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
+
+                StudyRole studyRole = studyRoleRepository.findById(memberId).orElseThrow();
+                assertThat(studyRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
             }
         }
 
@@ -136,7 +158,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
 
         @Nested
         @DisplayName("스터디 종료 테스트")
-        class StudyTerminatetest {
+        class studyTerminateTest {
             @Test
             @DisplayName("[성공] 정상적으로 스터디를 종료할 수 있다.")
             void terminateStudy_정상적으로_스터디를_종료할_수_있다_성공() throws Exception {
@@ -206,7 +228,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
     void notExistTeam_존재하지_않는_팀인_경우_실패한다_실패() {
         Long notExistingTeamId = 50L;
         StudyCreateRequest studyCreateRequest = mock(StudyCreateRequest.class);
-        assertThatThrownBy(() -> studyCommandService.createStudy(studyCreateRequest, notExistingTeamId))
+        assertThatThrownBy(() -> studyCommandService.createStudy(studyCreateRequest, notExistingTeamId, memberId))
                 .isInstanceOf(TeamException.class)
                 .hasMessage(NOT_FOUND_TEAM.errorMessage());
     }

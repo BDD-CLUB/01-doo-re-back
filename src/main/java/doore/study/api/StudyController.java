@@ -2,7 +2,9 @@ package doore.study.api;
 
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
+import doore.member.domain.Member;
 import doore.member.exception.MemberException;
+import doore.resolver.LoginMember;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
@@ -36,8 +38,8 @@ public class StudyController {
 
     @PostMapping("/teams/{teamId}/studies")
     public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest,
-                                            @PathVariable Long teamId) {
-        studyCommandService.createStudy(studyRequest, teamId);
+                                            @PathVariable Long teamId, @LoginMember Member member) {
+        studyCommandService.createStudy(studyRequest, teamId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
