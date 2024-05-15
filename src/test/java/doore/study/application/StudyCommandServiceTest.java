@@ -186,7 +186,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             void updateStudy_정상적으로_스터디를_수정할_수_있다_성공() throws Exception {
                 final Study study = algorithmStudy();
                 studyRepository.save(study);
-                studyCommandService.updateStudy(request, study.getId());
+                studyCommandService.updateStudy(request, study.getId(), memberId);
                 assertEquals(study.getName(), request.name());
             }
 
@@ -194,7 +194,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             @DisplayName("[실패] 존재하지_않는_스터디를_수정할_수_없다.")
             void updateStudy_존재하지_않는_스터디를_수정할_수_없다_실패() throws Exception {
                 Long notExistingStudyId = 0L;
-                assertThatThrownBy(() -> studyCommandService.updateStudy(request, notExistingStudyId))
+                assertThatThrownBy(() -> studyCommandService.updateStudy(request, notExistingStudyId, memberId))
                         .isInstanceOf(StudyException.class)
                         .hasMessage(NOT_FOUND_STUDY.errorMessage());
             }

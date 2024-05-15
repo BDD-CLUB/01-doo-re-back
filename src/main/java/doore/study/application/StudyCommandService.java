@@ -95,7 +95,8 @@ public class StudyCommandService {
         studyRepository.deleteById(studyId);
     }
 
-    public void updateStudy(StudyUpdateRequest request, Long studyId) {
+    public void updateStudy(StudyUpdateRequest request, Long studyId, Long memberId) {
+        validateExistStudyLeader(memberId);
         Study study = validateExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }

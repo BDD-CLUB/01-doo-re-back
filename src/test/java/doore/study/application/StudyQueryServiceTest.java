@@ -67,7 +67,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
             Long memberId = 1L;
             studyRepository.save(study);
             PersonalStudyDetailResponse personalStudyDetailResponse =
-                    studyQueryService.getMyStudiesDetail(study.getId(), memberId);
+                    studyQueryService.getStudiesDetail(study.getId(), memberId);
             assertAll(
                     () -> assertEquals(study.getId(), personalStudyDetailResponse.id()),
                     () -> assertEquals(memberId, personalStudyDetailResponse.participantId())
