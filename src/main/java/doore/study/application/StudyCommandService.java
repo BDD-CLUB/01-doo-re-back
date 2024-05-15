@@ -2,6 +2,8 @@ package doore.study.application;
 
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.INVALID_ENDDATE;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
@@ -87,7 +89,8 @@ public class StudyCommandService {
                 .build();
     }
 
-    public void deleteStudy(Long studyId) {
+    public void deleteStudy(Long studyId, Long memberId) {
+        validateExistStudyLeader(memberId);
         validateExistStudy(studyId);
         studyRepository.deleteById(studyId);
     }
@@ -122,5 +125,13 @@ public class StudyCommandService {
 
     private void validateExistMember(Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    private void validateExistStudyLeader(Long memberId) {
+        StudyRole studyRole = studyRoleRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
+        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)){
+            throw new MemberException(UNAUTHORIZED);
+        }
     }
 }

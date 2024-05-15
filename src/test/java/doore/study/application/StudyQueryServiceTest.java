@@ -23,7 +23,6 @@ import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
-import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -49,8 +48,6 @@ public class StudyQueryServiceTest extends IntegrationTest {
     CropRepository cropRepository;
     @Autowired
     CurriculumItemRepository curriculumItemRepository;
-    @Autowired
-    EntityManager em;
 
     @Nested
     @DisplayName("스터디 Query 테스트")
@@ -70,7 +67,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
             Long memberId = 1L;
             studyRepository.save(study);
             PersonalStudyDetailResponse personalStudyDetailResponse =
-                    studyQueryService.getPersonalStudyDetail(study.getId(), memberId);
+                    studyQueryService.getMyStudiesDetail(study.getId(), memberId);
             assertAll(
                     () -> assertEquals(study.getId(), personalStudyDetailResponse.id()),
                     () -> assertEquals(memberId, personalStudyDetailResponse.participantId())

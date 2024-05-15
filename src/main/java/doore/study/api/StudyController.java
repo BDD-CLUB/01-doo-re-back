@@ -1,9 +1,6 @@
 package doore.study.api;
 
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-
 import doore.member.domain.Member;
-import doore.member.exception.MemberException;
 import doore.resolver.LoginMember;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
@@ -12,7 +9,6 @@ import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
 import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
 import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +40,8 @@ public class StudyController {
     }
 
     @DeleteMapping("/studies/{studyId}")
-    public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId) {
-        studyCommandService.deleteStudy(studyId);
+    public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId, @LoginMember Member member) {
+        studyCommandService.deleteStudy(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -55,15 +51,12 @@ public class StudyController {
         return ResponseEntity.ok(studyDetailResponse);
     }
 
+    //todo: 5/15/24 팀과 로직이 달라서 이야기 해봐야 할 것 같음
     @GetMapping("/studies/{studyId}")
-    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId,
-                                                                HttpServletRequest request) {
-        String memberId = request.getHeader("Authorization"); //todo: 권한 로직으로 수정
-        if (memberId == null) {
-            throw new MemberException(UNAUTHORIZED);
-        }
+    public ResponseEntity<PersonalStudyDetailResponse> getMyStudies(@PathVariable Long studyId,
+                                                                    @LoginMember Member member) {
         PersonalStudyDetailResponse personalStudyDetailResponse =
-                studyQueryService.getPersonalStudyDetail(studyId, Long.parseLong(memberId));
+                studyQueryService.getMyStudiesDetail(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 

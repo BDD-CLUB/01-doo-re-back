@@ -150,7 +150,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
         void deleteStudy_정상적으로_스터디를_삭제할_수_있다() throws Exception {
             Study study = algorithmStudy();
             studyRepository.save(study);
-            studyCommandService.deleteStudy(study.getId());
+            studyCommandService.deleteStudy(study.getId(), memberId);
             List<Study> studies = studyRepository.findAll();
             assertTrue(studies.get(0).getIsDeleted());
         }
@@ -218,7 +218,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 존재하지 않는 스터디인 경우 실패한다.")
     void notExistStudy_존재하지_않는_스터디인_경우_실패한다_실패() {
         Long notExistingStudyId = 50L;
-        assertThatThrownBy(() -> studyCommandService.deleteStudy(notExistingStudyId))
+        assertThatThrownBy(() -> studyCommandService.deleteStudy(notExistingStudyId, memberId))
                 .isInstanceOf(StudyException.class)
                 .hasMessage(NOT_FOUND_STUDY.errorMessage());
     }
