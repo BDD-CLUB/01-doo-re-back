@@ -51,7 +51,7 @@ public class StudyQueryService {
     }
 
 
-    public PersonalStudyDetailResponse getStudiesDetail(Long studyId, Long memberId) {
+    public PersonalStudyDetailResponse getPersonalStudyDetail(Long studyId, Long memberId) {
         Study study = getStudy(studyId);
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));

@@ -45,17 +45,19 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    //todo: 재확인 필요
     @GetMapping("/studies/{studyId}/all")
     public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId) {
         StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);
     }
 
+    //todo: 재확인 필요
     @GetMapping("/studies/{studyId}")
-    public ResponseEntity<PersonalStudyDetailResponse> getStudies(@PathVariable Long studyId,
+    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId,
                                                                     @LoginMember Member member) {
         PersonalStudyDetailResponse personalStudyDetailResponse =
-                studyQueryService.getStudiesDetail(studyId, member.getId());
+                studyQueryService.getPersonalStudyDetail(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 
@@ -78,6 +80,7 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    //todo: 재확인 필요
     @GetMapping("/studies/members/{memberId}")
     public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증
