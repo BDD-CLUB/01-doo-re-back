@@ -51,19 +51,18 @@ public class StudyController {
         return ResponseEntity.ok(studyDetailResponse);
     }
 
-    //todo: 5/15/24 팀과 로직이 달라서 이야기 해봐야 할 것 같음
     @GetMapping("/studies/{studyId}")
-    public ResponseEntity<PersonalStudyDetailResponse> getMyStudies(@PathVariable Long studyId,
+    public ResponseEntity<PersonalStudyDetailResponse> getStudies(@PathVariable Long studyId,
                                                                     @LoginMember Member member) {
         PersonalStudyDetailResponse personalStudyDetailResponse =
-                studyQueryService.getMyStudiesDetail(studyId, member.getId());
+                studyQueryService.getStudiesDetail(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}")
     public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest,
-                                            @PathVariable Long studyId) {
-        studyCommandService.updateStudy(studyUpdateRequest, studyId);
+                                            @PathVariable Long studyId, @LoginMember Member member) {
+        studyCommandService.updateStudy(studyUpdateRequest, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
