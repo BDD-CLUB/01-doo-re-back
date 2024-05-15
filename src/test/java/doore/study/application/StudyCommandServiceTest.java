@@ -164,7 +164,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             void terminateStudy_정상적으로_스터디를_종료할_수_있다_성공() throws Exception {
                 final Study study = algorithmStudy();
                 studyRepository.save(study);
-                studyCommandService.terminateStudy(study.getId());
+                studyCommandService.terminateStudy(study.getId(), memberId);
 
                 assertEquals(ENDED, study.getStatus());
             }
@@ -208,7 +208,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
             void changeStudyStatus_존재하지_않는_상태로_변경할_수_없다_실패() throws Exception {
                 final Study study = algorithmStudy();
                 studyRepository.save(study);
-                assertThatThrownBy(() -> studyCommandService.changeStudyStatus("NOT_EXISTING_STATUS", study.getId()))
+                assertThatThrownBy(
+                        () -> studyCommandService.changeStudyStatus("NOT_EXISTING_STATUS", study.getId(), memberId))
                         .isInstanceOf(StudyException.class)
                         .hasMessage(NOT_FOUND_STATUS.errorMessage());
             }

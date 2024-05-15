@@ -40,8 +40,8 @@ class TeamQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
-    void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
+    @DisplayName("[성공] 내가 속한 팀 목록을 조회할 수 있다.")
+    void findMyTeams_내가_속한_팀_목록을_조회할_수_있다_성공() {
         // given
         final Member member = memberRepository.save(아마란스());
         final Team myTeam = teamRepository.save(team());
@@ -66,7 +66,7 @@ class TeamQueryServiceTest extends IntegrationTest {
     // TODO: 3/21/24 자기 자신이 아닌 사람의 팀 목록을 조회하면 권한 예외가 발생한다. (2024/5/14 완료)
     @Test
     @DisplayName("[실패] 다른 사람의 팀 목록 조회는 불가능하다.")
-    void findMyStudy_다른_사람의_팀_목록_조회는_불가능하다_실패() {
+    void findMyTeams_다른_사람의_팀_목록_조회는_불가능하다_실패() {
         Long anotherMemberId = 2L;
         // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {

@@ -55,7 +55,7 @@ public class StudyController {
     //todo: 재확인 필요
     @GetMapping("/studies/{studyId}")
     public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId,
-                                                                    @LoginMember Member member) {
+                                                                @LoginMember Member member) {
         PersonalStudyDetailResponse personalStudyDetailResponse =
                 studyQueryService.getPersonalStudyDetail(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
@@ -69,21 +69,23 @@ public class StudyController {
     }
 
     @PatchMapping("/studies/{studyId}/status")
-    public ResponseEntity<Void> changeStudyStatus(@RequestParam String status, @PathVariable Long studyId) {
-        studyCommandService.changeStudyStatus(status, studyId);
+    public ResponseEntity<Void> changeStudyStatus(@RequestParam String status, @PathVariable Long studyId,
+                                                  @LoginMember Member member) {
+        studyCommandService.changeStudyStatus(status, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/studies/{studyId}/termination")
-    public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId) {
-        studyCommandService.terminateStudy(studyId);
+    public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId, @LoginMember Member member) {
+        studyCommandService.terminateStudy(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     //todo: 재확인 필요
     @GetMapping("/studies/members/{memberId}")
-    public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId) {
-        // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증
-        return ResponseEntity.ok(studyQueryService.findMyStudies(memberId));
+    public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId,
+                                                                  @LoginMember Member member) {
+        // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증 (2024/5/15 완료)
+        return ResponseEntity.ok(studyQueryService.findMyStudies(memberId, member.getId()));
     }
 }

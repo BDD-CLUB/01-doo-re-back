@@ -101,12 +101,14 @@ public class StudyCommandService {
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
-    public void terminateStudy(Long studyId) {
+    public void terminateStudy(Long studyId, Long memberId) {
+        validateExistStudyLeader(memberId);
         Study study = validateExistStudy(studyId);
         study.terminate();
     }
 
-    public void changeStudyStatus(String status, Long studyId) {
+    public void changeStudyStatus(String status, Long studyId, Long memberId) {
+        validateExistStudyLeader(memberId);
         Study study = validateExistStudy(studyId);
         try {
             StudyStatus changedStatus = StudyStatus.valueOf(status);
