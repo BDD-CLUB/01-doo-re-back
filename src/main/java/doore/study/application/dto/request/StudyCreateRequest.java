@@ -3,13 +3,10 @@ package doore.study.application.dto.request;
 import static doore.study.domain.StudyStatus.UPCOMING;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -29,18 +26,27 @@ public record StudyCreateRequest(
         LocalDate endDate,
 
         @NotNull(message = "작물을 골라주세요.")
-        Long cropId,
-
-        @NotNull(message = "커리큘럼을 입력해주세요.")
-        List<CurriculumItemRequest> curriculumItems
+        Long cropId
 ) {
     public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
-                              Long cropId, List<CurriculumItemRequest> curriculumItems) {
+                              Long cropId) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.cropId = cropId;
-        this.curriculumItems =  Collections.emptyList();
+    }
+
+    public Study toStudy(Long teamId) {
+        return Study.builder()
+                .name(this.name)
+                .description(this.description)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .status(UPCOMING)
+                .isDeleted(false)
+                .teamId(teamId)
+                .cropId(this.cropId)
+                .build();
     }
 }

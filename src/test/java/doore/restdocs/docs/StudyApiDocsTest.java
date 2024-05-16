@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
-import doore.study.application.dto.request.CurriculumItemRequest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.application.dto.response.personalStudyResponse.PersonalCurriculumItemResponse;
@@ -27,7 +26,6 @@ import doore.study.application.dto.response.totalStudyResponse.StudySimpleRespon
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +45,6 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .startDate(LocalDate.parse("2023-01-01"))
                 .endDate(LocalDate.parse("2024-01-01"))
                 .cropId(1L)
-                .curriculumItems(new ArrayList<CurriculumItemRequest>())
                 .build();
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/teams/{teamId}/studies", 1)
@@ -62,9 +59,8 @@ public class StudyApiDocsTest extends RestDocsTest {
                                 stringFieldWithPath("description", "스터디 설명"),
                                 stringFieldWithPath("startDate", "시작 날짜"),
                                 stringFieldWithPath("endDate", "종료 날짜"),
-                                numberFieldWithPath("cropId", "작물 id"),
-                                arrayFieldWithPath("curriculumItems", "커리큘럼 아이템 리스트")
-                        )
+                                numberFieldWithPath("cropId", "작물 id")
+                                )
                 ));
     }
 
