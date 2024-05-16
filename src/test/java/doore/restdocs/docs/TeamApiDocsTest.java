@@ -20,9 +20,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.restdocs.RestDocsTest;
+import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import java.util.List;
@@ -217,5 +219,40 @@ public class TeamApiDocsTest extends RestDocsTest {
                 .andExpect(status().isOk())
                 .andDo(document("my-teams", pathParameters, responseFieldsSnippet));
 
+    }
+
+    @Test
+    @DisplayName("나의 팀과 스터디 목록을 조회한다")
+    void 나의_팀과_스터디_목록을_조회한다() throws Exception {
+        //given
+        final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
+        final Long memberId = 1L;
+        final List<StudyNameResponse> studyResponses = List.of(
+                 new StudyNameResponse(1L, "알고리즘 스터디"),
+                new StudyNameResponse(2L,"개발 스터디")
+        );
+        final List<MyTeamsAndStudiesResponse> response = List.of(
+                new MyTeamsAndStudiesResponse(1L, "BDD", studyResponses)
+        );
+
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("memberId").description("팀 목록을 조회하고자 하는 회원 ID")
+        );
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                numberFieldWithPath("[].teamId", "팀의 ID"),
+                stringFieldWithPath("[].teamName", "팀의 이름"),
+                numberFieldWithPath("[].teamStudies.[].id", "팀에 포함되는 스터디 id"),
+                stringFieldWithPath("[].teamStudies.[].name", "팀에 포함되는 스터디 이름")
+        );
+
+        //when
+        when(teamQueryService.findMyTeamsAndStudies(memberId)).thenReturn(response);
+
+        //then
+        mockMvc.perform(get("/teams/members/{memberId}/studies", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("my-teams-and-studies", pathParameters, responseFieldsSnippet));
     }
 }
