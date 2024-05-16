@@ -1,10 +1,14 @@
 package doore.team.api;
 
+import doore.study.application.StudyQueryService;
+import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
+import doore.study.domain.Study;
 import doore.team.application.TeamCommandService;
 import doore.team.application.TeamQueryService;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.MyTeamAndStudyResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import jakarta.validation.Valid;
@@ -34,6 +38,7 @@ public class TeamController {
 
     private final TeamCommandService teamCommandService;
     private final TeamQueryService teamQueryService;
+    private final StudyQueryService studyQueryService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> createTeam(
@@ -86,8 +91,10 @@ public class TeamController {
     }
 
     @GetMapping("/members/{memberId}")
-    public ResponseEntity<List<TeamReferenceResponse>> getMyTeams(@PathVariable final Long memberId) {
+    public ResponseEntity<MyTeamAndStudyResponse> getMyTeamsAndStudies(@PathVariable final Long memberId) {
         // TODO: 3/22/24 토큰의 주인이 memberId와 동일인물인지 검증
-        return ResponseEntity.ok(teamQueryService.findMyTeams(memberId));
+        List<TeamReferenceResponse> teamReferenceResponses = teamQueryService.findMyTeams(memberId);
+        List<StudySimpleResponse> studyReferenceResponses = studyQueryService.findMyStudies(memberId);
+        return ResponseEntity.ok(new MyTeamAndStudyResponse(teamReferenceResponses,studyReferenceResponses));
     }
 }

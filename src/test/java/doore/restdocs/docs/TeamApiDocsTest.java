@@ -19,12 +19,17 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
+import doore.study.application.dto.response.totalStudyResponse.CurriculumItemReferenceResponse;
+import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
+import doore.study.domain.StudyStatus;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -187,35 +192,70 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("나의 팀 목록을 조회한다")
-    void 나의_팀_목록을_조회한다() throws Exception {
+    @DisplayName("나의 팀과 스터디 목록을 조회한다")
+    void 나의_팀과_스터디_목록을_조회한다() throws Exception {
         //given
         final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
         final Long memberId = 1L;
-        final List<TeamReferenceResponse> response = List.of(
+        final List<TeamReferenceResponse> teamResponse = List.of(
                 new TeamReferenceResponse(1L, "BDD", "개발 동아리입니다", "image.png"),
                 new TeamReferenceResponse(3L, "KEEPER", "보안 동아리입니다", "image.png")
         );
 
+        final StudySimpleResponse studyResponse = getStudySimpleResponse();
+
         final PathParametersSnippet pathParameters = pathParameters(
-                parameterWithName("memberId").description("팀 목록을 조회하고자 하는 회원 ID")
+                parameterWithName("memberId").description("팀과 스터디 목록을 조회하고자 하는 회원 ID")
         );
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
-                numberFieldWithPath("[].id", "팀의 ID"),
-                stringFieldWithPath("[].name", "팀의 이름"),
-                stringFieldWithPath("[].description", "팀의 설명"),
-                stringFieldWithPath("[].imageUrl", "팀의 프로필 이미지 url")
+                numberFieldWithPath("teamReferenceResponses.[].id", "팀의 ID"),
+                stringFieldWithPath("teamReferenceResponses.[].name", "팀의 이름"),
+                stringFieldWithPath("teamReferenceResponses.[].description", "팀의 설명"),
+                stringFieldWithPath("teamReferenceResponses.[].imageUrl", "팀의 프로필 이미지 url"),
+                numberFieldWithPath("studySimpleResponses.[].id", "스터디의 ID"),
+                stringFieldWithPath("studySimpleResponses.[].name", "스터디의 이름"),
+                stringFieldWithPath("studySimpleResponses.[].description", "스터디의 설명"),
+                stringFieldWithPath("studySimpleResponses.[].startDate", "스터디의 시작일"),
+                stringFieldWithPath("studySimpleResponses.[].endDate", "스터디의 종료일"),
+                stringFieldWithPath("studySimpleResponses.[].status", "스터디의 진행 상태"),
+                booleanFieldWithPath("studySimpleResponses.[].isDeleted", "스터디의 삭제 여부"),
+                numberFieldWithPath("studySimpleResponses.[].teamReference.id", "스터디가 속한 팀의 ID"),
+                stringFieldWithPath("studySimpleResponses.[].teamReference.name", "스터디가 속한 팀의 이름"),
+                stringFieldWithPath("studySimpleResponses.[].teamReference.description", "스터디가 속한 팀의 설명"),
+                stringFieldWithPath("studySimpleResponses.[].teamReference.imageUrl", "스터디가 속한 팀의 이미지 url"),
+                numberFieldWithPath("studySimpleResponses.[].cropReference.id", "스터디의 작물의 ID"),
+                stringFieldWithPath("studySimpleResponses.[].cropReference.name", "스터디의 작물의 이름"),
+                stringFieldWithPath("studySimpleResponses.[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
+                numberFieldWithPath("studySimpleResponses.[].curriculumItems[].id", "스터디의 커리큘럼 ID"),
+                stringFieldWithPath("studySimpleResponses.[].curriculumItems[].name", "스터디의 커리큘럼 이름"),
+                numberFieldWithPath("studySimpleResponses.[].curriculumItems[].itemOrder", "스터디의 커리큘럼 순서번호"),
+                booleanFieldWithPath("studySimpleResponses.[].curriculumItems[].isDeleted", "스터디의 커리큘럼 삭제여부")
         );
 
         //when
-        when(teamQueryService.findMyTeams(memberId)).thenReturn(response);
+        when(teamQueryService.findMyTeams(memberId)).thenReturn(teamResponse);
+        when(studyQueryService.findMyStudies(memberId)).thenReturn(List.of(studyResponse));
 
         //then
         mockMvc.perform(get("/teams/members/{memberId}", memberId)
                         .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("my-teams", pathParameters, responseFieldsSnippet));
+                .andDo(document("my-teams-and-studies", pathParameters, responseFieldsSnippet));
 
     }
+
+    private static StudySimpleResponse getStudySimpleResponse() {
+        final TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
+        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
+        final CurriculumItemReferenceResponse curriculumItemReferenceResponse = new CurriculumItemReferenceResponse(
+                1L, "chapter1. greedy", 1, false);
+        final StudySimpleResponse response = new StudySimpleResponse(1L, "알고리즘", "알고리즘 스터디입니다.",
+                LocalDate.parse("2020-01-01"),
+                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
+                cropReferenceResponse, List.of(curriculumItemReferenceResponse));
+        return response;
+    }
 }
+
