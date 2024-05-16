@@ -5,6 +5,7 @@ import doore.team.application.TeamQueryService;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import jakarta.validation.Valid;
@@ -89,5 +90,11 @@ public class TeamController {
     public ResponseEntity<List<TeamReferenceResponse>> getMyTeams(@PathVariable final Long memberId) {
         // TODO: 3/22/24 토큰의 주인이 memberId와 동일인물인지 검증
         return ResponseEntity.ok(teamQueryService.findMyTeams(memberId));
+    }
+
+    @GetMapping("/members/{memberId}/studies")
+    public ResponseEntity<List<MyTeamsAndStudiesResponse>> getMyTeamsAndStudies(@PathVariable final Long memberId) {
+        // TODO: 5/16/24 토큰의 주인이 memberId와 동일인물인지 검증
+        return ResponseEntity.ok(teamQueryService.findMyTeamsAndStudies(memberId));
     }
 }
