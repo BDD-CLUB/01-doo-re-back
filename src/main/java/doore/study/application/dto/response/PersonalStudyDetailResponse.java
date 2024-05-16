@@ -1,4 +1,4 @@
-package doore.study.application.dto.response.personalStudyResponse;
+package doore.study.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.crop.domain.Crop;

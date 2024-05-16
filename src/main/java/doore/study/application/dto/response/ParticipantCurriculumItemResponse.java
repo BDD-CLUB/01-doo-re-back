@@ -1,4 +1,4 @@
-package doore.study.application.dto.response.totalStudyResponse;
+package doore.study.application.dto.response;
 
 import doore.study.domain.ParticipantCurriculumItem;
 import java.util.List;

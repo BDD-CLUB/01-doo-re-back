@@ -1,4 +1,4 @@
-package doore.study.application.dto.response.personalStudyResponse;
+package doore.study.application.dto.response;
 
 public record PersonalCurriculumItemResponse (
         Long id,
