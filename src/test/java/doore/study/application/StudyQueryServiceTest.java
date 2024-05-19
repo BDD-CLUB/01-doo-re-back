@@ -2,8 +2,10 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.CurriculumItemFixture.curriculumItem;
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,8 +17,10 @@ import doore.crop.domain.repository.CropRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
+import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
 import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
@@ -52,12 +56,22 @@ public class StudyQueryServiceTest extends IntegrationTest {
     CropRepository cropRepository;
     @Autowired
     CurriculumItemRepository curriculumItemRepository;
+    @Autowired
+    StudyRoleRepository studyRoleRepository;
 
     private Long memberId;
+    private StudyRole studyRole;
+    private Study study;
 
     @BeforeEach
     void setUp() {
         memberId = memberRepository.save(미나()).getId();
+        study = studyRepository.save(algorithmStudy());
+        studyRole = studyRoleRepository.save(StudyRole.builder()
+                .studyRoleType(ROLE_스터디장)
+                .memberId(memberId)
+                .studyId(study.getId())
+                .build());
     }
 
     @Nested
@@ -68,7 +82,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
             Study study = createStudy();
             studyRepository.save(study);
-            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
+            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId(), memberId).id());
         }
 
         @Test
@@ -89,7 +103,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @DisplayName("[실패] 존재하지 않는 스터디를 조회할 수 없다.")
         void findStudyById_존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
             Long notExistingStudyId = 0L;
-            assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
+            assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId, memberId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
         }
@@ -99,8 +113,6 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
-        final Study study = createStudy();
-        final Study studyNotMine = createStudy();
         final Study studyWithCurriculum = studyRepository.findById(
                 curriculumItemRepository.save(curriculumItem()).getStudy().getId()).get();
         final Team teamOfStudy = teamRepository.findById(study.getTeamId()).get();
@@ -108,7 +120,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         final Crop cropOfStudy = cropRepository.findById(study.getCropId()).get();
         final Crop cropOfStudyWithCurriculums = cropRepository.findById(studyWithCurriculum.getCropId()).get();
         final Member member = memberRepository.save(아마란스());
-                participantRepository.save(Participant.builder()
+        participantRepository.save(Participant.builder()
                 .studyId(study.getId())
                 .member(member)
                 .build());
@@ -122,7 +134,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
         final Long tokenMemberId = member.getId();
 
         // when
-        final List<StudySimpleResponse> actualResponses = studyQueryService.findMyStudies(member.getId(), tokenMemberId);
+        final List<StudySimpleResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
+                tokenMemberId);
 
         // then
         Assertions.assertThat(actualResponses)

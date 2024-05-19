@@ -45,17 +45,15 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    //todo: 재확인 필요
     @GetMapping("/studies/{studyId}/all")
-    public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId) {
-        StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
+    public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId, @LoginMember Member member) {
+        StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId, member.getId());
         return ResponseEntity.ok(studyDetailResponse);
     }
 
-    //todo: 재확인 필요
     @GetMapping("/studies/{studyId}")
-    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId,
-                                                                @LoginMember Member member) {
+    public ResponseEntity<PersonalStudyDetailResponse> getMyStudyInfo(@PathVariable Long studyId,
+                                                                      @LoginMember Member member) {
         PersonalStudyDetailResponse personalStudyDetailResponse =
                 studyQueryService.getPersonalStudyDetail(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
@@ -81,7 +79,6 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    //todo: 재확인 필요
     @GetMapping("/studies/members/{memberId}")
     public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId,
                                                                   @LoginMember Member member) {
