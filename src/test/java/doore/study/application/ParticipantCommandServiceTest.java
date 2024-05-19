@@ -7,17 +7,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
+import doore.member.domain.StudyRole;
+import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,21 +35,27 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
     StudyRepository studyRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    StudyRoleRepository studyRoleRepository;
+
+    private Member member;
+    private Study study;
+    private StudyRole studyRole;
+
+    @BeforeEach
+    void setUp() {
+        member = memberRepository.save(아마란스());
+        study = studyRepository.save(algorithmStudy());
+        studyRole = studyRoleRepository.save(StudyRole.builder()
+                .studyRoleType(StudyRoleType.ROLE_스터디장)
+                .studyId(study.getId())
+                .memberId(member.getId())
+                .build());
+    }
 
     @Nested
     @DisplayName("참여자 Command 테스트")
     class participantTest {
-
-        Member member;
-        Study study;
-
-        @BeforeEach
-        void setUp() {
-            member = 아마란스();
-            study = algorithmStudy();
-            memberRepository.save(member);
-            studyRepository.save(study);
-        }
 
         @Test
         @DisplayName("[성공] 정상적으로 참여자를 추가할 수 있다.")
@@ -59,7 +65,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             Long memberId = member.getId();
 
             //when
-            participantCommandService.saveParticipant(studyId, memberId);
+            participantCommandService.saveParticipant(studyId, memberId, member.getId());
 
             //then
             List<Participant> participants = participantQueryService.findAllParticipants(studyId);
@@ -75,10 +81,10 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //Given
             Long studyId = study.getId();
             Long memberId = member.getId();
-            participantCommandService.saveParticipant(studyId, memberId);
+            participantCommandService.saveParticipant(studyId, memberId, member.getId());
 
             //when
-            participantCommandService.deleteParticipant(studyId, memberId);
+            participantCommandService.deleteParticipant(studyId, memberId, member.getId());
             List<Participant> participants = participantQueryService.findAllParticipants(studyId);
 
             //then
@@ -91,10 +97,10 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //Given
             Long studyId = study.getId();
             Long memberId = member.getId();
-            participantCommandService.saveParticipant(studyId, memberId);
+            participantCommandService.saveParticipant(studyId, memberId, member.getId());
 
             //when
-            participantCommandService.withdrawParticipant(studyId, memberId);
+            participantCommandService.withdrawParticipant(studyId, memberId, member.getId());
             List<Participant> participants = participantQueryService.findAllParticipants(studyId);
 
             //then
@@ -110,7 +116,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         studyRepository.save(study);
         Long notExistingMemberId = 50L;
 
-        assertThatThrownBy(() -> participantCommandService.saveParticipant(study.getId(), notExistingMemberId))
+        assertThatThrownBy(
+                () -> participantCommandService.saveParticipant(study.getId(), notExistingMemberId, member.getId()))
                 .isInstanceOf(MemberException.class)
                 .hasMessage(NOT_FOUND_MEMBER.errorMessage());
     }
