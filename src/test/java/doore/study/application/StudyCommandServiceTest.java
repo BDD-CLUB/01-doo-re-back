@@ -55,10 +55,18 @@ public class StudyCommandServiceTest extends IntegrationTest {
     StudyRoleRepository studyRoleRepository;
 
     private Long memberId;
+    private StudyRole studyRole;
+    private Study study;
 
     @BeforeEach
     void setUp() {
         memberId = memberRepository.save(미나()).getId();
+        study = studyRepository.save(algorithmStudy());
+        studyRole = studyRoleRepository.save(StudyRole.builder()
+                .studyRoleType(ROLE_스터디장)
+                .studyId(study.getId())
+                .memberId(memberId)
+                .build());
     }
 
     @Nested
@@ -89,8 +97,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
             void createStudy_정상적으로_스터디를_생성할_수_있다_성공() throws Exception {
                 studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 List<Study> studies = studyRepository.findAll();
-                assertThat(studies).hasSize(1);
-                Study study = studies.get(0);
+                assertThat(studies).hasSize(2);
+                Study study = studies.get(1);
                 assertEquals(study.getName(), studyCreateRequest.name());
                 assertEquals(study.getDescription(), studyCreateRequest.description());
                 assertEquals(study.getStartDate(), studyCreateRequest.startDate());
@@ -102,7 +110,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             void createStudy_스터디의_status와_isDeleted가_초기값으로_초기화_된다_성공() throws Exception {
                 studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 List<Study> studies = studyRepository.findAll();
-                Study study = studies.get(0);
+                Study study = studies.get(1);
                 assertAll(
                         () -> assertEquals(UPCOMING, study.getStatus()),
                         () -> assertEquals(false, study.getIsDeleted())
@@ -148,8 +156,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[성공] 정상적으로 스터디를 삭제할 수 있다.")
         void deleteStudy_정상적으로_스터디를_삭제할_수_있다() throws Exception {
-            Study study = algorithmStudy();
-            studyRepository.save(study);
             studyCommandService.deleteStudy(study.getId(), memberId);
             List<Study> studies = studyRepository.findAll();
             assertTrue(studies.get(0).getIsDeleted());
