@@ -49,7 +49,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼 관리가 정상적으로 이루어진다.")
     public void manageCurriculum_커리큘럼_관리가_정상적으로_이루어진다() throws Exception {
-        doNothing().when(curriculumItemCommandService).manageCurriculum(any(), any());
+        doNothing().when(curriculumItemCommandService).manageCurriculum(any(), any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/curriculums", 1)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,7 +73,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 커리큘럼 상태가 정상적으로 변경된다.")
     public void checkCurriculum_커리큘럼_상태가_정상적으로_변경된다() throws Exception {
-        doNothing().when(curriculumItemCommandService).checkCurriculum(any(), any());
+        doNothing().when(curriculumItemCommandService).checkCurriculum(any(), any(), any());
 
         mockMvc.perform(
                         RestDocumentationRequestBuilders.patch("/curriculums/{curriculumId}/{participantId}/check", 1, 1))
