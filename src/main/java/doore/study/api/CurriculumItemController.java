@@ -1,5 +1,7 @@
 package doore.study.api;
 
+import doore.member.domain.Member;
+import doore.resolver.LoginMember;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import jakarta.validation.Valid;
@@ -22,14 +24,16 @@ public class CurriculumItemController {
 
     @PostMapping("/studies/{studyId}/curriculums")
     public ResponseEntity<Void> manageCurriculum(@PathVariable Long studyId,
-                                                 @Valid @RequestBody CurriculumItemManageRequest request) {
-        curriculumItemCommandService.manageCurriculum(request, studyId);
+                                                 @Valid @RequestBody CurriculumItemManageRequest request,
+                                                 @LoginMember Member member) {
+        curriculumItemCommandService.manageCurriculum(request, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/curriculums/{curriculumId}/{participantId}/check")
-    public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId, @PathVariable Long participantId) {
-        curriculumItemCommandService.checkCurriculum(curriculumId, participantId);
+    public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId, @PathVariable Long participantId,
+                                                @LoginMember Member member) {
+        curriculumItemCommandService.checkCurriculum(curriculumId, participantId, member.getId());
         return ResponseEntity.noContent().build();
     }
 
