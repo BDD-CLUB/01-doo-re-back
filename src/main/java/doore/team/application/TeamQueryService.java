@@ -27,7 +27,7 @@ public class TeamQueryService {
     }
 
     public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(Long memberId) {
-        List<MyTeamsAndStudiesResponse> myTeamsAndStudiesRespons = new ArrayList<>();
+        List<MyTeamsAndStudiesResponse> myTeamsAndStudiesResponses = new ArrayList<>();
         List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
 
         for (Team myTeam : myTeams) {
@@ -37,8 +37,8 @@ public class TeamQueryService {
                             .toList();
             MyTeamsAndStudiesResponse myTeamsAndStudiesResponse =
                     new MyTeamsAndStudiesResponse(myTeam.getId(), myTeam.getName(), studyNameResponses);
-            myTeamsAndStudiesRespons.add(myTeamsAndStudiesResponse);
+            myTeamsAndStudiesResponses.add(myTeamsAndStudiesResponse);
         }
-        return myTeamsAndStudiesRespons;
+        return myTeamsAndStudiesResponses;
     }
 }
