@@ -1,8 +1,23 @@
 package doore.member;
 
 import doore.member.domain.Member;
+import doore.member.domain.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MemberFixture {
+    private static MemberRepository memberRepository;
+
+    @Autowired
+    public MemberFixture(MemberRepository memberRepository) {
+        MemberFixture.memberRepository = memberRepository;
+    }
+
+    public static Member createMember() {
+        return memberRepository.save(미나());
+    }
+
     public static Member 아마란스() {
         return Member.builder()
                 .name("아마란스")
