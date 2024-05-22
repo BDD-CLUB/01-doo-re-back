@@ -22,7 +22,7 @@ public class CurriculumItemController {
 
     private final CurriculumItemCommandService curriculumItemCommandService;
 
-    @PostMapping("/studies/{studyId}/curriculums")
+    @PostMapping("/studies/{studyId}/curriculums") // 스터디장
     public ResponseEntity<Void> manageCurriculum(@PathVariable Long studyId,
                                                  @Valid @RequestBody CurriculumItemManageRequest request,
                                                  @LoginMember Member member) {
@@ -30,7 +30,7 @@ public class CurriculumItemController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/curriculums/{curriculumId}/{participantId}/check")
+    @PatchMapping("/curriculums/{curriculumId}/{participantId}/check") // 스터디장 & 스터디원
     public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId, @PathVariable Long participantId,
                                                 @LoginMember Member member) {
         curriculumItemCommandService.checkCurriculum(curriculumId, participantId, member.getId());

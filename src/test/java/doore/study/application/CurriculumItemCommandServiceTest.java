@@ -1,6 +1,9 @@
 package doore.study.application;
 
 import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
@@ -16,6 +19,7 @@ import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
+import doore.member.exception.MemberException;
 import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
@@ -196,4 +200,18 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         assertThat(curriculumItems.get(2).getName()).isEqualTo("Algorithm Study");
     }
 
+    @Test
+    @DisplayName("[실패] 스터디장이 아니라면 커리큘럼을 수정할 수 없다.")
+    void manageCurriculum_스터디장이_아니라면_커리큘럼을_수정할_수_없다() throws Exception {
+        Member member = memberRepository.save(아마란스());
+        studyRoleRepository.save(StudyRole.builder()
+                .memberId(member.getId())
+                .studyId(study.getId())
+                .studyRoleType(ROLE_스터디원)
+                .build());
+
+        assertThatThrownBy(() -> curriculumItemCommandService.manageCurriculum(request, study.getId(), member.getId()))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
+    }
 }
