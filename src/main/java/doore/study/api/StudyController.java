@@ -32,26 +32,26 @@ public class StudyController {
     private final StudyCommandService studyCommandService;
     private final StudyQueryService studyQueryService;
 
-    @PostMapping("/teams/{teamId}/studies")
+    @PostMapping("/teams/{teamId}/studies") //회원
     public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest,
                                             @PathVariable Long teamId, @LoginMember Member member) {
         studyCommandService.createStudy(studyRequest, teamId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/studies/{studyId}")
+    @DeleteMapping("/studies/{studyId}") // 스터디장
     public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId, @LoginMember Member member) {
         studyCommandService.deleteStudy(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}/all")
+    @GetMapping("/studies/{studyId}/all") // 스터디장 & 스터디원
     public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId, @LoginMember Member member) {
         StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId, member.getId());
         return ResponseEntity.ok(studyDetailResponse);
     }
 
-    @GetMapping("/studies/{studyId}")
+    @GetMapping("/studies/{studyId}") // 회원
     public ResponseEntity<PersonalStudyDetailResponse> getMyStudyInfo(@PathVariable Long studyId,
                                                                       @LoginMember Member member) {
         PersonalStudyDetailResponse personalStudyDetailResponse =
@@ -59,27 +59,27 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 
-    @PutMapping("/studies/{studyId}")
+    @PutMapping("/studies/{studyId}") // 스터디장
     public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest,
                                             @PathVariable Long studyId, @LoginMember Member member) {
         studyCommandService.updateStudy(studyUpdateRequest, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/studies/{studyId}/status")
+    @PatchMapping("/studies/{studyId}/status") // 스터디장
     public ResponseEntity<Void> changeStudyStatus(@RequestParam String status, @PathVariable Long studyId,
                                                   @LoginMember Member member) {
         studyCommandService.changeStudyStatus(status, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/studies/{studyId}/termination")
+    @PatchMapping("/studies/{studyId}/termination") // 스터디장
     public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId, @LoginMember Member member) {
         studyCommandService.terminateStudy(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/members/{memberId}")
+    @GetMapping("/studies/members/{memberId}") // 회원
     public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId,
                                                                   @LoginMember Member member) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증 (2024/5/15 완료)

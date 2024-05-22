@@ -3,6 +3,7 @@ package doore.study.application;
 import static doore.crop.exception.CropExceptionType.NOT_FOUND_CROP;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
@@ -13,6 +14,7 @@ import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
 import doore.crop.exception.CropException;
 import doore.member.domain.StudyRole;
+import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.personalStudyResponse.PersonalCurriculumItemResponse;
@@ -47,6 +49,7 @@ public class StudyQueryService {
     private final StudyRoleRepository studyRoleRepository;
     private final TeamRepository teamRepository;
     private final CropRepository cropRepository;
+    private final MemberRepository memberRepository;
     private final StudyDao studyDao;
 
     public StudyDetailResponse findStudyById(Long studyId, Long memberId) {
@@ -60,6 +63,7 @@ public class StudyQueryService {
     }
 
     public PersonalStudyDetailResponse getPersonalStudyDetail(Long studyId, Long memberId) {
+        validateExistMember(memberId);
         Study study = getStudy(studyId);
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
@@ -139,5 +143,9 @@ public class StudyQueryService {
         if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))){
             throw new MemberException(UNAUTHORIZED);
         }
+    }
+
+    private void validateExistMember(Long memberId) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }

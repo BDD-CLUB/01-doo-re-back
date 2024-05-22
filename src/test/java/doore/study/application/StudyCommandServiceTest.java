@@ -1,7 +1,10 @@
 package doore.study.application;
 
 import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.domain.StudyStatus.UPCOMING;
@@ -18,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import doore.helper.IntegrationTest;
+import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.StudyRoleRepository;
+import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.Study;
@@ -172,6 +177,21 @@ public class StudyCommandServiceTest extends IntegrationTest {
 
                 assertEquals(ENDED, study.getStatus());
             }
+
+            @Test
+            @DisplayName("[실패] 스터디장이 아니라면 스터디를 종료할 수 없다.")
+            void terminateStudy_스터디장이_아니라면_스터디를_종료할_수_없다_실패() throws Exception {
+                Member member = memberRepository.save(아마란스());
+                studyRoleRepository.save(StudyRole.builder()
+                        .memberId(member.getId())
+                        .studyId(study.getId())
+                        .studyRoleType(ROLE_스터디원)
+                        .build());
+
+                assertThatThrownBy(() -> studyCommandService.terminateStudy(study.getId(), member.getId()))
+                        .isInstanceOf(MemberException.class)
+                        .hasMessage(UNAUTHORIZED.errorMessage());
+            }
         }
 
         @Nested
@@ -202,6 +222,21 @@ public class StudyCommandServiceTest extends IntegrationTest {
                         .isInstanceOf(StudyException.class)
                         .hasMessage(NOT_FOUND_STUDY.errorMessage());
             }
+
+            @Test
+            @DisplayName("[실패] 스터디장이 아니라면 스터디를 수정할 수 없다.")
+            void terminateStudy_스터디장이_아니라면_스터디를_수정할_수_없다_실패() throws Exception {
+                Member member = memberRepository.save(아마란스());
+                studyRoleRepository.save(StudyRole.builder()
+                        .memberId(member.getId())
+                        .studyId(study.getId())
+                        .studyRoleType(ROLE_스터디원)
+                        .build());
+
+                assertThatThrownBy(() -> studyCommandService.updateStudy(request, study.getId(), member.getId()))
+                        .isInstanceOf(MemberException.class)
+                        .hasMessage(UNAUTHORIZED.errorMessage());
+            }
         }
 
         @Nested
@@ -220,6 +255,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
         }
     }
 
+    @Test
     @DisplayName("[실패] 존재하지 않는 스터디인 경우 실패한다.")
     void notExistStudy_존재하지_않는_스터디인_경우_실패한다_실패() {
         Long notExistingStudyId = 50L;

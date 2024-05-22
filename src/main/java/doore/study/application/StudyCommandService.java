@@ -40,7 +40,12 @@ public class StudyCommandService {
         validateExistMember(memberId);
         validateExistTeam(teamId);
         checkEndDateValid(request.startDate(), request.endDate());
-        studyRepository.save(request.toStudy(teamId));
+        Study study = studyRepository.save(request.toStudy(teamId));
+        studyRoleRepository.save(StudyRole.builder()
+                .studyRoleType(ROLE_스터디장)
+                .studyId(study.getId())
+                .memberId(memberId)
+                .build());
     }
 
     private void checkEndDateValid(LocalDate startDate, LocalDate endDate) {
