@@ -3,6 +3,8 @@ package doore.document.application;
 import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_URL;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
+import static doore.member.MemberFixture.미나;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,6 +27,8 @@ import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.domain.TeamRepository;
@@ -46,35 +50,33 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Autowired
     StudyRepository studyRepository;
-
     @Autowired
     DocumentRepository documentRepository;
-
     @Autowired
     TeamRepository teamRepository;
-
     @Autowired
     FileRepository fileRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
     @MockBean
     S3ImageFileService s3ImageFileService;
-
     @MockBean
     S3DocumentFileService s3DocumentFileService;
 
     DocumentCommandService documentCommandService;
-    DocumentCreateRequest documentRequest;
-    Study study;
+    private DocumentCreateRequest documentRequest;
+    private Study study;
+    private Member member;
 
     @BeforeEach
     void setUp() {
         documentCommandService = new DocumentCommandService(documentRepository, teamRepository, studyRepository,
-                fileRepository, s3ImageFileService, s3DocumentFileService);
-
+                fileRepository, memberRepository, s3ImageFileService, s3DocumentFileService);
         documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
                 DocumentType.FILE, null, mock(Member.class).getId());
-        study = algorithmStudy();
-        studyRepository.save(study);
+        study = studyRepository.save(algorithmStudy());
+        member = memberRepository.save(미나());
     }
 
     @Nested
@@ -106,7 +108,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
             // when
             documentCommandService.createDocument(fileRequest, List.of(file), STUDY,
-                    study.getId());
+                    study.getId(), member.getId());
 
             // then
             List<Document> documents = documentRepository.findAll();
@@ -144,7 +146,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
             // when
             documentCommandService.createDocument(imageRequest, List.of(image), STUDY,
-                    study.getId());
+                    study.getId(), member.getId());
 
             //then
             List<Document> document = documentRepository.findAll();
@@ -162,7 +164,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
                     DocumentAccessType.TEAM, DocumentType.URL, urlPath, mock(Member.class).getId());
 
-            documentCommandService.createDocument(urlRequest, null, STUDY, study.getId());
+            documentCommandService.createDocument(urlRequest, null, STUDY, study.getId(), member.getId());
 
             //then
             List<Document> document = documentRepository.findAll();
@@ -207,7 +209,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
             // when
             documentCommandService.createDocument(imageRequest, List.of(image, image2), STUDY,
-                    study.getId());
+                    study.getId(), member.getId());
 
             // then
             List<Document> document = documentRepository.findAll();
@@ -226,7 +228,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
             //when&then
             assertThatThrownBy(() ->
-                    documentCommandService.createDocument(urlRequest, null, STUDY, study.getId()))
+                    documentCommandService.createDocument(urlRequest, null, STUDY, study.getId(), member.getId()))
                     .isInstanceOf(DocumentException.class)
                     .hasMessage(LINK_DOCUMENT_NEEDS_URL.errorMessage());
         }
@@ -240,7 +242,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
             //when&then
             assertThatThrownBy(() ->
-                    documentCommandService.createDocument(ImageRequest, null, STUDY, study.getId()))
+                    documentCommandService.createDocument(ImageRequest, null, STUDY, study.getId(), member.getId()))
                     .isInstanceOf(DocumentException.class)
                     .hasMessage(NO_FILE_ATTACHED.errorMessage());
         }
@@ -256,7 +258,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         //when
         DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
                 DocumentAccessType.ALL);
-        documentCommandService.updateDocument(updatedRequest, document.getId());
+        documentCommandService.updateDocument(updatedRequest, document.getId(), member.getId());
 
         //then
         assertAll(
@@ -274,10 +276,23 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         Document document = new DocumentFixture().buildDocument();
         assertThat(documentRepository.findAll()).hasSize(1);
         //when
-        documentCommandService.deleteDocument(document.getId());
+        documentCommandService.deleteDocument(document.getId(), member.getId());
 
         //then
         List<Document> documents = documentRepository.findAll();
         assertTrue(documents.get(0).getIsDeleted());
+    }
+
+    @Test
+    @DisplayName("[실패] 회원이 아니라면 학습자료를 등록할 수 없다.")
+    void createDocument_회원이_아니라면_학습자료를_등록할_수_없다() {
+        Long invalidMemberId = 10L;
+        DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
+                DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
+
+        assertThatThrownBy(() ->
+                documentCommandService.createDocument(fileRequest, null, STUDY, study.getId(), invalidMemberId))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
     }
 }

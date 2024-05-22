@@ -2,6 +2,7 @@ package doore.document.application;
 
 import static doore.document.exception.DocumentExceptionType.NOT_FOUND_DOCUMENT;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
@@ -30,7 +31,8 @@ public class DocumentQueryService {
     private final MemberRepository memberRepository;
 
     public Page<DocumentCondensedResponse> getAllDocument(
-            DocumentGroupType groupType, Long groupId, Pageable pageable) {
+            DocumentGroupType groupType, Long groupId, Pageable pageable, Long memberId) {
+        validateExistMember(memberId);
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
                 .map(this::toDocumentCondensedResponse);
     }
@@ -42,7 +44,8 @@ public class DocumentQueryService {
                 document.getCreatedAt().toLocalDate(), uploaderId);
     }
 
-    public DocumentDetailResponse getDocument(Long documentId) {
+    public DocumentDetailResponse getDocument(Long documentId, Long memberId) {
+        validateExistMember(memberId);
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
         return toDocumentDetailResponse(document);
@@ -69,5 +72,9 @@ public class DocumentQueryService {
                 .date(document.getCreatedAt().toLocalDate())
                 .uploader(uploaderName)
                 .build();
+    }
+
+    private void validateExistMember(Long memberId) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }

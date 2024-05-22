@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import doore.document.DocumentFixture;
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
+import doore.document.domain.Document;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.DocumentType;
-import doore.document.domain.Document;
 import doore.document.domain.repository.DocumentRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
@@ -35,21 +35,19 @@ public class DocumentQueryServiceTest extends IntegrationTest {
 
     @Autowired
     StudyRepository studyRepository;
-
     @Autowired
     DocumentRepository documentRepository;
-
     @Autowired
     MemberRepository memberRepository;
 
-    Study study;
-    Document document;
+    private Study study;
+    private Document document;
+    private Member member;
 
     @BeforeEach
     void setUp() {
         study = createStudy();
-        Member member = 아마란스();
-        memberRepository.save(member);
+        member = memberRepository.save(아마란스());
         document = new DocumentFixture()
                 .groupType(DocumentGroupType.STUDY)
                 .groupId(study.getId())
@@ -63,7 +61,8 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     public void getAllDocumentList_정상적으로_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
         Page<DocumentCondensedResponse> responses =
-                documentQueryService.getAllDocument(DocumentGroupType.STUDY, study.getId(), PageRequest.of(0, 4));
+                documentQueryService.getAllDocument(DocumentGroupType.STUDY, study.getId(), PageRequest.of(0, 4),
+                        member.getId());
 
         //then
         assertAll(
@@ -79,7 +78,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 학습자료 상세를 조회할 수 있다.")
     public void getDocument_정상적으로_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        DocumentDetailResponse response = documentQueryService.getDocument(document.getId());
+        DocumentDetailResponse response = documentQueryService.getDocument(document.getId(), member.getId());
         //then
         assertAll(
                 () -> assertEquals(response.title(), document.getName()),

@@ -1,7 +1,5 @@
 package doore.document.api;
 
-import static doore.document.exception.DocumentExceptionType.NOT_FOUND_GROUP_TYPE;
-
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
 import doore.document.application.dto.request.DocumentCreateRequest;
@@ -9,11 +7,11 @@ import doore.document.application.dto.request.DocumentUpdateRequest;
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.domain.DocumentGroupType;
-import doore.document.exception.DocumentException;
+import doore.member.domain.Member;
+import doore.resolver.LoginMember;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
-import javax.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,44 +39,45 @@ public class DocumentController {
     private final DocumentCommandService documentCommandService;
     private final DocumentQueryService documentQueryService;
 
-    @PostMapping("/{groupType}/{groupId}/documents")
+    @PostMapping("/{groupType}/{groupId}/documents") // 회원
     public ResponseEntity<Void> createDocument(@Valid @RequestPart DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
                                                @PathVariable String groupType,
-                                               @PathVariable Long groupId) {
+                                               @PathVariable Long groupId, @LoginMember Member member) {
         DocumentGroupType group = DocumentGroupType.value(groupType);
-        documentCommandService.createDocument(request, files, group, groupId);
+        documentCommandService.createDocument(request, files, group, groupId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{groupType}/{groupId}/documents")
+    @GetMapping("/{groupType}/{groupId}/documents") // 회원
     public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
             @PathVariable String groupType,
             @PathVariable Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
-            @RequestParam(defaultValue = "4") @PositiveOrZero int size) {
+            @RequestParam(defaultValue = "4") @PositiveOrZero int size,
+            @LoginMember Member member) {
         DocumentGroupType group = DocumentGroupType.value(groupType);
         Page<DocumentCondensedResponse> condensedDocuments =
-                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
+                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size), member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }
 
-    @GetMapping("/{documentId}")
-    public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable Long documentId) {
-        DocumentDetailResponse response = documentQueryService.getDocument(documentId);
+    @GetMapping("/{documentId}") // 회원
+    public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable Long documentId, @LoginMember Member member) {
+        DocumentDetailResponse response = documentQueryService.getDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping("/{documentId}")
+    @PutMapping("/{documentId}") // 회원
     public ResponseEntity<Void> updateDocument(@Valid @RequestBody DocumentUpdateRequest request,
-                                               @PathVariable Long documentId) {
-        documentCommandService.updateDocument(request, documentId);
+                                               @PathVariable Long documentId, @LoginMember Member member) {
+        documentCommandService.updateDocument(request, documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/{documentId}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable Long documentId) {
-        documentCommandService.deleteDocument(documentId);
+    @DeleteMapping("/{documentId}") // 회원
+    public ResponseEntity<Void> deleteDocument(@PathVariable Long documentId, @LoginMember Member member) {
+        documentCommandService.deleteDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

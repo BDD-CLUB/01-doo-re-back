@@ -107,7 +107,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 List.of(documentCondensedResponse, otherDocumentCondensedResponse));
 
         //when
-        when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
+        when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class), any()))
                 .thenReturn(documentCondensedResponses);
 
         //then
@@ -144,7 +144,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .build();
 
         //when
-        when(documentQueryService.getDocument(any())).thenReturn(documentDetailResponse);
+        when(documentQueryService.getDocument(any(), any())).thenReturn(documentDetailResponse);
 
         //then
         mockMvc.perform(get("/{documentId}", 1).header(HttpHeaders.AUTHORIZATION, accessToken))
