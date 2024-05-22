@@ -63,8 +63,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     S3ImageFileService s3ImageFileService;
     @MockBean
     S3DocumentFileService s3DocumentFileService;
-
+    @MockBean
     DocumentCommandService documentCommandService;
+
     private DocumentCreateRequest documentRequest;
     private Study study;
     private Member member;
@@ -248,7 +249,6 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         }
     }
 
-
     @Test
     @DisplayName("[성공] 정상적으로 학습자료를 업데이트 할 수 있다.")
     void updateDocument_정상적으로_학습자료를_업데이트_할_수_있다_성공() {
@@ -268,7 +268,6 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         );
     }
 
-
     @Test
     @DisplayName("[성공] 학습자료를 정상적으로 삭제할 수 있다.")
     void deleteDocument_학습자료를_정상적으로_삭제할_수_있다() {
@@ -287,6 +286,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 회원이 아니라면 학습자료를 등록할 수 없다.")
     void createDocument_회원이_아니라면_학습자료를_등록할_수_없다() {
         Long invalidMemberId = 10L;
+
         DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
                 DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
 
