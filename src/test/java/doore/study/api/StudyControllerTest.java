@@ -57,7 +57,6 @@ public class StudyControllerTest extends IntegrationTest {
                     LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L, null);
 
             callPostApi(url, request, token).andExpect(status().isCreated());
-
         }
 
         @ParameterizedTest
@@ -78,7 +77,7 @@ public class StudyControllerTest extends IntegrationTest {
         }
 
     }
-    
+
     @Test
     @DisplayName("정상적으로 스터디를 삭제한다.")
     void 정상적으로_스터디를_삭제한다_성공() throws Exception {
