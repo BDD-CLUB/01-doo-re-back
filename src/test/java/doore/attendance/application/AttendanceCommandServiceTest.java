@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AttendanceCommandServiceTest extends IntegrationTest {
-
     @Autowired
     private AttendanceCommandService attendanceCommandService;
     @Autowired

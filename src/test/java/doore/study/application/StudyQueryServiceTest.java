@@ -40,25 +40,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudyQueryServiceTest extends IntegrationTest {
-
     @Autowired
-    StudyCommandService studyCommandService;
+    private StudyCommandService studyCommandService;
     @Autowired
-    StudyQueryService studyQueryService;
+    private StudyQueryService studyQueryService;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    StudyRepository studyRepository;
+    private StudyRepository studyRepository;
     @Autowired
-    ParticipantRepository participantRepository;
+    private ParticipantRepository participantRepository;
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
     @Autowired
-    CropRepository cropRepository;
+    private CropRepository cropRepository;
     @Autowired
-    CurriculumItemRepository curriculumItemRepository;
+    private CurriculumItemRepository curriculumItemRepository;
     @Autowired
-    StudyRoleRepository studyRoleRepository;
+    private StudyRoleRepository studyRoleRepository;
 
     private Long memberId;
     private StudyRole studyRole;

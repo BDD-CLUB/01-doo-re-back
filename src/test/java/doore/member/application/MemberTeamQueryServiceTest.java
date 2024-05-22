@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class MemberTeamQueryServiceTest extends IntegrationTest {
-
     @Autowired
     private MemberTeamQueryService memberTeamQueryService;
     @Autowired

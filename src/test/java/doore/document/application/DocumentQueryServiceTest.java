@@ -27,18 +27,17 @@ import org.springframework.data.domain.PageRequest;
 
 
 public class DocumentQueryServiceTest extends IntegrationTest {
+    @Autowired
+    private DocumentQueryService documentQueryService;
+    @Autowired
+    private DocumentCommandService documentCommandService;
 
     @Autowired
-    DocumentQueryService documentQueryService;
+    private StudyRepository studyRepository;
     @Autowired
-    DocumentCommandService documentCommandService;
-
+    private DocumentRepository documentRepository;
     @Autowired
-    StudyRepository studyRepository;
-    @Autowired
-    DocumentRepository documentRepository;
-    @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     private Study study;
     private Document document;

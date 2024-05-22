@@ -3,7 +3,6 @@ package doore.attendance.domain;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import doore.attendance.domain.Attendance;
 import doore.attendance.domain.repository.AttendanceRepository;
 import doore.config.JpaAuditingConfig;
 import doore.helper.RepositorySliceTest;
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Import;
 @Import(JpaAuditingConfig.class)
 public class AttendanceRepositoryTest extends RepositorySliceTest {
     @Autowired
-    AttendanceRepository attendanceRepository;
+    private AttendanceRepository attendanceRepository;
 
     @Test
     @DisplayName("[성공] 해당 날짜에 회원의 출석이 존재하는지 확인한다.")

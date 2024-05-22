@@ -28,15 +28,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ParticipantQueryTest extends IntegrationTest {
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    StudyRepository studyRepository;
+    private StudyRepository studyRepository;
     @Autowired
-    ParticipantCommandService participantCommandService;
+    private ParticipantCommandService participantCommandService;
     @Autowired
-    ParticipantQueryService participantQueryService;
+    private ParticipantQueryService participantQueryService;
     @Autowired
-    StudyRoleRepository studyRoleRepository;
+    private StudyRoleRepository studyRoleRepository;
 
     private Member member;
     private Study study;

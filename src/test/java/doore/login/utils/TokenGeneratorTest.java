@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 class TokenGeneratorTest extends IntegrationTest {
-
     @Autowired
     private JwtTokenGenerator tokenGenerator;
 

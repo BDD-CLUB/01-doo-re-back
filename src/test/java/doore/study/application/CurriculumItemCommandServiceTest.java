@@ -37,21 +37,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CurriculumItemCommandServiceTest extends IntegrationTest {
-
     @Autowired
     private CurriculumItemCommandService curriculumItemCommandService;
     @Autowired
-    protected CurriculumItemRepository curriculumItemRepository;
+    private CurriculumItemRepository curriculumItemRepository;
     @Autowired
-    protected StudyRepository studyRepository;
+    private StudyRepository studyRepository;
     @Autowired
-    protected MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    protected ParticipantRepository participantRepository;
+    private ParticipantRepository participantRepository;
     @Autowired
-    protected ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     @Autowired
-    protected StudyRoleRepository studyRoleRepository;
+    private StudyRoleRepository studyRoleRepository;
 
     private Study study;
     private CurriculumItem curriculumItem1;

@@ -13,9 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class DocumentTest {
-
     @Autowired
-    DocumentRepository documentRepository;
+    private DocumentRepository documentRepository;
 
     @Test
     @DisplayName("[성공] 학습자료가 정상적으로 수정된다.")

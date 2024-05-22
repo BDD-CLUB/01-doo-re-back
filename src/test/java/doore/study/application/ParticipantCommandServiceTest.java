@@ -26,17 +26,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ParticipantCommandServiceTest extends IntegrationTest {
-
     @Autowired
-    ParticipantCommandService participantCommandService;
+    private ParticipantCommandService participantCommandService;
     @Autowired
-    ParticipantQueryService participantQueryService;
+    private ParticipantQueryService participantQueryService;
     @Autowired
-    StudyRepository studyRepository;
+    private StudyRepository studyRepository;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    StudyRoleRepository studyRoleRepository;
+    private StudyRoleRepository studyRoleRepository;
 
     private Member member;
     private Study study;

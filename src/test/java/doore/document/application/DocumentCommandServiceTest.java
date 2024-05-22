@@ -47,24 +47,23 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 public class DocumentCommandServiceTest extends IntegrationTest {
+    @Autowired
+    private StudyRepository studyRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private FileRepository fileRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
-    @Autowired
-    StudyRepository studyRepository;
-    @Autowired
-    DocumentRepository documentRepository;
-    @Autowired
-    TeamRepository teamRepository;
-    @Autowired
-    FileRepository fileRepository;
-    @Autowired
-    MemberRepository memberRepository;
-
     @MockBean
-    S3ImageFileService s3ImageFileService;
+    private S3ImageFileService s3ImageFileService;
     @MockBean
-    S3DocumentFileService s3DocumentFileService;
+    private S3DocumentFileService s3DocumentFileService;
     @MockBean
-    DocumentCommandService documentCommandService;
+    private DocumentCommandService documentCommandService;
 
     private DocumentCreateRequest documentRequest;
     private Study study;

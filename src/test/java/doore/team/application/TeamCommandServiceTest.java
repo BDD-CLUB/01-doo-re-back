@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TeamCommandServiceTest extends IntegrationTest {
-
     @Autowired
     private TeamCommandService teamCommandService;
     @Autowired

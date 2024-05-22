@@ -24,13 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class TeamQueryServiceTest extends IntegrationTest {
     @Autowired
-    TeamQueryService teamQueryService;
+    private TeamQueryService teamQueryService;
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
     @Autowired
-    MemberTeamRepository memberTeamRepository;
+    private MemberTeamRepository memberTeamRepository;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     private Long memberId;
 
