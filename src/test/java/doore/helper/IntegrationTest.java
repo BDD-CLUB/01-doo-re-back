@@ -1,6 +1,7 @@
 package doore.helper;
 
 import doore.login.utils.GoogleClient;
+import doore.login.utils.JwtTokenGenerator;
 import doore.util.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public abstract class IntegrationTest extends ApiTestHelper {
 
     @Autowired
     protected RedisUtil redisUtil;
+
+    @Autowired
+    protected JwtTokenGenerator jwtTokenGenerator;
 
     @BeforeEach
     void setUp(final WebApplicationContext context) {

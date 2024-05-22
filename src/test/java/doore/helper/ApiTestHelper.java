@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -27,8 +28,9 @@ public abstract class ApiTestHelper {
     @Autowired
     protected MockMvc mockMvc;
 
-    protected ResultActions callPostApi(final String url, final Object content) throws Exception {
+    protected ResultActions callPostApi(final String url, final Object content, final String token) throws Exception {
         return mockMvc.perform(post(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(content)));
     }
@@ -37,22 +39,25 @@ public abstract class ApiTestHelper {
         return mockMvc.perform(post(url));
     }
 
-    protected ResultActions callDeleteApi(final String url) throws Exception {
-        return mockMvc.perform(delete(url));
+    protected ResultActions callDeleteApi(final String url, final String token) throws Exception {
+        return mockMvc.perform(delete(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
     }
 
     protected ResultActions callGetApi(final String url) throws Exception {
         return mockMvc.perform(get(url));
     }
 
-    protected ResultActions callPatchApi(final String url, final Object content) throws Exception {
+    protected ResultActions callPatchApi(final String url, final Object content, final String token) throws Exception {
         return mockMvc.perform(patch(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(content)));
     }
 
-    protected ResultActions callPutApi(final String url, final Object content) throws Exception {
+    protected ResultActions callPutApi(final String url, final Object content, final String token) throws Exception {
         return mockMvc.perform(put(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(content)));
     }

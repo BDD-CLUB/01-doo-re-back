@@ -1,18 +1,18 @@
 package doore.study.api;
 
-import static doore.member.MemberFixture.아마란스;
+import static doore.member.MemberFixture.createMember;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.study.StudyFixture.createStudy;
-import static doore.team.TeamFixture.team;
-import static org.mockito.Mockito.mock;
+import static doore.team.TeamFixture.createTeam;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
-import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.StudyRole;
+import doore.member.domain.repository.StudyRoleRepository;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.domain.Study;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,17 +24,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudyControllerTest extends IntegrationTest {
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    MemberRepository memberRepository;
-    Member member;
-    Study study = mock(Study.class);
+    private StudyRoleRepository studyRoleRepository;
+
+    private Member member;
+    private Study study;
+    private Team team;
+    private String token;
+    private StudyRole studyRole;
 
     @BeforeEach
     void setUp() {
-        member = 아마란스();
+        member = createMember();
         study = createStudy();
-        memberRepository.save(member);
+        team = createTeam();
+        studyRole = studyRoleRepository.save(StudyRole.builder()
+                .studyId(study.getId())
+                .studyRoleType(ROLE_스터디장)
+                .memberId(member.getId())
+                .build());
+        token = jwtTokenGenerator.generateToken(String.valueOf(member.getId()));
     }
 
     @Nested
@@ -44,12 +52,12 @@ public class StudyControllerTest extends IntegrationTest {
         @Test
         @DisplayName("정상적으로 스터디를 생성한다.")
         void 정상적으로_스터디를_생성한다_성공() throws Exception {
-            final Team team = team();
-            teamRepository.save(team);
             String url = "/teams/" + team.getId() + "/studies";
             final StudyCreateRequest request = new StudyCreateRequest("알고리즘", "알고리즘 스터디 입니다.",
                     LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L, null);
-            callPostApi(url, request).andExpect(status().isCreated());
+
+            callPostApi(url, request, token).andExpect(status().isCreated());
+
         }
 
         @ParameterizedTest
@@ -66,17 +74,16 @@ public class StudyControllerTest extends IntegrationTest {
                     (startDate != null && !startDate.isEmpty()) ? LocalDate.parse(startDate) : null,
                     LocalDate.parse(endDate), cropId, null);
 
-            callPostApi("/teams/1/studies", request).andExpect(status().isBadRequest());
+            callPostApi("/teams/1/studies", request, token).andExpect(status().isBadRequest());
         }
 
     }
-
-
+    
     @Test
     @DisplayName("정상적으로 스터디를 삭제한다.")
     void 정상적으로_스터디를_삭제한다_성공() throws Exception {
         String url = "/studies/" + study.getId();
-        callDeleteApi(url).andExpect(status().isNoContent());
+        callDeleteApi(url, token).andExpect(status().isNoContent());
     }
 
     @Test
@@ -84,21 +91,21 @@ public class StudyControllerTest extends IntegrationTest {
     void 정상적으로_스터디를_수정한다_성공() throws Exception {
         study.update("스프링 스터디", study.getDescription(), study.getStartDate(), study.getEndDate(), study.getStatus());
         String url = "/studies/" + study.getId();
-        callPutApi(url, study).andExpect(status().isOk());
+        callPutApi(url, study, token).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("정상적으로 스터디의 상태를 변경한다.")
     void 정상적으로_스터디의_상태를_변경한다_성공() throws Exception {
         String url = "/studies/" + study.getId() + "/status?status=IN_PROGRESS";
-        callPatchApi(url, study).andExpect(status().isNoContent());
+        callPatchApi(url, study, token).andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("정상적으로 스터디를 종료한다.")
     void 정상적으로_스터디를_종료한다_성공() throws Exception {
         String url = "/studies/" + study.getId() + "/termination";
-        callPatchApi(url, study).andExpect(status().isNoContent());
+        callPatchApi(url, study, token).andExpect(status().isNoContent());
     }
 
     // TODO: 3/22/24 자신이 아닌 다른 사람의 스터디 목록을 조회하려 하면 권한 예외가 발생한다.
