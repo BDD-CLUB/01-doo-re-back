@@ -86,7 +86,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
                         .startDate(LocalDate.parse("2020-02-02"))
                         .endDate(null)
                         .cropId(1L)
-                        .curriculumItems(null)
                         .build();
                 team = team();
                 teamRepository.save(team);
@@ -136,7 +135,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
                         .startDate(LocalDate.parse("2020-02-02"))
                         .endDate(LocalDate.parse("2000-02-02"))
                         .cropId(1L)
-                        .curriculumItems(null)
                         .build();
                 assertThatThrownBy(() -> studyCommandService.createStudy(wrongRequest, team.getId(), memberId))
                         .isInstanceOf(StudyException.class)
