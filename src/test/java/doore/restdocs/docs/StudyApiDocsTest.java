@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,13 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 public class StudyApiDocsTest extends RestDocsTest {
+    private String accessToken;
+
+    @BeforeEach
+    void setUp() {
+        accessToken = "mocked-access-token";
+        when(jwtTokenGenerator.generateToken(any(String.class))).thenReturn(accessToken);
+    }
 
     @Test
     @DisplayName("스터디를 생성한다.")
@@ -53,7 +61,8 @@ public class StudyApiDocsTest extends RestDocsTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/teams/{teamId}/studies", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request))
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isCreated())
                 .andDo(document("study-create", pathParameters(
                                 parameterWithName("teamId")

@@ -13,16 +13,26 @@ import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.restdocs.RestDocsTest;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 public class ParticipantApiDocsTest extends RestDocsTest {
+    private String accessToken;
+
+    @BeforeEach
+    void setUp() {
+        accessToken = "mocked-access-token";
+        when(jwtTokenGenerator.generateToken(any(String.class))).thenReturn(accessToken);
+    }
 
     @Test
     @DisplayName("참여자를 추가한다.")
     void 참여자를_추가한다_성공() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/members/{memberId}", 1, 1))
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/members/{memberId}", 1, 1)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isCreated())
                 .andDo(document("participant-save", pathParameters(
                                 parameterWithName("studyId").description("스터디 id"),
@@ -34,7 +44,8 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("참여자를 삭제한다.")
     void 참여자를_삭제한다_성공() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members/{memberId}", 1, 1))
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members/{memberId}", 1, 1)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("participant-delete", pathParameters(
                                 parameterWithName("studyId").description("스터디 id"),
@@ -47,7 +58,7 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     @DisplayName("참여자가 탈퇴한다.")
     void 참여자가_탈퇴한다_성공() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members", 1)
-                        .header("Authorization", "1"))
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("participant-withdraw",
                         pathParameters(parameterWithName("studyId").description("스터디 id")),
@@ -72,7 +83,8 @@ public class ParticipantApiDocsTest extends RestDocsTest {
 
         when(participantQueryService.findAllParticipants(any())).thenReturn(List.of(participant));
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("participant-get", pathParameters(
                         parameterWithName("studyId").description("스터디 id"))

@@ -1,5 +1,6 @@
 package doore.restdocs.docs;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -13,14 +14,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import doore.member.application.dto.response.MemberResponse;
 import doore.restdocs.RestDocsTest;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.QueryParametersSnippet;
 
 public class MemberTeamApiDocsTest extends RestDocsTest {
+    private String accessToken;
+
+    @BeforeEach
+    void setUp() {
+        accessToken = "mocked-access-token";
+        when(jwtTokenGenerator.generateToken(any(String.class))).thenReturn(accessToken);
+    }
+
     @Test
     @DisplayName("팀원 목록을 조회한다.")
     public void 팀원_목록을_조회한다() throws Exception {
@@ -49,7 +60,8 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
 
         // then
         mockMvc.perform(get("/teams/1/members")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("member-team-find", queryParameters, responseFields));
     }

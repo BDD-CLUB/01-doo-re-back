@@ -2,6 +2,7 @@ package doore.restdocs.docs;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -17,11 +18,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 public class CurriculumItemApiDocsTest extends RestDocsTest {
     private CurriculumItemManageRequest request;
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
@@ -29,20 +32,26 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
                 .curriculumItems(getCurriculumItems())
                 .deletedCurriculumItems(getDeletedCurriculumItems())
                 .build();
+        accessToken = "mocked-access-token";
+        when(jwtTokenGenerator.generateToken(any(String.class))).thenReturn(accessToken);
     }
 
     private List<CurriculumItemManageDetailRequest> getCurriculumItems() {
         List<CurriculumItemManageDetailRequest> curriculumItems = new ArrayList<>();
-        curriculumItems.add(CurriculumItemManageDetailRequest.builder().id(1L).itemOrder(1).name("Change Spring Study").build());
+        curriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(1L).itemOrder(1).name("Change Spring Study").build());
         curriculumItems.add(CurriculumItemManageDetailRequest.builder().id(2L).itemOrder(4).name("CS Study").build());
-        curriculumItems.add(CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
-        curriculumItems.add(CurriculumItemManageDetailRequest.builder().id(4L).itemOrder(3).name("Algorithm Study").build());
+        curriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
+        curriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(4L).itemOrder(3).name("Algorithm Study").build());
         return curriculumItems;
     }
 
     private List<CurriculumItemManageDetailRequest> getDeletedCurriculumItems() {
         List<CurriculumItemManageDetailRequest> deletedCurriculumItems = new ArrayList<>();
-        deletedCurriculumItems.add(CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
+        deletedCurriculumItems.add(
+                CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
         return deletedCurriculumItems;
     }
 
@@ -53,7 +62,8 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/curriculums", 1)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request))
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isCreated())
                 .andDo(document("curriculum-manage", pathParameters(
                                 parameterWithName("studyId").description("스터디 id")),
@@ -76,7 +86,8 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
         doNothing().when(curriculumItemCommandService).checkCurriculum(any(), any(), any());
 
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.patch("/curriculums/{curriculumId}/{participantId}/check", 1, 1))
+                        RestDocumentationRequestBuilders.patch("/curriculums/{curriculumId}/{participantId}/check", 1, 1)
+                                .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("curriculum-check", pathParameters(
                         parameterWithName("curriculumId").description("커리큘럼 id"),

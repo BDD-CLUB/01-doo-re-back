@@ -26,6 +26,7 @@ import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,14 @@ import org.springframework.restdocs.request.RequestPartsSnippet;
 import org.springframework.web.multipart.MultipartFile;
 
 public class TeamApiDocsTest extends RestDocsTest {
+
+    private String accessToken;
+
+    @BeforeEach
+    void setUp() {
+        accessToken = "mocked-access-token";
+        when(jwtTokenGenerator.generateToken(any(String.class))).thenReturn(accessToken);
+    }
 
     @Test
     @DisplayName("팀을 생성한다.")
@@ -60,14 +69,17 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("name", "팀 이름"),
                 stringFieldWithPath("description", "팀 소개")
         );
+
         final RequestPartsSnippet requestParts = requestParts(
                 partWithName("request").description("팀 정보"),
                 partWithName("file").description("팀 이미지 파일")
         );
+
         mockMvc.perform(multipart("/teams")
                         .part(mockPart)
                         .file(file)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isCreated())
                 .andDo(document("team-create", requestPartFields, requestParts));
     }
@@ -92,7 +104,8 @@ public class TeamApiDocsTest extends RestDocsTest {
         );
         mockMvc.perform(put("/teams/{teamId}", teamId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(request)))
+                        .content(asJsonString(request))
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("team-update", requestFields, pathParameters));
     }
@@ -120,7 +133,8 @@ public class TeamApiDocsTest extends RestDocsTest {
                             request.setMethod("PATCH");
                             return request;
                         })
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("team-image-update", requestParts, pathParameters));
     }
@@ -136,7 +150,9 @@ public class TeamApiDocsTest extends RestDocsTest {
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("팀 ID")
         );
-        mockMvc.perform(delete("/teams/{teamId}", teamId)).andExpect(status().isNoContent())
+        mockMvc.perform(delete("/teams/{teamId}", teamId)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isNoContent())
                 .andDo(document("team-delete", pathParameters));
     }
 
@@ -158,7 +174,8 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("code", "생성된 팀의 초대 코드")
         );
         mockMvc.perform(post("/teams/{teamId}/invite-code", teamId)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("team-create-invite-code", pathParameters, responseFieldsSnippet));
     }
@@ -182,7 +199,8 @@ public class TeamApiDocsTest extends RestDocsTest {
         );
         mockMvc.perform(post("/teams/{teamId}/join", teamId)
                         .content(asJsonString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isCreated())
                 .andDo(document("team-join", pathParameters, requestFieldsSnippet));
     }
@@ -216,7 +234,8 @@ public class TeamApiDocsTest extends RestDocsTest {
         //then
         mockMvc.perform(get("/teams/members/{memberId}", memberId)
                         .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("my-teams", pathParameters, responseFieldsSnippet));
 

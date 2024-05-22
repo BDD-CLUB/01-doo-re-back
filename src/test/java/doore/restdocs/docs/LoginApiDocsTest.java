@@ -3,6 +3,7 @@ package doore.restdocs.docs;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,6 +13,7 @@ import doore.login.application.dto.response.LoginResponse;
 import doore.restdocs.RestDocsTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
@@ -36,7 +38,9 @@ public class LoginApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("token", "Access Token")
         );
 
-        callPostApi("/login/google", request).andExpect(status().isOk())
+        mockMvc.perform(post("/login/google")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request))).andExpect(status().isOk())
                 .andDo(document("login-google", requestFields, responseFields));
     }
 }
