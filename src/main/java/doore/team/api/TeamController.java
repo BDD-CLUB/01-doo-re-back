@@ -37,7 +37,7 @@ public class TeamController {
     private final TeamCommandService teamCommandService;
     private final TeamQueryService teamQueryService;
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}) // 회원
     public ResponseEntity<Void> createTeam(
             @Valid @RequestPart final TeamCreateRequest request,
             @RequestPart(required = false) final MultipartFile file,
@@ -47,7 +47,7 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{teamId}")
+    @PutMapping("/{teamId}") // 팀장
     public ResponseEntity<Void> updateTeam(
             @PathVariable final Long teamId,
             @RequestBody final TeamUpdateRequest request,
@@ -57,7 +57,7 @@ public class TeamController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{teamId}/image")
+    @PatchMapping("/{teamId}/image") // 팀장
     public ResponseEntity<Void> updateTeamImage(
             @PathVariable final Long teamId,
             @RequestPart(required = false) final MultipartFile file,
@@ -67,7 +67,7 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{teamId}")
+    @DeleteMapping("/{teamId}") // 팀장
     public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId, @LoginMember Member member) {
         teamCommandService.deleteTeam(teamId, member.getId());
         return ResponseEntity.noContent().build();
@@ -81,7 +81,7 @@ public class TeamController {
         return ResponseEntity.ok(teamInviteCodeResponse);
     }
 
-    @PostMapping("/{teamId}/join")
+    @PostMapping("/{teamId}/join") // 회원
     public ResponseEntity<Void> joinTeam(
             @PathVariable final Long teamId,
             @Valid @RequestBody final TeamInviteCodeRequest request,
@@ -91,7 +91,7 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/members/{memberId}")
+    @GetMapping("/members/{memberId}") // 회원
     public ResponseEntity<List<TeamReferenceResponse>> getMyTeams(@PathVariable final Long memberId,
                                                                   @LoginMember Member member) {
         // TODO: 3/22/24 토큰의 주인이 memberId와 동일인물인지 검증 (2024/5/14 완료 -> 서비스에서 진행)

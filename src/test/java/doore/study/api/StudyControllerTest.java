@@ -107,5 +107,4 @@ public class StudyControllerTest extends IntegrationTest {
         callPatchApi(url, study, token).andExpect(status().isNoContent());
     }
 
-    // TODO: 3/22/24 자신이 아닌 다른 사람의 스터디 목록을 조회하려 하면 권한 예외가 발생한다.
 }
