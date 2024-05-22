@@ -81,7 +81,7 @@ public class ParticipantApiDocsTest extends RestDocsTest {
                 .member(member)
                 .build();
 
-        when(participantQueryService.findAllParticipants(any())).thenReturn(List.of(participant));
+        when(participantQueryService.findAllParticipants(any(), any())).thenReturn(List.of(participant));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))

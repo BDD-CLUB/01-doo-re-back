@@ -68,7 +68,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             participantCommandService.saveParticipant(studyId, memberId, member.getId());
 
             //then
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId);
+            List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
             assertAll(
                     () -> assertThat(participants).hasSize(1),
                     () -> assertEquals(memberId, participants.get(0).getMember().getId())
@@ -85,7 +85,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.deleteParticipant(studyId, memberId, member.getId());
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId);
+            List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
 
             //then
             assertThat(participants).hasSize(0);
@@ -101,7 +101,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.withdrawParticipant(studyId, memberId, member.getId());
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId);
+            List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
 
             //then
             assertThat(participants).hasSize(0);
