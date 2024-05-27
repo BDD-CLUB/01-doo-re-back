@@ -3,9 +3,8 @@ package doore.garden.application;
 import doore.garden.application.dto.response.DayGardenResponse;
 import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,21 +19,10 @@ public class GardenQueryService {
     }
 
     private List<DayGardenResponse> calculateContributes(List<Garden> gardens) {
-        List<DayGardenResponse> fullGardenResponse = new ArrayList<>();
-        LocalDate prevDate = gardens.get(0).getContributedDate();
-        LocalDate curDate;
-        int contributeNumber = 1;
-        for (int i = 1; i < gardens.size(); i++) {
-            curDate = gardens.get(i).getContributedDate();
-            if (curDate.equals(prevDate)) {
-                contributeNumber++;
-                continue;
-            }
-            fullGardenResponse.add(DayGardenResponse.of(prevDate, contributeNumber));
-            contributeNumber = 1;
-            prevDate = curDate;
-        }
-        fullGardenResponse.add(DayGardenResponse.of(prevDate, contributeNumber));
-        return fullGardenResponse;
+        return gardens.stream()
+                .collect(Collectors.groupingBy(Garden::getContributedDate, Collectors.counting()))
+                .entrySet().stream()
+                .map(entry -> DayGardenResponse.of(entry.getKey(), entry.getValue().intValue()))
+                .toList();
     }
 }
