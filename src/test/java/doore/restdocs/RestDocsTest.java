@@ -10,7 +10,6 @@ import doore.attendance.application.AttendanceCommandService;
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
 import doore.garden.api.GardenController;
-import doore.garden.application.GardenCommandService;
 import doore.garden.application.GardenQueryService;
 import doore.helper.ApiTestHelper;
 import doore.login.api.LoginController;
@@ -102,9 +101,6 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected GardenQueryService gardenQueryService;
-
-    @MockBean
-    protected GardenCommandService gardenCommandService;
 
     @MockBean
     protected JwtTokenGenerator jwtTokenGenerator;

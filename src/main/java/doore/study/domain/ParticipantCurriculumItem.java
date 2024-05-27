@@ -1,7 +1,6 @@
 package doore.study.domain;
 
 import doore.base.BaseEntity;
-import doore.garden.application.GardenCommandService;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

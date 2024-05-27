@@ -1,11 +1,21 @@
 package doore.study.application;
 
+import static doore.garden.domain.GardenType.STUDY_CURRICULUM_COMPLETION;
+import static doore.study.CurriculumItemFixture.curriculumItem;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import doore.garden.domain.Garden;
+import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
 import doore.member.MemberFixture;
 import doore.member.domain.Member;
@@ -25,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,6 +53,8 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     protected ParticipantRepository participantRepository;
     @Autowired
     protected ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    @Autowired
+    protected GardenRepository gardenRepository;
 
     private Study study;
     private CurriculumItem curriculumItem1;
@@ -120,6 +133,51 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         curriculumItemCommandService.checkCurriculum(curriculumItem.getId(), participant.getId());
 
         assertThat(result.getIsChecked()).isEqualTo(false);
+    }
+
+    @Nested
+    @DisplayName("커리큘럼 체크 여부에 따라 정상적으로 텃밭을 생성 혹은 삭제한다.")
+    class CurriculumGardenTest {
+        @Test
+        @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 생성할 수 있다. ")
+        public void createGarden_커리큘럼_타입의_텃밭을_정상적으로_생성할_수_있다_성공() throws Exception {
+            //given
+            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
+            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+                    .participantId(1L)
+                    .curriculumItem(curriculumItem)
+                    .build();
+            participantCurriculumItemRepository.save(participantCurriculumItem);
+
+            //when
+            curriculumItemCommandService.createGarden(participantCurriculumItem);
+
+            //then
+            Garden garden = gardenRepository.findAll().get(0);
+            assertEquals(garden.getContributionId(), participantCurriculumItem.getId());
+            assertEquals(garden.getType(), STUDY_CURRICULUM_COMPLETION);
+        }
+
+        @Test
+        @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 삭제할 수 있다. ")
+        public void deleteGarden_커리큘럼_타입의_텃밭을_정상적으로_삭제할_수_있다_성공() throws Exception {
+            //given
+            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
+            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+                    .participantId(1L)
+                    .curriculumItem(curriculumItem)
+                    .build();
+            participantCurriculumItemRepository.save(participantCurriculumItem);
+
+            curriculumItemCommandService.createGarden(participantCurriculumItem);
+            assertEquals(1, gardenRepository.findAll().size());
+
+            //when
+            curriculumItemCommandService.deleteGarden(participantCurriculumItem);
+
+            //then
+            assertEquals(0, gardenRepository.findAll().size());
+        }
     }
 
     @Test

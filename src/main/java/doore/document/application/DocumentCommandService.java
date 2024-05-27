@@ -16,7 +16,9 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
-import doore.garden.application.GardenCommandService;
+import doore.garden.domain.Garden;
+import doore.garden.domain.GardenType;
+import doore.garden.domain.repository.GardenRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
@@ -32,20 +34,19 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class DocumentCommandService {
-
     private final DocumentRepository documentRepository;
     private final TeamRepository teamRepository;
     private final StudyRepository studyRepository;
     private final FileRepository fileRepository;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
-    private final GardenCommandService gardenCommandService;
+    private final GardenRepository gardenRepository;
 
     public void createDocument(DocumentCreateRequest request, List<MultipartFile> multipartFiles,
                                DocumentGroupType groupType, Long groupId) {
         validateExistGroup(groupType, groupId);
         validateDocumentType(request.type(), request.url(), multipartFiles);
-        Document document = toDocument(request, groupType, groupId);
+        Document document = Document.from(request, groupType, groupId);
 
         documentRepository.save(document);
 
@@ -63,7 +64,7 @@ public class DocumentCommandService {
             document.updateFiles(newFiles);
         }
 
-        gardenCommandService.createGarden(document);
+        createGarden(document);
     }
 
     private void validateExistGroup(DocumentGroupType groupType, Long groupId) {
@@ -82,18 +83,6 @@ public class DocumentCommandService {
         if (!type.equals(DocumentType.URL) && (multipartFiles == null || multipartFiles.isEmpty())) {
             throw new DocumentException(NO_FILE_ATTACHED);
         }
-    }
-
-    private Document toDocument(DocumentCreateRequest request, DocumentGroupType groupType, Long groupId) {
-        return Document.builder()
-                .name(request.title())
-                .description(request.description())
-                .groupType(groupType)
-                .groupId(groupId)
-                .accessType(request.accessType())
-                .type(request.type())
-                .uploaderId(request.uploaderId())
-                .build();
     }
 
     private List<String> uploadFilesToS3(DocumentType type, List<MultipartFile> multipartFiles) {
@@ -129,6 +118,11 @@ public class DocumentCommandService {
         return files;
     }
 
+    public void createGarden(Document document) {
+        Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).of(document);
+        gardenRepository.save(garden);
+    }
+
     public void updateDocument(DocumentUpdateRequest request, Long documentId) {
         Document document = validateExistDocument(documentId);
         document.update(request.title(), request.description(), request.accessType());
@@ -136,8 +130,14 @@ public class DocumentCommandService {
 
     public void deleteDocument(Long documentId) {
         Document document = validateExistDocument(documentId);
-        gardenCommandService.deleteGarden(document);
+        deleteGarden(document);
         documentRepository.deleteById(documentId);
+    }
+
+    public void deleteGarden(Document document) {
+        Long contributionId = document.getId();
+        GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
+        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
 
     private Document validateExistDocument(Long documentId) {

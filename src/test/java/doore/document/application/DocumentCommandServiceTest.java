@@ -3,6 +3,7 @@ package doore.document.application;
 import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_URL;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
+import static doore.garden.domain.GardenType.DOCUMENT_UPLOAD;
 import static doore.study.StudyFixture.createStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,6 +24,8 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
+import doore.garden.domain.Garden;
+import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.study.domain.Study;
@@ -48,6 +51,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Autowired
     DocumentRepository documentRepository;
+
+    @Autowired
+    GardenRepository gardenRepository;
 
     @Autowired
     TeamRepository teamRepository;
@@ -275,5 +281,20 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         //then
         List<Document> documents = documentRepository.findAll();
         assertTrue(documents.get(0).getIsDeleted());
+    }
+
+    @Test
+    @DisplayName("[성공] 학습자료 업로드시 정상적으로 텃밭을 생성할 수 있다.")
+    public void createGarden_학습자료_업로드시_정상적으로_텃밭에_반영된다_성공() throws Exception {
+        //given
+        Document document = new DocumentFixture().buildDocument();
+
+        //when
+        documentCommandService.createGarden(document);
+
+        //then
+        Garden garden = gardenRepository.findAll().get(0);
+        assertEquals(garden.getContributionId(), document.getId());
+        assertEquals(garden.getType(), DOCUMENT_UPLOAD);
     }
 }
