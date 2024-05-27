@@ -21,7 +21,7 @@ public class GardenApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 팀의 올해 텃밭을 조회한다.")
-    public void getFullGarden_팀의_올해_텃밭을_생성한다() throws Exception {
+    public void getAllGarden_팀의_올해_텃밭을_생성한다() throws Exception {
         //given
         List<DayGardenResponse> fullGardenResponse = List.of(
                 DayGardenResponse.builder()
@@ -45,7 +45,7 @@ public class GardenApiDocsTest extends RestDocsTest {
         );
 
         //when
-        when(gardenQueryService.getFullGarden(any())).thenReturn(fullGardenResponse);
+        when(gardenQueryService.getAllGarden(any())).thenReturn(fullGardenResponse);
 
         //then
         mockMvc.perform(get("/garden/{teamId}", 1))

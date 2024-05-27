@@ -23,7 +23,7 @@ public class GardenQueryServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 팀의 텃밭을 정상적으로 조회할 수 있다.")
-    public void getFullGarden_팀의_텃밭을_정상적으로_조회할_수_있다_성공() throws Exception {
+    public void getAllGarden_팀의_텃밭을_정상적으로_조회할_수_있다_성공() throws Exception {
         //given
         Long teamId = 1L;
         Long otherTeamId = 2L;
@@ -54,7 +54,7 @@ public class GardenQueryServiceTest extends IntegrationTest {
         //when
         List<Garden> allGardens = gardenRepository.findAll();
         assertEquals(1, gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId).size());
-        List<DayGardenResponse> gardenResponses = gardenQueryService.getFullGarden(teamId);
+        List<DayGardenResponse> gardenResponses = gardenQueryService.getAllGarden(teamId);
 
         //then
         assertEquals(3, allGardens.size());
@@ -85,7 +85,7 @@ public class GardenQueryServiceTest extends IntegrationTest {
      gardenRepository.saveAll(gardens);
 
      //when
-     List<DayGardenResponse> gardenResponses = gardenQueryService.getFullGarden(teamId);
+     List<DayGardenResponse> gardenResponses = gardenQueryService.getAllGarden(teamId);
 
      //then
      assertEquals(1,gardenResponses.size());

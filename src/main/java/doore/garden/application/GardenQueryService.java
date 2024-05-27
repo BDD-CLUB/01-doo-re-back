@@ -4,10 +4,8 @@ import doore.garden.application.dto.response.DayGardenResponse;
 import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class GardenQueryService {
     private final GardenRepository gardenRepository;
 
-    public List<DayGardenResponse>  getFullGarden(Long teamId) {
+    public List<DayGardenResponse> getAllGarden(Long teamId) {
         List<Garden> gardens = gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId);
         return calculateContributes(gardens);
     }
