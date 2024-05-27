@@ -30,8 +30,6 @@ public class CurriculumItemController {
     @PatchMapping("/curriculums/{curriculumId}/{participantId}/check")
     public ResponseEntity<Void> checkCurriculum(@PathVariable Long curriculumId, @PathVariable Long participantId) {
         curriculumItemCommandService.checkCurriculum(curriculumId, participantId);
-
         return ResponseEntity.noContent().build();
     }
-
 }
