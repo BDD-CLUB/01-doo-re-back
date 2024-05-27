@@ -62,10 +62,10 @@ public class CurriculumItemCommandService {
 
         participantCurriculumItem.checkCompletion();
         if (participantCurriculumItem.getIsChecked()) {
-            deleteGarden(participantCurriculumItem);
+            createGarden(participantCurriculumItem);
             return;
         }
-        createGarden(participantCurriculumItem);
+        deleteGarden(participantCurriculumItem);
     }
 
     public void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
