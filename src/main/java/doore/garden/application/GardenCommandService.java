@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class GardenCommandService {
     private final GardenRepository gardenRepository;
+
     public void createGarden(Document document) {
         Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).of(document);
         gardenRepository.save(garden);
     }
+
     public void deleteGarden(Document document) {
         Long contributionId = document.getId();
         GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
@@ -25,7 +27,8 @@ public class GardenCommandService {
     }
 
     public void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
-        Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName()).of(participantCurriculumItem);
+        Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
+                .of(participantCurriculumItem);
         gardenRepository.save(garden);
     }
 
