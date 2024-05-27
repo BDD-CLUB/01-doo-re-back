@@ -1,6 +1,10 @@
 package doore.garden.domain;
 
+import static doore.garden.domain.GardenType.STUDY_CURRICULUM_COMPLETION;
+
 import doore.base.BaseEntity;
+import doore.document.domain.Document;
+import doore.study.domain.ParticipantCurriculumItem;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,5 +58,25 @@ public class Garden extends BaseEntity {
         this.contributionId = contributionId;
         this.teamId = teamId;
         this.memberId = memberId;
+    }
+
+    public Garden of(Document document) {
+        return Garden.builder()
+                .contributedDate(LocalDate.now())
+                .contributionId(document.getId())
+                .memberId(document.getUploaderId())
+                .teamId(document.getGroupId())
+                .type(GardenType.DOCUMENT_UPLOAD)
+                .build();
+    }
+
+    public Garden of(ParticipantCurriculumItem participantCurriculumItem) {
+        return Garden.builder()
+                .contributedDate(LocalDate.now())
+                .contributionId(participantCurriculumItem.getId())
+                .memberId(participantCurriculumItem.getParticipantId())
+                .teamId(participantCurriculumItem.getCurriculumItem().getStudy().getTeamId())
+                .type(STUDY_CURRICULUM_COMPLETION)
+                .build();
     }
 }

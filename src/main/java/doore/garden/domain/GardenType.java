@@ -8,15 +8,15 @@ import lombok.Getter;
 
 @Getter
 public enum GardenType {
-    DOCUMENT_UPLOAD("Document", ContributionGarden::new),
-    STUDY_CURRICULUM_COMPLETION("ParticipantCurriculumItem", ContributionGarden::new);
+    DOCUMENT_UPLOAD("Document", Garden::new),
+    STUDY_CURRICULUM_COMPLETION("ParticipantCurriculumItem", Garden::new);
 
     private final String contributionClass;
-    private final Supplier<ContributionGarden> supplier;
+    private final Supplier<Garden> supplier;
     private static final Map<String, GardenType> typeMap = Arrays.stream(GardenType.values())
             .collect(Collectors.toMap(GardenType::getContributionClass, gardenType -> gardenType));
 
-    GardenType(String contributionClass, Supplier<ContributionGarden> supplier) {
+    GardenType(String contributionClass, Supplier<Garden> supplier) {
         this.contributionClass = contributionClass;
         this.supplier = supplier;
     }
@@ -25,7 +25,7 @@ public enum GardenType {
         return typeMap.get(contributionClass);
     }
 
-    public static ContributionGarden getSupplierOf(String contributionClass) {
+    public static Garden getSupplierOf(String contributionClass) {
         return getGardenTypeOf(contributionClass).getSupplier().get();
     }
 }
