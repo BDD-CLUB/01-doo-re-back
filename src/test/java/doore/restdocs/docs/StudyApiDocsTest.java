@@ -2,8 +2,6 @@ package doore.restdocs.docs;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -16,12 +14,8 @@ import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.PersonalCurriculumItemResponse;
-import doore.study.application.dto.response.PersonalStudyDetailResponse;
 import doore.study.application.dto.response.CurriculumItemReferenceResponse;
-import doore.study.application.dto.response.CurriculumItemResponse;
-import doore.study.application.dto.response.ParticipantCurriculumItemResponse;
-import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.StudySimpleResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
@@ -60,67 +54,40 @@ public class StudyApiDocsTest extends RestDocsTest {
                                 stringFieldWithPath("startDate", "시작 날짜"),
                                 stringFieldWithPath("endDate", "종료 날짜"),
                                 numberFieldWithPath("cropId", "작물 id")
-                                )
+                        )
                 ));
     }
 
     @Test
-    @DisplayName("스터디 전체 정보를 조회한다.")
-    public void 스터디_전체_정보를_조회한다() throws Exception {
-        StudyDetailResponse studyDetailResponse = getStudyDetailResponse();
+    @DisplayName("스터디 정보를 조회한다.")
+    public void 스터디_정보를_조회한다() throws Exception {
+        StudyResponse studyResponse = getStudyResponse();
 
-        when(studyQueryService.findStudyById(any())).thenReturn(studyDetailResponse);
+        when(studyQueryService.findStudyById(any())).thenReturn(studyResponse);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/all", 1))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}", 1))
                 .andExpect(status().isOk())
-                .andDo(document("study-get-all", pathParameters(
+                .andDo(document("study-get", pathParameters(
                         parameterWithName("studyId")
                                 .description("스터디 id"))
                 ));
     }
 
-    private StudyDetailResponse getStudyDetailResponse() {
+    private StudyResponse getStudyResponse() {
         TeamReferenceResponse teamReferenceResponse =
                 new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
         CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
 
-        ParticipantCurriculumItemResponse participantCurriculumItemResponse =
-                new ParticipantCurriculumItemResponse(1L, false);
-        CurriculumItemResponse curriculumItemResponse = new CurriculumItemResponse(
-                1L, "chapter1. greedy", 0, false, List.of(participantCurriculumItemResponse));
-
-        return new StudyDetailResponse(1L, "알고리즘", "알고리즘 스터디입니다.", LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
-                cropReferenceResponse, List.of(curriculumItemResponse));
-    }
-
-    @Test
-    @DisplayName("스터디를 조회한다.")
-    public void 스터디를_조회한다() throws Exception {
-        TeamReferenceResponse teamReferenceResponse =
-                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
-        CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
-
-        PersonalCurriculumItemResponse personalCurriculumItemResponse = new PersonalCurriculumItemResponse(
-                1L, "chapter1. greedy", 1, false, false);
-        PersonalStudyDetailResponse personalStudyDetailResponse = new PersonalStudyDetailResponse(
-                1L, "알고리즘", "알고리즘 스터디입니다.", LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
-                cropReferenceResponse, 1L, List.of(personalCurriculumItemResponse));
-
-        when(studyQueryService.getPersonalStudyDetail(any(), any())).thenReturn(personalStudyDetailResponse);
-
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}", 1)
-                        .header("Authorization", "1"))
-                .andExpect(status().isOk())
-                .andDo(document("study-get-personal",
-                        pathParameters(
-                                parameterWithName("studyId").description("스터디 id")
-                        ),
-                        requestHeaders(
-                                headerWithName("Authorization").description("member id")
-                        )
-                ));
+        return StudyResponse.builder()
+                .id(1L)
+                .name("알고리즘")
+                .description("알고리즘 스터디입니다.")
+                .startDate(LocalDate.parse("2020-01-01"))
+                .endDate(LocalDate.parse("2020-01-02"))
+                .status(StudyStatus.IN_PROGRESS)
+                .teamReference(teamReferenceResponse)
+                .cropReference(cropReferenceResponse)
+                .build();
     }
 
     @Test
