@@ -16,6 +16,7 @@ import doore.member.domain.Participant;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.study.application.dto.response.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.StudySimpleResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
@@ -56,25 +57,11 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @DisplayName("스터디 Query 테스트")
     class studyTest {
         @Test
-        @DisplayName("[성공] 정상적으로 스터디 전체 정보를 조회할 수 있다.")
+        @DisplayName("[성공] 정상적으로 스터디 정보를 조회할 수 있다.")
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
             Study study = createStudy();
             studyRepository.save(study);
             assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
-        }
-
-        @Test
-        @DisplayName("[성공] 정상적으로 스터디를 조회할 수 있다.")
-        void getPersonalStudyDetail_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = createStudy();
-            Long memberId = 1L;
-            studyRepository.save(study);
-            PersonalStudyDetailResponse personalStudyDetailResponse =
-                    studyQueryService.getPersonalStudyDetail(study.getId(), memberId);
-            assertAll(
-                    () -> assertEquals(study.getId(), personalStudyDetailResponse.id()),
-                    () -> assertEquals(memberId, personalStudyDetailResponse.participantId())
-            );
         }
 
         @Test
