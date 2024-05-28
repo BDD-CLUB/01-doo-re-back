@@ -5,7 +5,6 @@ import static doore.study.CurriculumItemFixture.curriculumItem;
 import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.crop.domain.Crop;
@@ -15,8 +14,6 @@ import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.study.application.dto.response.PersonalStudyDetailResponse;
-import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.StudySimpleResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
