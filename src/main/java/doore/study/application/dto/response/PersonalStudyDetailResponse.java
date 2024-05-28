@@ -21,7 +21,7 @@ public record PersonalStudyDetailResponse(
         StudyStatus status,
         Boolean isDeleted,
         TeamReferenceResponse teamReference,
-        CropReferenceResponse cropReferenc,
+        CropReferenceResponse cropReference,
         Long participantId,
         List<PersonalCurriculumItemResponse> PersonalCurriculumItemResponse
 ) {
