@@ -13,9 +13,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
+@Where(clause = "is_deleted = false" )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ParticipantCurriculumItem extends BaseEntity {
 

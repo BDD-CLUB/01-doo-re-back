@@ -8,14 +8,14 @@ import static java.util.stream.Collectors.groupingBy;
 import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
 import doore.crop.exception.CropException;
-import doore.study.application.dto.response.PersonalCurriculumItemResponse;
-import doore.study.application.dto.response.PersonalStudyDetailResponse;
 import doore.study.application.dto.response.CurriculumItemResponse;
-import doore.study.application.dto.response.ParticipantCurriculumItemResponse;
-import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.PersonalCurriculumItemResponse;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.StudySimpleResponse;
-import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.study.persistence.StudyDao;
@@ -40,65 +40,25 @@ public class StudyQueryService {
     private final TeamRepository teamRepository;
     private final CropRepository cropRepository;
     private final StudyDao studyDao;
+    private final CurriculumItemRepository curriculumItemRepository;
+    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
 
-    public StudyDetailResponse findStudyById(Long studyId) {
-        Study study = getStudy(studyId);
+    public StudyResponse findStudyById(Long studyId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
         final Crop crop = cropRepository.findById(study.getCropId())
                 .orElseThrow(() -> new CropException(NOT_FOUND_CROP));
-        return StudyDetailResponse.of(study, team, crop);
+        return StudyResponse.of(study, team, crop);
     }
 
-
-    public PersonalStudyDetailResponse getPersonalStudyDetail(Long studyId, Long memberId) {
-        Study study = getStudy(studyId);
-        final Team team = teamRepository.findById(study.getTeamId())
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
-        final Crop crop = cropRepository.findById(study.getCropId())
-                .orElseThrow(() -> new CropException(NOT_FOUND_CROP));
-        List<CurriculumItemResponse> curriculumItemResponses = getListCurriculumItemResponse(study);
-        List<PersonalCurriculumItemResponse> personalCurriculumItemResponse = curriculumItemResponses.stream()
-                .filter(curriculumItemResponse -> curriculumItemResponse.participantCurriculumItems().stream()
-                        .filter(participantCurriculumItemResponse ->
-                                participantCurriculumItemResponse.participantId().equals(memberId))
-                        .isParallel()
-                )
-                .map(this::toPersonalCurriculumItemResponse)
-                .toList();
-
-        return PersonalStudyDetailResponse.of(study, team, crop, memberId, personalCurriculumItemResponse);
+    public List<CurriculumItemResponse> getCurriculums(Long studyId) {
+        return CurriculumItemResponse.from(curriculumItemRepository.findAllByStudyId(studyId));
     }
 
-    private List<CurriculumItemResponse> getListCurriculumItemResponse(Study study) {
-        List<CurriculumItem> curriculumItems = study.getCurriculumItems();
-
-        return curriculumItems == null ? Collections.emptyList() : curriculumItems.stream()
-                .map(this::toCurriculumItemResponse)
-                .toList();
-    }
-
-    private CurriculumItemResponse toCurriculumItemResponse(CurriculumItem curriculumItem) {
-        List<ParticipantCurriculumItemResponse> participantCurriculumItemResponses = curriculumItem.getParticipantCurriculumItems()
-                .stream()
-                .map((participantCurriculumItem) -> new ParticipantCurriculumItemResponse(
-                        participantCurriculumItem.getParticipantId(), participantCurriculumItem.getIsChecked()))
-                .toList();
-
-        return new CurriculumItemResponse(curriculumItem.getId(), curriculumItem.getName(),
-                curriculumItem.getItemOrder(), curriculumItem.getIsDeleted(), participantCurriculumItemResponses);
-    }
-
-    private PersonalCurriculumItemResponse toPersonalCurriculumItemResponse(
-            CurriculumItemResponse curriculumItemResponse) {
-        return new PersonalCurriculumItemResponse(curriculumItemResponse.id(), curriculumItemResponse.name(),
-                curriculumItemResponse.itemOrder(), curriculumItemResponse.isDeleted(),
-                curriculumItemResponse.participantCurriculumItems().get(0).isChecked());
-    }
-
-
-    private Study getStudy(Long studyId) {
-        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    public List<PersonalCurriculumItemResponse> getMyCurriculum(Long studyId, Long memberId) {
+        List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByStudyIdAndMemberId(studyId, memberId);
+        return participantCurriculumItems.stream().map(PersonalCurriculumItemResponse::from).toList();
     }
 
     public List<StudySimpleResponse> findMyStudies(final Long memberId) {

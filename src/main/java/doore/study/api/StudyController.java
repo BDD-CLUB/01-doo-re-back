@@ -1,14 +1,12 @@
 package doore.study.api;
 
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-
-import doore.member.exception.MemberException;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.PersonalStudyDetailResponse;
-import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.CurriculumItemResponse;
+import doore.study.application.dto.response.PersonalCurriculumItemResponse;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.StudySimpleResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -47,22 +45,11 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}/all")
-    public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId) {
-        StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
-        return ResponseEntity.ok(studyDetailResponse);
-    }
 
     @GetMapping("/studies/{studyId}")
-    public ResponseEntity<PersonalStudyDetailResponse> getStudy(@PathVariable Long studyId,
-                                                                HttpServletRequest request) {
-        String memberId = request.getHeader("Authorization"); //todo: 권한 로직으로 수정
-        if (memberId == null) {
-            throw new MemberException(UNAUTHORIZED);
-        }
-        PersonalStudyDetailResponse personalStudyDetailResponse =
-                studyQueryService.getPersonalStudyDetail(studyId, Long.parseLong(memberId));
-        return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
+    public ResponseEntity<StudyResponse> getStudy(@PathVariable Long studyId) {
+        StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
+        return ResponseEntity.ok(studyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}")
@@ -88,5 +75,19 @@ public class StudyController {
     public ResponseEntity<List<StudySimpleResponse>> getMyStudies(@PathVariable final Long memberId) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증
         return ResponseEntity.ok(studyQueryService.findMyStudies(memberId));
+    }
+
+    @GetMapping("studies/{studyId}/curriculums/all")
+    public ResponseEntity<List<CurriculumItemResponse>> getCurriculums(@PathVariable Long studyId) {
+        List<CurriculumItemResponse> responses = studyQueryService.getCurriculums(studyId);
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("studies/{studyId}/curriculums")
+    public ResponseEntity<List<PersonalCurriculumItemResponse>> getMyCurriculum(@PathVariable Long studyId,
+                                                                                HttpServletRequest request) {
+        String memberId = request.getHeader("Authorization");
+        List<PersonalCurriculumItemResponse> response = studyQueryService.getMyCurriculum(studyId, Long.parseLong(memberId));
+        return ResponseEntity.ok(response);
     }
 }
