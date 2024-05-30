@@ -1,5 +1,7 @@
 package doore.study.domain;
 
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.MemberFixture.아마어마어마;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
@@ -36,18 +38,8 @@ public class ParticipantCurriculumItemRepositoryTest extends RepositorySliceTest
     public void findAllByStudyIdAndMemberId_스터디_id와_회원_id를_사용해_participantCurriculumItem_목록을_조회할_수_있다_성공()
             throws Exception {
         //given
-        Member member = Member.builder()
-                .email("email")
-                .imageUrl("imageUrl")
-                .googleId("googleId")
-                .name("member 1")
-                .build();
-        Member otherMember = Member.builder()
-                .email("email")
-                .imageUrl("imageUrl")
-                .googleId("googleId")
-                .name("member 2")
-                .build();
+        Member member = 아마란스();
+        Member otherMember = 아마어마어마();
         memberRepository.saveAll(List.of(member, otherMember));
 
         Study study = StudyFixture.algorithmStudy();
