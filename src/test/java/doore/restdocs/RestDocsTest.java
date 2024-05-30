@@ -97,8 +97,7 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected ParticipantQueryService participantQueryService;
-
-
+    
     @MockBean
     protected TeamQueryService teamQueryService;
 

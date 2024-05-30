@@ -22,7 +22,10 @@ public class CurriculumItemQueryService {
     }
 
     public List<PersonalCurriculumItemResponse> getMyCurriculum(Long studyId, Long memberId) {
-        List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByStudyIdAndMemberId(studyId, memberId);
-        return participantCurriculumItems.stream().map(PersonalCurriculumItemResponse::from).toList();
+        List<ParticipantCurriculumItem> participantCurriculumItems =
+                participantCurriculumItemRepository.findAllByStudyIdAndMemberId(studyId, memberId);
+        return participantCurriculumItems.stream()
+                .map(PersonalCurriculumItemResponse::from)
+                .toList();
     }
 }
