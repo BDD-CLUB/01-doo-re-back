@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 public record StudyResponse(
-
         Long id,
         String name,
         String description,
@@ -24,12 +23,8 @@ public record StudyResponse(
         CropReferenceResponse cropReference
 ) {
     @Builder
-    public StudyResponse(Long id, String name, String description,
-                         @JsonFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                         @JsonFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                         StudyStatus status,
-                         TeamReferenceResponse teamReference,
-                         CropReferenceResponse cropReference) {
+    public StudyResponse(Long id, String name, String description, LocalDate startDate, LocalDate endDate,
+                         StudyStatus status, TeamReferenceResponse teamReference, CropReferenceResponse cropReference) {
         this.id = id;
         this.name = name;
         this.description = description;
