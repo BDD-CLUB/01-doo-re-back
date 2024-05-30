@@ -29,6 +29,9 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 public class CurriculumItemApiDocsTest extends RestDocsTest {
     private CurriculumItemManageRequest request;
+    private ParticipantCurriculumItemResponse participantCurriculumItemResponse;
+    private ParticipantCurriculumItemResponse otherParticipantCurriculumItemResponse;
+    private CurriculumItemResponse curriculumItemResponse;
 
     @BeforeEach
     void setUp() {
@@ -36,6 +39,11 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
                 .curriculumItems(getCurriculumItems())
                 .deletedCurriculumItems(getDeletedCurriculumItems())
                 .build();
+
+        participantCurriculumItemResponse = new ParticipantCurriculumItemResponse(1L, 1L, false);
+        otherParticipantCurriculumItemResponse = new ParticipantCurriculumItemResponse(2L, 1L, true);
+        curriculumItemResponse = new CurriculumItemResponse(1L, "chapter1. greedy", 0, false,
+                List.of(participantCurriculumItemResponse));
     }
 
     private List<CurriculumItemManageDetailRequest> getCurriculumItems() {
@@ -98,15 +106,6 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("[성공] 스터디의 커리큘럼을 정상적으로 조회할 수 있다.")
     public void getCurriculums_스터디의_커리큘럼을_정상적으로_조회할_수_있다() throws Exception {
-        //given
-        ParticipantCurriculumItemResponse participantCurriculumItemResponse =
-                new ParticipantCurriculumItemResponse(1L, 1L, false);
-        ParticipantCurriculumItemResponse otherParticipantCurriculumItemResponse =
-                new ParticipantCurriculumItemResponse(1L, 2L, true);
-        CurriculumItemResponse curriculumItemResponse = new CurriculumItemResponse(
-                1L, "chapter1. greedy", 0, false,
-                List.of(participantCurriculumItemResponse, otherParticipantCurriculumItemResponse));
-
         //when
         when(curriculumItemQueryService.getCurriculums(any())).thenReturn(List.of(curriculumItemResponse));
 
@@ -124,14 +123,6 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @DisplayName("[성공] 스터디의 특정 회원의 커리큘럼을 정상적으로 조회할 수 있다.")
     public void getMyCurriculum_스터디의_특정_회원의_커리큘럼을_정상적으로_조회할_수_있다() throws Exception {
         //given
-        ParticipantCurriculumItemResponse participantCurriculumItemResponse =
-                new ParticipantCurriculumItemResponse(1L, 1L, false);
-        ParticipantCurriculumItemResponse otherParticipantCurriculumItemResponse =
-                new ParticipantCurriculumItemResponse(2L, 1L, true);
-
-        CurriculumItemResponse curriculumItemResponse = new CurriculumItemResponse(
-                1L, "chapter1. greedy", 0, false,
-                List.of(participantCurriculumItemResponse));
         CurriculumItemResponse otherCurriculumItemResponse = new CurriculumItemResponse(
                 1L, "chapter2. DFS", 0, false,
                 List.of(otherParticipantCurriculumItemResponse));
