@@ -16,13 +16,13 @@ import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.personalStudyResponse.PersonalCurriculumItemResponse;
-import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
-import doore.study.application.dto.response.totalStudyResponse.CurriculumItemReferenceResponse;
-import doore.study.application.dto.response.totalStudyResponse.CurriculumItemResponse;
-import doore.study.application.dto.response.totalStudyResponse.ParticipantCurriculumItemResponse;
-import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
-import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
+import doore.study.application.dto.response.PersonalCurriculumItemResponse;
+import doore.study.application.dto.response.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.CurriculumItemReferenceResponse;
+import doore.study.application.dto.response.CurriculumItemResponse;
+import doore.study.application.dto.response.ParticipantCurriculumItemResponse;
+import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.StudySimpleResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import java.time.LocalDate;
@@ -208,15 +208,7 @@ public class StudyApiDocsTest extends RestDocsTest {
         final Long memberId = 1L;
         final Long tokenMemberId = 1L;
         final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
-        final TeamReferenceResponse teamReferenceResponse =
-                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
-        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
-        final CurriculumItemReferenceResponse curriculumItemReferenceResponse = new CurriculumItemReferenceResponse(
-                1L, "chapter1. greedy", 1, false);
-        final StudySimpleResponse response = new StudySimpleResponse(1L, "알고리즘", "알고리즘 스터디입니다.",
-                LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
-                cropReferenceResponse, List.of(curriculumItemReferenceResponse));
+        final StudySimpleResponse response = getStudySimpleResponse();
 
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
                 numberFieldWithPath("[].id", "스터디의 ID"),
@@ -250,5 +242,18 @@ public class StudyApiDocsTest extends RestDocsTest {
                         ),
                         responseFieldsSnippet
                 ));
+    }
+
+    private static StudySimpleResponse getStudySimpleResponse() {
+        final TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
+        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
+        final CurriculumItemReferenceResponse curriculumItemReferenceResponse = new CurriculumItemReferenceResponse(
+                1L, "chapter1. greedy", 1, false);
+        final StudySimpleResponse response = new StudySimpleResponse(1L, "알고리즘", "알고리즘 스터디입니다.",
+                LocalDate.parse("2020-01-01"),
+                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
+                cropReferenceResponse, List.of(curriculumItemReferenceResponse));
+        return response;
     }
 }

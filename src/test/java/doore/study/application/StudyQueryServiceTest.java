@@ -22,8 +22,9 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
-import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
-import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
+
+import doore.study.application.dto.response.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.StudySimpleResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;

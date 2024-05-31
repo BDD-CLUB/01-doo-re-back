@@ -6,9 +6,10 @@ import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.personalStudyResponse.PersonalStudyDetailResponse;
-import doore.study.application.dto.response.totalStudyResponse.StudyDetailResponse;
-import doore.study.application.dto.response.totalStudyResponse.StudySimpleResponse;
+
+import doore.study.application.dto.response.PersonalStudyDetailResponse;
+import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.response.StudySimpleResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
