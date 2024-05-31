@@ -9,14 +9,14 @@ public record DayGardenResponse(
         int dayOfYear,
         int dayOfWeek,
         int weekOfYear,
-        int attributeNumber
+        int contributeCount
 ) {
     @Builder
-    public DayGardenResponse(int dayOfYear, int dayOfWeek, int weekOfYear, int attributeNumber) {
+    public DayGardenResponse(int dayOfYear, int dayOfWeek, int weekOfYear, int contributeCount) {
         this.dayOfYear = dayOfYear;
         this.dayOfWeek = dayOfWeek;
         this.weekOfYear = weekOfYear;
-        this.attributeNumber = attributeNumber;
+        this.contributeCount = contributeCount;
     }
 
     public static DayGardenResponse of(LocalDate date, int contributeNumber) {
@@ -26,7 +26,7 @@ public record DayGardenResponse(
                 .dayOfYear(date.getDayOfYear() - 1)
                 .weekOfYear(weekOfYear)
                 .dayOfWeek(dayOfWeek)
-                .attributeNumber(contributeNumber)
+                .contributeCount(contributeNumber)
                 .build();
     }
 
