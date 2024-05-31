@@ -35,7 +35,7 @@ public class ParticipantController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/studies/{studyId}/members") // 스터디장
+    @DeleteMapping("/studies/{studyId}/members") // 스터디원
     public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, @LoginMember Member member) {
         participantCommandService.withdrawParticipant(studyId, member.getId(), member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

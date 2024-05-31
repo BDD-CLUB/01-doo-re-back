@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.아마란스;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.StudyFixture.algorithmStudy;
@@ -79,12 +80,18 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() {
             //Given
             Long studyId = study.getId();
-            Long memberId = member.getId();
-            participantCommandService.saveParticipant(studyId, memberId, member.getId());
+            Member participant = createMember();
+            studyRoleRepository.save(StudyRole.builder()
+                    .studyRoleType(StudyRoleType.ROLE_스터디원)
+                    .studyId(studyId)
+                    .memberId(participant.getId())
+                    .build());
+
+            participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
 
             //when
-            participantCommandService.deleteParticipant(studyId, memberId, member.getId());
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
+            participantCommandService.deleteParticipant(studyId, participant.getId(), member.getId());
+            List<Participant> participants = participantQueryService.findAllParticipants(studyId, participant.getId());
 
             //then
             assertThat(participants).hasSize(0);
