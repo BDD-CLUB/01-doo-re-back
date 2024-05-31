@@ -3,6 +3,7 @@ package doore.document.application;
 import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_URL;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
+import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.미나;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
@@ -268,6 +269,21 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("[실패] 해당 자료 업로더가 아니라면 업데이트 할 수 없다.")
+    void updateDocument_해당_자료_업로더가_아니라면_업데이트_할_수_없다_실패(){
+        Document document = new DocumentFixture().buildDocument();
+        Member notUploader = createMember();
+
+        DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
+                DocumentAccessType.ALL);
+
+        assertThatThrownBy(() ->
+                documentCommandService.updateDocument(updatedRequest, document.getId(), notUploader.getId()))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
     @DisplayName("[성공] 학습자료를 정상적으로 삭제할 수 있다.")
     void deleteDocument_학습자료를_정상적으로_삭제할_수_있다() {
         //given
@@ -279,6 +295,18 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         //then
         List<Document> documents = documentRepository.findAll();
         assertTrue(documents.get(0).getIsDeleted());
+    }
+
+    @Test
+    @DisplayName("[실패] 해당 자료 업로더가 아니라면 삭제 할 수 없다.")
+    void deleteDocument_해당_자료_업로더가_아니라면_삭제_할_수_없다_실패(){
+        Document document = new DocumentFixture().buildDocument();
+        Member notUploader = createMember();
+
+        assertThatThrownBy(() ->
+                documentCommandService.deleteDocument(document.getId(), notUploader.getId()))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
     }
 
     @Test

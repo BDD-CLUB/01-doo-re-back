@@ -85,4 +85,8 @@ public class Document extends BaseEntity {
         this.files.clear();
         this.files.addAll(files);
     }
+
+    public boolean isMine(Long memberId) {
+        return this.uploaderId.equals(memberId);
+    }
 }

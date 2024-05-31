@@ -137,12 +137,18 @@ public class DocumentCommandService {
     public void updateDocument(DocumentUpdateRequest request, Long documentId, Long memberId) {
         validateExistMember(memberId);
         Document document = validateExistDocument(documentId);
+        if (!document.isMine(memberId)){
+            throw new MemberException(UNAUTHORIZED);
+        }
         document.update(request.title(), request.description(), request.accessType());
     }
 
     public void deleteDocument(Long documentId, Long memberId) {
         validateExistMember(memberId);
-        validateExistDocument(documentId);
+        Document document = validateExistDocument(documentId);
+        if (!document.isMine(memberId)){
+            throw new MemberException(UNAUTHORIZED);
+        }
         documentRepository.deleteById(documentId);
     }
 
