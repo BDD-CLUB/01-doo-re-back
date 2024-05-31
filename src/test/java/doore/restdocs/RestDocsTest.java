@@ -23,6 +23,7 @@ import doore.study.api.StudyController;
 import doore.login.utils.JwtTokenGenerator;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.application.CurriculumItemCommandService;
+import doore.study.application.CurriculumItemQueryService;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
 import doore.study.application.StudyCommandService;
@@ -68,6 +69,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected CurriculumItemCommandService curriculumItemCommandService;
+
+    @MockBean
+    protected CurriculumItemQueryService curriculumItemQueryService;
 
     @MockBean
     protected TeamCommandService teamCommandService;

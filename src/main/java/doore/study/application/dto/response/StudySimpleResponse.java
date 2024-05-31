@@ -1,8 +1,9 @@
-package doore.study.application.dto.response.totalStudyResponse;
+package doore.study.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.crop.domain.Crop;
 import doore.crop.response.CropReferenceResponse;
+import doore.study.application.dto.response.CurriculumItemReferenceResponse;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
 import doore.study.persistence.dto.StudyInformation;
@@ -12,7 +13,7 @@ import doore.team.domain.Team;
 import java.time.LocalDate;
 import java.util.List;
 
-public record StudySimpleResponse(
+public record StudySimpleResponse( //todo: 삭제 (StudyResponse로 교체)
 
         Long id,
         String name,

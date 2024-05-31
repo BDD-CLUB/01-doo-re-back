@@ -28,31 +28,16 @@ include::{snippets}/study-create/request-fields.adoc[]
 .HTTP Response
 include::{snippets}/study-create/http-response.adoc[]
 
-== `GET`: Study 전체 정보 조회
+== `GET`: Study 조회
 
 .HTTP Request
-include::{snippets}/study-get-all/http-request.adoc[]
+include::{snippets}/study-get/http-request.adoc[]
 
 .Path Parameters
-include::{snippets}/study-get-all/path-parameters.adoc[]
+include::{snippets}/study-get/path-parameters.adoc[]
 
 .HTTP Response
-include::{snippets}/study-get-all/http-response.adoc[]
-
-== `GET`: Study 개인 정보 조회
-
-.HTTP Request
-include::{snippets}/study-get-personal/http-request.adoc[]
-
-.Request Header
-include::{snippets}/study-get-personal/request-headers.adoc[]
-
-.Path Parameters
-include::{snippets}/study-get-personal/path-parameters.adoc[]
-
-.HTTP Response
-include::{snippets}/study-get-personal/http-response.adoc[]
-
+include::{snippets}/study-get/http-response.adoc[]
 
 == `DELETE`: Study 삭제
 

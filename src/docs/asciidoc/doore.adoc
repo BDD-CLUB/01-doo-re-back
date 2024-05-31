@@ -10,12 +10,26 @@ endif::[]
 :toclevels: 2
 :seclinks:
 
-link:./login.html[Login API]
+## 공통
 
-link:./curriculumItem.html[CurriculumItem API]
+link:./login.html[로그인 API]
 
-link:./study.html[Study API]
+link:./member.html[회원 API]
 
-link:./team.html[Team API]
+link:./attendance.html[출석 API]
+
+link:./document.html[학습자료 API]
+
+## 스터디
+
+link:./study.html[스터디 API]
+
+link:./curriculumItem.html[커리큘럼 API]
+
+link:./participant.html[참여자 API]
+
+## 팀
+
+link:./team.html[팀 API]
 
 link:./memberTeam.html[팀원 API]

@@ -48,7 +48,7 @@ public class StudyControllerTest extends IntegrationTest {
             teamRepository.save(team);
             String url = "/teams/" + team.getId() + "/studies";
             final StudyCreateRequest request = new StudyCreateRequest("알고리즘", "알고리즘 스터디 입니다.",
-                    LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L, null);
+                    LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L);
             callPostApi(url, request).andExpect(status().isCreated());
         }
 
@@ -64,7 +64,7 @@ public class StudyControllerTest extends IntegrationTest {
                                              Long cropId) throws Exception {
             final StudyCreateRequest request = new StudyCreateRequest(name, description,
                     (startDate != null && !startDate.isEmpty()) ? LocalDate.parse(startDate) : null,
-                    LocalDate.parse(endDate), cropId, null);
+                    LocalDate.parse(endDate), cropId);
 
             callPostApi("/teams/1/studies", request).andExpect(status().isBadRequest());
         }

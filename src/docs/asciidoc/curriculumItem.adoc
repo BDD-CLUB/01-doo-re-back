@@ -38,3 +38,31 @@ include::{snippets}/curriculum-check/http-response.adoc[]
 
 .Path Parameters
 include::{snippets}/curriculum-check/path-parameters.adoc[]
+
+== `GET`: Study 전체 커리큘럼 조회
+
+.HTTP Request
+include::{snippets}/curriculum-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/curriculum-get/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/curriculum-get/http-response.adoc[]
+
+== `GET`: Study 개인 커리큘럼 조회
+
+.HTTP Request
+include::{snippets}/curriculum-get-personal/http-request.adoc[]
+
+.Request Header
+include::{snippets}/curriculum-get-personal/request-headers.adoc[]
+
+.Path Parameters
+include::{snippets}/curriculum-get-personal/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/curriculum-get-personal/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/curriculum-get-personal/response-fields.adoc[]

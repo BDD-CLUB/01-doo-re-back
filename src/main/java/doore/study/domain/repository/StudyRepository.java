@@ -9,4 +9,6 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     @Query("select s from Study s join Participant p on p.studyId=s.id where p.member.id=:memberId")
     List<Study> findAllByMemberId(final Long memberId);
+
+    List<Study> findAllByTeamId(final Long teamId);
 }
