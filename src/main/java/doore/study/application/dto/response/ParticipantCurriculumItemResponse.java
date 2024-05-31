@@ -4,6 +4,7 @@ import doore.study.domain.ParticipantCurriculumItem;
 import java.util.List;
 
 public record ParticipantCurriculumItemResponse(
+        Long id,
         Long participantId,
         Boolean isChecked
 ) {
@@ -11,6 +12,7 @@ public record ParticipantCurriculumItemResponse(
             final List<ParticipantCurriculumItem> participantCurriculumItems) {
         return participantCurriculumItems.stream()
                 .map(participantCurriculumItem -> new ParticipantCurriculumItemResponse(
+                        participantCurriculumItem.getId(),
                         participantCurriculumItem.getParticipantId(),
                         participantCurriculumItem.getIsChecked()
                 ))

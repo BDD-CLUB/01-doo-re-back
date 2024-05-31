@@ -10,6 +10,9 @@ import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRIC
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
+import doore.garden.domain.Garden;
+import doore.garden.domain.GardenType;
+import doore.garden.domain.repository.GardenRepository;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.ParticipantRepository;
@@ -43,6 +46,7 @@ public class CurriculumItemCommandService {
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
     private final StudyRoleRepository studyRoleRepository;
+    private final GardenRepository gardenRepository;
 
     public void manageCurriculum(CurriculumItemManageRequest request, Long studyId, Long memberId) {
         validateExistStudyLeader(memberId);
@@ -67,6 +71,23 @@ public class CurriculumItemCommandService {
                 curriculumItem.getId(), participant.getId()).orElseThrow();
 
         participantCurriculumItem.checkCompletion();
+        if (participantCurriculumItem.getIsChecked()) {
+            createGarden(participantCurriculumItem);
+            return;
+        }
+        deleteGarden(participantCurriculumItem);
+    }
+
+    public void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
+        Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
+                .of(participantCurriculumItem);
+        gardenRepository.save(garden);
+    }
+
+    public void deleteGarden(ParticipantCurriculumItem participantCurriculumItem) {
+        Long contributionId = participantCurriculumItem.getId();
+        GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
+        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
 
     private void checkItemOrderDuplicate(List<CurriculumItemManageDetailRequest> curriculumItems) {

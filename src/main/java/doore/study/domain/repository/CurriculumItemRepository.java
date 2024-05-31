@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CurriculumItemRepository extends JpaRepository<CurriculumItem, Long> {
     List<CurriculumItem> findAllByOrderByItemOrderAsc();
+
+    List<CurriculumItem> findAllByStudyId(Long studyId);
 }

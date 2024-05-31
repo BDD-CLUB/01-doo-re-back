@@ -34,6 +34,9 @@ include::{snippets}/document-get-list/http-request.adoc[]
 .Path Parameters
 include::{snippets}/document-get-list/path-parameters.adoc[]
 
+.Query Parameters
+include::{snippets}/document-get-list/query-parameters.adoc[]
+
 .Http Response
 include::{snippets}/document-get-list/http-response.adoc[]
 

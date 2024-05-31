@@ -2,6 +2,7 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,11 +83,10 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             Long studyId = study.getId();
             Member participant = createMember();
             studyRoleRepository.save(StudyRole.builder()
-                    .studyRoleType(StudyRoleType.ROLE_스터디원)
+                    .studyRoleType(ROLE_스터디원)
                     .studyId(studyId)
                     .memberId(participant.getId())
                     .build());
-
             participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
 
             //when
@@ -102,16 +102,21 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         void withdrawParticipant_정상적으로_참여자가_탈퇴할_수_있다_성공() {
             //Given
             Long studyId = study.getId();
-            Long memberId = member.getId();
-            participantCommandService.saveParticipant(studyId, memberId, member.getId());
+            Member participant = createMember();
+            studyRoleRepository.save(StudyRole.builder()
+                    .memberId(participant.getId())
+                    .studyId(studyId)
+                    .studyRoleType(ROLE_스터디원)
+                    .build());
+
+            participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
 
             //when
-            participantCommandService.withdrawParticipant(studyId, memberId, member.getId());
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
+            participantCommandService.withdrawParticipant(studyId, participant.getId(), participant.getId());
+            List<Participant> participants = participantQueryService.findAllParticipants(studyId, participant.getId());
 
             //then
             assertThat(participants).hasSize(0);
-
         }
     }
 

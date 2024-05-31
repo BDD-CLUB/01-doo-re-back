@@ -3,10 +3,12 @@ package doore.document.application;
 import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_URL;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
+import static doore.garden.domain.GardenType.DOCUMENT_UPLOAD;
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.미나;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
+import static doore.study.StudyFixture.createStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,6 +28,8 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
+import doore.garden.domain.Garden;
+import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
@@ -43,7 +47,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,15 +58,16 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
+    private GardenRepository gardenRepository;
+    @Autowired
     private FileRepository fileRepository;
     @Autowired
     private MemberRepository memberRepository;
-
-    @MockBean
+    @Autowired
     private S3ImageFileService s3ImageFileService;
-    @MockBean
+    @Autowired
     private S3DocumentFileService s3DocumentFileService;
-    @MockBean
+    @Autowired
     private DocumentCommandService documentCommandService;
 
     private DocumentCreateRequest documentRequest;
@@ -72,10 +76,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        documentCommandService = new DocumentCommandService(documentRepository, teamRepository, studyRepository,
-                fileRepository, memberRepository, s3ImageFileService, s3DocumentFileService);
         documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
                 DocumentType.FILE, null, mock(Member.class).getId());
+        study = createStudy();
         study = studyRepository.save(algorithmStudy());
         member = memberRepository.save(미나());
     }
@@ -270,7 +273,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 해당 자료 업로더가 아니라면 업데이트 할 수 없다.")
-    void updateDocument_해당_자료_업로더가_아니라면_업데이트_할_수_없다_실패(){
+    void updateDocument_해당_자료_업로더가_아니라면_업데이트_할_수_없다_실패() {
         Document document = new DocumentFixture().buildDocument();
         Member notUploader = createMember();
 
@@ -299,7 +302,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 해당 자료 업로더가 아니라면 삭제 할 수 없다.")
-    void deleteDocument_해당_자료_업로더가_아니라면_삭제_할_수_없다_실패(){
+    void deleteDocument_해당_자료_업로더가_아니라면_삭제_할_수_없다_실패() {
         Document document = new DocumentFixture().buildDocument();
         Member notUploader = createMember();
 
@@ -321,5 +324,20 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                 documentCommandService.createDocument(fileRequest, null, STUDY, study.getId(), invalidMemberId))
                 .isInstanceOf(MemberException.class)
                 .hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
+    @DisplayName("[성공] 학습자료 업로드시 정상적으로 텃밭을 생성할 수 있다.")
+    public void createGarden_학습자료_업로드시_정상적으로_텃밭에_반영된다_성공() throws Exception {
+        //given
+        Document document = new DocumentFixture().buildDocument();
+
+        //when
+        documentCommandService.createGarden(document);
+
+        //then
+        Garden garden = gardenRepository.findAll().get(0);
+        assertEquals(garden.getContributionId(), document.getId());
+        assertEquals(garden.getType(), DOCUMENT_UPLOAD);
     }
 }

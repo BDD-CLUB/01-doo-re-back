@@ -13,7 +13,7 @@ import doore.team.domain.Team;
 import java.time.LocalDate;
 import java.util.List;
 
-public record StudySimpleResponse(
+public record StudySimpleResponse( //todo: 삭제 (StudyResponse로 교체)
 
         Long id,
         String name,

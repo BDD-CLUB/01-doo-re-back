@@ -20,6 +20,8 @@ link:./attendance.html[출석 API]
 
 link:./document.html[학습자료 API]
 
+link:./garden.html[텃밭 API]
+
 ## 스터디
 
 link:./study.html[스터디 API]

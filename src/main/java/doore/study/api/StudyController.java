@@ -2,13 +2,13 @@ package doore.study.api;
 
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
+
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
-import doore.study.application.dto.request.StudyUpdateRequest;
 
-import doore.study.application.dto.response.PersonalStudyDetailResponse;
-import doore.study.application.dto.response.StudyDetailResponse;
+import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.application.dto.response.StudySimpleResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -46,18 +46,10 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}/all") // 스터디장 & 스터디원
-    public ResponseEntity<StudyDetailResponse> getEntireStudy(@PathVariable Long studyId, @LoginMember Member member) {
-        StudyDetailResponse studyDetailResponse = studyQueryService.findStudyById(studyId, member.getId());
+    @GetMapping("/studies/{studyId}")
+    public ResponseEntity<StudyResponse> getStudy(@PathVariable Long studyId, @LoginMember Member member) {
+        StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId, member.getId());
         return ResponseEntity.ok(studyDetailResponse);
-    }
-
-    @GetMapping("/studies/{studyId}") // 회원
-    public ResponseEntity<PersonalStudyDetailResponse> getMyStudyInfo(@PathVariable Long studyId,
-                                                                      @LoginMember Member member) {
-        PersonalStudyDetailResponse personalStudyDetailResponse =
-                studyQueryService.getPersonalStudyDetail(studyId, member.getId());
-        return ResponseEntity.status(HttpStatus.OK).body(personalStudyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}") // 스터디장
