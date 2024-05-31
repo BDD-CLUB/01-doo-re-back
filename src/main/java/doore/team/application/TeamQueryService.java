@@ -34,7 +34,9 @@ public class TeamQueryService {
                 .toList();
     }
 
-    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(Long memberId) {
+    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(Long memberId, Long tokenMemberId) {
+        validateMember(memberId);
+        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         List<MyTeamsAndStudiesResponse> myTeamsAndStudiesResponses = new ArrayList<>();
         List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
 

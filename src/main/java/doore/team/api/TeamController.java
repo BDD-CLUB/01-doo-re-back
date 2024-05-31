@@ -100,8 +100,8 @@ public class TeamController {
     }
 
     @GetMapping("/members/{memberId}/studies")
-    public ResponseEntity<List<MyTeamsAndStudiesResponse>> getMyTeamsAndStudies(@PathVariable final Long memberId) {
-        // TODO: 5/16/24 토큰의 주인이 memberId와 동일인물인지 검증
-        return ResponseEntity.ok(teamQueryService.findMyTeamsAndStudies(memberId));
+    public ResponseEntity<List<MyTeamsAndStudiesResponse>> getMyTeamsAndStudies(@PathVariable final Long memberId,
+                                                                                @LoginMember Member member) {
+        return ResponseEntity.ok(teamQueryService.findMyTeamsAndStudies(memberId, member.getId()));
     }
 }
