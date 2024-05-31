@@ -30,7 +30,6 @@ import doore.restdocs.RestDocsTest;
 import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -85,7 +84,6 @@ public class DocumentDocsTest extends RestDocsTest {
     }
 
     @Test
-    @Disabled //todo: Could not write JSON 오류 해결
     @DisplayName("학습자료 목록을 조회한다.")
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
@@ -94,8 +92,7 @@ public class DocumentDocsTest extends RestDocsTest {
         DocumentCondensedResponse otherDocumentCondensedResponse =
                 new DocumentCondensedResponse(2L, "학습자료2", "학습자료2 입니다.", LocalDate.parse("2020-02-03"), 2L);
         Page<DocumentCondensedResponse> documentCondensedResponses = new PageImpl<>(
-                List.of(documentCondensedResponse, otherDocumentCondensedResponse));
-
+                List.of(documentCondensedResponse, otherDocumentCondensedResponse), PageRequest.of(0,4),2);
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
                 .thenReturn(documentCondensedResponses);
