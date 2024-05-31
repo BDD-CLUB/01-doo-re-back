@@ -28,19 +28,19 @@ public class GardenApiDocsTest extends RestDocsTest {
                         .dayOfYear(0)
                         .weekOfYear(0)
                         .dayOfWeek(0)
-                        .attributeNumber(2)
+                        .contributeCount(2)
                         .build(),
                 DayGardenResponse.builder()
                         .dayOfYear(1)
                         .weekOfYear(0)
                         .dayOfWeek(1)
-                        .attributeNumber(1)
+                        .contributeCount(1)
                         .build(),
                 DayGardenResponse.builder()
                         .dayOfYear(7)
                         .weekOfYear(1)
                         .dayOfWeek(0)
-                        .attributeNumber(5)
+                        .contributeCount(5)
                         .build()
         );
 
@@ -56,7 +56,7 @@ public class GardenApiDocsTest extends RestDocsTest {
                                 numberFieldWithPath("[].dayOfYear", "1년 중 몇번째 날인가(0~365)"),
                                 numberFieldWithPath("[].weekOfYear", "1년 중 몇번째 주인가(0~52)"),
                                 numberFieldWithPath("[].dayOfWeek", "1주 중 몇번째 요일인가(월요일부터 시작, 0~7)"),
-                                numberFieldWithPath("[].attributeNumber", "그날의 기여도")
+                                numberFieldWithPath("[].contributeCount", "그날의 기여도(기여된 횟수)")
                         )));
     }
 

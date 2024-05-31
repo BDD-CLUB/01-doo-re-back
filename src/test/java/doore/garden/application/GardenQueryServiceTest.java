@@ -89,7 +89,7 @@ public class GardenQueryServiceTest extends IntegrationTest {
 
      //then
      assertEquals(1,gardenResponses.size());
-     assertEquals(2,gardenResponses.get(0).attributeNumber());
+     assertEquals(2,gardenResponses.get(0).contributeCount());
      assertEquals(0,gardenResponses.get(0).dayOfYear());
      assertEquals(0,gardenResponses.get(0).weekOfYear());
    }
