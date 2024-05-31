@@ -54,7 +54,7 @@ public class StudyQueryService {
     private final StudyDao studyDao;
 
     public StudyDetailResponse findStudyById(Long studyId, Long memberId) {
-        validateExistStudyLeaderAndStudyMember(memberId);
+        validateExistStudyLeaderAndParticipant(memberId);
         Study study = getStudy(studyId);
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
@@ -138,7 +138,7 @@ public class StudyQueryService {
         }
     }
 
-    private void validateExistStudyLeaderAndStudyMember(Long memberId) {
+    private void validateExistStudyLeaderAndParticipant(Long memberId) {
         StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))){
