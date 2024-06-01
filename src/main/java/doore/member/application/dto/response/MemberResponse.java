@@ -10,7 +10,7 @@ public record MemberResponse(
         String name,
         String email,
         String imageUrl,
-        String role,  // 권한 기능 구현 후 수정 예정
+        String teamRole,
         Boolean isDeleted
 ) {
 

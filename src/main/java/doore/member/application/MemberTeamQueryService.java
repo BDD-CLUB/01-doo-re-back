@@ -1,11 +1,19 @@
 package doore.member.application;
 
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
+import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+
 import doore.member.application.dto.response.MemberResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
+import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberTeamRepository;
+import doore.member.domain.repository.TeamRoleRepository;
+import doore.member.exception.MemberException;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,8 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberTeamQueryService {
 
     private final MemberTeamRepository memberTeamRepository;
+    private final TeamRoleRepository teamRoleRepository;
 
-    public List<MemberResponse> findMemberTeams(final Long teamId, final String keyword) {
+    public List<MemberResponse> findMemberTeams(final Long teamId, final String keyword, final Long memberId) {
+        validateExistTeamLeaderAndTeamMember(memberId);
         if (keyword == null || keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
         }
@@ -31,10 +41,8 @@ public class MemberTeamQueryService {
                 .sorted(Comparator.comparing(Member::getName))
                 .sorted(Comparator.comparing(member -> member.getName().length()))
                 .toList();
-        // 추후 role 구현 후 수정 예정
-        final Map<Member, String> roleOfMembers = new HashMap<>();
-        members.stream()
-                .forEach(member -> roleOfMembers.put(member, "팀원"));
+
+        final Map<Member, String> roleOfMembers = getRoleOfMember(members);
         return MemberResponse.of(members, roleOfMembers);
     }
 
@@ -44,10 +52,27 @@ public class MemberTeamQueryService {
                 .map(MemberTeam::getMember)
                 .sorted(Comparator.comparing(Member::getName))
                 .collect(Collectors.toList());
-        // 추후 role 구현 후 수정 예정
-        final Map<Member, String> roleOfMembers = new HashMap<>();
-        members.stream()
-                .forEach(member -> roleOfMembers.put(member, "팀원"));
+
+        final Map<Member, String> roleOfMembers = getRoleOfMember(members);
         return MemberResponse.of(members, roleOfMembers);
+    }
+
+    private Map<Member, String> getRoleOfMember(List<Member> members) {
+        return members.stream()
+                .collect(Collectors.toMap(
+                        member -> member,
+                        member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
+                                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
+                                .getTeamRoleType()
+                                .name()
+                ));
+    }
+
+    private void validateExistTeamLeaderAndTeamMember(Long memberId) {
+        TeamRole teamRole = teamRoleRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        if (!(teamRole.getTeamRoleType().equals(ROLE_팀장) || teamRole.getTeamRoleType().equals(ROLE_팀원))){
+            throw new MemberException(UNAUTHORIZED);
+        }
     }
 }

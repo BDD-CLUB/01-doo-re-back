@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TeamRoleRepository extends JpaRepository<TeamRole, Long> {
     Optional<TeamRole> findTeamRoleByTeamIdAndMemberId(Long teamId, Long memberId);
     Optional<TeamRole> findTeamRoleByTeamIdAndTeamRoleType(Long teamId, TeamRoleType teamRoleType);
+    Optional<TeamRole> findTeamRoleByMemberId(Long memberId);
 }

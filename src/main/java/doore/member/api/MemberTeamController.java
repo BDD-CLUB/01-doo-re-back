@@ -2,6 +2,8 @@ package doore.member.api;
 
 import doore.member.application.MemberTeamQueryService;
 import doore.member.application.dto.response.MemberResponse;
+import doore.member.domain.Member;
+import doore.resolver.LoginMember;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberTeamController {
     private final MemberTeamQueryService memberTeamQueryService;
 
-    @GetMapping("/teams/{teamId}/members")
+    @GetMapping("/teams/{teamId}/members") // 팀원 & 팀장
     public ResponseEntity<List<MemberResponse>> getMemberTeam(@PathVariable final Long teamId,
-                                                              @RequestParam(value = "keyword", required = false) final String keyword) {
-        final List<MemberResponse> memberResponses = memberTeamQueryService.findMemberTeams(teamId, keyword);
+                                                              @RequestParam(value = "keyword", required = false) final String keyword,
+                                                              @LoginMember Member member) {
+        final List<MemberResponse> memberResponses = memberTeamQueryService.findMemberTeams(teamId, keyword, member.getId());
         return ResponseEntity.ok(memberResponses);
     }
 }
