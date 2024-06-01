@@ -16,4 +16,8 @@ public interface ParticipantCurriculumItemRepository extends JpaRepository<Parti
             + "where m.id = :memberId "
             + "and c.study.id = :studyId ")
     List<ParticipantCurriculumItem> findAllByStudyIdAndMemberId(Long studyId, Long memberId);
+
+    List<ParticipantCurriculumItem> findAllByCurriculumItemId(Long curriculumId);
+
+    void deleteAllByCurriculumItemId(Long curriculumItemId);
 }

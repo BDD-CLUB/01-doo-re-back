@@ -8,4 +8,6 @@ public interface CurriculumItemRepository extends JpaRepository<CurriculumItem, 
     List<CurriculumItem> findAllByOrderByItemOrderAsc();
 
     List<CurriculumItem> findAllByStudyId(Long studyId);
+
+    void deleteAllByStudyId(Long studyId);
 }
