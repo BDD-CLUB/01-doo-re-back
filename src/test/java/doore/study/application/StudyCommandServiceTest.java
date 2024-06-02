@@ -214,10 +214,10 @@ public class StudyCommandServiceTest extends IntegrationTest {
             @Test
             @DisplayName("[성공] 스터디가 삭제되면 커리큘럼이 모두 삭제된다.")
             void deleteStudy_스터디가_삭제되면_커리큘럼이_모두_삭제된다_성공() throws Exception {
-                List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAll();
+                List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
 
                 studyCommandService.deleteStudy(study.getId(), memberId);
-                List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAll();
+                List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
 
                 assertThat(beforeCurriculumItems.size()).isEqualTo(2);
                 assertThat(afterCurriculumItems).isEmpty();
