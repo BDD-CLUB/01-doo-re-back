@@ -69,13 +69,14 @@ public class StudyCommandService {
                 .map(CurriculumItem::getId)
                 .toList();
 
+        curriculumItems.forEach(CurriculumItem::isDelete);
+
         curriculumItemIds.forEach(curriculumItemId -> {
             List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(curriculumItemId);
             items.forEach(ParticipantCurriculumItem::isDelete);
         });
 
         studyRepository.deleteById(studyId);
-        curriculumItemRepository.deleteAllByStudyId(studyId);
     }
 
     public void updateStudy(StudyUpdateRequest request, Long studyId, Long memberId) {

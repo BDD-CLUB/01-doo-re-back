@@ -221,7 +221,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAll();
 
                 assertThat(beforeCurriculumItems.size()).isEqualTo(2);
-                assertTrue(afterCurriculumItems.isEmpty());
+                assertThat(afterCurriculumItems).isEmpty();
             }
 
             @Test
