@@ -164,6 +164,7 @@ public class CurriculumItemCommandService {
                     List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
                             curriculumItemId);
                     items.forEach(ParticipantCurriculumItem::isDelete);
+                    curriculumItemRepository.deleteById(curriculumItemId);
                 });
     }
 
