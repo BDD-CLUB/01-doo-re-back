@@ -26,9 +26,14 @@ import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
+import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -305,5 +310,37 @@ public class TeamApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("get-team", pathParameters, responseFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("팀 목록(팀 랭킹)을 조회한다.")
+    public void 팀_목록팀_랭킹을_조회한다() throws Exception {
+        //given
+        Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
+        teamRanks.put(5, new TeamReferenceResponse(1L, "팀1", "팀 설명입니다", "팀 이미지 Url"));
+        teamRanks.put(15, new TeamReferenceResponse(2L, "팀2", "팀 설명입니다", "팀 이미지 Url"));
+        teamRanks.put(20, new TeamReferenceResponse(3L, "팀3", "팀 설명입니다", "팀 이미지 Url"));
+        teamRanks.put(0, new TeamReferenceResponse(4L, "팀4", "팀 설명입니다", "팀 이미지 Url"));
+
+        List<TeamRankResponse> teamRankResponses = teamRanks.entrySet().stream()
+                .map(entry -> new TeamRankResponse(entry.getKey(), entry.getValue()))
+                .toList();
+        System.out.println(teamRankResponses.get(0));
+        //when
+        when(teamQueryService.getTeamRanks()).thenReturn(teamRankResponses);
+
+        //then
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                numberFieldWithPath("[].point", "팀 점수 총합"),
+                numberFieldWithPath("[].teamReferenceResponse.id", "팀의 ID"),
+                stringFieldWithPath("[].teamReferenceResponse.name", "팀의 이름"),
+                stringFieldWithPath("[].teamReferenceResponse.description", "팀의 설명"),
+                stringFieldWithPath("[].teamReferenceResponse.imageUrl", "팀의 이미지 URL")
+        );
+
+        mockMvc.perform(get("/teams")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-team-week-rank", responseFieldsSnippet));
     }
 }
