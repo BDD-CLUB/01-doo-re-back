@@ -160,7 +160,12 @@ public class CurriculumItemCommandService {
     private void deleteCurriculum(List<CurriculumItemManageDetailRequest> deletedCurriculumItems) {
         deletedCurriculumItems.stream()
                 .map(CurriculumItemManageDetailRequest::id)
-                .forEach(curriculumItemRepository::deleteById);
+                .forEach(curriculumItemId -> {
+                    List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                            curriculumItemId);
+                    items.forEach(ParticipantCurriculumItem::isDelete);
+                    curriculumItemRepository.deleteById(curriculumItemId);
+                });
     }
 
     private void sortCurriculum() {
@@ -174,7 +179,7 @@ public class CurriculumItemCommandService {
     private void validateExistStudyLeader(Long memberId) {
         StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)){
+        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
@@ -182,7 +187,7 @@ public class CurriculumItemCommandService {
     private void validateExistStudyLeaderAndStudyMember(Long memberId) {
         StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))){
+        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
