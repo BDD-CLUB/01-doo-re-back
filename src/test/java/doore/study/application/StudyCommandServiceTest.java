@@ -181,7 +181,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
             private Member member1;
             private Member member2;
 
-
             @BeforeEach
             void setUp() {
                 member1 = memberRepository.save(보름());
