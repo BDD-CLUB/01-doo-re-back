@@ -255,7 +255,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         List<ParticipantCurriculumItem> result = participantCurriculumItemRepository.findAllByCurriculumItemId(
                 curriculumItem3.getId());
 
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isEmpty();
     }
 
     @Test
