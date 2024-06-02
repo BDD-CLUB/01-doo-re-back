@@ -125,3 +125,17 @@ include::{snippets}/get-team/http-response.adoc[]
 
 .Response Body's Fields
 include::{snippets}/get-team/response-fields.adoc[]
+
+== `GET`: 팀 목록(랭킹) 조회
+
+NOTE: 이번주(월요일부터 시작)의 기여도 총합을 기준으로 내림차순 나열됩니다.
+
+
+.HTTP Request
+include::{snippets}/get-team-week-rank/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/get-team-week-rank/http-response.adoc[]
+
+.Response Body's Fields
+include::{snippets}/get-team-week-rank/response-fields.adoc[]
