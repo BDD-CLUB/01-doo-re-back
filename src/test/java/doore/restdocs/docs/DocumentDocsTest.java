@@ -105,7 +105,7 @@ public class DocumentDocsTest extends RestDocsTest {
         Page<DocumentCondensedResponse> documentCondensedResponses = new PageImpl<>(
                 List.of(documentCondensedResponse, otherDocumentCondensedResponse), PageRequest.of(0,4),2);
         //when
-        when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class), any()))
+        when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
                 .thenReturn(documentCondensedResponses);
 
         //then

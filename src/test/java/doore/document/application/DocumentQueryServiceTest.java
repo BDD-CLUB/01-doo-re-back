@@ -88,30 +88,11 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("[성공] 정상적으로 스터디 학습자료 목록을 조회할 수 있다")
-    public void getAllDocumentList_정상적으로_스터디_학습자료_목록을_조회할_수_있다_성공() {
+    @DisplayName("[성공] 비회원이_정상적으로 팀 학습자료 목록을 조회할 수 있다")
+    public void getAllDocumentList_비회원이_정상적으로_팀_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
         Page<DocumentCondensedResponse> responses =
-                documentQueryService.getAllDocument(DocumentGroupType.STUDY, study.getId(), PageRequest.of(0, 4),
-                        member.getId());
-
-        //then
-        assertAll(
-                () -> assertThat(responses.getSize()).isNotZero(),
-                () -> assertEquals(responses.getContent().get(0).title(), document.getName()),
-                () -> assertEquals(responses.getContent().get(0).description(), document.getDescription()),
-                () -> assertEquals(responses.getContent().get(0).date(), document.getCreatedAt().toLocalDate()),
-                () -> assertEquals(responses.getContent().get(0).uploaderId(), document.getUploaderId())
-        );
-    }
-
-    @Test
-    @DisplayName("[성공] 정상적으로 팀 학습자료 목록을 조회할 수 있다")
-    public void getAllDocumentList_정상적으로_팀_학습자료_목록을_조회할_수_있다_성공() {
-        //given&when
-        Page<DocumentCondensedResponse> responses =
-                documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4),
-                        notMember.getId());
+                documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4));
 
         //then
         assertAll(
@@ -124,10 +105,26 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("[성공] 정상적으로 학습자료 상세를 조회할 수 있다.")
-    public void getDocument_정상적으로_학습자료_상세를_조회할_수_있다_성공() {
+    @DisplayName("[성공] 정상적으로 팀 학습자료 상세를 조회할 수 있다.")
+    public void getDocument_정상적으로_팀_학습자료_상세를_조회할_수_있다_성공() {
+        //given&when
+        DocumentDetailResponse response = documentQueryService.getDocument(anotherDocument.getId(), anotherMember.getId());
+
+        //then
+        assertAll(
+                () -> assertEquals(response.title(), anotherDocument.getName()),
+                () -> assertEquals(response.description(), anotherDocument.getDescription()),
+                () -> assertEquals(response.date(), anotherDocument.getCreatedAt().toLocalDate()),
+                () -> assertEquals(response.accessType(), anotherDocument.getAccessType())
+        );
+    }
+
+    @Test
+    @DisplayName("[성공] 정상적으로 스터디 학습자료 상세를 조회할 수 있다")
+    public void getDocument_정상적으로_스터디_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
         DocumentDetailResponse response = documentQueryService.getDocument(document.getId(), member.getId());
+
         //then
         assertAll(
                 () -> assertEquals(response.title(), document.getName()),

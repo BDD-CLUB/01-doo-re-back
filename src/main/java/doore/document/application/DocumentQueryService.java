@@ -38,10 +38,8 @@ public class DocumentQueryService {
     private final StudyRoleRepository studyRoleRepository;
 
     public Page<DocumentCondensedResponse> getAllDocument(
-            DocumentGroupType groupType, Long groupId, Pageable pageable, Long memberId) {
-        if (groupType == STUDY) {
-            validateMemberRoleForStudy(memberId);
-        }
+            DocumentGroupType groupType, Long groupId, Pageable pageable) {
+
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
                 .map(this::toDocumentCondensedResponse);
     }
@@ -57,6 +55,10 @@ public class DocumentQueryService {
         validateExistMember(memberId);
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
+        DocumentGroupType documentGroupType = document.getGroupType();
+        if (documentGroupType == STUDY) {
+            validateMemberRoleForStudy(memberId);
+        }
         return toDocumentDetailResponse(document);
     }
 
