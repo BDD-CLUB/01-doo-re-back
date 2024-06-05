@@ -161,9 +161,7 @@ public class CurriculumItemCommandService {
         deletedCurriculumItems.stream()
                 .map(CurriculumItemManageDetailRequest::id)
                 .forEach(curriculumItemId -> {
-                    List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
-                            curriculumItemId);
-                    items.forEach(ParticipantCurriculumItem::delete);
+                    participantCurriculumItemRepository.deleteAllByCurriculumItemId(curriculumItemId);
                     curriculumItemRepository.deleteById(curriculumItemId);
                 });
     }
