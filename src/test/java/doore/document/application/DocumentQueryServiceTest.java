@@ -4,6 +4,7 @@ import static doore.document.domain.DocumentGroupType.TEAM;
 import static doore.document.domain.DocumentType.URL;
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.MemberFixture.짱구;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.team.TeamFixture.team;
@@ -56,6 +57,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     private Document anotherDocument;
     private Member member;
     private Member anotherMember;
+    private Member notMember;
     private StudyRole studyRole;
     private Team team;
 
@@ -65,6 +67,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         study = studyRepository.save(algorithmStudy());
         member = memberRepository.save(아마란스());
         anotherMember = memberRepository.save(미나());
+        notMember = 짱구();
         studyRole = studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(ROLE_스터디원)
                 .studyId(study.getId())
@@ -108,7 +111,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         //given&when
         Page<DocumentCondensedResponse> responses =
                 documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4),
-                        anotherMember.getId());
+                        notMember.getId());
 
         //then
         assertAll(
