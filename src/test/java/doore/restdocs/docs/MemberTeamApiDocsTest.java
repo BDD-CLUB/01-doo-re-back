@@ -13,7 +13,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.member.application.dto.response.MemberResponse;
+import doore.member.application.dto.response.TeamMemberResponse;
 import doore.restdocs.RestDocsTest;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,12 +51,12 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].role", "회원의 직책(추후 수정 예정)"),
                 booleanFieldWithPath("[].isDeleted", "회원의 삭제(탈퇴) 여부")
         );
-        final List<MemberResponse> response = List.of(
-                new MemberResponse(2L, "보름", "borum@naver.com", "https://borum.png", ROLE_팀원, false),
-                new MemberResponse(1L, "아마란스", "songsy404@naver.com", "https://amaran-th.png", ROLE_팀장, false),
-                new MemberResponse(4L, "아마스빈", "amasbin@naver.com", "https://borum.png", ROLE_팀원, false),
-                new MemberResponse(5L, "아마아마아마", "amaamaama@naver.com", "https://zzanggu.png", ROLE_팀원, false),
-                new MemberResponse(3L, "짱구", "zzanggu@naver.com", "https://zzanggu.png", ROLE_팀원, false)
+        final List<TeamMemberResponse> response = List.of(
+                new TeamMemberResponse(2L, "보름", "borum@naver.com", "https://borum.png", ROLE_팀원, false),
+                new TeamMemberResponse(1L, "아마란스", "songsy404@naver.com", "https://amaran-th.png", ROLE_팀장, false),
+                new TeamMemberResponse(4L, "아마스빈", "amasbin@naver.com", "https://borum.png", ROLE_팀원, false),
+                new TeamMemberResponse(5L, "아마아마아마", "amaamaama@naver.com", "https://zzanggu.png", ROLE_팀원, false),
+                new TeamMemberResponse(3L, "짱구", "zzanggu@naver.com", "https://zzanggu.png", ROLE_팀원, false)
         );
 
         // when
@@ -86,10 +86,10 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].role", "회원의 직책(추후 수정 예정)"),
                 booleanFieldWithPath("[].isDeleted", "회원의 삭제(탈퇴) 여부")
         );
-        final List<MemberResponse> response = List.of(
-                new MemberResponse(1L, "아마란스", "songsy404@naver.com", "https://amaran-th.png", ROLE_팀장, false),
-                new MemberResponse(4L, "아마스빈", "amasbin@naver.com", "https://borum.png", ROLE_팀원, false),
-                new MemberResponse(5L, "아마아마아마", "amaamaama@naver.com", "https://zzanggu.png", ROLE_팀원, false)
+        final List<TeamMemberResponse> response = List.of(
+                new TeamMemberResponse(1L, "아마란스", "songsy404@naver.com", "https://amaran-th.png", ROLE_팀장, false),
+                new TeamMemberResponse(4L, "아마스빈", "amasbin@naver.com", "https://borum.png", ROLE_팀원, false),
+                new TeamMemberResponse(5L, "아마아마아마", "amaamaama@naver.com", "https://zzanggu.png", ROLE_팀원, false)
         );
 
         // when

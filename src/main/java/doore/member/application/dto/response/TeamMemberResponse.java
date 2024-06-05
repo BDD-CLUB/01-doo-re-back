@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public record MemberResponse(
+public record TeamMemberResponse(
         Long id,
         String name,
         String email,
@@ -15,9 +15,9 @@ public record MemberResponse(
         Boolean isDeleted
 ) {
 
-    public static List<MemberResponse> of(final List<Member> members, Map<Member, TeamRoleType> roleOfMembers) {
+    public static List<TeamMemberResponse> of(final List<Member> members, Map<Member, TeamRoleType> roleOfMembers) {
         return members.stream()
-                .map(member -> new MemberResponse(
+                .map(member -> new TeamMemberResponse(
                         member.getId(),
                         member.getName(),
                         member.getEmail(),

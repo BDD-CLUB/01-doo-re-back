@@ -6,7 +6,7 @@ import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
-import doore.member.application.dto.response.MemberResponse;
+import doore.member.application.dto.response.TeamMemberResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.TeamRole;
@@ -30,7 +30,7 @@ public class MemberTeamQueryService {
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRoleRepository teamRoleRepository;
 
-    public List<MemberResponse> findMemberTeams(final Long teamId, final String keyword, final Long memberId) {
+    public List<TeamMemberResponse> findMemberTeams(final Long teamId, final String keyword, final Long memberId) {
         validateExistTeamLeaderAndTeamMember(memberId);
         if (keyword == null || keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
@@ -44,10 +44,10 @@ public class MemberTeamQueryService {
                 .toList();
 
         final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(members);
-        return MemberResponse.of(members, roleOfMembers);
+        return TeamMemberResponse.of(members, roleOfMembers);
     }
 
-    private List<MemberResponse> findAllMemberOfTeam(final Long teamId) {
+    private List<TeamMemberResponse> findAllMemberOfTeam(final Long teamId) {
         final List<Member> members = memberTeamRepository.findAllByTeamId(teamId)
                 .stream()
                 .map(MemberTeam::getMember)
@@ -55,7 +55,7 @@ public class MemberTeamQueryService {
                 .collect(Collectors.toList());
 
         final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(members);
-        return MemberResponse.of(members, roleOfMembers);
+        return TeamMemberResponse.of(members, roleOfMembers);
     }
 
     private Map<Member, TeamRoleType> getRoleOfMember(List<Member> members) {

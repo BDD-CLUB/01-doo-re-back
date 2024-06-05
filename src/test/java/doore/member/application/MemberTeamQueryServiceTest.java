@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import doore.helper.IntegrationTest;
-import doore.member.application.dto.response.MemberResponse;
+import doore.member.application.dto.response.TeamMemberResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.TeamRole;
@@ -102,10 +102,10 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
                                 .orElseThrow()
                                 .getTeamRoleType()
                 ));
-        final List<MemberResponse> expected = MemberResponse.of(members, roleOfMembers);
+        final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
 
         //when
-        final List<MemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, null, teamMemberRole.getId());
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, null, teamMemberRole.getId());
 
         //then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -123,10 +123,10 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
                                 .orElseThrow()
                                 .getTeamRoleType()
                 ));
-        final List<MemberResponse> expected = MemberResponse.of(members, roleOfMembers);
+        final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
 
         //when
-        final List<MemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "아마", teamMemberRole.getId());
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "아마", teamMemberRole.getId());
 
         //then
         Assertions.assertThat(actual)
@@ -146,10 +146,10 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
                                 .orElseThrow()
                                 .getTeamRoleType()
                 ));
-        final List<MemberResponse> expected = MemberResponse.of(members, roleOfMembers);
+        final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
 
         //when
-        final List<MemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "test", teamLeaderRole.getId());
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "test", teamLeaderRole.getId());
 
         //then
         Assertions.assertThat(actual)
