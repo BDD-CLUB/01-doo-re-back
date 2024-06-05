@@ -46,9 +46,9 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}")
-    public ResponseEntity<StudyResponse> getStudy(@PathVariable Long studyId, @LoginMember Member member) {
-        StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId, member.getId());
+    @GetMapping("/studies/{studyId}") // 비회원
+    public ResponseEntity<StudyResponse> getStudy(@PathVariable Long studyId) {
+        StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);
     }
 

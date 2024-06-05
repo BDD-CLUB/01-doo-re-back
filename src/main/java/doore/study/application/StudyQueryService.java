@@ -47,9 +47,8 @@ public class StudyQueryService {
     private final MemberRepository memberRepository;
     private final StudyDao studyDao;
 
-    public StudyResponse findStudyById(Long studyId, Long memberId) {
+    public StudyResponse findStudyById(Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        validateExistStudyLeaderAndParticipant(memberId);
 
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
