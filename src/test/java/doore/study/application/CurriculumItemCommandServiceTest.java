@@ -245,21 +245,26 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 삭제할 수 있다. ")
     public void deleteGarden_커리큘럼_타입의_텃밭을_정상적으로_삭제할_수_있다_성공() throws Exception {
-//            //given
-//            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
-//            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
-//                    .participantId(1L)
-//                    .curriculumItem(curriculumItem)
-//                    .build();
-//            participantCurriculumItemRepository.save(participantCurriculumItem);
-//
-//            curriculumItemCommandService.createGarden(participantCurriculumItem);
-//            assertEquals(1, gardenRepository.findAll().size());
-//
-//            //when
-//            curriculumItemCommandService.deleteGarden(participantCurriculumItem);
-//
-//            //then
-//            assertEquals(0, gardenRepository.findAll().size());
+        Member member = memberRepository.save(보름());
+        Participant participant = participantRepository.save(Participant.builder()
+                .member(member)
+                .studyId(study.getId())
+                .build());
+
+        curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
+        CurriculumItem curriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
+        curriculumItemCommandService.checkCurriculum(curriculumItem.getId(), participant.getId(), memberId);
+
+        ParticipantCurriculumItem beforeParticipantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+                curriculumItem.getId(), participant.getId()).orElseThrow();
+        assertThat(beforeParticipantCurriculumItem.getIsChecked()).isEqualTo(true);
+        assertThat(gardenRepository.findAll().size()).isEqualTo(1);
+
+        curriculumItemCommandService.checkCurriculum(curriculumItem.getId(), participant.getId(), memberId);
+        ParticipantCurriculumItem afterParticipantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+                curriculumItem.getId(), participant.getId()).orElseThrow();
+
+        assertThat(afterParticipantCurriculumItem.getIsChecked()).isEqualTo(false);
+        assertThat(gardenRepository.findAll().size()).isEqualTo(0);
     }
 }
