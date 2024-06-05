@@ -4,6 +4,7 @@ import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마란스;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.TeamFixture.team;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import doore.helper.IntegrationTest;
@@ -12,7 +13,9 @@ import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.exception.MemberException;
+import doore.team.TeamFixture;
 import doore.team.application.dto.response.TeamReferenceResponse;
+import doore.team.application.dto.response.TeamResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.util.List;
@@ -72,5 +75,18 @@ class TeamQueryServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> {
             teamQueryService.findMyTeams(memberId, anotherMemberId);
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
+    @DisplayName("[성공] 팀 상세 조회를 할 수 있다.")
+    void findTeamByTeamId_팀_상세_조회를_할_수_있다_성공() {
+        Team team = TeamFixture.team();
+        teamRepository.save(team);
+        Long attendanceRatio = 50L;
+
+        TeamResponse expectTeamResponse = TeamResponse.of(team, attendanceRatio);
+        TeamResponse actualTeamResponse = teamQueryService.findTeamByTeamId(team.getId());
+
+        assertThat(expectTeamResponse).isEqualTo(actualTeamResponse);
     }
 }
