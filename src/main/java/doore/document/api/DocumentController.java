@@ -49,7 +49,7 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{groupType}/{groupId}/documents") // 회원
+    @GetMapping("/{groupType}/{groupId}/documents") // 팀 학습자료 -> 회원, 스터디 학습자료 -> 스터디 구성원
     public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
             @PathVariable String groupType,
             @PathVariable Long groupId,
