@@ -10,6 +10,7 @@ import doore.team.domain.Team;
 import java.time.LocalDate;
 import lombok.Builder;
 
+@Builder
 public record StudyResponse(
         Long id,
         String name,
@@ -22,19 +23,6 @@ public record StudyResponse(
         TeamReferenceResponse teamReference,
         CropReferenceResponse cropReference
 ) {
-    @Builder
-    public StudyResponse(Long id, String name, String description, LocalDate startDate, LocalDate endDate,
-                         StudyStatus status, TeamReferenceResponse teamReference, CropReferenceResponse cropReference) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
-        this.teamReference = teamReference;
-        this.cropReference = cropReference;
-    }
-
     public static StudyResponse of(final Study study, final Team team, final Crop crop) {
         return StudyResponse.builder()
                 .id(study.getId())
