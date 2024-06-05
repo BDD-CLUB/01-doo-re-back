@@ -78,13 +78,13 @@ public class CurriculumItemCommandService {
         deleteGarden(participantCurriculumItem);
     }
 
-    public void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
+    private void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
         Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
                 .of(participantCurriculumItem);
         gardenRepository.save(garden);
     }
 
-    public void deleteGarden(ParticipantCurriculumItem participantCurriculumItem) {
+    private void deleteGarden(ParticipantCurriculumItem participantCurriculumItem) {
         Long contributionId = participantCurriculumItem.getId();
         GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
         gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
