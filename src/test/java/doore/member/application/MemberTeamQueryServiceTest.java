@@ -18,6 +18,7 @@ import doore.member.application.dto.response.MemberResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.TeamRole;
+import doore.member.domain.TeamRoleType;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
@@ -94,13 +95,12 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
     void findMemberTeams_팀원들을_조회한다_성공() {
         //given
         final List<Member> members = List.of(보름, 비비아마, 아마란스, 아마스, 아마어마어마, 짱구);
-        final Map<Member, String> roleOfMembers = members.stream()
+        final Map<Member, TeamRoleType> roleOfMembers = members.stream()
                 .collect(toMap(
                         member -> member,
                         member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
                                 .orElseThrow()
                                 .getTeamRoleType()
-                                .name()
                 ));
         final List<MemberResponse> expected = MemberResponse.of(members, roleOfMembers);
 
@@ -116,13 +116,12 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
     void findMemberTeams_키워드를_입력받으면_이름의_앞부분이_키워드와_일치하는_팀원들을_조회한다_성공() {
         //given
         final List<Member> members = List.of(아마스, 아마란스, 아마어마어마);
-        final Map<Member, String> roleOfMembers = members.stream()
+        final Map<Member, TeamRoleType> roleOfMembers = members.stream()
                 .collect(toMap(
                         member -> member,
                         member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
                                 .orElseThrow()
                                 .getTeamRoleType()
-                                .name()
                 ));
         final List<MemberResponse> expected = MemberResponse.of(members, roleOfMembers);
 
@@ -140,13 +139,12 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
     void findMemberTeams_키워드를_입력받으면_이메일의_앞부분이_키워드와_일치하는_팀원들을_조회한다_성공() {
         //given
         final List<Member> members = List.of(짱구, 아마스, 비비아마);
-        final Map<Member, String> roleOfMembers = members.stream()
+        final Map<Member, TeamRoleType> roleOfMembers = members.stream()
                 .collect(toMap(
                         member -> member,
                         member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
                                 .orElseThrow()
                                 .getTeamRoleType()
-                                .name()
                 ));
         final List<MemberResponse> expected = MemberResponse.of(members, roleOfMembers);
 

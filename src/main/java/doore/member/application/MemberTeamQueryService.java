@@ -10,6 +10,7 @@ import doore.member.application.dto.response.MemberResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.TeamRole;
+import doore.member.domain.TeamRoleType;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
@@ -42,7 +43,7 @@ public class MemberTeamQueryService {
                 .sorted(Comparator.comparing(member -> member.getName().length()))
                 .toList();
 
-        final Map<Member, String> roleOfMembers = getRoleOfMember(members);
+        final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(members);
         return MemberResponse.of(members, roleOfMembers);
     }
 
@@ -53,18 +54,17 @@ public class MemberTeamQueryService {
                 .sorted(Comparator.comparing(Member::getName))
                 .collect(Collectors.toList());
 
-        final Map<Member, String> roleOfMembers = getRoleOfMember(members);
+        final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(members);
         return MemberResponse.of(members, roleOfMembers);
     }
 
-    private Map<Member, String> getRoleOfMember(List<Member> members) {
+    private Map<Member, TeamRoleType> getRoleOfMember(List<Member> members) {
         return members.stream()
                 .collect(Collectors.toMap(
                         member -> member,
                         member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
                                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                                 .getTeamRoleType()
-                                .name()
                 ));
     }
 
