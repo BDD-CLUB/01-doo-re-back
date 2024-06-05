@@ -2,15 +2,19 @@ package doore.team.application;
 
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
+import doore.attendance.domain.repository.AttendanceRepository;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
+import doore.team.application.dto.response.TeamResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
+import doore.team.exception.TeamException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class TeamQueryService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
+    private final AttendanceRepository attendanceRepository;
 
     public List<TeamReferenceResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
         validateMember(memberId);
@@ -50,6 +55,14 @@ public class TeamQueryService {
             myTeamsAndStudiesResponses.add(myTeamsAndStudiesResponse);
         }
         return myTeamsAndStudiesResponses;
+    }
+
+    public TeamResponse findTeamByTeamId(final Long teamId) {
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+        Long countTeamMember = 2L;
+        Long countAttendanceTrueMember = 1L;
+        Long attendanceRatio = 50L;
+        return TeamResponse.of(team, attendanceRatio);
     }
 
     private void validateMember(final Long memberId) {

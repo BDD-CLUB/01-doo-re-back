@@ -10,6 +10,7 @@ import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
+import doore.team.application.dto.response.TeamResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -103,5 +104,10 @@ public class TeamController {
     public ResponseEntity<List<MyTeamsAndStudiesResponse>> getMyTeamsAndStudies(@PathVariable final Long memberId,
                                                                                 @LoginMember Member member) {
         return ResponseEntity.ok(teamQueryService.findMyTeamsAndStudies(memberId, member.getId()));
+    }
+
+    @GetMapping("/{teamId}") // 비회원
+    public ResponseEntity<TeamResponse> getTeam(@PathVariable final Long teamId) {
+        return ResponseEntity.ok(teamQueryService.findTeamByTeamId(teamId));
     }
 }
