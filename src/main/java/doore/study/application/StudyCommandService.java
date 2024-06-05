@@ -69,11 +69,11 @@ public class StudyCommandService {
                 .map(CurriculumItem::getId)
                 .toList();
 
-        curriculumItems.forEach(CurriculumItem::isDelete);
+        curriculumItems.forEach(CurriculumItem::delete);
 
         curriculumItemIds.forEach(curriculumItemId -> {
             List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(curriculumItemId);
-            items.forEach(ParticipantCurriculumItem::isDelete);
+            items.forEach(ParticipantCurriculumItem::delete);
         });
 
         studyRepository.deleteById(studyId);

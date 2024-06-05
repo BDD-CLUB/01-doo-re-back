@@ -95,7 +95,7 @@ public class Study extends BaseEntity {
         this.status = status;
     }
 
-    public void isDelete() {
+    public void delete() {
         this.isDeleted = true;
     }
 }

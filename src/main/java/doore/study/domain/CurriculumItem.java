@@ -75,7 +75,7 @@ public class CurriculumItem extends BaseEntity {
         }
     }
 
-    public void isDelete() {
+    public void delete() {
         this.isDeleted = true;
     }
 }

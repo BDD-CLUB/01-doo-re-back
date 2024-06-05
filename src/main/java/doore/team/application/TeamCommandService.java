@@ -166,14 +166,14 @@ public class TeamCommandService {
         List<Study> studies = studyRepository.findAllByTeamId(teamId);
 
         studies.forEach(study -> {
-            study.isDelete();
+            study.delete();
             List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
 
             curriculumItems.forEach(curriculumItem -> {
-                curriculumItem.isDelete();
+                curriculumItem.delete();
                 List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByCurriculumItemId(
                         curriculumItem.getId());
-                participantCurriculumItems.forEach(ParticipantCurriculumItem::isDelete);
+                participantCurriculumItems.forEach(ParticipantCurriculumItem::delete);
             });
         });
     }

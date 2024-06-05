@@ -163,7 +163,7 @@ public class CurriculumItemCommandService {
                 .forEach(curriculumItemId -> {
                     List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
                             curriculumItemId);
-                    items.forEach(ParticipantCurriculumItem::isDelete);
+                    items.forEach(ParticipantCurriculumItem::delete);
                     curriculumItemRepository.deleteById(curriculumItemId);
                 });
     }
