@@ -52,7 +52,6 @@ public class DocumentQueryService {
     }
 
     public DocumentDetailResponse getDocument(Long documentId, Long memberId) {
-        validateExistMember(memberId);
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
         DocumentGroupType documentGroupType = document.getGroupType();

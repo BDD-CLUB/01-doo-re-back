@@ -108,7 +108,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 팀 학습자료 상세를 조회할 수 있다.")
     public void getDocument_정상적으로_팀_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        DocumentDetailResponse response = documentQueryService.getDocument(anotherDocument.getId(), anotherMember.getId());
+        DocumentDetailResponse response = documentQueryService.getDocument(anotherDocument.getId(), notMember.getId());
 
         //then
         assertAll(
