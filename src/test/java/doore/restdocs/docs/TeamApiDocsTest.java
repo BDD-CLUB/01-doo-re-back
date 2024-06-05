@@ -286,7 +286,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     void 팀_상세목록을_조회한다() throws Exception {
         final Long teamId = 1L;
 
-        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50L);
+        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50);
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("조회하고자 하는 팀 ID")
         );
