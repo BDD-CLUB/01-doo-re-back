@@ -1,12 +1,11 @@
 package doore.study.application;
 
+import static doore.garden.domain.GardenType.STUDY_CURRICULUM_COMPLETION;
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마란스;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.garden.domain.GardenType.STUDY_CURRICULUM_COMPLETION;
 import static doore.study.CurriculumItemFixture.curriculumItem;
-
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
@@ -149,51 +148,6 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         assertThat(result.getIsChecked()).isEqualTo(false);
     }
 
-    @Nested
-    @DisplayName("커리큘럼 체크 여부에 따라 정상적으로 텃밭을 생성 혹은 삭제한다.")
-    class CurriculumGardenTest {
-        @Test
-        @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 생성할 수 있다. ")
-        public void createGarden_커리큘럼_타입의_텃밭을_정상적으로_생성할_수_있다_성공() throws Exception {
-            //given
-            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
-            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
-                    .participantId(1L)
-                    .curriculumItem(curriculumItem)
-                    .build();
-            participantCurriculumItemRepository.save(participantCurriculumItem);
-
-            //when
-            curriculumItemCommandService.createGarden(participantCurriculumItem);
-
-            //then
-            Garden garden = gardenRepository.findAll().get(0);
-            assertEquals(garden.getContributionId(), participantCurriculumItem.getId());
-            assertEquals(garden.getType(), STUDY_CURRICULUM_COMPLETION);
-        }
-
-        @Test
-        @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 삭제할 수 있다. ")
-        public void deleteGarden_커리큘럼_타입의_텃밭을_정상적으로_삭제할_수_있다_성공() throws Exception {
-            //given
-            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
-            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
-                    .participantId(1L)
-                    .curriculumItem(curriculumItem)
-                    .build();
-            participantCurriculumItemRepository.save(participantCurriculumItem);
-
-            curriculumItemCommandService.createGarden(participantCurriculumItem);
-            assertEquals(1, gardenRepository.findAll().size());
-
-            //when
-            curriculumItemCommandService.deleteGarden(participantCurriculumItem);
-
-            //then
-            assertEquals(0, gardenRepository.findAll().size());
-        }
-    }
-
     @Test
     @DisplayName("[성공] 아이디가 없으면 커리큘럼을 생성한다.")
     public void createCurriculum_아이디가_없으면_커리큘럼을_생성한다() throws Exception {
@@ -266,5 +220,50 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> curriculumItemCommandService.manageCurriculum(request, study.getId(), member.getId()))
                 .isInstanceOf(MemberException.class)
                 .hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Nested
+    @DisplayName("커리큘럼 체크 여부에 따라 정상적으로 텃밭을 생성 혹은 삭제한다.")
+    class CurriculumGardenTest {
+        @Test
+        @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 생성할 수 있다. ")
+        public void createGarden_커리큘럼_타입의_텃밭을_정상적으로_생성할_수_있다_성공() throws Exception {
+            //given
+            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
+            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+                    .participantId(1L)
+                    .curriculumItem(curriculumItem)
+                    .build();
+            participantCurriculumItemRepository.save(participantCurriculumItem);
+
+            //when
+            curriculumItemCommandService.createGarden(participantCurriculumItem);
+
+            //then
+            Garden garden = gardenRepository.findAll().get(0);
+            assertEquals(garden.getContributionId(), participantCurriculumItem.getId());
+            assertEquals(garden.getType(), STUDY_CURRICULUM_COMPLETION);
+        }
+
+        @Test
+        @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 삭제할 수 있다. ")
+        public void deleteGarden_커리큘럼_타입의_텃밭을_정상적으로_삭제할_수_있다_성공() throws Exception {
+            //given
+            CurriculumItem curriculumItem = curriculumItemRepository.save(curriculumItem());
+            ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+                    .participantId(1L)
+                    .curriculumItem(curriculumItem)
+                    .build();
+            participantCurriculumItemRepository.save(participantCurriculumItem);
+
+            curriculumItemCommandService.createGarden(participantCurriculumItem);
+            assertEquals(1, gardenRepository.findAll().size());
+
+            //when
+            curriculumItemCommandService.deleteGarden(participantCurriculumItem);
+
+            //then
+            assertEquals(0, gardenRepository.findAll().size());
+        }
     }
 }
