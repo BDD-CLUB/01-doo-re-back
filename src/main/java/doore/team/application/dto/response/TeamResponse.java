@@ -9,9 +9,9 @@ public record TeamResponse(
         String name,
         String description,
         String imageUrl,
-        Long attendanceRatio
+        long attendanceRatio
 ) {
-    public static TeamResponse of(final Team team, final Long attendanceRatio) {
+    public static TeamResponse of(final Team team, final long attendanceRatio) {
         return TeamResponse.builder()
                 .id(team.getId())
                 .name(team.getName())
