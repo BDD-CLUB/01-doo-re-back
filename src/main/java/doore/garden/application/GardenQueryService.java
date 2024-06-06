@@ -3,6 +3,8 @@ package doore.garden.application;
 import doore.garden.application.dto.response.DayGardenResponse;
 import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
+import doore.team.domain.Team;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,16 @@ public class GardenQueryService {
 
     public List<DayGardenResponse> getAllGarden(Long teamId) {
         List<Garden> gardens = gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId);
+        return calculateContributes(gardens);
+    }
+
+    public DayGardenResponse getTodayGarden(Long teamId) {
+        List<Garden> gardens = gardenRepository.findTodayGardenByTeamId(teamId);
+        return calculateContributes(gardens).get(0);
+    }
+
+    public List<DayGardenResponse> getThisWeekGarden(Long teamId) {
+        List<Garden> gardens = gardenRepository.findThisWeekGardenByTeamId(teamId);
         return calculateContributes(gardens);
     }
 

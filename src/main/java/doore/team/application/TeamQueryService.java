@@ -6,6 +6,8 @@ import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.attendance.domain.Attendance;
 import doore.attendance.domain.repository.AttendanceRepository;
+import doore.garden.application.GardenQueryService;
+import doore.garden.application.dto.response.DayGardenResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberRepository;
@@ -14,13 +16,17 @@ import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
+import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +40,7 @@ public class TeamQueryService {
     private final StudyRepository studyRepository;
     private final AttendanceRepository attendanceRepository;
     private final MemberTeamRepository memberTeamRepository;
+    private final GardenQueryService gardenQueryService;
 
     public List<TeamReferenceResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
         validateMember(memberId);
@@ -74,7 +81,7 @@ public class TeamQueryService {
 
         long countMemberTeam = memberIds.size();
         long countAttendanceMemberTeam = attendances.size();
-        long attendanceRatio = countMemberTeam > 0 ? (long)((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
+        long attendanceRatio = countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
 
         return TeamResponse.of(team, attendanceRatio);
     }
@@ -87,5 +94,25 @@ public class TeamQueryService {
         if (!memberId.equals(tokenMemberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
+    }
+
+    public List<TeamRankResponse> getTeamRanks() {
+        Map<Integer, TeamReferenceResponse> teamRanks = calculateTeamRanks();
+        return teamRanks.entrySet().stream()
+                .map(entry -> new TeamRankResponse(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private Map<Integer, TeamReferenceResponse> calculateTeamRanks() {
+        List<Team> teams = teamRepository.findAll();
+        Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
+        for (Team team : teams) {
+            List<DayGardenResponse> gardenResponses = gardenQueryService.getThisWeekGarden(team.getId());
+            Integer point = gardenResponses.stream()
+                    .mapToInt(DayGardenResponse::contributeCount)
+                    .sum();
+            teamRanks.put(point, TeamReferenceResponse.from(team));
+        }
+        return teamRanks;
     }
 }

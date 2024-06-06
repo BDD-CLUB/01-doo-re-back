@@ -9,6 +9,7 @@ import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
+import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import jakarta.validation.Valid;
@@ -109,5 +110,12 @@ public class TeamController {
     @GetMapping("/{teamId}") // 비회원
     public ResponseEntity<TeamResponse> getTeam(@PathVariable final Long teamId) {
         return ResponseEntity.ok(teamQueryService.findTeamByTeamId(teamId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TeamRankResponse>> getTeams(
+    ) { //비회원
+        final List<TeamRankResponse> teamRankResponses = teamQueryService.getTeamRanks();
+        return ResponseEntity.ok(teamRankResponses);
     }
 }

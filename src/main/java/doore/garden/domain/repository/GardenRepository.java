@@ -10,4 +10,10 @@ public interface GardenRepository extends JpaRepository<Garden,Long> {
     void deleteByContributionIdAndType(Long contributionId, GardenType gardenType);
     @Query("SELECT g FROM Garden g WHERE g.teamId = :teamId AND YEAR(g.contributedDate) = YEAR(CURRENT_DATE) ORDER BY g.contributedDate ASC")
     List<Garden> findAllOfThisYearByTeamIdOrderByContributedDateAsc(Long teamId); //올해의 데이터만 가져온다.
+
+    @Query("SELECT g FROM Garden g WHERE g.teamId = :teamId AND g.contributedDate = CURRENT_DATE")
+    List<Garden> findTodayGardenByTeamId(Long teamId); //오늘의 데이터만 가져온다.
+
+    @Query("SELECT g FROM Garden g WHERE g.teamId = :teamId AND WEEK(g.contributedDate, 1) = WEEK(CURRENT_DATE, 1) ORDER BY g.contributedDate ASC")
+    List<Garden> findThisWeekGardenByTeamId(Long teamId); //이번주의 데이터만 가져온다.(월~일)
 }
