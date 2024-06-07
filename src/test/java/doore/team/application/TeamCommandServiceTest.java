@@ -1,11 +1,14 @@
 package doore.team.application;
 
 import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.보름;
 import static doore.member.MemberFixture.아마스;
+import static doore.member.MemberFixture.짱구;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.ALREADY_JOIN_TEAM_MEMBER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,20 +16,31 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import doore.helper.IntegrationTest;
+import doore.member.domain.Member;
+import doore.member.domain.Participant;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
+import doore.study.domain.Study;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
+import doore.study.domain.repository.StudyRepository;
 import doore.team.TeamFixture;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,6 +53,14 @@ public class TeamCommandServiceTest extends IntegrationTest {
     private MemberRepository memberRepository;
     @Autowired
     private TeamRoleRepository teamRoleRepository;
+    @Autowired
+    private StudyRepository studyRepository;
+    @Autowired
+    private CurriculumItemRepository curriculumItemRepository;
+    @Autowired
+    private ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     private Long teamId;
     private Long memberId;
@@ -153,5 +175,84 @@ public class TeamCommandServiceTest extends IntegrationTest {
             teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest("invalid code"), memberId);
         }).isInstanceOf(TeamException.class)
                 .hasMessage(NOT_MATCH_LINK.errorMessage());
+    }
+
+    @Nested
+    @DisplayName("팀 삭제 시 연관 삭제 테스트")
+    class DeleteTeamExpandTest {
+        private CurriculumItem curriculumItem1;
+        private CurriculumItem curriculumItem2;
+        private ParticipantCurriculumItem participantCurriculumItem1;
+        private ParticipantCurriculumItem participantCurriculumItem2;
+        private Participant participant1;
+        private Participant participant2;
+        private Member member1;
+        private Member member2;
+        private Study study1;
+        private Study study2;
+
+        @BeforeEach
+        void setUp() {
+            study1 = studyRepository.save(algorithmStudy());
+            study2 = studyRepository.save(algorithmStudy());
+            member1 = memberRepository.save(보름());
+            member2 = memberRepository.save(짱구());
+            participant1 = participantRepository.save(
+                    Participant.builder().studyId(study1.getId()).member(member1).build());
+            participant2 = participantRepository.save(
+                    Participant.builder().studyId(study2.getId()).member(member2).build());
+            curriculumItem1 = curriculumItemRepository.save(
+                    CurriculumItem.builder().id(1L).name("커리1").itemOrder(1).study(study1).build());
+            curriculumItem2 = curriculumItemRepository.save(
+                    CurriculumItem.builder().id(2L).name("커리2").itemOrder(2).study(study2).build());
+            participantCurriculumItem1 = participantCurriculumItemRepository.save(
+                    ParticipantCurriculumItem.builder().participantId(member1.getId())
+                            .curriculumItem(curriculumItem1)
+                            .build());
+            participantCurriculumItem2 = participantCurriculumItemRepository.save(
+                    ParticipantCurriculumItem.builder().participantId(member2.getId())
+                            .curriculumItem(curriculumItem2)
+                            .build());
+        }
+
+        @Test
+        @Disabled // todo : S3 문제 해결 (06/02/24)
+        @DisplayName("[성공] 팀이 삭제되면 연관된 스터디도 삭제된다.")
+        void deleteTeam_팀이_삭제되면_연관된_스터디도_삭제된다() {
+            List<Study> beforeStudies = studyRepository.findAllByTeamId(teamId);
+            assertThat(beforeStudies.size()).isEqualTo(2);
+
+            teamCommandService.deleteTeam(teamId, memberId);
+            List<Study> afterStudies = studyRepository.findAllByTeamId(teamId);
+
+            assertThat(afterStudies.get(0).getIsDeleted()).isEqualTo(true);
+            assertThat(afterStudies.get(1).getIsDeleted()).isEqualTo(true);
+        }
+
+        @Test
+        @Disabled // todo : S3 문제 해결 (06/02/24)
+        @DisplayName("[성공] 팀이 삭제되면 연관된 커리큘럼도 삭제된다.")
+        void deleteTeam_팀이_삭제되면_연관된_커리큘럼도_삭제된다() {
+            List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAll();
+
+            teamCommandService.deleteTeam(teamId, memberId);
+            List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAll();
+
+            assertThat(beforeCurriculumItems.size()).isEqualTo(2);
+            assertThat(afterCurriculumItems).isEmpty();
+        }
+
+        @Test
+        @Disabled // todo : S3 문제 해결 (06/02/24)
+        @DisplayName("[성공] 팀이 삭제되면 연관된 참여자 커리큘럼도 삭제된다.")
+        void deleteTeam_팀이_삭제되면_연관된_참여자_커리큘럼_삭제된다() {
+            List<ParticipantCurriculumItem> beforeParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
+
+            teamCommandService.deleteTeam(teamId, memberId);
+            List<ParticipantCurriculumItem> afterParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
+
+            assertThat(beforeParticipantCurriculumItem.size()).isEqualTo(2);
+            assertThat(afterParticipantCurriculumItem).isEmpty();
+        }
     }
 }

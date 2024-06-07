@@ -1,20 +1,26 @@
 package doore.document.application;
 
+import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.exception.DocumentExceptionType.NOT_FOUND_DOCUMENT;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.application.dto.response.FileResponse;
 import doore.document.domain.Document;
-import doore.document.exception.DocumentException;
-import java.util.ArrayList;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.File;
 import doore.document.domain.repository.DocumentRepository;
+import doore.document.exception.DocumentException;
+import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,10 +35,11 @@ public class DocumentQueryService {
 
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
+    private final StudyRoleRepository studyRoleRepository;
 
     public Page<DocumentCondensedResponse> getAllDocument(
-            DocumentGroupType groupType, Long groupId, Pageable pageable, Long memberId) {
-        validateExistMember(memberId);
+            DocumentGroupType groupType, Long groupId, Pageable pageable) {
+
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
                 .map(this::toDocumentCondensedResponse);
     }
@@ -45,9 +52,12 @@ public class DocumentQueryService {
     }
 
     public DocumentDetailResponse getDocument(Long documentId, Long memberId) {
-        validateExistMember(memberId);
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
+        DocumentGroupType documentGroupType = document.getGroupType();
+        if (documentGroupType == STUDY) {
+            validateMemberRoleForStudy(memberId);
+        }
         return toDocumentDetailResponse(document);
     }
 
@@ -76,5 +86,13 @@ public class DocumentQueryService {
 
     private void validateExistMember(Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    private void validateMemberRoleForStudy(Long memberId) {
+        StudyRole studyRole = studyRoleRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
+        if (!(studyRole.getStudyRoleType() == ROLE_스터디장 || studyRole.getStudyRoleType() == ROLE_스터디원)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
     }
 }

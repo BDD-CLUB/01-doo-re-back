@@ -15,14 +15,18 @@ import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
-
-import doore.study.domain.repository.StudyRepository;
 import doore.study.domain.StudyStatus;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
+import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +39,8 @@ public class StudyCommandService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final StudyRoleRepository studyRoleRepository;
+    private final CurriculumItemRepository curriculumItemRepository;
+    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId, final Long memberId) {
         validateExistMember(memberId);
@@ -57,6 +63,19 @@ public class StudyCommandService {
     public void deleteStudy(Long studyId, Long memberId) {
         validateExistStudyLeader(memberId);
         validateExistStudy(studyId);
+
+        List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(studyId);
+        List<Long> curriculumItemIds = curriculumItems.stream()
+                .map(CurriculumItem::getId)
+                .toList();
+
+        curriculumItems.forEach(CurriculumItem::delete);
+
+        curriculumItemIds.forEach(curriculumItemId -> {
+            List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(curriculumItemId);
+            items.forEach(ParticipantCurriculumItem::delete);
+        });
+
         studyRepository.deleteById(studyId);
     }
 
@@ -98,7 +117,7 @@ public class StudyCommandService {
     private void validateExistStudyLeader(Long memberId) {
         StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)){
+        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
     }

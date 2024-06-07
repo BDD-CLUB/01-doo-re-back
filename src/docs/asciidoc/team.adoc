@@ -111,3 +111,17 @@ include::{snippets}/my-teams/http-response.adoc[]
 
 .Response Body's Fields
 include::{snippets}/my-teams/response-fields.adoc[]
+
+== `GET`: 팀 상세 조회
+
+.HTTP Request
+include::{snippets}/get-team/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/get-team/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/get-team/http-response.adoc[]
+
+.Response Body's Fields
+include::{snippets}/get-team/response-fields.adoc[]

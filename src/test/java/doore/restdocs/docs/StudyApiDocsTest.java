@@ -73,7 +73,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     public void 스터디_정보를_조회한다() throws Exception {
         StudyResponse studyResponse = getStudyResponse();
 
-        when(studyQueryService.findStudyById(any(), any())).thenReturn(studyResponse);
+        when(studyQueryService.findStudyById(any())).thenReturn(studyResponse);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}", 1))
                 .andExpect(status().isOk())

@@ -49,20 +49,19 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{groupType}/{groupId}/documents") // 회원
+    @GetMapping("/{groupType}/{groupId}/documents") // 비회원
     public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
             @PathVariable String groupType,
             @PathVariable Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
-            @RequestParam(defaultValue = "4") @PositiveOrZero int size,
-            @LoginMember Member member) {
+            @RequestParam(defaultValue = "4") @PositiveOrZero int size) {
         DocumentGroupType group = DocumentGroupType.value(groupType);
         Page<DocumentCondensedResponse> condensedDocuments =
-                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size), member.getId());
+                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }
 
-    @GetMapping("/{documentId}") // 회원
+    @GetMapping("/{documentId}")  // 팀 학습자료 -> 비회원, 스터디 학습자료 -> 스터디 구성원
     public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable Long documentId, @LoginMember Member member) {
         DocumentDetailResponse response = documentQueryService.getDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);

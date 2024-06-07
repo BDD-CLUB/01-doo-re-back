@@ -15,6 +15,12 @@ import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
+import doore.study.domain.Study;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
+import doore.study.domain.repository.StudyRepository;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
@@ -24,6 +30,7 @@ import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import doore.util.RandomUtil;
 import doore.util.RedisUtil;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +45,9 @@ public class TeamCommandService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final TeamRoleRepository teamRoleRepository;
+    private final StudyRepository studyRepository;
+    private final CurriculumItemRepository curriculumItemRepository;
+    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final S3ImageFileService s3ImageFileService;
     private final RedisUtil redisUtil;
 
@@ -91,8 +101,7 @@ public class TeamCommandService {
         if (team.hasImage()) {
             s3ImageFileService.deleteFile(team.getImageUrl());
         }
-        // TODO: 2/2/24 팀이 삭제될 시 연관된 스터디와, 커리큘럼도 삭제
-
+        deleteStudyAndCurriculumItemAndParticipantCurriculumItem(teamId);
     }
 
     private Team validateExistTeam(final Long teamId) {
@@ -151,5 +160,21 @@ public class TeamCommandService {
 
     private void duplicateCheckTeamMember(final Long memberId) {
         teamRoleRepository.findById(memberId).orElseThrow(() -> new MemberException(ALREADY_JOIN_TEAM_MEMBER));
+    }
+
+    private void deleteStudyAndCurriculumItemAndParticipantCurriculumItem(final Long teamId) {
+        List<Study> studies = studyRepository.findAllByTeamId(teamId);
+
+        studies.forEach(study -> {
+            study.delete();
+            List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
+
+            curriculumItems.forEach(curriculumItem -> {
+                curriculumItem.delete();
+                List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                        curriculumItem.getId());
+                participantCurriculumItems.forEach(ParticipantCurriculumItem::delete);
+            });
+        });
     }
 }

@@ -27,6 +27,7 @@ import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
+import doore.team.application.dto.response.TeamResponse;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -252,8 +253,8 @@ public class TeamApiDocsTest extends RestDocsTest {
         final Long memberId = 1L;
         final Long tokenMemberId = 1L;
         final List<StudyNameResponse> studyResponses = List.of(
-                 new StudyNameResponse(1L, "알고리즘 스터디"),
-                new StudyNameResponse(2L,"개발 스터디")
+                new StudyNameResponse(1L, "알고리즘 스터디"),
+                new StudyNameResponse(2L, "개발 스터디")
         );
         final List<MyTeamsAndStudiesResponse> response = List.of(
                 new MyTeamsAndStudiesResponse(1L, "BDD", studyResponses)
@@ -278,5 +279,31 @@ public class TeamApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("my-teams-and-studies", pathParameters, responseFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("팀 상세목록을 조회한다.")
+    void 팀_상세목록을_조회한다() throws Exception {
+        final Long teamId = 1L;
+
+        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50);
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("teamId").description("조회하고자 하는 팀 ID")
+        );
+
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                numberFieldWithPath("id", "팀 ID"),
+                stringFieldWithPath("name", "팀 이름"),
+                stringFieldWithPath("description", "팀 설명"),
+                stringFieldWithPath("imageUrl", "이미지 url"),
+                numberFieldWithPath("attendanceRatio", "출석률")
+        );
+
+        when(teamQueryService.findTeamByTeamId(teamId)).thenReturn(teamResponse);
+
+        mockMvc.perform(get("/teams/{teamId}", teamId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-team", pathParameters, responseFieldsSnippet));
     }
 }

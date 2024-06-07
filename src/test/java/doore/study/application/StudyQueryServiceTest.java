@@ -81,14 +81,14 @@ public class StudyQueryServiceTest extends IntegrationTest {
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
             Study study = createStudy();
             studyRepository.save(study);
-            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId(), memberId).id());
+            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
         }
 
         @Test
         @DisplayName("[실패] 존재하지 않는 스터디를 조회할 수 없다.")
         void findStudyById_존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
             Long notExistingStudyId = 0L;
-            assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId, memberId))
+            assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
         }
