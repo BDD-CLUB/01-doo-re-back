@@ -4,7 +4,10 @@ import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
 
 import doore.study.domain.CurriculumItem;
+import doore.study.domain.Study;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CurriculumItemFixture {
 
     public static CurriculumItem curriculumItem() {
@@ -20,6 +23,22 @@ public class CurriculumItemFixture {
                 .name("Spring MVC 이해")
                 .itemOrder(1)
                 .study(algorithmStudy())
+                .build();
+    }
+
+    public static CurriculumItem curriculumItem(Study study) {
+        return CurriculumItem.builder()
+                .name("Spring MVC 이해")
+                .itemOrder(1)
+                .study(study)
+                .build();
+    }
+
+    public static CurriculumItem deleteCurriculumItem(Study study) {
+        return CurriculumItem.builder()
+                .name("Spring MVC 이해")
+                .itemOrder(1)
+                .study(study)
                 .build();
     }
 }
