@@ -239,6 +239,26 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("[성공] 커리큘럼을 삭제하면 커리큘럼 아이템도 삭제된다.")
+    public void deleteCurriculum_커리큘럼을_삭제하면_커리큘럼_아이템도_삭제된다() throws Exception {
+        ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+                .participantId(1L)
+                .curriculumItem(curriculumItem3)
+                .build();
+        participantCurriculumItemRepository.save(participantCurriculumItem);
+        List<ParticipantCurriculumItem> before = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                curriculumItem3.getId());
+
+        assertThat(before.size()).isEqualTo(1);
+
+        curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
+        List<ParticipantCurriculumItem> result = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                curriculumItem3.getId());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     @DisplayName("[성공] 모든 과정이 끝나면 아이템 순서에 대해 연속적인 오름차순으로 정렬된다.")
     public void sortCurriculum_모든_과정이_끝나면_아이템_순서에_대해_연속적인_오름차순으로_정렬된다() throws Exception {
         curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);

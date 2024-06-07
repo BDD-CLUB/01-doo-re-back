@@ -1,7 +1,5 @@
 package doore.study.domain;
 
-import static jakarta.persistence.CascadeType.REMOVE;
-
 import doore.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,7 +39,7 @@ public class CurriculumItem extends BaseEntity {
     @JoinColumn(name = "study_id", nullable = false)
     private Study study;
 
-    @OneToMany(mappedBy = "curriculumItem", cascade = REMOVE)
+    @OneToMany(mappedBy = "curriculumItem")
     private final List<ParticipantCurriculumItem> participantCurriculumItems = new ArrayList<>();
 
     @Builder
@@ -75,5 +73,9 @@ public class CurriculumItem extends BaseEntity {
         if (!this.itemOrder.equals(itemOrder)) {
             this.updateItemOrder(itemOrder);
         }
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

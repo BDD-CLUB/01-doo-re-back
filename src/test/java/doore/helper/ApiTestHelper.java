@@ -44,8 +44,9 @@ public abstract class ApiTestHelper {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
     }
 
-    protected ResultActions callGetApi(final String url) throws Exception {
-        return mockMvc.perform(get(url));
+    protected ResultActions callGetApi(final String url, final String token) throws Exception {
+        return mockMvc.perform(get(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
     }
 
     protected ResultActions callPatchApi(final String url, final Object content, final String token) throws Exception {

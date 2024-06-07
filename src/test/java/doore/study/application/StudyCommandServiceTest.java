@@ -1,7 +1,9 @@
 package doore.study.application;
 
 import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.보름;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.MemberFixture.짱구;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
@@ -22,14 +24,20 @@ import static org.mockito.Mockito.mock;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
+import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
@@ -57,6 +65,12 @@ public class StudyCommandServiceTest extends IntegrationTest {
     private TeamRepository teamRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private CurriculumItemRepository curriculumItemRepository;
+    @Autowired
+    private ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     private Long memberId;
     private StudyRole studyRole;
@@ -155,14 +169,73 @@ public class StudyCommandServiceTest extends IntegrationTest {
             }
         }
 
-        @Test
-        @DisplayName("[성공] 정상적으로 스터디를 삭제할 수 있다.")
-        void deleteStudy_정상적으로_스터디를_삭제할_수_있다() throws Exception {
-            studyCommandService.deleteStudy(study.getId(), memberId);
-            List<Study> studies = studyRepository.findAll();
-            assertTrue(studies.get(0).getIsDeleted());
-        }
+        @Nested
+        @DisplayName("스터디 삭제 테스트")
+        class StudyDeleteTest {
+            private CurriculumItem curriculumItem1;
+            private CurriculumItem curriculumItem2;
+            private ParticipantCurriculumItem participantCurriculumItem1;
+            private ParticipantCurriculumItem participantCurriculumItem2;
+            private Participant participant1;
+            private Participant participant2;
+            private Member member1;
+            private Member member2;
 
+            @BeforeEach
+            void setUp() {
+                member1 = memberRepository.save(보름());
+                member2 = memberRepository.save(짱구());
+                participant1 = participantRepository.save(
+                        Participant.builder().studyId(study.getId()).member(member1).build());
+                participant2 = participantRepository.save(
+                        Participant.builder().studyId(study.getId()).member(member2).build());
+                curriculumItem1 = curriculumItemRepository.save(
+                        CurriculumItem.builder().id(1L).name("커리1").itemOrder(1).study(study).build());
+                curriculumItem2 = curriculumItemRepository.save(
+                        CurriculumItem.builder().id(2L).name("커리2").itemOrder(2).study(study).build());
+                participantCurriculumItem1 = participantCurriculumItemRepository.save(
+                        ParticipantCurriculumItem.builder().participantId(member1.getId())
+                                .curriculumItem(curriculumItem1)
+                                .build());
+                participantCurriculumItem2 = participantCurriculumItemRepository.save(
+                        ParticipantCurriculumItem.builder().participantId(member2.getId())
+                                .curriculumItem(curriculumItem2)
+                                .build());
+            }
+
+            @Test
+            @DisplayName("[성공] 정상적으로 스터디를 제할 수 있다.")
+            void deleteStudy_정상적으로_스터디를_삭제할_수_있다_성공() throws Exception {
+                studyCommandService.deleteStudy(study.getId(), memberId);
+                List<Study> studies = studyRepository.findAll();
+                assertTrue(studies.get(0).getIsDeleted());
+            }
+
+            @Test
+            @DisplayName("[성공] 스터디가 삭제되면 커리큘럼이 모두 삭제된다.")
+            void deleteStudy_스터디가_삭제되면_커리큘럼이_모두_삭제된다_성공() throws Exception {
+                List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
+
+                studyCommandService.deleteStudy(study.getId(), memberId);
+                List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
+
+                assertThat(beforeCurriculumItems.size()).isEqualTo(2);
+                assertThat(afterCurriculumItems.get(0).getIsDeleted()).isEqualTo(true);
+                assertThat(afterCurriculumItems.get(1).getIsDeleted()).isEqualTo(true);
+            }
+
+            @Test
+            @DisplayName("[성공] 스터디가 삭제되면 참여자 커리큘럼이 모두 삭제된다.")
+            void deleteStudy_스터디가_삭제되면_참여자_커리큘럼이_모두_삭제된다_성공() throws Exception {
+                List<ParticipantCurriculumItem> beforeParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
+
+                studyCommandService.deleteStudy(study.getId(), memberId);
+                List<ParticipantCurriculumItem> afterParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
+
+                assertThat(beforeParticipantCurriculumItem.size()).isEqualTo(2);
+                assertThat(afterParticipantCurriculumItem).isEmpty();
+            }
+        }
 
         @Nested
         @DisplayName("스터디 종료 테스트")

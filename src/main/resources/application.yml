@@ -46,7 +46,7 @@ jwt:
 
 cors:
   allow:
-    origins: http://localhost:3000
+    origins: https://www.doore.kro.kr
     methods: GET, POST, PUT, DELETE, PATCH, OPTION
 
 aws:

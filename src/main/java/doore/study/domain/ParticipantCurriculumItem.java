@@ -17,7 +17,7 @@ import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
-@Where(clause = "is_deleted = false" )
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ParticipantCurriculumItem extends BaseEntity {
 
@@ -60,5 +60,9 @@ public class ParticipantCurriculumItem extends BaseEntity {
         } else {
             complete();
         }
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

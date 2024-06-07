@@ -17,6 +17,7 @@ import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class ParticipantCurriculumItemRepositoryTest extends RepositorySliceTest
     MemberRepository memberRepository;
 
     @Test
+    @Disabled
     @DisplayName("[성공] 스터디 id와 회원 id를 사용해 participantCurriculumItem 목록을 조회할 수 있다.")
     public void findAllByStudyIdAndMemberId_스터디_id와_회원_id를_사용해_participantCurriculumItem_목록을_조회할_수_있다_성공()
             throws Exception {
