@@ -14,18 +14,15 @@ import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
-import doore.study.application.dto.response.CurriculumItemReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
-import doore.study.application.dto.response.StudySimpleResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import java.time.LocalDate;
 import java.util.List;
-import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
@@ -169,13 +166,13 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @Disabled //todo: 모든 권한관련 코드 처리 후 확인할 예정
     @DisplayName("나의 스터디 목록을 조회한다.")
     public void 나의_스터디_목록을_조회한다() throws Exception {
         final Long memberId = 1L;
-        final Long tokenMemberId = 1L;
-        final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
-        final StudySimpleResponse response = getStudySimpleResponse();
+        final List<StudyResponse> response = List.of(
+                getStudyResponse(),
+                getStudyResponse()
+        );
 
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
                 numberFieldWithPath("[].id", "스터디의 ID"),
@@ -184,43 +181,24 @@ public class StudyApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].startDate", "스터디의 시작일"),
                 stringFieldWithPath("[].endDate", "스터디의 종료일"),
                 stringFieldWithPath("[].status", "스터디의 진행 상태"),
-                booleanFieldWithPath("[].isDeleted", "스터디의 삭제 여부"),
                 numberFieldWithPath("[].teamReference.id", "스터디가 속한 팀의 ID"),
                 stringFieldWithPath("[].teamReference.name", "스터디가 속한 팀의 이름"),
                 stringFieldWithPath("[].teamReference.description", "스터디가 속한 팀의 설명"),
                 stringFieldWithPath("[].teamReference.imageUrl", "스터디가 속한 팀의 이미지 url"),
                 numberFieldWithPath("[].cropReference.id", "스터디의 작물의 ID"),
                 stringFieldWithPath("[].cropReference.name", "스터디의 작물의 이름"),
-                stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
-                numberFieldWithPath("[].curriculumItems[].id", "스터디의 커리큘럼 ID"),
-                stringFieldWithPath("[].curriculumItems[].name", "스터디의 커리큘럼 이름"),
-                numberFieldWithPath("[].curriculumItems[].itemOrder", "스터디의 커리큘럼 순서번호"),
-                booleanFieldWithPath("[].curriculumItems[].isDeleted", "스터디의 커리큘럼 삭제여부")
+                stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url")
         );
 
-        when(studyQueryService.findMyStudies(memberId, tokenMemberId)).thenReturn(List.of(response));
+        when(studyQueryService.findMyStudies(any(), any())).thenReturn(response);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/members/{memberId}", memberId)
-                        .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("my-studies",
                         pathParameters(
                                 parameterWithName("memberId").description("회원 id")
                         ),
-                        responseFieldsSnippet
-                ));
-    }
-
-    private static StudySimpleResponse getStudySimpleResponse() {
-        final TeamReferenceResponse teamReferenceResponse =
-                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
-        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
-        final CurriculumItemReferenceResponse curriculumItemReferenceResponse = new CurriculumItemReferenceResponse(
-                1L, "chapter1. greedy", 1, false);
-        final StudySimpleResponse response = new StudySimpleResponse(1L, "알고리즘", "알고리즘 스터디입니다.",
-                LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-02-01"), StudyStatus.IN_PROGRESS, false, teamReferenceResponse,
-                cropReferenceResponse, List.of(curriculumItemReferenceResponse));
-        return response;
+                        responseFieldsSnippet));
     }
 }
