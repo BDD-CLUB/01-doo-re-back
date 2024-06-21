@@ -4,7 +4,6 @@ import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -65,13 +64,12 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
         // then
         mockMvc.perform(get("/teams/1/members")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("member-team-find", queryParameters, responseFields));
     }
 
     @Test
-    @Disabled //todo: 조회테스트 오류 수정
     @DisplayName("팀원 목록을 검색해서 조회한다.")
     public void 팀원_목록을_검색해서_조회한다() throws Exception {
         //given
@@ -83,7 +81,7 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].name", "회원 이름"),
                 stringFieldWithPath("[].email", "회원 이메일"),
                 stringFieldWithPath("[].imageUrl", "회원 프로필 이미지 url"),
-                stringFieldWithPath("[].role", "회원의 직책(추후 수정 예정)"),
+                stringFieldWithPath("[].teamRole", "회원의 직책"),
                 booleanFieldWithPath("[].isDeleted", "회원의 삭제(탈퇴) 여부")
         );
         final List<TeamMemberResponse> response = List.of(
@@ -93,12 +91,13 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
         );
 
         // when
-        when(memberTeamQueryService.findMemberTeams(anyLong(), anyString(), anyLong())).thenReturn(response);
+        when(memberTeamQueryService.findMemberTeams(any(), any(), any())).thenReturn(response);
 
         // then
         mockMvc.perform(get("/teams/1/members")
                         .param("keyword", "아마")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("member-team-find-search", queryParameters, responseFields));
     }
