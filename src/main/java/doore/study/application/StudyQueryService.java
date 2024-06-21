@@ -64,8 +64,10 @@ public class StudyQueryService {
         List<Study> studies = studyRepository.findAllById(studyIds);
 
         return studies.stream()
-                .map(study -> StudyResponse.of(study, teamRepository.findById(study.getTeamId()).orElse(null),
-                        cropRepository.findById(study.getCropId()).orElse(null)))
+                .map(study -> StudyResponse.of(study,
+                        teamRepository.findById(study.getTeamId()).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM)),
+                        cropRepository.findById(study.getCropId())
+                                .orElseThrow(() -> new CropException(NOT_FOUND_CROP))))
                 .toList();
     }
 
