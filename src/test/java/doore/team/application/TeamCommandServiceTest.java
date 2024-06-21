@@ -127,7 +127,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled // TODO: 2/14/24 수정 
+    @Disabled // TODO: 2/14/24 수정 S3 문제
     @DisplayName("[성공] 초대코드는 생성된다.")
     public void generateTeamInviteCode_초대코드는_생성된다_성공() {
 
@@ -154,7 +154,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled // TODO: 2/14/24 수정
+    @Disabled // TODO: 2/14/24 수정 S3 문제
     @DisplayName("[성공] 초대코드와 유저코드가 일치하면 팀 가입은 성공한다.")
     public void joinTeam_초대코드와_유저코드가_일치하면_팀_가입은_성공한다_성공() {
         //given
