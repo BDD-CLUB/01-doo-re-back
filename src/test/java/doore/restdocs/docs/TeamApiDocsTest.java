@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -214,13 +213,10 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @Disabled //todo: 모든 권한관련 코드 처리 후 확인할 예정
     @DisplayName("나의 팀 목록을 조회한다")
     void 나의_팀_목록을_조회한다() throws Exception {
         //given
-        final String FAKE_BEARER_ACCESS_TOKEN = "Bearer AccessToken";
         final Long memberId = 1L;
-        final Long tokenMemberId = 1L;
         final List<TeamReferenceResponse> response = List.of(
                 new TeamReferenceResponse(1L, "BDD", "개발 동아리입니다", "image.png"),
                 new TeamReferenceResponse(3L, "KEEPER", "보안 동아리입니다", "image.png")
@@ -237,11 +233,11 @@ public class TeamApiDocsTest extends RestDocsTest {
         );
 
         //when
-        when(teamQueryService.findMyTeams(eq(memberId), eq(tokenMemberId))).thenReturn(response);
+        when(teamQueryService.findMyTeams(any(), any())).thenReturn(response);
 
         //then
         mockMvc.perform(get("/teams/members/{memberId}", memberId)
-                        .header(HttpHeaders.AUTHORIZATION, FAKE_BEARER_ACCESS_TOKEN)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
