@@ -169,7 +169,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @Disabled //todo: 모든 권한관련 코드 처리 후 확인할 예정
+    @Disabled // #152 pr 에서 수정 완료
     @DisplayName("나의 스터디 목록을 조회한다.")
     public void 나의_스터디_목록을_조회한다() throws Exception {
         final Long memberId = 1L;
