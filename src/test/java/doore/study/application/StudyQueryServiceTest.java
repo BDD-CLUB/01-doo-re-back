@@ -95,7 +95,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled //todo: 05/19/24 커리큘럼 & 스터디 수정되면 재수정
+    @Disabled // #152 pr에서 수정됨
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
