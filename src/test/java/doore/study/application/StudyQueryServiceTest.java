@@ -1,11 +1,8 @@
 package doore.study.application;
 
 import static doore.member.MemberFixture.미나;
-import static doore.member.MemberFixture.아마란스;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.CurriculumItemFixture.curriculumItem;
-import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -21,8 +18,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
-
-import doore.study.application.dto.response.StudySimpleResponse;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
@@ -32,7 +28,6 @@ import doore.team.domain.TeamRepository;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -58,17 +53,18 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @Autowired
     private StudyRoleRepository studyRoleRepository;
 
-    private Long memberId;
+    private Member member;
     private StudyRole studyRole;
     private Study study;
+    private Team team;
 
     @BeforeEach
     void setUp() {
-        memberId = memberRepository.save(미나()).getId();
-        study = studyRepository.save(algorithmStudy());
+        member = memberRepository.save(미나());
+        study = studyRepository.save(createStudy());
         studyRole = studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(ROLE_스터디장)
-                .memberId(memberId)
+                .memberId(member.getId())
                 .studyId(study.getId())
                 .build());
     }
@@ -95,32 +91,25 @@ public class StudyQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled //todo: 05/19/24 커리큘럼 & 스터디 수정되면 재수정
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
-        final Study studyWithCurriculum = studyRepository.findById(
-                curriculumItemRepository.save(curriculumItem()).getStudy().getId()).get();
-        final Team teamOfStudy = teamRepository.findById(study.getTeamId()).get();
-        final Team teamOfStudyWithCurriculums = teamRepository.findById(studyWithCurriculum.getTeamId()).get();
-        final Crop cropOfStudy = cropRepository.findById(study.getCropId()).get();
-        final Crop cropOfStudyWithCurriculums = cropRepository.findById(studyWithCurriculum.getCropId()).get();
-        final Member member = memberRepository.save(아마란스());
-        participantRepository.save(Participant.builder()
-                .studyId(study.getId())
-                .member(member)
-                .build());
-        participantRepository.save(Participant.builder()
-                .studyId(studyWithCurriculum.getId())
-                .member(member)
-                .build());
-        final List<StudySimpleResponse> expectedResponses = List.of(
-                StudySimpleResponse.of(study, teamOfStudy, cropOfStudy),
-                StudySimpleResponse.of(studyWithCurriculum, teamOfStudyWithCurriculums, cropOfStudyWithCurriculums));
-        final Long tokenMemberId = member.getId();
+        Long tokenMemberId = member.getId();
+        Study anotherStudy = studyRepository.save(createStudy());
+        participantRepository.save(Participant.builder().member(member).studyId(study.getId()).build());
+        participantRepository.save(Participant.builder().member(member).studyId(anotherStudy.getId()).build());
+
+        Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
+        Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
+        Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
+        Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
 
         // when
-        final List<StudySimpleResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
+        final List<StudyResponse> expectedResponses = List.of(
+                StudyResponse.of(study, teamOfStudy, cropOfTeam),
+                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam)
+        );
+        final List<StudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
                 tokenMemberId);
 
         // then
@@ -137,7 +126,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         Long anotherMemberId = 2L;
         // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {
-            studyQueryService.findMyStudies(memberId, anotherMemberId);
+            studyQueryService.findMyStudies(member.getId(), anotherMemberId);
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 }
