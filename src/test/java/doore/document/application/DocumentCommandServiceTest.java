@@ -85,7 +85,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Nested
     class createDocumentTest {
-        @Disabled
+        @Disabled // S3 문제
         @Test
         @DisplayName("[성공] 정상적으로 파일 학습자료를 생성할 수 있다.")
         void createDocument_정상적으로_파일_학습자료를_생성할_수_있다_성공() throws IOException {
@@ -123,7 +123,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             );
         }
 
-        @Disabled
+        @Disabled // S3 문제
         @Test
         @DisplayName("[성공] 정상적으로 이미지 학습자료를 생성할 수 있다.")
         void createDocument_정상적으로_이미지_학습자료를_생성할_수_있다_성공() throws IOException {
@@ -180,7 +180,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             );
         }
 
-        @Disabled
+        @Disabled // S3 문제
         @Test
         @DisplayName("[성공] 하나의 학습자료에 여러개의 파일을 업로드할 수 있다.")
         void createDocument_하나의_학습자료에_여러개의_파일을_업로드할_수_있다_성공() throws IOException {
