@@ -6,7 +6,7 @@ public record StudyNameResponse(
         Long id,
         String name
 ) {
-    public static StudyNameResponse from(Study study) {
+    public static StudyNameResponse from(final Study study) {
         return new StudyNameResponse(study.getId(), study.getName());
     }
 }

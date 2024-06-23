@@ -28,8 +28,8 @@ public record StudyCreateRequest(
         @NotNull(message = "작물을 골라주세요.")
         Long cropId
 ) {
-    public StudyCreateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
-                              Long cropId) {
+    public StudyCreateRequest(final String name, final String description, final LocalDate startDate, final LocalDate endDate,
+                              final Long cropId) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
@@ -37,7 +37,7 @@ public record StudyCreateRequest(
         this.cropId = cropId;
     }
 
-    public Study toStudy(Long teamId) {
+    public Study toStudy(final Long teamId) {
         return Study.builder()
                 .name(this.name)
                 .description(this.description)
