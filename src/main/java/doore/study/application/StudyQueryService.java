@@ -20,9 +20,10 @@ import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
+import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
-import doore.study.persistence.StudyDao;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
@@ -38,10 +39,11 @@ public class StudyQueryService {
     private final StudyRepository studyRepository;
     private final StudyRoleRepository studyRoleRepository;
     private final ParticipantRepository participantRepository;
+    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private final CurriculumItemRepository curriculumItemRepository;
     private final TeamRepository teamRepository;
     private final CropRepository cropRepository;
     private final MemberRepository memberRepository;
-    private final StudyDao studyDao;
 
     public StudyResponse findStudyById(Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
@@ -50,8 +52,9 @@ public class StudyQueryService {
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
         final Crop crop = cropRepository.findById(study.getCropId())
                 .orElseThrow(() -> new CropException(NOT_FOUND_CROP));
+        final long studyProgressRatio = checkStudyProgressRatio(studyId);
 
-        return StudyResponse.of(study, team, crop);
+        return StudyResponse.of(study, team, crop, studyProgressRatio);
     }
 
     public List<StudyResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {
@@ -67,7 +70,8 @@ public class StudyQueryService {
                 .map(study -> StudyResponse.of(study,
                         teamRepository.findById(study.getTeamId()).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM)),
                         cropRepository.findById(study.getCropId())
-                                .orElseThrow(() -> new CropException(NOT_FOUND_CROP))))
+                                .orElseThrow(() -> new CropException(NOT_FOUND_CROP)),
+                        checkStudyProgressRatio(study.getId())))
                 .toList();
     }
 
@@ -87,5 +91,12 @@ public class StudyQueryService {
 
     private void validateExistMember(Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    private long checkStudyProgressRatio(Long studyId) {
+        List<Long> curriculumItemIds = curriculumItemRepository.findIdsByStudyId(studyId);
+        long totalCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdIn(curriculumItemIds);
+        long checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(curriculumItemIds);
+        return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
     }
 }
