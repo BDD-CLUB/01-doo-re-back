@@ -69,14 +69,14 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("참여자를 조회한다.")
     void 참여자를_조회한다_성공() throws Exception {
-        Member member = Member.builder()
+        final Member member = Member.builder()
                 .id(1L)
                 .name("팜")
                 .email("pom@gmail.com")
                 .googleId("0123456789")
                 .imageUrl(null)
                 .build();
-        Participant participant = Participant.builder()
+        final Participant participant = Participant.builder()
                 .studyId(1L)
                 .member(member)
                 .build();

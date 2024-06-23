@@ -97,7 +97,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final TeamUpdateRequest request = new TeamUpdateRequest("BDD", "개발 동아리 입니다.");
 
         // when
-        Long teamId = 1L;
+        final Long teamId = 1L;
         doNothing().when(teamCommandService).updateTeam(eq(teamId), any(TeamUpdateRequest.class), any());
 
         // then
@@ -123,7 +123,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final MockMultipartFile file = getMockImageFile();
 
         // when
-        Long teamId = 1L;
+        final Long teamId = 1L;
         doNothing().when(teamCommandService).updateTeamImage(eq(teamId), any(MultipartFile.class), any());
 
         // then
@@ -149,7 +149,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("팀을 삭제한다.")
     public void 팀을_삭제한다() throws Exception {
         // when
-        Long teamId = 1L;
+        final Long teamId = 1L;
         doNothing().when(teamCommandService).deleteTeam(eq(teamId), any());
 
         // then
@@ -166,7 +166,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("팀의 초대코드를 생성한다.")
     public void 팀의_초대코드를_생성한다() throws Exception {
         // given
-        Long teamId = 1L;
+        final Long teamId = 1L;
         final TeamInviteCodeResponse response = new TeamInviteCodeResponse("asdf");
 
         // when
@@ -190,7 +190,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("초대코드를 통해 팀에 가입한다.")
     public void 초대코드를_통해_팀에_가입한다() throws Exception {
         // given
-        Long teamId = 1L;
+        final Long teamId = 1L;
         final TeamInviteCodeRequest request = new TeamInviteCodeRequest("asdf");
 
         // when
@@ -308,13 +308,13 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("팀 목록(팀 랭킹)을 조회한다.")
     public void 팀_목록팀_랭킹을_조회한다() throws Exception {
         //given
-        Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
+        final Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
         teamRanks.put(5, new TeamReferenceResponse(1L, "팀1", "팀 설명입니다", "팀 이미지 Url"));
         teamRanks.put(15, new TeamReferenceResponse(2L, "팀2", "팀 설명입니다", "팀 이미지 Url"));
         teamRanks.put(20, new TeamReferenceResponse(3L, "팀3", "팀 설명입니다", "팀 이미지 Url"));
         teamRanks.put(0, new TeamReferenceResponse(4L, "팀4", "팀 설명입니다", "팀 이미지 Url"));
 
-        List<TeamRankResponse> teamRankResponses = teamRanks.entrySet().stream()
+        final List<TeamRankResponse> teamRankResponses = teamRanks.entrySet().stream()
                 .map(entry -> new TeamRankResponse(entry.getKey(), entry.getValue()))
                 .toList();
         System.out.println(teamRankResponses.get(0));

@@ -39,7 +39,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 생성한다.")
     public void 스터디를_생성한다() throws Exception {
-        StudyCreateRequest request = StudyCreateRequest.builder()
+        final StudyCreateRequest request = StudyCreateRequest.builder()
                 .name("알고리즘")
                 .description("알고리즘 스터디 입니다.")
                 .startDate(LocalDate.parse("2023-01-01"))
@@ -68,7 +68,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디 정보를 조회한다.")
     public void 스터디_정보를_조회한다() throws Exception {
-        StudyResponse studyResponse = getStudyResponse();
+        final StudyResponse studyResponse = getStudyResponse();
 
         when(studyQueryService.findStudyById(any())).thenReturn(studyResponse);
 
@@ -81,9 +81,9 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     private StudyResponse getStudyResponse() {
-        TeamReferenceResponse teamReferenceResponse =
+        final TeamReferenceResponse teamReferenceResponse =
                 new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
-        CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
+        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
 
         return StudyResponse.builder()
                 .id(1L)
@@ -111,7 +111,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("스터디를 수정한다.")
     public void 스터디를_수정한다() throws Exception {
-        StudyUpdateRequest request = StudyUpdateRequest.builder()
+        final StudyUpdateRequest request = StudyUpdateRequest.builder()
                 .name("스프링")
                 .description("스프링 스터디 입니다.")
                 .startDate(LocalDate.parse("2023-01-01"))
