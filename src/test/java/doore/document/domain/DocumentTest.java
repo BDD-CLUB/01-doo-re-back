@@ -20,13 +20,13 @@ public class DocumentTest {
     @DisplayName("[성공] 학습자료가 정상적으로 수정된다.")
     public void 학습자료가_정상적으로_수정된다_성공() {
         //given
-        Document document = new DocumentFixture()
+        final Document document = new DocumentFixture()
                 .buildDocument();
 
         //when
-        String newName = "수정된 자료명";
-        String newDescription = "수정된 설명";
-        DocumentAccessType newAccessType = DocumentAccessType.ALL;
+        final String newName = "수정된 자료명";
+        final String newDescription = "수정된 설명";
+        final DocumentAccessType newAccessType = DocumentAccessType.ALL;
         document.update(newName, newDescription, newAccessType);
 
         //then
@@ -41,16 +41,16 @@ public class DocumentTest {
     @DisplayName("[성공] 학습자료의 파일이 정상적으로 수정된다.")
     public void 학습자료의_파일이_정상적으로_수정된다_성공() {
         //given
-        String url = "blog link";
-        Document document = new DocumentFixture()
+        final String url = "blog link";
+        final Document document = new DocumentFixture()
                 .buildLinkDocument(List.of(url));
 
         //when
-        String newUrl = "new link";
-        File newFile = File.builder().url(newUrl).document(document).build();
+        final String newUrl = "new link";
+        final File newFile = File.builder().url(newUrl).document(document).build();
         document.updateFiles(List.of(newFile));
 
         //then
-         assertEquals(newFile, document.getFiles().get(0));
+        assertEquals(newFile, document.getFiles().get(0));
     }
 }

@@ -27,7 +27,7 @@ public class DocumentFixture {
     private Long uploaderId = 1L;
 
     @Autowired
-    public DocumentFixture(DocumentRepository documentRepository, FileRepository fileRepository) {
+    public DocumentFixture(final DocumentRepository documentRepository, final FileRepository fileRepository) {
         DocumentFixture.documentRepository = documentRepository;
         DocumentFixture.fileRepository = fileRepository;
     }
@@ -36,37 +36,37 @@ public class DocumentFixture {
 
     }
 
-    public DocumentFixture name(String name) {
+    public DocumentFixture name(final String name) {
         this.name = name;
         return this;
     }
 
-    public DocumentFixture description(String description) {
+    public DocumentFixture description(final String description) {
         this.description = description;
         return this;
     }
 
-    public DocumentFixture groupType(DocumentGroupType groupType) {
+    public DocumentFixture groupType(final DocumentGroupType groupType) {
         this.groupType = groupType;
         return this;
     }
 
-    public DocumentFixture groupId(Long groupId) {
+    public DocumentFixture groupId(final Long groupId) {
         this.groupId = groupId;
         return this;
     }
 
-    public DocumentFixture accessType(DocumentAccessType accessType) {
+    public DocumentFixture accessType(final DocumentAccessType accessType) {
         this.accessType = accessType;
         return this;
     }
 
-    public DocumentFixture uploaderId(Long uploaderId) {
+    public DocumentFixture uploaderId(final Long uploaderId) {
         this.uploaderId = uploaderId;
         return this;
     }
 
-    public DocumentFixture type(DocumentType type) {
+    public DocumentFixture type(final DocumentType type) {
         this.type = type;
         return this;
     }
@@ -84,12 +84,12 @@ public class DocumentFixture {
         return documentRepository.save(document);
     }
 
-    public Document buildLinkDocument(List<String> urls) {
+    public Document buildLinkDocument(final List<String> urls) {
         type(DocumentType.URL);
-        Document document = buildDocument();
-        List<File> files = new ArrayList<>();
-        for (String url : urls) {
-            File file = File.builder()
+        final Document document = buildDocument();
+        final List<File> files = new ArrayList<>();
+        for (final String url : urls) {
+            final File file = File.builder()
                     .url(url)
                     .document(document)
                     .build();

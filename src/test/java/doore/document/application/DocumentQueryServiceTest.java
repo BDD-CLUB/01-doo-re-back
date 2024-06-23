@@ -91,7 +91,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 비회원이_정상적으로 팀 학습자료 목록을 조회할 수 있다")
     public void getAllDocumentList_비회원이_정상적으로_팀_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
-        Page<DocumentCondensedResponse> responses =
+        final Page<DocumentCondensedResponse> responses =
                 documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4));
 
         //then
@@ -108,7 +108,8 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 팀 학습자료 상세를 조회할 수 있다.")
     public void getDocument_정상적으로_팀_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        DocumentDetailResponse response = documentQueryService.getDocument(anotherDocument.getId(), notMember.getId());
+        final DocumentDetailResponse response = documentQueryService.getDocument(anotherDocument.getId(),
+                notMember.getId());
 
         //then
         assertAll(
@@ -123,7 +124,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 스터디 학습자료 상세를 조회할 수 있다")
     public void getDocument_정상적으로_스터디_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        DocumentDetailResponse response = documentQueryService.getDocument(document.getId(), member.getId());
+        final DocumentDetailResponse response = documentQueryService.getDocument(document.getId(), member.getId());
 
         //then
         assertAll(

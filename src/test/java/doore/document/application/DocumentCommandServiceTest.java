@@ -94,12 +94,12 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             final String fileName = "document";
             final String contentType = "pdf";
             final String filePath = "src/test/resources/testDocument/document.pdf";
-            FileInputStream fileInputStream = new FileInputStream(filePath);
+            final FileInputStream fileInputStream = new FileInputStream(filePath);
 
-            DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
+            final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
                     DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
 
-            MultipartFile file = new MockMultipartFile(
+            final MultipartFile file = new MockMultipartFile(
                     fileName,
                     fileName + "." + contentType,
                     contentType,
@@ -115,7 +115,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     study.getId(), member.getId());
 
             // then
-            List<Document> documents = documentRepository.findAll();
+            final List<Document> documents = documentRepository.findAll();
             assertAll(
                     () -> assertThat(documents).hasSize(1),
                     () -> assertThat(documents.get(0).getFiles()).hasSize(1),
@@ -132,12 +132,12 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             final String fileName = "testImage";
             final String contentType = "png";
             final String filePath = "src/test/resources/images/testImage.png";
-            FileInputStream fileInputStream = new FileInputStream(filePath);
+            final FileInputStream fileInputStream = new FileInputStream(filePath);
 
-            DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
+            final DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
                     DocumentAccessType.TEAM, DocumentType.IMAGE, null, mock(Member.class).getId());
 
-            MultipartFile image = new MockMultipartFile(
+            final MultipartFile image = new MockMultipartFile(
                     fileName,
                     fileName + "." + contentType,
                     contentType,
@@ -153,7 +153,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     study.getId(), member.getId());
 
             //then
-            List<Document> document = documentRepository.findAll();
+            final List<Document> document = documentRepository.findAll();
             assertAll(
                     () -> assertThat(document).hasSize(1),
                     () -> assertThat(document.get(0).getFiles()).hasSize(1),
@@ -164,14 +164,14 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[성공] 정상적으로 링크 학습자료를 생성할 수 있다.")
         void createDocument_정상적으로_링크_학습자료를_생성할_수_있다_성공() {
-            String urlPath = "https://github.com/BDD-CLUB";
-            DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
+            final String urlPath = "https://github.com/BDD-CLUB";
+            final DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
                     DocumentAccessType.TEAM, DocumentType.URL, urlPath, mock(Member.class).getId());
 
             documentCommandService.createDocument(urlRequest, null, STUDY, study.getId(), member.getId());
 
             //then
-            List<Document> document = documentRepository.findAll();
+            final List<Document> document = documentRepository.findAll();
             assertAll(
                     () -> assertThat(document).hasSize(1),
                     () -> assertThat(document.get(0).getFiles()).hasSize(1),
@@ -188,19 +188,19 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             final String fileName = "testImage";
             final String contentType = "png";
             final String filePath = "src/test/resources/images/testImage.png";
-            FileInputStream fileInputStream = new FileInputStream(filePath);
-            FileInputStream fileInputStream2 = new FileInputStream(filePath);
+            final FileInputStream fileInputStream = new FileInputStream(filePath);
+            final FileInputStream fileInputStream2 = new FileInputStream(filePath);
 
-            DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
+            final DocumentCreateRequest imageRequest = new DocumentCreateRequest("강의 학습 인증", "강의 학습 인증샷입니다.",
                     DocumentAccessType.TEAM,
                     DocumentType.IMAGE, null, mock(Member.class).getId());
 
-            MultipartFile image = new MockMultipartFile(
+            final MultipartFile image = new MockMultipartFile(
                     fileName,
                     fileName + "." + contentType,
                     contentType,
                     fileInputStream);
-            MultipartFile image2 = new MockMultipartFile(
+            final MultipartFile image2 = new MockMultipartFile(
                     fileName,
                     fileName + "." + contentType,
                     contentType,
@@ -216,7 +216,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     study.getId(), member.getId());
 
             // then
-            List<Document> document = documentRepository.findAll();
+            final List<Document> document = documentRepository.findAll();
             assertAll(
                     () -> assertThat(document).hasSize(1),
                     () -> assertThat(document.get(0).getFiles()).hasSize(2)
@@ -227,7 +227,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         @DisplayName("[실패] 링크 학습자료에는 링크를 입력해야 한다.")
         public void validateDocumentType_링크_학습자료에는_링크를_입력해야_한다_실패() {
             //given
-            DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
+            final DocumentCreateRequest urlRequest = new DocumentCreateRequest("강의 정리", "강의 정리본입니다.",
                     DocumentAccessType.TEAM, DocumentType.URL, null, mock(Member.class).getId());
 
             //when&then
@@ -241,7 +241,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         @DisplayName("[실패] 파일과 이미지 학습자료에는 파일이 첨부돼야 한다.")
         public void 파일과_이미지_학습자료에는_파일이_첨부돼야_한다_실패() {
             //given
-            DocumentCreateRequest ImageRequest = new DocumentCreateRequest("사진 자료", "사진 자료입니다.",
+            final DocumentCreateRequest ImageRequest = new DocumentCreateRequest("사진 자료", "사진 자료입니다.",
                     DocumentAccessType.TEAM, DocumentType.IMAGE, null, mock(Member.class).getId());
 
             //when&then
@@ -256,10 +256,10 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 학습자료를 업데이트 할 수 있다.")
     void updateDocument_정상적으로_학습자료를_업데이트_할_수_있다_성공() {
         //given
-        Document document = new DocumentFixture().buildDocument();
+        final Document document = new DocumentFixture().buildDocument();
 
         //when
-        DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
+        final DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
                 DocumentAccessType.ALL);
         documentCommandService.updateDocument(updatedRequest, document.getId(), member.getId());
 
@@ -274,10 +274,10 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 해당 자료 업로더가 아니라면 업데이트 할 수 없다.")
     void updateDocument_해당_자료_업로더가_아니라면_업데이트_할_수_없다_실패() {
-        Document document = new DocumentFixture().buildDocument();
-        Member notUploader = createMember();
+        final Document document = new DocumentFixture().buildDocument();
+        final Member notUploader = createMember();
 
-        DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
+        final DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
                 DocumentAccessType.ALL);
 
         assertThatThrownBy(() ->
@@ -290,21 +290,21 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 학습자료를 정상적으로 삭제할 수 있다.")
     void deleteDocument_학습자료를_정상적으로_삭제할_수_있다() {
         //given
-        Document document = new DocumentFixture().buildDocument();
+        final Document document = new DocumentFixture().buildDocument();
         assertThat(documentRepository.findAll()).hasSize(1);
         //when
         documentCommandService.deleteDocument(document.getId(), member.getId());
 
         //then
-        List<Document> documents = documentRepository.findAll();
+        final List<Document> documents = documentRepository.findAll();
         assertTrue(documents.get(0).getIsDeleted());
     }
 
     @Test
     @DisplayName("[실패] 해당 자료 업로더가 아니라면 삭제 할 수 없다.")
     void deleteDocument_해당_자료_업로더가_아니라면_삭제_할_수_없다_실패() {
-        Document document = new DocumentFixture().buildDocument();
-        Member notUploader = createMember();
+        final Document document = new DocumentFixture().buildDocument();
+        final Member notUploader = createMember();
 
         assertThatThrownBy(() ->
                 documentCommandService.deleteDocument(document.getId(), notUploader.getId()))
@@ -315,9 +315,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 회원이 아니라면 학습자료를 등록할 수 없다.")
     void createDocument_회원이_아니라면_학습자료를_등록할_수_없다() {
-        Long invalidMemberId = 10L;
+        final Long invalidMemberId = 10L;
 
-        DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
+        final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
                 DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
 
         assertThatThrownBy(() ->
@@ -330,13 +330,13 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 학습자료 업로드시 정상적으로 텃밭을 생성할 수 있다.")
     public void createGarden_학습자료_업로드시_정상적으로_텃밭에_반영된다_성공() throws Exception {
         //given
-        Document document = new DocumentFixture().buildDocument();
+        final Document document = new DocumentFixture().buildDocument();
 
         //when
         documentCommandService.createGarden(document);
 
         //then
-        Garden garden = gardenRepository.findAll().get(0);
+        final Garden garden = gardenRepository.findAll().get(0);
         assertEquals(garden.getContributionId(), document.getId());
         assertEquals(garden.getType(), DOCUMENT_UPLOAD);
     }
