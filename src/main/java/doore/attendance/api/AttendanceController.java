@@ -18,7 +18,7 @@ public class AttendanceController {
     private final AttendanceCommandService attendanceCommandService;
 
     @PostMapping
-    public ResponseEntity<Void> createAttendance(@LoginMember Member member) {
+    public ResponseEntity<Void> createAttendance(@LoginMember final Member member) {
         attendanceCommandService.createAttendance(member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
