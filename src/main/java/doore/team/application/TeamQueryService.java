@@ -51,18 +51,18 @@ public class TeamQueryService {
                 .toList();
     }
 
-    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(Long memberId, Long tokenMemberId) {
+    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId, final Long tokenMemberId) {
         validateMember(memberId);
         checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
-        List<MyTeamsAndStudiesResponse> myTeamsAndStudiesResponses = new ArrayList<>();
-        List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
+        final List<MyTeamsAndStudiesResponse> myTeamsAndStudiesResponses = new ArrayList<>();
+        final List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
 
-        for (Team myTeam : myTeams) {
-            List<StudyNameResponse> studyNameResponses =
+        for (final Team myTeam : myTeams) {
+            final List<StudyNameResponse> studyNameResponses =
                     studyRepository.findAllByTeamId(myTeam.getId()).stream()
                             .map(StudyNameResponse::from)
                             .toList();
-            MyTeamsAndStudiesResponse myTeamsAndStudiesResponse =
+            final MyTeamsAndStudiesResponse myTeamsAndStudiesResponse =
                     new MyTeamsAndStudiesResponse(myTeam.getId(), myTeam.getName(), studyNameResponses);
             myTeamsAndStudiesResponses.add(myTeamsAndStudiesResponse);
         }
@@ -70,18 +70,18 @@ public class TeamQueryService {
     }
 
     public TeamResponse findTeamByTeamId(final Long teamId) {
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
-        List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
-        List<Long> memberIds = memberTeams.stream()
+        final Team team = teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+        final List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
+        final List<Long> memberIds = memberTeams.stream()
                 .map(MemberTeam::getMember)
                 .map(Member::getId)
                 .toList();
 
-        List<Attendance> attendances = attendanceRepository.findAllByMemberIdIn(memberIds);
+        final List<Attendance> attendances = attendanceRepository.findAllByMemberIdIn(memberIds);
 
-        long countMemberTeam = memberIds.size();
-        long countAttendanceMemberTeam = attendances.size();
-        long attendanceRatio = countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
+        final long countMemberTeam = memberIds.size();
+        final long countAttendanceMemberTeam = attendances.size();
+        final long attendanceRatio = countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
 
         return TeamResponse.of(team, attendanceRatio);
     }
@@ -97,18 +97,18 @@ public class TeamQueryService {
     }
 
     public List<TeamRankResponse> getTeamRanks() {
-        Map<Integer, TeamReferenceResponse> teamRanks = calculateTeamRanks();
+        final Map<Integer, TeamReferenceResponse> teamRanks = calculateTeamRanks();
         return teamRanks.entrySet().stream()
                 .map(entry -> new TeamRankResponse(entry.getKey(), entry.getValue()))
                 .toList();
     }
 
     private Map<Integer, TeamReferenceResponse> calculateTeamRanks() {
-        List<Team> teams = teamRepository.findAll();
-        Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
-        for (Team team : teams) {
-            List<DayGardenResponse> gardenResponses = gardenQueryService.getThisWeekGarden(team.getId());
-            Integer point = gardenResponses.stream()
+        final List<Team> teams = teamRepository.findAll();
+        final Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
+        for (final Team team : teams) {
+            final List<DayGardenResponse> gardenResponses = gardenQueryService.getThisWeekGarden(team.getId());
+            final Integer point = gardenResponses.stream()
                     .mapToInt(DayGardenResponse::contributeCount)
                     .sum();
             teamRanks.put(point, TeamReferenceResponse.from(team));

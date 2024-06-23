@@ -71,7 +71,7 @@ public class TeamCommandService {
                     .teamRoleType(ROLE_팀장)
                     .build();
             teamRoleRepository.save(teamRole);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             s3ImageFileService.deleteFile(imageUrl);
         }
     }
@@ -125,12 +125,12 @@ public class TeamCommandService {
         validateExistTeam(teamId);
         validateExistMember(memberId);
 
-        Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
+        final Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isPresent()) {
             validateMatchLink(link.get(), request.code());
             // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리. (2024/5/13 완료)
             duplicateCheckTeamMember(memberId);
-            TeamRole teamRole = TeamRole.builder()
+            final TeamRole teamRole = TeamRole.builder()
                     .teamId(teamId)
                     .teamRoleType(ROLE_팀원)
                     .memberId(memberId)
@@ -151,7 +151,7 @@ public class TeamCommandService {
     }
 
     private void validateExistTeamLeader(final Long memberId) {
-        TeamRole teamRole = teamRoleRepository.findById(memberId)
+        final TeamRole teamRole = teamRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
@@ -163,15 +163,15 @@ public class TeamCommandService {
     }
 
     private void deleteStudyAndCurriculumItemAndParticipantCurriculumItem(final Long teamId) {
-        List<Study> studies = studyRepository.findAllByTeamId(teamId);
+        final List<Study> studies = studyRepository.findAllByTeamId(teamId);
 
         studies.forEach(study -> {
             study.delete();
-            List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
+            final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
 
             curriculumItems.forEach(curriculumItem -> {
                 curriculumItem.delete();
-                List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                final List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByCurriculumItemId(
                         curriculumItem.getId());
                 participantCurriculumItems.forEach(ParticipantCurriculumItem::delete);
             });
