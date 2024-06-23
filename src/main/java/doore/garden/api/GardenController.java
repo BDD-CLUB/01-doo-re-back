@@ -18,8 +18,8 @@ public class GardenController {
     private final GardenQueryService gardenQueryService;
 
     @GetMapping("/{teamId}")
-    public ResponseEntity<List<DayGardenResponse>> getAllGarden(@PathVariable Long teamId) {
-        List<DayGardenResponse> fullGardenResponse = gardenQueryService.getAllGarden(teamId);
+    public ResponseEntity<List<DayGardenResponse>> getAllGarden(@PathVariable final Long teamId) {
+        final List<DayGardenResponse> fullGardenResponse = gardenQueryService.getAllGarden(teamId);
         return ResponseEntity.status(HttpStatus.OK).body(fullGardenResponse);
     }
 }

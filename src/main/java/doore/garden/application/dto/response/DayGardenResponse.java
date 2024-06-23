@@ -12,16 +12,16 @@ public record DayGardenResponse(
         int contributeCount
 ) {
     @Builder
-    public DayGardenResponse(int dayOfYear, int dayOfWeek, int weekOfYear, int contributeCount) {
+    public DayGardenResponse(final int dayOfYear, final int dayOfWeek, final int weekOfYear, final int contributeCount) {
         this.dayOfYear = dayOfYear;
         this.dayOfWeek = dayOfWeek;
         this.weekOfYear = weekOfYear;
         this.contributeCount = contributeCount;
     }
 
-    public static DayGardenResponse of(LocalDate date, int contributeNumber) {
-        int weekOfYear = getWeekOfYear(date)-1;
-        int dayOfWeek = date.getDayOfWeek().getValue() - 1;
+    public static DayGardenResponse of(final LocalDate date, final int contributeNumber) {
+        final int weekOfYear = getWeekOfYear(date)-1;
+        final int dayOfWeek = date.getDayOfWeek().getValue() - 1;
         return DayGardenResponse.builder()
                 .dayOfYear(date.getDayOfYear() - 1)
                 .weekOfYear(weekOfYear)
@@ -30,8 +30,8 @@ public record DayGardenResponse(
                 .build();
     }
 
-    private static int getWeekOfYear(LocalDate date) {
-        WeekFields weekFields = WeekFields.of(Locale.KOREA);
+    private static int getWeekOfYear(final LocalDate date) {
+        final WeekFields weekFields = WeekFields.of(Locale.KOREA);
         return date.get(weekFields.weekOfWeekBasedYear());
     }
 }
