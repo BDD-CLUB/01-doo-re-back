@@ -56,7 +56,7 @@ class MemberTeamControllerTest extends IntegrationTest {
                         .isDeleted(false)
                         .build()
         );
-        String url = "/teams/1/members";
+        final String url = "/teams/1/members";
         callGetApi(url, token).andExpect(status().isOk());
     }
 

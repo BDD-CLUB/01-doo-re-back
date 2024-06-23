@@ -105,7 +105,8 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
         final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
 
         //when
-        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, null, teamMemberRole.getId());
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, null,
+                teamMemberRole.getId());
 
         //then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -126,7 +127,8 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
         final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
 
         //when
-        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "아마", teamMemberRole.getId());
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "아마",
+                teamMemberRole.getId());
 
         //then
         Assertions.assertThat(actual)
@@ -149,7 +151,8 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
         final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
 
         //when
-        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "test", teamLeaderRole.getId());
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(1L, "test",
+                teamLeaderRole.getId());
 
         //then
         Assertions.assertThat(actual)

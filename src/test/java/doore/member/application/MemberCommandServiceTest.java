@@ -115,8 +115,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 팀장 직위가 정상적으로 위임된다")
     void transferTeamLeader_팀장_직위가_정상적으로_위임된다_성공() {
-        Member newMember = memberRepository.save(아마란스());
-        TeamRole teamRole = TeamRole.builder()
+        final Member newMember = memberRepository.save(아마란스());
+        final TeamRole teamRole = TeamRole.builder()
                 .teamId(team.getId())
                 .teamRoleType(ROLE_팀원)
                 .memberId(newMember.getId())
@@ -124,7 +124,8 @@ class MemberCommandServiceTest extends IntegrationTest {
         teamRoleRepository.save(teamRole);
 
         memberCommandService.transferTeamLeader(team.getId(), newMember.getId(), member.getId());
-        TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(), newMember.getId())
+        final TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(),
+                        newMember.getId())
                 .orElseThrow();
 
         assertThat(changedTeamRole.getTeamRoleType()).isEqualTo(ROLE_팀장);
@@ -133,8 +134,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 팀장 직위가 정상적으로 위임되면 원래 팀장은 팀원이 된다")
     void transferTeamLeader_팀장_직위가_정상적으로_위임되면_원래_팀장은_팀원이_된다_성공() {
-        Member newMember = memberRepository.save(아마란스());
-        TeamRole teamRole = TeamRole.builder()
+        final Member newMember = memberRepository.save(아마란스());
+        final TeamRole teamRole = TeamRole.builder()
                 .teamId(team.getId())
                 .teamRoleType(ROLE_팀원)
                 .memberId(newMember.getId())
@@ -143,7 +144,8 @@ class MemberCommandServiceTest extends IntegrationTest {
         assertThat(previousTeamLeaderRole.getTeamRoleType()).isEqualTo(ROLE_팀장);
 
         memberCommandService.transferTeamLeader(team.getId(), newMember.getId(), member.getId());
-        TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(), member.getId())
+        final TeamRole changedTeamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(team.getId(),
+                        member.getId())
                 .orElseThrow();
 
         assertThat(changedTeamRole.getTeamRoleType()).isEqualTo(ROLE_팀원);
@@ -152,8 +154,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 스터디장 직위가 정상적으로 위임된다")
     void transferStudyLeader_스터디장_직위가_정상적으로_위임된다_성공() {
-        Member newMember = memberRepository.save(아마란스());
-        StudyRole studyRole = StudyRole.builder()
+        final Member newMember = memberRepository.save(아마란스());
+        final StudyRole studyRole = StudyRole.builder()
                 .studyId(study.getId())
                 .studyRoleType(ROLE_스터디원)
                 .memberId(newMember.getId())
@@ -161,7 +163,7 @@ class MemberCommandServiceTest extends IntegrationTest {
         studyRoleRepository.save(studyRole);
 
         memberCommandService.transferStudyLeader(study.getId(), newMember.getId(), member.getId());
-        StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
+        final StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
                 newMember.getId()).orElseThrow();
 
         assertThat(changedStudyRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
@@ -170,8 +172,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 스터디장 직위가 정상적으로 위임되면 원래 스터디장은 스터디원이 된다")
     void transferStudyLeader_스터디장_직위가_정상적으로_위임되면_원래_스터디장은_스터디원이_된다_성공() {
-        Member newMember = memberRepository.save(아마란스());
-        StudyRole studyRole = StudyRole.builder()
+        final Member newMember = memberRepository.save(아마란스());
+        final StudyRole studyRole = StudyRole.builder()
                 .studyId(study.getId())
                 .studyRoleType(ROLE_스터디원)
                 .memberId(newMember.getId())
@@ -180,7 +182,7 @@ class MemberCommandServiceTest extends IntegrationTest {
         assertThat(previousStudyLeaderRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
 
         memberCommandService.transferStudyLeader(study.getId(), newMember.getId(), member.getId());
-        StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
+        final StudyRole changedStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
                 member.getId()).orElseThrow();
 
         assertThat(changedStudyRole.getStudyRoleType()).isEqualTo(ROLE_스터디원);
@@ -189,8 +191,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 유효하지 않은 멤버라면 팀장 위임에 실패한다")
     void transferTeamLeader_유효하지_않은_멤버리면_팀장_위임에_실패한다_실패() throws Exception {
-        Long invalidMemberId = 10L;
-        Team team = TeamFixture.team();
+        final Long invalidMemberId = 10L;
+        final Team team = TeamFixture.team();
         teamRepository.save(team);
 
         assertThatThrownBy(() -> {
@@ -201,7 +203,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 유효하지 않은 팀이라면 팀장 위임에 실패한다")
     void transferTeamLeader_유효하지_않은_팀이리면_팀장_위임에_실패한다_실패() {
-        Long invalidTeamId = 10L;
+        final Long invalidTeamId = 10L;
 
         assertThatThrownBy(() -> {
             memberCommandService.transferTeamLeader(invalidTeamId, member.getId(), member.getId());
@@ -211,7 +213,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 팀장이 아닌 사람이 팀장 위임을 시도하면 실패한다")
     void transferTeamLeader_팀장이_아닌_사람이_팀장_위임을_시도하면_실패한다() {
-        Member notTeamLeaderMember = memberRepository.save(미나());
+        final Member notTeamLeaderMember = memberRepository.save(미나());
 
         assertThatThrownBy(() -> {
             memberCommandService.transferTeamLeader(team.getId(), member.getId(), notTeamLeaderMember.getId());
@@ -221,7 +223,7 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 스터디장이 아닌 사람이 스터디장 위임을 시도하면 실패한다")
     void transferStudyLeader_스터디장이_아닌_사람이_스터디장_위임을_시도하면_실패한다() {
-        Member notStudyLeaderMember = memberRepository.save(미나());
+        final Member notStudyLeaderMember = memberRepository.save(미나());
 
         assertThatThrownBy(() -> {
             memberCommandService.transferStudyLeader(study.getId(), member.getId(), notStudyLeaderMember.getId());
