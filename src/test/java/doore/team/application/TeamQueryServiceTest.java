@@ -75,7 +75,7 @@ class TeamQueryServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 다른 사람의 팀 목록 조회는 불가능하다.")
     void findMyTeams_다른_사람의_팀_목록_조회는_불가능하다_실패() {
-        Long anotherMemberId = 2L;
+        final Long anotherMemberId = 2L;
         // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {
             teamQueryService.findMyTeams(member.getId(), anotherMemberId);
@@ -85,17 +85,17 @@ class TeamQueryServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 팀 상세 조회를 할 수 있다.")
     void findTeamByTeamId_팀_상세_조회를_할_수_있다_성공() {
-        Team team = createTeam();
-        Member anotherMember = createMember();
+        final Team team = createTeam();
+        final Member anotherMember = createMember();
         memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(member).isDeleted(false).build());
         memberTeamRepository.save(
                 MemberTeam.builder().teamId(team.getId()).member(anotherMember).isDeleted(false).build());
         attendanceRepository.save(Attendance.builder().memberId(anotherMember.getId()).build());
 
-        long attendanceRatio = 50L;
+        final long attendanceRatio = 50L;
 
-        TeamResponse expectTeamResponse = TeamResponse.of(team, attendanceRatio);
-        TeamResponse actualTeamResponse = teamQueryService.findTeamByTeamId(team.getId());
+        final TeamResponse expectTeamResponse = TeamResponse.of(team, attendanceRatio);
+        final TeamResponse actualTeamResponse = teamQueryService.findTeamByTeamId(team.getId());
 
         assertThat(actualTeamResponse).isEqualTo(expectTeamResponse);
     }
