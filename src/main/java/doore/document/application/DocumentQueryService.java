@@ -38,36 +38,36 @@ public class DocumentQueryService {
     private final StudyRoleRepository studyRoleRepository;
 
     public Page<DocumentCondensedResponse> getAllDocument(
-            DocumentGroupType groupType, Long groupId, Pageable pageable) {
+            final DocumentGroupType groupType, final Long groupId, final Pageable pageable) {
 
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
                 .map(this::toDocumentCondensedResponse);
     }
 
-    private DocumentCondensedResponse toDocumentCondensedResponse(Document document) {
-        Long uploaderId = memberRepository.findById(document.getUploaderId())
+    private DocumentCondensedResponse toDocumentCondensedResponse(final Document document) {
+        final Long uploaderId = memberRepository.findById(document.getUploaderId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
         return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(),
                 document.getCreatedAt().toLocalDate(), uploaderId);
     }
 
-    public DocumentDetailResponse getDocument(Long documentId, Long memberId) {
-        Document document = documentRepository.findById(documentId)
+    public DocumentDetailResponse getDocument(final Long documentId, final Long memberId) {
+        final Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
-        DocumentGroupType documentGroupType = document.getGroupType();
+        final DocumentGroupType documentGroupType = document.getGroupType();
         if (documentGroupType == STUDY) {
             validateMemberRoleForStudy(memberId);
         }
         return toDocumentDetailResponse(document);
     }
 
-    private DocumentDetailResponse toDocumentDetailResponse(Document document) {
-        List<FileResponse> fileResponses = new ArrayList<>();
-        for (File file : document.getFiles()) {
-            FileResponse fileResponse = new FileResponse(file.getId(), file.getUrl());
+    private DocumentDetailResponse toDocumentDetailResponse(final Document document) {
+        final List<FileResponse> fileResponses = new ArrayList<>();
+        for (final File file : document.getFiles()) {
+            final FileResponse fileResponse = new FileResponse(file.getId(), file.getUrl());
             fileResponses.add(fileResponse);
         }
-        String uploaderName = memberRepository.findById(document.getId())
+        final String uploaderName = memberRepository.findById(document.getId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                 .getName();
 
@@ -84,12 +84,12 @@ public class DocumentQueryService {
                 .build();
     }
 
-    private void validateExistMember(Long memberId) {
+    private void validateExistMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 
-    private void validateMemberRoleForStudy(Long memberId) {
-        StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateMemberRoleForStudy(final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!(studyRole.getStudyRoleType() == ROLE_스터디장 || studyRole.getStudyRoleType() == ROLE_스터디원)) {
             throw new MemberException(UNAUTHORIZED);

@@ -17,8 +17,8 @@ public record DocumentDetailResponse(
         String uploader
 ) {
     @Builder
-    public DocumentDetailResponse(Long id, String title, String description, DocumentAccessType accessType,
-                                  DocumentType type, List<FileResponse> files, LocalDate date, String uploader) {
+    public DocumentDetailResponse(final Long id, final String title, final String description, final DocumentAccessType accessType,
+                                  final DocumentType type, final List<FileResponse> files, final LocalDate date, final String uploader) {
         this.id = id;
         this.title = title;
         this.description = description;
