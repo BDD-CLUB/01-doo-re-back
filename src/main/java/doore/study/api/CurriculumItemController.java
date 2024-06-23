@@ -38,7 +38,8 @@ public class CurriculumItemController {
     }
 
     @PatchMapping("/curriculums/{curriculumId}/{participantId}/check") // 스터디장 & 스터디원
-    public ResponseEntity<Void> checkCurriculum(@PathVariable final Long curriculumId, @PathVariable final Long participantId,
+    public ResponseEntity<Void> checkCurriculum(@PathVariable final Long curriculumId,
+                                                @PathVariable final Long participantId,
                                                 @LoginMember final Member member) {
         curriculumItemCommandService.checkCurriculum(curriculumId, participantId, member.getId());
         return ResponseEntity.noContent().build();
@@ -54,7 +55,8 @@ public class CurriculumItemController {
     public ResponseEntity<List<PersonalCurriculumItemResponse>> getMyCurriculum(@PathVariable final Long studyId,
                                                                                 final HttpServletRequest request) {
         final String memberId = request.getHeader("Authorization");
-        final List<PersonalCurriculumItemResponse> response = curriculumItemQueryService.getMyCurriculum(studyId, Long.parseLong(memberId));
+        final List<PersonalCurriculumItemResponse> response = curriculumItemQueryService.getMyCurriculum(studyId,
+                Long.parseLong(memberId));
         return ResponseEntity.ok(response);
     }
 }

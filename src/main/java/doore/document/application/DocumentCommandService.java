@@ -86,7 +86,8 @@ public class DocumentCommandService {
         }
     }
 
-    private void validateDocumentType(final DocumentType type, final String url, final List<MultipartFile> multipartFiles) {
+    private void validateDocumentType(final DocumentType type, final String url,
+                                      final List<MultipartFile> multipartFiles) {
         if (type.equals(DocumentType.URL) && url == null) {
             throw new DocumentException(LINK_DOCUMENT_NEEDS_URL);
         }
@@ -136,7 +137,7 @@ public class DocumentCommandService {
     public void updateDocument(final DocumentUpdateRequest request, final Long documentId, final Long memberId) {
         validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
-        if (!document.isMine(memberId)){
+        if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
         document.update(request.title(), request.description(), request.accessType());
@@ -145,7 +146,7 @@ public class DocumentCommandService {
     public void deleteDocument(final Long documentId, final Long memberId) {
         validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
-        if (!document.isMine(memberId)){
+        if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
         deleteGarden(document);

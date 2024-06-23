@@ -19,14 +19,16 @@ public class MemberController {
     private final MemberCommandService memberCommandService;
 
     @PatchMapping("/teams/{teamId}/mandate/{newTeamLeaderId}") // 팀장
-    public ResponseEntity<Void> transferTeamLeader(@PathVariable final Long teamId, @PathVariable final Long newTeamLeaderId,
+    public ResponseEntity<Void> transferTeamLeader(@PathVariable final Long teamId,
+                                                   @PathVariable final Long newTeamLeaderId,
                                                    @LoginMember final Member member) {
         memberCommandService.transferTeamLeader(teamId, newTeamLeaderId, member.getId());
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/study/{studyId}/mandate/{newStudyLeaderId}") // 스터디장
-    public ResponseEntity<Void> transferStudyLeader(@PathVariable final Long studyId, @PathVariable final Long newStudyLeaderId,
+    public ResponseEntity<Void> transferStudyLeader(@PathVariable final Long studyId,
+                                                    @PathVariable final Long newStudyLeaderId,
                                                     @LoginMember final Member member) {
         memberCommandService.transferStudyLeader(studyId, newStudyLeaderId, member.getId());
         return ResponseEntity.noContent().build();

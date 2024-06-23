@@ -81,7 +81,8 @@ public class TeamQueryService {
 
         final long countMemberTeam = memberIds.size();
         final long countAttendanceMemberTeam = attendances.size();
-        final long attendanceRatio = countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
+        final long attendanceRatio =
+                countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
 
         return TeamResponse.of(team, attendanceRatio);
     }

@@ -72,7 +72,8 @@ public class StudyCommandService {
         curriculumItems.forEach(CurriculumItem::delete);
 
         curriculumItemIds.forEach(curriculumItemId -> {
-            final List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(curriculumItemId);
+            final List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                    curriculumItemId);
             items.forEach(ParticipantCurriculumItem::delete);
         });
 

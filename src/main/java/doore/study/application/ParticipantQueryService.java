@@ -36,7 +36,7 @@ public class ParticipantQueryService {
     private void validateExistStudyLeaderAndStudyMember(final Long memberId) {
         final StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))){
+        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
