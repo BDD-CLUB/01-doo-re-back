@@ -22,7 +22,7 @@ public class AttendanceRepositoryTest extends RepositorySliceTest {
     public void existsByMemberIdAndDate_해당_날짜에_회원의_출석이_존재하는지_확인한다_성공() {
         assertFalse(attendanceRepository.existsByMemberIdAndDate(1L, LocalDate.now()));
 
-        Attendance attendance = Attendance.builder()
+        final Attendance attendance = Attendance.builder()
                 .memberId(1L)
                 .build();
 
@@ -31,6 +31,6 @@ public class AttendanceRepositoryTest extends RepositorySliceTest {
 
         attendanceRepository.save(attendance);
 
-        assertTrue(attendanceRepository.existsByMemberIdAndDate(1L,LocalDate.now()));
+        assertTrue(attendanceRepository.existsByMemberIdAndDate(1L, LocalDate.now()));
     }
 }
