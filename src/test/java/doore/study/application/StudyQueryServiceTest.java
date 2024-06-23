@@ -3,8 +3,11 @@ package doore.study.application;
 import static doore.member.MemberFixture.미나;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.study.CurriculumItemFixture.curriculumItem;
+import static doore.study.ParticipantCurriculumItemFixture.participantCurriculumItem;
 import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,14 +22,16 @@ import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyResponse;
+import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +44,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
     private StudyCommandService studyCommandService;
     @Autowired
     private StudyQueryService studyQueryService;
+    @Autowired
+    private CurriculumItemCommandService curriculumItemCommandService;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -53,6 +60,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
     private CurriculumItemRepository curriculumItemRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private ParticipantCurriculumItemRepository participantCurriculumItemRepository;
 
     private Member member;
     private StudyRole studyRole;
@@ -99,24 +108,43 @@ public class StudyQueryServiceTest extends IntegrationTest {
         // given
         Long tokenMemberId = member.getId();
         Study anotherStudy = studyRepository.save(createStudy());
-        participantRepository.save(Participant.builder().member(member).studyId(study.getId()).build());
-        participantRepository.save(Participant.builder().member(member).studyId(anotherStudy.getId()).build());
+        Participant participantForStudy = participantRepository.save(
+                Participant.builder().member(member).studyId(study.getId()).build());
+        Participant participantForAnotherStudy = participantRepository.save(
+                Participant.builder().member(member).studyId(anotherStudy.getId()).build());
 
         Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
         Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
         Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
         Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
 
+        CurriculumItem curriculumItemForStudy1 = curriculumItemRepository.save(curriculumItem(study));
+        CurriculumItem curriculumItemForStudy2 = curriculumItemRepository.save(curriculumItem(study));
+        CurriculumItem curriculumItemForAnotherStudy = curriculumItemRepository.save(curriculumItem(anotherStudy));
+
+        ParticipantCurriculumItem participantCurriculumItem1 = participantCurriculumItemRepository.save(
+                participantCurriculumItem(participantForStudy.getId(), curriculumItemForStudy1));
+        ParticipantCurriculumItem participantCurriculumItem2 = participantCurriculumItemRepository.save(
+                participantCurriculumItem(participantForStudy.getId(), curriculumItemForStudy2));
+        ParticipantCurriculumItem participantCurriculumItem3 = participantCurriculumItemRepository.save(
+                participantCurriculumItem(participantForAnotherStudy.getId(), curriculumItemForAnotherStudy));
+
+        curriculumItemCommandService.checkCurriculum(curriculumItemForStudy1.getId(), participantForStudy.getId(),
+                member.getId());
+
         // when
         final List<StudyResponse> expectedResponses = List.of(
-                StudyResponse.of(study, teamOfStudy, cropOfTeam),
-                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam)
+                StudyResponse.of(study, teamOfStudy, cropOfTeam, 50),
+                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, 0)
         );
         final List<StudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
                 tokenMemberId);
 
         // then
-        Assertions.assertThat(actualResponses)
+        assertThat(participantCurriculumItem1.getIsChecked()).isEqualTo(true);
+        assertThat(participantCurriculumItem2.getIsChecked()).isEqualTo(false);
+        assertThat(participantCurriculumItem3.getIsChecked()).isEqualTo(false);
+        assertThat(actualResponses)
                 .usingRecursiveComparison()
                 .ignoringCollectionOrder()
                 .isEqualTo(expectedResponses);
