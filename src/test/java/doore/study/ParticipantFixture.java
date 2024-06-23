@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParticipantFixture {
 
-    public static Participant participant(Long studyId, Member member) {
+    public static Participant participant(final Long studyId, final Member member) {
         return Participant.builder()
                 .studyId(studyId)
                 .member(member)

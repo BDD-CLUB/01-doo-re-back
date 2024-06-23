@@ -77,7 +77,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Disabled
         @DisplayName("[성공] 정상적으로 스터디 정보를 조회할 수 있다.")
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = createStudy();
+            final Study study = createStudy();
             studyRepository.save(study);
             assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
         }
@@ -85,7 +85,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[실패] 존재하지 않는 스터디를 조회할 수 없다.")
         void findStudyById_존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
-            Long notExistingStudyId = 0L;
+            final Long notExistingStudyId = 0L;
             assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
@@ -97,15 +97,15 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
-        Long tokenMemberId = member.getId();
-        Study anotherStudy = studyRepository.save(createStudy());
+        final Long tokenMemberId = member.getId();
+        final Study anotherStudy = studyRepository.save(createStudy());
         participantRepository.save(Participant.builder().member(member).studyId(study.getId()).build());
         participantRepository.save(Participant.builder().member(member).studyId(anotherStudy.getId()).build());
 
-        Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
-        Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
-        Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
-        Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
+        final Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
+        final Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
+        final Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
+        final Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
 
         // when
         final List<StudyResponse> expectedResponses = List.of(
@@ -126,7 +126,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 다른 사람의 스터디 목록 조회는 불가능하다.")
     void findMyStudy_다른_사람의_스터디_목록_조회는_불가능하다_실패() {
-        Long anotherMemberId = 2L;
+        final Long anotherMemberId = 2L;
         // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {
             studyQueryService.findMyStudies(member.getId(), anotherMemberId);

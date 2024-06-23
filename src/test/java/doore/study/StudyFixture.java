@@ -21,7 +21,7 @@ public class StudyFixture {
     private static Long cropId = 1L;
 
     @Autowired
-    public StudyFixture(StudyRepository studyRepository, TeamRepository teamRepository) {
+    public StudyFixture(final StudyRepository studyRepository, final TeamRepository teamRepository) {
         StudyFixture.studyRepository = studyRepository;
         StudyFixture.teamRepository = teamRepository;
     }

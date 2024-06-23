@@ -64,7 +64,8 @@ public class ParticipantQueryTest extends IntegrationTest {
             participantCommandService.saveParticipant(study.getId(), member.getId(), member.getId());
 
             //when
-            List<Participant> participants = participantQueryService.findAllParticipants(study.getId(), member.getId());
+            final List<Participant> participants = participantQueryService.findAllParticipants(study.getId(),
+                    member.getId());
 
             //then
             assertAll(
@@ -76,7 +77,7 @@ public class ParticipantQueryTest extends IntegrationTest {
         @Test
         @DisplayName("[실패] 스터디_구성원이 아니라면 참여자를 조회할 수 없다.")
         void findAllParticipant_스터디_구성원이_아니라면_참여자를_조회할_수_없다_실패() throws Exception {
-            Member member = memberRepository.save(보름());
+            final Member member = memberRepository.save(보름());
 
             assertThatThrownBy(() -> participantQueryService.findAllParticipants(study.getId(), member.getId()))
                     .isInstanceOf(MemberException.class)

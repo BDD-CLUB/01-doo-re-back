@@ -62,14 +62,14 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         @DisplayName("[성공] 정상적으로 참여자를 추가할 수 있다.")
         void saveParticipant_정상적으로_참여자를_추가할_수_있다_성공() {
             //Given
-            Long studyId = study.getId();
-            Long memberId = member.getId();
+            final Long studyId = study.getId();
+            final Long memberId = member.getId();
 
             //when
             participantCommandService.saveParticipant(studyId, memberId, member.getId());
 
             //then
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
+            final List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
             assertAll(
                     () -> assertThat(participants).hasSize(1),
                     () -> assertEquals(memberId, participants.get(0).getMember().getId())
@@ -80,8 +80,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         @DisplayName("[성공] 정상적으로 참여자를 삭제할 수 있다.")
         void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() {
             //Given
-            Long studyId = study.getId();
-            Member participant = createMember();
+            final Long studyId = study.getId();
+            final Member participant = createMember();
             studyRoleRepository.save(StudyRole.builder()
                     .studyRoleType(ROLE_스터디원)
                     .studyId(studyId)
@@ -91,7 +91,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.deleteParticipant(studyId, participant.getId(), member.getId());
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId, participant.getId());
+            final List<Participant> participants = participantQueryService.findAllParticipants(studyId,
+                    participant.getId());
 
             //then
             assertThat(participants).hasSize(0);
@@ -101,8 +102,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         @DisplayName("[성공] 정상적으로 참여자가 탈퇴 할 수 있다.")
         void withdrawParticipant_정상적으로_참여자가_탈퇴할_수_있다_성공() {
             //Given
-            Long studyId = study.getId();
-            Member participant = createMember();
+            final Long studyId = study.getId();
+            final Member participant = createMember();
             studyRoleRepository.save(StudyRole.builder()
                     .memberId(participant.getId())
                     .studyId(studyId)
@@ -113,7 +114,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.withdrawParticipant(studyId, participant.getId(), participant.getId());
-            List<Participant> participants = participantQueryService.findAllParticipants(studyId, participant.getId());
+            final List<Participant> participants = participantQueryService.findAllParticipants(studyId,
+                    participant.getId());
 
             //then
             assertThat(participants).hasSize(0);
@@ -123,9 +125,9 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 존재하지 않는 회원인 경우 실패한다.")
     void notExistMember_존재하지_않는_회원인_경우_실패한다_실패() {
-        Study study = algorithmStudy();
+        final Study study = algorithmStudy();
         studyRepository.save(study);
-        Long notExistingMemberId = 50L;
+        final Long notExistingMemberId = 50L;
 
         assertThatThrownBy(
                 () -> participantCommandService.saveParticipant(study.getId(), notExistingMemberId, member.getId()))

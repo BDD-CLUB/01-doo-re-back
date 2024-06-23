@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParticipantCurriculumItemFixture {
 
-    public static ParticipantCurriculumItem participantCurriculumItem(Long participantId, CurriculumItem curriculumItem) {
+    public static ParticipantCurriculumItem participantCurriculumItem(final Long participantId,
+                                                                      final CurriculumItem curriculumItem) {
         return ParticipantCurriculumItem.builder()
                 .participantId(participantId)
                 .curriculumItem(curriculumItem)

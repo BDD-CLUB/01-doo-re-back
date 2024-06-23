@@ -18,9 +18,9 @@ public class CurriculumItemTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 정상 수정된다.")
     public void update_커리큘럼이_정상_수정된다_성공() {
-        CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
+        final CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
 
-        String changeName = "변경된 Spring 스터디";
+        final String changeName = "변경된 Spring 스터디";
         curriculumItem.updateName(changeName);
 
         assertThat(curriculumItem.getName()).isEqualTo(changeName);
@@ -29,8 +29,8 @@ public class CurriculumItemTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 완료 상태로 변경된다.")
     public void complete_커리큘럼이_완료_상태로_변경된다_성공() {
-        CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
-        ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+        final CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
+        final ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
                 .participantId(1L)
                 .curriculumItem(curriculumItem)
                 .build();
@@ -43,8 +43,8 @@ public class CurriculumItemTest {
     @Test
     @DisplayName("[성공] 커리큘럼이 미완료 상태로 변경된다.")
     public void incomplete_커리큘럼이_미완료_상태로_변경된다_성공() {
-        CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
-        ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
+        final CurriculumItem curriculumItem = CurriculumItemFixture.curriculumItem();
+        final ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
                 .participantId(1L)
                 .curriculumItem(curriculumItem)
                 .build();
