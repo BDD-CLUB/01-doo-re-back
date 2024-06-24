@@ -94,6 +94,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .status(StudyStatus.IN_PROGRESS)
                 .teamReference(teamReferenceResponse)
                 .cropReference(cropReferenceResponse)
+                .studyProgressRatio(50)
                 .build();
     }
 
@@ -187,7 +188,8 @@ public class StudyApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].teamReference.imageUrl", "스터디가 속한 팀의 이미지 url"),
                 numberFieldWithPath("[].cropReference.id", "스터디의 작물의 ID"),
                 stringFieldWithPath("[].cropReference.name", "스터디의 작물의 이름"),
-                stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url")
+                stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
+                numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
         );
 
         when(studyQueryService.findMyStudies(any(), any())).thenReturn(response);
