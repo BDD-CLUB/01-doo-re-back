@@ -112,9 +112,9 @@ public class TeamController {
         return ResponseEntity.ok(teamQueryService.findTeamByTeamId(teamId));
     }
 
-    @GetMapping
+    @GetMapping // 비회원
     public ResponseEntity<List<TeamRankResponse>> getTeams(
-    ) { //비회원
+    ) {
         final List<TeamRankResponse> teamRankResponses = teamQueryService.getTeamRanks();
         return ResponseEntity.ok(teamRankResponses);
     }
