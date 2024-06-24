@@ -4,7 +4,6 @@ import doore.study.domain.CurriculumItem;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface CurriculumItemRepository extends JpaRepository<CurriculumItem, Long> {
     List<CurriculumItem> findAllByOrderByItemOrderAsc();
@@ -14,5 +13,5 @@ public interface CurriculumItemRepository extends JpaRepository<CurriculumItem, 
     void deleteAllByStudyId(Long studyId);
 
     @Query("SELECT ci.id FROM CurriculumItem ci WHERE ci.study.id = :studyId")
-    List<Long> findIdsByStudyId(@Param("studyId") Long studyId);
+    List<Long> findIdsByStudyId(Long studyId);
 }
