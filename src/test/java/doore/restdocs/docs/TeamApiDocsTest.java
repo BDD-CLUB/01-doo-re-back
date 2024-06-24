@@ -19,6 +19,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import doore.garden.application.dto.response.DayGardenResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.request.TeamCreateRequest;
@@ -29,7 +30,9 @@ import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -308,15 +311,40 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("팀 목록(팀 랭킹)을 조회한다.")
     public void 팀_목록팀_랭킹을_조회한다() throws Exception {
         //given
-        Map<Integer, TeamReferenceResponse> teamRanks = new TreeMap<>(Collections.reverseOrder());
-        teamRanks.put(5, new TeamReferenceResponse(1L, "팀1", "팀 설명입니다", "팀 이미지 Url"));
-        teamRanks.put(15, new TeamReferenceResponse(2L, "팀2", "팀 설명입니다", "팀 이미지 Url"));
-        teamRanks.put(20, new TeamReferenceResponse(3L, "팀3", "팀 설명입니다", "팀 이미지 Url"));
-        teamRanks.put(0, new TeamReferenceResponse(4L, "팀4", "팀 설명입니다", "팀 이미지 Url"));
+        final List<TeamRankResponse> teamRankResponses = new ArrayList<>();
+        final List<DayGardenResponse> yearGardenResponses = List.of(
+                DayGardenResponse.builder()
+                        .dayOfYear(0)
+                        .weekOfYear(0)
+                        .dayOfWeek(0)
+                        .contributeCount(2)
+                        .build(),
+                DayGardenResponse.builder()
+                        .dayOfYear(1)
+                        .weekOfYear(0)
+                        .dayOfWeek(1)
+                        .contributeCount(1)
+                        .build(),
+                DayGardenResponse.builder()
+                        .dayOfYear(7)
+                        .weekOfYear(1)
+                        .dayOfWeek(0)
+                        .contributeCount(5)
+                        .build()
+        );
+        teamRankResponses.add(new TeamRankResponse(20,
+                new TeamReferenceResponse(3L, "팀3", "팀 설명입니다", "팀 이미지 Url"),
+                yearGardenResponses));
+        teamRankResponses.add(new TeamRankResponse(15,
+                new TeamReferenceResponse(2L, "팀2", "팀 설명입니다", "팀 이미지 Url"),
+                yearGardenResponses));
+        teamRankResponses.add(new TeamRankResponse(5,
+                new TeamReferenceResponse(1L, "팀1", "팀 설명입니다", "팀 이미지 Url"),
+                yearGardenResponses));
+        teamRankResponses.add(new TeamRankResponse(0,
+                new TeamReferenceResponse(4L, "팀4", "팀 설명입니다", "팀 이미지 Url"),
+                yearGardenResponses));
 
-        List<TeamRankResponse> teamRankResponses = teamRanks.entrySet().stream()
-                .map(entry -> new TeamRankResponse(entry.getKey(), entry.getValue()))
-                .toList();
         System.out.println(teamRankResponses.get(0));
         //when
         when(teamQueryService.getTeamRanks()).thenReturn(teamRankResponses);
@@ -327,7 +355,11 @@ public class TeamApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("[].teamReferenceResponse.id", "팀의 ID"),
                 stringFieldWithPath("[].teamReferenceResponse.name", "팀의 이름"),
                 stringFieldWithPath("[].teamReferenceResponse.description", "팀의 설명"),
-                stringFieldWithPath("[].teamReferenceResponse.imageUrl", "팀의 이미지 URL")
+                stringFieldWithPath("[].teamReferenceResponse.imageUrl", "팀의 이미지 URL"),
+                numberFieldWithPath("[].teamGardenResponse.[].dayOfYear", "1년 중 몇번째 날인가(0~365)"),
+                numberFieldWithPath("[].teamGardenResponse.[].dayOfWeek", "1주 중 몇번째 요일인가(월요일부터 시작, 0~7)"),
+                numberFieldWithPath("[].teamGardenResponse.[].weekOfYear", "1년 중 몇번째 주인가(0~52)"),
+                numberFieldWithPath("[].teamGardenResponse.[].contributeCount", "그날의 기여도(기여된 횟수)")
         );
 
         mockMvc.perform(get("/teams")
