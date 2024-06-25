@@ -23,7 +23,7 @@ public class GardenApiDocsTest extends RestDocsTest {
     @DisplayName("[성공] 팀의 올해 텃밭을 조회한다.")
     public void getAllGarden_팀의_올해_텃밭을_생성한다() throws Exception {
         //given
-        List<DayGardenResponse> fullGardenResponse = List.of(
+        final List<DayGardenResponse> fullGardenResponse = List.of(
                 DayGardenResponse.builder()
                         .dayOfYear(0)
                         .weekOfYear(0)

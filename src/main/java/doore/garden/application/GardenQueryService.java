@@ -15,22 +15,22 @@ import org.springframework.stereotype.Service;
 public class GardenQueryService {
     private final GardenRepository gardenRepository;
 
-    public List<DayGardenResponse> getAllGarden(Long teamId) {
-        List<Garden> gardens = gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId);
+    public List<DayGardenResponse> getAllGarden(final Long teamId) {
+        final List<Garden> gardens = gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId);
         return calculateContributes(gardens);
     }
 
-    public DayGardenResponse getTodayGarden(Long teamId) {
-        List<Garden> gardens = gardenRepository.findTodayGardenByTeamId(teamId);
+    public DayGardenResponse getTodayGarden(final Long teamId) {
+        final List<Garden> gardens = gardenRepository.findTodayGardenByTeamId(teamId);
         return calculateContributes(gardens).get(0);
     }
 
-    public List<DayGardenResponse> getThisWeekGarden(Long teamId) {
-        List<Garden> gardens = gardenRepository.findThisWeekGardenByTeamId(teamId);
+    public List<DayGardenResponse> getThisWeekGarden(final Long teamId) {
+        final List<Garden> gardens = gardenRepository.findThisWeekGardenByTeamId(teamId);
         return calculateContributes(gardens);
     }
 
-    private List<DayGardenResponse> calculateContributes(List<Garden> gardens) {
+    private List<DayGardenResponse> calculateContributes(final List<Garden> gardens) {
         return gardens.stream()
                 .collect(Collectors.groupingBy(Garden::getContributedDate, Collectors.counting()))
                 .entrySet().stream()

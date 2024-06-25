@@ -20,4 +20,8 @@ public interface ParticipantCurriculumItemRepository extends JpaRepository<Parti
     List<ParticipantCurriculumItem> findAllByCurriculumItemId(Long curriculumId);
 
     void deleteAllByCurriculumItemId(Long curriculumItemId);
+
+    long countByCurriculumItemIdIn(List<Long> curriculumIds);
+
+    long countByCurriculumItemIdInAndIsCheckedTrue(List<Long> curriculumIds);
 }

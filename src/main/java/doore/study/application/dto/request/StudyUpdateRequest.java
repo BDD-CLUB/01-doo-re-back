@@ -26,8 +26,8 @@ public record StudyUpdateRequest(
         @NotNull(message = "현재 상태를 입력해주세요.")
         StudyStatus status
 ) {
-    public StudyUpdateRequest(String name, String description, LocalDate startDate, LocalDate endDate,
-                              StudyStatus status) {
+    public StudyUpdateRequest(final String name, final String description, final LocalDate startDate, final LocalDate endDate,
+                              final StudyStatus status) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;

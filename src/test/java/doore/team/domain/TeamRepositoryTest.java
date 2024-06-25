@@ -18,7 +18,7 @@ public class TeamRepositoryTest extends RepositorySliceTest {
     @DisplayName("팀 삭제시 업데이트 쿼리가 적용된다.")
     public void sqlDelete_팀_삭제시_업데이트_쿼리가_적용된다() {
         //given
-        Team team = TeamFixture.team();
+        final Team team = TeamFixture.team();
         teamRepository.save(team);
         em.flush();
         em.clear();
@@ -33,13 +33,13 @@ public class TeamRepositoryTest extends RepositorySliceTest {
     @DisplayName("[성공] 삭제된 팀원은 조회되지 않는다.")
     public void findById_삭제된_팀원은_조회되지_않는다_성공() {
         //given
-        Team team = TeamFixture.deletedTeam();
+        final Team team = TeamFixture.deletedTeam();
         teamRepository.save(team);
         em.flush();
         em.clear();
 
         //when
-        Optional<Team> result = teamRepository.findById(team.getId());
+        final Optional<Team> result = teamRepository.findById(team.getId());
 
         //then
         assertThat(result).isEmpty();

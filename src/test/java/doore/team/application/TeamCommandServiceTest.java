@@ -88,7 +88,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     public void updateTeam_찾을_수_없는_팀은_팀_정보를_수정할_수_없다_실패() {
         //given
         final Long invalidId = 0L;
-        TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
+        final TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
 
         //when & then
         assertThatThrownBy(() -> {
@@ -99,7 +99,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 팀장이 아니라면 팀 정보를 수정할 수 없다.")
-    public void updateTeam_팀장이_아니라면_팀_정보를_수정할_수_없다_실패(){
+    public void updateTeam_팀장이_아니라면_팀_정보를_수정할_수_없다_실패() {
         final Long notTeamLeaderMemberId = memberRepository.save(아마스()).getId();
         final TeamRole notTeamLeaderRole = TeamRole.builder()
                 .teamRoleType(ROLE_팀원)
@@ -108,7 +108,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
                 .build();
         teamRoleRepository.save(notTeamLeaderRole);
 
-        TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
+        final TeamUpdateRequest request = new TeamUpdateRequest("asdf", "asdf");
 
         assertThatThrownBy(() -> {
             teamCommandService.updateTeam(teamId, request, notTeamLeaderMemberId);
@@ -118,8 +118,8 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @Test
     @Disabled // TODO: 만료된 초대 링크 수정
     @DisplayName("[실패] 이미 가입된 팀원이라면 팀 가입을 할 수 없다.")
-    public void joinTeam_이미_가입된_팀원이라면_팀_가입을_할_수_없다_실패(){
-        var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+    public void joinTeam_이미_가입된_팀원이라면_팀_가입을_할_수_없다_실패() {
+        final var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
 
         assertThatThrownBy(() -> {
             teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId);
@@ -132,10 +132,10 @@ public class TeamCommandServiceTest extends IntegrationTest {
     public void generateTeamInviteCode_초대코드는_생성된다_성공() {
 
         //when
-        var teamInviteLinkResponse = teamCommandService.generateTeamInviteCode(teamId);
+        final var teamInviteLinkResponse = teamCommandService.generateTeamInviteCode(teamId);
 
         //then
-        Optional<String> data = redisUtil.getData("teamId:%d".formatted(teamId), String.class);
+        final Optional<String> data = redisUtil.getData("teamId:%d".formatted(teamId), String.class);
         assertThat(data).isNotEmpty();
         assertThat(data.get()).isEqualTo(teamInviteLinkResponse.code());
     }
@@ -144,10 +144,10 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 이미 존재하는 초대코드가 있을 경우 초대코드를 반환한다.")
     public void generateTeamInviteCode_이미_존재하는_초대코드가_있을_경우_초대코드를_반환한다_성공() {
         //given
-        var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
 
         //when
-        var getCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var getCode = teamCommandService.generateTeamInviteCode(teamId).code();
 
         //then
         assertThat(createdCode).isEqualTo(getCode);
@@ -158,7 +158,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 초대코드와 유저코드가 일치하면 팀 가입은 성공한다.")
     public void joinTeam_초대코드와_유저코드가_일치하면_팀_가입은_성공한다_성공() {
         //given
-        var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
 
         //when & then
         assertDoesNotThrow(() -> teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId));
@@ -219,11 +219,11 @@ public class TeamCommandServiceTest extends IntegrationTest {
         @Disabled // todo : S3 문제 해결 (06/02/24)
         @DisplayName("[성공] 팀이 삭제되면 연관된 스터디도 삭제된다.")
         void deleteTeam_팀이_삭제되면_연관된_스터디도_삭제된다() {
-            List<Study> beforeStudies = studyRepository.findAllByTeamId(teamId);
+            final List<Study> beforeStudies = studyRepository.findAllByTeamId(teamId);
             assertThat(beforeStudies.size()).isEqualTo(2);
 
             teamCommandService.deleteTeam(teamId, memberId);
-            List<Study> afterStudies = studyRepository.findAllByTeamId(teamId);
+            final List<Study> afterStudies = studyRepository.findAllByTeamId(teamId);
 
             assertThat(afterStudies.get(0).getIsDeleted()).isEqualTo(true);
             assertThat(afterStudies.get(1).getIsDeleted()).isEqualTo(true);
@@ -233,10 +233,10 @@ public class TeamCommandServiceTest extends IntegrationTest {
         @Disabled // todo : S3 문제 해결 (06/02/24)
         @DisplayName("[성공] 팀이 삭제되면 연관된 커리큘럼도 삭제된다.")
         void deleteTeam_팀이_삭제되면_연관된_커리큘럼도_삭제된다() {
-            List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAll();
+            final List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAll();
 
             teamCommandService.deleteTeam(teamId, memberId);
-            List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAll();
+            final List<CurriculumItem> afterCurriculumItems = curriculumItemRepository.findAll();
 
             assertThat(beforeCurriculumItems.size()).isEqualTo(2);
             assertThat(afterCurriculumItems).isEmpty();
@@ -246,10 +246,10 @@ public class TeamCommandServiceTest extends IntegrationTest {
         @Disabled // todo : S3 문제 해결 (06/02/24)
         @DisplayName("[성공] 팀이 삭제되면 연관된 참여자 커리큘럼도 삭제된다.")
         void deleteTeam_팀이_삭제되면_연관된_참여자_커리큘럼_삭제된다() {
-            List<ParticipantCurriculumItem> beforeParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
+            final List<ParticipantCurriculumItem> beforeParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
 
             teamCommandService.deleteTeam(teamId, memberId);
-            List<ParticipantCurriculumItem> afterParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
+            final List<ParticipantCurriculumItem> afterParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
 
             assertThat(beforeParticipantCurriculumItem.size()).isEqualTo(2);
             assertThat(afterParticipantCurriculumItem).isEmpty();

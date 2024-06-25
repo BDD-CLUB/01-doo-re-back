@@ -40,34 +40,35 @@ public class ParticipantCurriculumItemRepositoryTest extends RepositorySliceTest
     public void findAllByStudyIdAndMemberId_스터디_id와_회원_id를_사용해_participantCurriculumItem_목록을_조회할_수_있다_성공()
             throws Exception {
         //given
-        Member member = 아마란스();
-        Member otherMember = 아마어마어마();
+        final Member member = 아마란스();
+        final Member otherMember = 아마어마어마();
         memberRepository.saveAll(List.of(member, otherMember));
 
-        Study study = algorithmStudy();
-        Study otherStudy = algorithmStudy();
+        final Study study = algorithmStudy();
+        final Study otherStudy = algorithmStudy();
         studyRepository.saveAll(List.of(study, otherStudy));
 
-        CurriculumItem curriculumItem = curriculumItem(study);
-        CurriculumItem otherStudyCurriculumItem = curriculumItem(otherStudy);
+        final CurriculumItem curriculumItem = curriculumItem(study);
+        final CurriculumItem otherStudyCurriculumItem = curriculumItem(otherStudy);
         curriculumItemRepository.saveAll(List.of(curriculumItem, otherStudyCurriculumItem));
 
-        Participant participant = participant(study.getId(), member);
-        Participant otherParticipant = participant(study.getId(), otherMember);
-        Participant participantFromOtherStudy = participant(otherStudy.getId(), member);
+        final Participant participant = participant(study.getId(), member);
+        final Participant otherParticipant = participant(study.getId(), otherMember);
+        final Participant participantFromOtherStudy = participant(otherStudy.getId(), member);
         participantRepository.saveAll(List.of(participant, otherParticipant, participantFromOtherStudy));
 
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItem(participant.getId(),
+        final ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItem(participant.getId(),
                 curriculumItem);
-        ParticipantCurriculumItem otherParticipantCurriculumItem = participantCurriculumItem(otherParticipant.getId(),
+        final ParticipantCurriculumItem otherParticipantCurriculumItem = participantCurriculumItem(
+                otherParticipant.getId(),
                 curriculumItem);
-        ParticipantCurriculumItem otherStudyParticipantCurriculumItem = participantCurriculumItem(
+        final ParticipantCurriculumItem otherStudyParticipantCurriculumItem = participantCurriculumItem(
                 participantFromOtherStudy.getId(), otherStudyCurriculumItem);
         participantCurriculumItemRepository.saveAll(List.of(participantCurriculumItem, otherParticipantCurriculumItem,
                 otherStudyParticipantCurriculumItem));
 
         //when
-        List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByStudyIdAndMemberId(
+        final List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByStudyIdAndMemberId(
                 study.getId(), 1L);
 
         //then

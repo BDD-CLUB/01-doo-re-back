@@ -48,26 +48,26 @@ public class CurriculumItemCommandService {
     private final StudyRoleRepository studyRoleRepository;
     private final GardenRepository gardenRepository;
 
-    public void manageCurriculum(CurriculumItemManageRequest request, Long studyId, Long memberId) {
+    public void manageCurriculum(final CurriculumItemManageRequest request, final Long studyId, final Long memberId) {
         validateExistStudyLeader(memberId);
-        List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
+        final List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
         checkItemOrderDuplicate(curriculumItems);
         checkItemOrderRange(curriculumItems);
         createCurriculum(studyId, curriculumItems);
         updateCurriculum(curriculumItems);
 
-        List<CurriculumItemManageDetailRequest> deletedCurriculumItems = request.deletedCurriculumItems();
+        final List<CurriculumItemManageDetailRequest> deletedCurriculumItems = request.deletedCurriculumItems();
         deleteCurriculum(deletedCurriculumItems);
         sortCurriculum();
     }
 
-    public void checkCurriculum(Long curriculumId, Long participantId, Long memberId) {
+    public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
         validateExistStudyLeaderAndStudyMember(memberId);
-        CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
+        final CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
-        Participant participant = participantRepository.findById(participantId)
+        final Participant participant = participantRepository.findById(participantId)
                 .orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
-        ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+        final ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
                 curriculumItem.getId(), participant.getId()).orElseThrow();
 
         participantCurriculumItem.checkCompletion();
@@ -78,20 +78,20 @@ public class CurriculumItemCommandService {
         deleteGarden(participantCurriculumItem);
     }
 
-    private void createGarden(ParticipantCurriculumItem participantCurriculumItem) {
-        Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
+    private void createGarden(final ParticipantCurriculumItem participantCurriculumItem) {
+        final Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
                 .of(participantCurriculumItem);
         gardenRepository.save(garden);
     }
 
-    private void deleteGarden(ParticipantCurriculumItem participantCurriculumItem) {
-        Long contributionId = participantCurriculumItem.getId();
-        GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
+    private void deleteGarden(final ParticipantCurriculumItem participantCurriculumItem) {
+        final Long contributionId = participantCurriculumItem.getId();
+        final GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
         gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
 
-    private void checkItemOrderDuplicate(List<CurriculumItemManageDetailRequest> curriculumItems) {
-        Set<Integer> uniqueItemOrders = new HashSet<>();
+    private void checkItemOrderDuplicate(final List<CurriculumItemManageDetailRequest> curriculumItems) {
+        final Set<Integer> uniqueItemOrders = new HashSet<>();
 
         curriculumItems.stream()
                 .map(CurriculumItemManageDetailRequest::itemOrder)
@@ -102,7 +102,7 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void checkItemOrderRange(List<CurriculumItemManageDetailRequest> curriculumItems) {
+    private void checkItemOrderRange(final List<CurriculumItemManageDetailRequest> curriculumItems) {
         curriculumItems.stream()
                 .mapToInt(CurriculumItemManageDetailRequest::itemOrder)
                 .forEach(itemOrder -> {
@@ -112,7 +112,7 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void createCurriculum(Long studyId, List<CurriculumItemManageDetailRequest> curriculumItems) {
+    private void createCurriculum(final Long studyId, final List<CurriculumItemManageDetailRequest> curriculumItems) {
         if (curriculumItemRepository.findAll().size() >= 99) {
             throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
         }
@@ -121,23 +121,23 @@ public class CurriculumItemCommandService {
                 .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
     }
 
-    private boolean isExistsCurriculumItem(Long curriculumItemId) {
+    private boolean isExistsCurriculumItem(final Long curriculumItemId) {
         return curriculumItemRepository.existsById(curriculumItemId);
     }
 
-    public void createCurriculumItemAndAssignToParticipants(Long studyId,
-                                                            CurriculumItemManageDetailRequest curriculumItemRequest) {
-        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        List<Participant> participants = participantRepository.findAllByStudyId(studyId);
+    public void createCurriculumItemAndAssignToParticipants(final Long studyId,
+                                                            final CurriculumItemManageDetailRequest curriculumItemRequest) {
+        final Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
 
-        CurriculumItem createCurriculumItem = CurriculumItem.builder()
+        final CurriculumItem createCurriculumItem = CurriculumItem.builder()
                 .name(curriculumItemRequest.name())
                 .itemOrder(curriculumItemRequest.itemOrder())
                 .study(study)
                 .build();
         curriculumItemRepository.save(createCurriculumItem);
 
-        List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
+        final List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
                 .map(participant -> ParticipantCurriculumItem.builder()
                         .curriculumItem(createCurriculumItem)
                         .participantId(participant.getId())
@@ -147,9 +147,9 @@ public class CurriculumItemCommandService {
     }
 
 
-    private void updateCurriculum(List<CurriculumItemManageDetailRequest> curriculumItems) {
-        for (CurriculumItemManageDetailRequest requestItem : curriculumItems) {
-            CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.id())
+    private void updateCurriculum(final List<CurriculumItemManageDetailRequest> curriculumItems) {
+        for (final CurriculumItemManageDetailRequest requestItem : curriculumItems) {
+            final CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.id())
                     .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
 
             existingItem.updateIfNameDifferent(requestItem.name());
@@ -157,7 +157,7 @@ public class CurriculumItemCommandService {
         }
     }
 
-    private void deleteCurriculum(List<CurriculumItemManageDetailRequest> deletedCurriculumItems) {
+    private void deleteCurriculum(final List<CurriculumItemManageDetailRequest> deletedCurriculumItems) {
         deletedCurriculumItems.stream()
                 .map(CurriculumItemManageDetailRequest::id)
                 .forEach(curriculumItemId -> {
@@ -167,23 +167,23 @@ public class CurriculumItemCommandService {
     }
 
     private void sortCurriculum() {
-        List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
+        final List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
 
         IntStream.range(1, sortedCurriculum.size())
                 .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);
     }
 
-    private void validateExistStudyLeader(Long memberId) {
-        StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeader(final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
 
-    private void validateExistStudyLeaderAndStudyMember(Long memberId) {
-        StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeaderAndStudyMember(final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
             throw new MemberException(UNAUTHORIZED);

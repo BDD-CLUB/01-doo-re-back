@@ -27,16 +27,16 @@ public class ParticipantQueryService {
     private final StudyRoleRepository studyRoleRepository;
     private final ParticipantRepository participantRepository;
 
-    public List<Participant> findAllParticipants(Long studyId, Long memberId) {
+    public List<Participant> findAllParticipants(final Long studyId, final Long memberId) {
         validateExistStudyLeaderAndStudyMember(memberId);
         studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         return participantRepository.findAllByStudyId(studyId);
     }
 
-    private void validateExistStudyLeaderAndStudyMember(Long memberId) {
-        StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeaderAndStudyMember(final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))){
+        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
             throw new MemberException(UNAUTHORIZED);
         }
     }

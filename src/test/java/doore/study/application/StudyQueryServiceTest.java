@@ -3,8 +3,11 @@ package doore.study.application;
 import static doore.member.MemberFixture.미나;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.study.CurriculumItemFixture.curriculumItem;
+import static doore.study.ParticipantCurriculumItemFixture.participantCurriculumItem;
 import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,14 +22,16 @@ import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyResponse;
+import doore.study.domain.CurriculumItem;
+import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
+import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +44,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
     private StudyCommandService studyCommandService;
     @Autowired
     private StudyQueryService studyQueryService;
+    @Autowired
+    private CurriculumItemCommandService curriculumItemCommandService;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -53,6 +60,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
     private CurriculumItemRepository curriculumItemRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private ParticipantCurriculumItemRepository participantCurriculumItemRepository;
 
     private Member member;
     private StudyRole studyRole;
@@ -77,7 +86,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Disabled
         @DisplayName("[성공] 정상적으로 스터디 정보를 조회할 수 있다.")
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            Study study = createStudy();
+            final Study study = createStudy();
             studyRepository.save(study);
             assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
         }
@@ -85,7 +94,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         @Test
         @DisplayName("[실패] 존재하지 않는 스터디를 조회할 수 없다.")
         void findStudyById_존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
-            Long notExistingStudyId = 0L;
+            final Long notExistingStudyId = 0L;
             assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
@@ -97,26 +106,45 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
-        Long tokenMemberId = member.getId();
-        Study anotherStudy = studyRepository.save(createStudy());
-        participantRepository.save(Participant.builder().member(member).studyId(study.getId()).build());
-        participantRepository.save(Participant.builder().member(member).studyId(anotherStudy.getId()).build());
+        final Long tokenMemberId = member.getId();
+        final Study anotherStudy = studyRepository.save(createStudy());
+        final Participant participantForStudy = participantRepository.save(
+                Participant.builder().member(member).studyId(study.getId()).build());
+        final Participant participantForAnotherStudy = participantRepository.save(
+                Participant.builder().member(member).studyId(anotherStudy.getId()).build());
 
-        Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
-        Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
-        Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
-        Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
+        final Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
+        final Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
+        final Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
+        final Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
+
+        final CurriculumItem curriculumItemForStudy1 = curriculumItemRepository.save(curriculumItem(study));
+        final CurriculumItem curriculumItemForStudy2 = curriculumItemRepository.save(curriculumItem(study));
+        final CurriculumItem curriculumItemForAnotherStudy = curriculumItemRepository.save(curriculumItem(anotherStudy));
+
+        final ParticipantCurriculumItem participantCurriculumItem1 = participantCurriculumItemRepository.save(
+                participantCurriculumItem(participantForStudy.getId(), curriculumItemForStudy1));
+        final ParticipantCurriculumItem participantCurriculumItem2 = participantCurriculumItemRepository.save(
+                participantCurriculumItem(participantForStudy.getId(), curriculumItemForStudy2));
+        final ParticipantCurriculumItem participantCurriculumItem3 = participantCurriculumItemRepository.save(
+                participantCurriculumItem(participantForAnotherStudy.getId(), curriculumItemForAnotherStudy));
+
+        curriculumItemCommandService.checkCurriculum(curriculumItemForStudy1.getId(), participantForStudy.getId(),
+                member.getId());
 
         // when
         final List<StudyResponse> expectedResponses = List.of(
-                StudyResponse.of(study, teamOfStudy, cropOfTeam),
-                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam)
+                StudyResponse.of(study, teamOfStudy, cropOfTeam, 50),
+                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, 0)
         );
         final List<StudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
                 tokenMemberId);
 
         // then
-        Assertions.assertThat(actualResponses)
+        assertThat(participantCurriculumItem1.getIsChecked()).isEqualTo(true);
+        assertThat(participantCurriculumItem2.getIsChecked()).isEqualTo(false);
+        assertThat(participantCurriculumItem3.getIsChecked()).isEqualTo(false);
+        assertThat(actualResponses)
                 .usingRecursiveComparison()
                 .ignoringCollectionOrder()
                 .isEqualTo(expectedResponses);
@@ -126,7 +154,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 다른 사람의 스터디 목록 조회는 불가능하다.")
     void findMyStudy_다른_사람의_스터디_목록_조회는_불가능하다_실패() {
-        Long anotherMemberId = 2L;
+        final Long anotherMemberId = 2L;
         // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {
             studyQueryService.findMyStudies(member.getId(), anotherMemberId);

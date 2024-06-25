@@ -31,47 +31,47 @@ public class StudyController {
     private final StudyQueryService studyQueryService;
 
     @PostMapping("/teams/{teamId}/studies") //회원
-    public ResponseEntity<Void> createStudy(@Valid @RequestBody StudyCreateRequest studyRequest,
-                                            @PathVariable Long teamId, @LoginMember Member member) {
+    public ResponseEntity<Void> createStudy(@Valid @RequestBody final StudyCreateRequest studyRequest,
+                                            @PathVariable final Long teamId, @LoginMember final Member member) {
         studyCommandService.createStudy(studyRequest, teamId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/studies/{studyId}") // 스터디장
-    public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId, @LoginMember Member member) {
+    public ResponseEntity<Void> deleteStudy(@PathVariable final Long studyId, @LoginMember final Member member) {
         studyCommandService.deleteStudy(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/studies/{studyId}") // 비회원
-    public ResponseEntity<StudyResponse> getStudy(@PathVariable Long studyId) {
-        StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
+    public ResponseEntity<StudyResponse> getStudy(@PathVariable final Long studyId) {
+        final StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
         return ResponseEntity.ok(studyDetailResponse);
     }
 
     @PutMapping("/studies/{studyId}") // 스터디장
-    public ResponseEntity<Void> updateStudy(@Valid @RequestBody StudyUpdateRequest studyUpdateRequest,
-                                            @PathVariable Long studyId, @LoginMember Member member) {
+    public ResponseEntity<Void> updateStudy(@Valid @RequestBody final StudyUpdateRequest studyUpdateRequest,
+                                            @PathVariable final Long studyId, @LoginMember final Member member) {
         studyCommandService.updateStudy(studyUpdateRequest, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/studies/{studyId}/status") // 스터디장
-    public ResponseEntity<Void> changeStudyStatus(@RequestParam String status, @PathVariable Long studyId,
-                                                  @LoginMember Member member) {
+    public ResponseEntity<Void> changeStudyStatus(@RequestParam final String status, @PathVariable final Long studyId,
+                                                  @LoginMember final Member member) {
         studyCommandService.changeStudyStatus(status, studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/studies/{studyId}/termination") // 스터디장
-    public ResponseEntity<Void> terminateStudy(@PathVariable Long studyId, @LoginMember Member member) {
+    public ResponseEntity<Void> terminateStudy(@PathVariable final Long studyId, @LoginMember final Member member) {
         studyCommandService.terminateStudy(studyId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/studies/members/{memberId}") // 회원
     public ResponseEntity<List<StudyResponse>> getMyStudies(@PathVariable final Long memberId,
-                                                            @LoginMember Member member) {
+                                                            @LoginMember final Member member) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증 (2024/5/15 완료)
         return ResponseEntity.ok(studyQueryService.findMyStudies(memberId, member.getId()));
     }

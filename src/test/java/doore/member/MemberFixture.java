@@ -10,7 +10,7 @@ public class MemberFixture {
     private static MemberRepository memberRepository;
 
     @Autowired
-    public MemberFixture(MemberRepository memberRepository) {
+    public MemberFixture(final MemberRepository memberRepository) {
         MemberFixture.memberRepository = memberRepository;
     }
 

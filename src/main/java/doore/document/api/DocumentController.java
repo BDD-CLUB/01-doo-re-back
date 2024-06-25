@@ -40,42 +40,43 @@ public class DocumentController {
     private final DocumentQueryService documentQueryService;
 
     @PostMapping("/{groupType}/{groupId}/documents") // 회원
-    public ResponseEntity<Void> createDocument(@Valid @RequestPart DocumentCreateRequest request,
+    public ResponseEntity<Void> createDocument(@Valid @RequestPart final DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
-                                               @PathVariable String groupType,
-                                               @PathVariable Long groupId, @LoginMember Member member) {
-        DocumentGroupType group = DocumentGroupType.value(groupType);
+                                               @PathVariable final String groupType,
+                                               @PathVariable final Long groupId, @LoginMember final Member member) {
+        final DocumentGroupType group = DocumentGroupType.value(groupType);
         documentCommandService.createDocument(request, files, group, groupId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{groupType}/{groupId}/documents") // 비회원
     public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
-            @PathVariable String groupType,
-            @PathVariable Long groupId,
-            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
-            @RequestParam(defaultValue = "4") @PositiveOrZero int size) {
-        DocumentGroupType group = DocumentGroupType.value(groupType);
-        Page<DocumentCondensedResponse> condensedDocuments =
+            @PathVariable final String groupType,
+            @PathVariable final Long groupId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero final int page,
+            @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
+        final DocumentGroupType group = DocumentGroupType.value(groupType);
+        final Page<DocumentCondensedResponse> condensedDocuments =
                 documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }
 
     @GetMapping("/{documentId}")  // 팀 학습자료 -> 비회원, 스터디 학습자료 -> 스터디 구성원
-    public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable Long documentId, @LoginMember Member member) {
-        DocumentDetailResponse response = documentQueryService.getDocument(documentId, member.getId());
+    public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable final Long documentId,
+                                                              @LoginMember final Member member) {
+        final DocumentDetailResponse response = documentQueryService.getDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/{documentId}") // 회원
-    public ResponseEntity<Void> updateDocument(@Valid @RequestBody DocumentUpdateRequest request,
-                                               @PathVariable Long documentId, @LoginMember Member member) {
+    public ResponseEntity<Void> updateDocument(@Valid @RequestBody final DocumentUpdateRequest request,
+                                               @PathVariable final Long documentId, @LoginMember final Member member) {
         documentCommandService.updateDocument(request, documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/{documentId}") // 회원
-    public ResponseEntity<Void> deleteDocument(@PathVariable Long documentId, @LoginMember Member member) {
+    public ResponseEntity<Void> deleteDocument(@PathVariable final Long documentId, @LoginMember final Member member) {
         documentCommandService.deleteDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -21,9 +21,11 @@ public record StudyResponse(
         LocalDate endDate,
         StudyStatus status,
         TeamReferenceResponse teamReference,
-        CropReferenceResponse cropReference
+        CropReferenceResponse cropReference,
+        long studyProgressRatio
+
 ) {
-    public static StudyResponse of(final Study study, final Team team, final Crop crop) {
+    public static StudyResponse of(final Study study, final Team team, final Crop crop, final long studyProgressRatio) {
         return StudyResponse.builder()
                 .id(study.getId())
                 .name(study.getName())
@@ -33,6 +35,7 @@ public record StudyResponse(
                 .status(study.getStatus())
                 .teamReference(TeamReferenceResponse.from(team))
                 .cropReference(CropReferenceResponse.from(crop))
+                .studyProgressRatio(studyProgressRatio)
                 .build();
     }
 }

@@ -32,15 +32,15 @@ public class AttendanceCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 출석을 할 수 있다")
     public void createAttendance_출석을_할_수_있다_성공() {
         //given
-        Member member = 아마란스();
+        final Member member = 아마란스();
         memberRepository.save(member);
-        Long memberId = member.getId();
+        final Long memberId = member.getId();
 
         //when
         attendanceCommandService.createAttendance(memberId);
 
         //then
-        List<Attendance> attendances = attendanceRepository.findAll();
+        final List<Attendance> attendances = attendanceRepository.findAll();
         assertAll(
                 () -> assertThat(attendances).hasSize(1),
                 () -> assertEquals(memberId, attendances.get(0).getMemberId())
@@ -50,7 +50,7 @@ public class AttendanceCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 회원이 없는 경우 출석 할 수 없다.")
     public void createAttendance_회원이_없는_경우_출석을_할_수_없다_성공() {
-        Long invalidMemberId = 15L;
+        final Long invalidMemberId = 15L;
         assertThatThrownBy(() -> attendanceCommandService.createAttendance(invalidMemberId))
                 .isInstanceOf(MemberException.class).hasMessage(NOT_FOUND_MEMBER.errorMessage());
     }
@@ -59,9 +59,9 @@ public class AttendanceCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 오늘 이미 출석한 경우 출석 할 수 없다.")
     public void createAttendance_오늘_이미_출석한_경우_출석을_할_수_없다_성공() {
         //given
-        Member member = 아마란스();
+        final Member member = 아마란스();
         memberRepository.save(member);
-        Long memberId = member.getId();
+        final Long memberId = member.getId();
 
         //when
         attendanceCommandService.createAttendance(memberId);

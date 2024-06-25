@@ -26,7 +26,7 @@ public class CurriculumItemFixture {
                 .build();
     }
 
-    public static CurriculumItem curriculumItem(Study study) {
+    public static CurriculumItem curriculumItem(final Study study) {
         return CurriculumItem.builder()
                 .name("Spring MVC 이해")
                 .itemOrder(1)
@@ -34,7 +34,7 @@ public class CurriculumItemFixture {
                 .build();
     }
 
-    public static CurriculumItem deleteCurriculumItem(Study study) {
+    public static CurriculumItem deleteCurriculumItem(final Study study) {
         return CurriculumItem.builder()
                 .name("Spring MVC 이해")
                 .itemOrder(1)

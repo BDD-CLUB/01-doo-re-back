@@ -52,52 +52,52 @@ public class MemberCommandService {
                                 .build()));
     }
 
-    public void transferTeamLeader(Long teamId, Long newTeamLeaderId, Long memberId) {
+    public void transferTeamLeader(final Long teamId, final Long newTeamLeaderId, final Long memberId) {
         validateExistMember(newTeamLeaderId);
         validateExistTeam(teamId);
 
-        TeamRole checkTeamLeader = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+        final TeamRole checkTeamLeader = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_IN_TEAM));
         if (!checkTeamLeader.getTeamRoleType().equals(ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
         }
         checkTeamLeader.updatePreviousTeamLeaderRole();
 
-        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamLeaderId)
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, newTeamLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         teamRole.updateTeamLeaderRole();
     }
 
-    public void transferStudyLeader(Long studyId, Long newStudyLeaderId, Long memberId) {
+    public void transferStudyLeader(final Long studyId, final Long newStudyLeaderId, final Long memberId) {
         validateExistMember(newStudyLeaderId);
         validateExistStudy(studyId);
 
-        StudyRole checkStudyLeader = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+        final StudyRole checkStudyLeader = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!checkStudyLeader.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
         checkStudyLeader.updatePreviousStudyLeaderRole();
 
-        StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyLeaderId)
+        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, newStudyLeaderId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         studyRole.updateStudyLeaderRole();
     }
 
-    public void deleteMember(Long memberId) {
-        Member member = validateExistMember(memberId);
+    public void deleteMember(final Long memberId) {
+        final Member member = validateExistMember(memberId);
         memberRepository.delete(member);
     }
 
-    private Member validateExistMember(Long memberId) {
+    private Member validateExistMember(final Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private Team validateExistTeam(Long teamId) {
+    private Team validateExistTeam(final Long teamId) {
         return teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 
-    private Study validateExistStudy(Long studyId) {
+    private Study validateExistStudy(final Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 }

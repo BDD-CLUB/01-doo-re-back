@@ -46,7 +46,7 @@ public class StudyCommandService {
         validateExistMember(memberId);
         validateExistTeam(teamId);
         checkEndDateValid(request.startDate(), request.endDate());
-        Study study = studyRepository.save(request.toStudy(teamId));
+        final Study study = studyRepository.save(request.toStudy(teamId));
         studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(ROLE_스터디장)
                 .studyId(study.getId())
@@ -54,68 +54,69 @@ public class StudyCommandService {
                 .build());
     }
 
-    private void checkEndDateValid(LocalDate startDate, LocalDate endDate) {
+    private void checkEndDateValid(final LocalDate startDate, final LocalDate endDate) {
         if (endDate != null && startDate.isAfter(endDate)) {
             throw new StudyException(INVALID_ENDDATE);
         }
     }
 
-    public void deleteStudy(Long studyId, Long memberId) {
+    public void deleteStudy(final Long studyId, final Long memberId) {
         validateExistStudyLeader(memberId);
         validateExistStudy(studyId);
 
-        List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(studyId);
-        List<Long> curriculumItemIds = curriculumItems.stream()
+        final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(studyId);
+        final List<Long> curriculumItemIds = curriculumItems.stream()
                 .map(CurriculumItem::getId)
                 .toList();
 
         curriculumItems.forEach(CurriculumItem::delete);
 
         curriculumItemIds.forEach(curriculumItemId -> {
-            List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(curriculumItemId);
+            final List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                    curriculumItemId);
             items.forEach(ParticipantCurriculumItem::delete);
         });
 
         studyRepository.deleteById(studyId);
     }
 
-    public void updateStudy(StudyUpdateRequest request, Long studyId, Long memberId) {
+    public void updateStudy(final StudyUpdateRequest request, final Long studyId, final Long memberId) {
         validateExistStudyLeader(memberId);
-        Study study = validateExistStudy(studyId);
+        final Study study = validateExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
-    public void terminateStudy(Long studyId, Long memberId) {
+    public void terminateStudy(final Long studyId, final Long memberId) {
         validateExistStudyLeader(memberId);
-        Study study = validateExistStudy(studyId);
+        final Study study = validateExistStudy(studyId);
         study.terminate();
     }
 
-    public void changeStudyStatus(String status, Long studyId, Long memberId) {
+    public void changeStudyStatus(final String status, final Long studyId, final Long memberId) {
         validateExistStudyLeader(memberId);
-        Study study = validateExistStudy(studyId);
+        final Study study = validateExistStudy(studyId);
         try {
-            StudyStatus changedStatus = StudyStatus.valueOf(status);
+            final StudyStatus changedStatus = StudyStatus.valueOf(status);
             study.changeStatus(changedStatus);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new StudyException(NOT_FOUND_STATUS);
         }
     }
 
-    private void validateExistTeam(Long teamId) {
+    private void validateExistTeam(final Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 
-    private Study validateExistStudy(Long studyId) {
+    private Study validateExistStudy(final Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
-    private void validateExistMember(Long memberId) {
+    private void validateExistMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private void validateExistStudyLeader(Long memberId) {
-        StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeader(final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);

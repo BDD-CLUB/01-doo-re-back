@@ -56,7 +56,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @Test
     @DisplayName("학습자료를 생성한다.")
     public void 학습자료를_생성한다() throws Exception {
-        DocumentCreateRequest request = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
+        final DocumentCreateRequest request = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
                 DocumentAccessType.TEAM, IMAGE, null, 1L);
         final MockPart mockPart = getMockPart("request", request);
         mockPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
@@ -98,12 +98,12 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료 목록을 조회한다.")
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
-        DocumentCondensedResponse documentCondensedResponse =
+        final DocumentCondensedResponse documentCondensedResponse =
                 new DocumentCondensedResponse(1L, "학습자료1", "학습자료1 입니다.", LocalDate.parse("2020-02-02"), 1L);
-        DocumentCondensedResponse otherDocumentCondensedResponse =
+        final DocumentCondensedResponse otherDocumentCondensedResponse =
                 new DocumentCondensedResponse(2L, "학습자료2", "학습자료2 입니다.", LocalDate.parse("2020-02-03"), 2L);
-        Page<DocumentCondensedResponse> documentCondensedResponses = new PageImpl<>(
-                List.of(documentCondensedResponse, otherDocumentCondensedResponse), PageRequest.of(0,4),2);
+        final Page<DocumentCondensedResponse> documentCondensedResponses = new PageImpl<>(
+                List.of(documentCondensedResponse, otherDocumentCondensedResponse), PageRequest.of(0, 4), 2);
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
                 .thenReturn(documentCondensedResponses);
@@ -129,8 +129,8 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 조회한다.")
     public void 학습자료를_조회한다() throws Exception {
         //given
-        FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        DocumentDetailResponse documentDetailResponse = DocumentDetailResponse.builder()
+        final FileResponse fileResponse = new FileResponse(1L, "s3 url");
+        final DocumentDetailResponse documentDetailResponse = DocumentDetailResponse.builder()
                 .id(1L)
                 .title("학습자료")
                 .description("학습자료 입니다.")
@@ -169,7 +169,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 수정한다.")
     public void 학습자료를_수정한다() throws Exception {
         //given
-        DocumentUpdateRequest request = new DocumentUpdateRequest("수정된 제목", "수정된 설명", TEAM);
+        final DocumentUpdateRequest request = new DocumentUpdateRequest("수정된 제목", "수정된 설명", TEAM);
 
         //then
         mockMvc.perform(put("/{documentId}", 1)

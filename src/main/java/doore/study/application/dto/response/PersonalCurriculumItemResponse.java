@@ -11,8 +11,8 @@ public record PersonalCurriculumItemResponse(
         Boolean isChecked
 ) {
     @Builder
-    public PersonalCurriculumItemResponse(Long id, Long participantId, String name, Integer itemOrder,
-                                          Boolean isChecked) {
+    public PersonalCurriculumItemResponse(final Long id, final Long participantId, final String name, final Integer itemOrder,
+                                          final Boolean isChecked) {
         this.id = id;
         this.participantId = participantId;
         this.name = name;
@@ -20,7 +20,7 @@ public record PersonalCurriculumItemResponse(
         this.isChecked = isChecked;
     }
 
-    public static PersonalCurriculumItemResponse from(ParticipantCurriculumItem participantCurriculumItem) {
+    public static PersonalCurriculumItemResponse from(final ParticipantCurriculumItem participantCurriculumItem) {
         return PersonalCurriculumItemResponse.builder()
                 .id(participantCurriculumItem.getId())
                 .participantId(participantCurriculumItem.getParticipantId())

@@ -15,7 +15,7 @@ public record TeamMemberResponse(
         Boolean isDeleted
 ) {
 
-    public static List<TeamMemberResponse> of(final List<Member> members, Map<Member, TeamRoleType> roleOfMembers) {
+    public static List<TeamMemberResponse> of(final List<Member> members, final Map<Member, TeamRoleType> roleOfMembers) {
         return members.stream()
                 .map(member -> new TeamMemberResponse(
                         member.getId(),

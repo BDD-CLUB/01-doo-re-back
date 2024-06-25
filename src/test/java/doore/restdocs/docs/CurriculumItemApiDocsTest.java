@@ -53,7 +53,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     }
 
     private List<CurriculumItemManageDetailRequest> getCurriculumItems() {
-        List<CurriculumItemManageDetailRequest> curriculumItems = new ArrayList<>();
+        final List<CurriculumItemManageDetailRequest> curriculumItems = new ArrayList<>();
         curriculumItems.add(
                 CurriculumItemManageDetailRequest.builder().id(1L).itemOrder(1).name("Change Spring Study").build());
         curriculumItems.add(CurriculumItemManageDetailRequest.builder().id(2L).itemOrder(4).name("CS Study").build());
@@ -65,7 +65,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     }
 
     private List<CurriculumItemManageDetailRequest> getDeletedCurriculumItems() {
-        List<CurriculumItemManageDetailRequest> deletedCurriculumItems = new ArrayList<>();
+        final List<CurriculumItemManageDetailRequest> deletedCurriculumItems = new ArrayList<>();
         deletedCurriculumItems.add(
                 CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
         return deletedCurriculumItems;
@@ -131,18 +131,18 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
     @DisplayName("[성공] 스터디의 특정 회원의 커리큘럼을 정상적으로 조회할 수 있다.")
     public void getMyCurriculum_스터디의_특정_회원의_커리큘럼을_정상적으로_조회할_수_있다() throws Exception {
         //given
-        CurriculumItemResponse otherCurriculumItemResponse = new CurriculumItemResponse(
+        final CurriculumItemResponse otherCurriculumItemResponse = new CurriculumItemResponse(
                 1L, "chapter2. DFS", 0, false,
                 List.of(otherParticipantCurriculumItemResponse));
 
-        PersonalCurriculumItemResponse personalCurriculumItemResponse = PersonalCurriculumItemResponse.builder()
+        final PersonalCurriculumItemResponse personalCurriculumItemResponse = PersonalCurriculumItemResponse.builder()
                 .id(participantCurriculumItemResponse.id())
                 .participantId(participantCurriculumItemResponse.participantId())
                 .itemOrder(curriculumItemResponse.itemOrder())
                 .isChecked(participantCurriculumItemResponse.isChecked())
                 .name(curriculumItemResponse.name())
                 .build();
-        PersonalCurriculumItemResponse otherPersonalCurriculumItemResponse = PersonalCurriculumItemResponse.builder()
+        final PersonalCurriculumItemResponse otherPersonalCurriculumItemResponse = PersonalCurriculumItemResponse.builder()
                 .id(otherParticipantCurriculumItemResponse.id())
                 .participantId(otherParticipantCurriculumItemResponse.participantId())
                 .itemOrder(otherCurriculumItemResponse.itemOrder())

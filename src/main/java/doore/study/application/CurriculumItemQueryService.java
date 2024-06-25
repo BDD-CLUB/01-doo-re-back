@@ -17,12 +17,12 @@ public class CurriculumItemQueryService {
     private final CurriculumItemRepository curriculumItemRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
 
-    public List<CurriculumItemResponse> getCurriculums(Long studyId) {
+    public List<CurriculumItemResponse> getCurriculums(final Long studyId) {
         return CurriculumItemResponse.from(curriculumItemRepository.findAllByStudyId(studyId));
     }
 
-    public List<PersonalCurriculumItemResponse> getMyCurriculum(Long studyId, Long memberId) {
-        List<ParticipantCurriculumItem> participantCurriculumItems =
+    public List<PersonalCurriculumItemResponse> getMyCurriculum(final Long studyId, final Long memberId) {
+        final List<ParticipantCurriculumItem> participantCurriculumItems =
                 participantCurriculumItemRepository.findAllByStudyIdAndMemberId(studyId, memberId);
         return participantCurriculumItems.stream()
                 .map(PersonalCurriculumItemResponse::from)

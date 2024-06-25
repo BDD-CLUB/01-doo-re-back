@@ -22,28 +22,30 @@ public class ParticipantController {
     private final ParticipantQueryService participantQueryService;
 
     @PostMapping("/studies/{studyId}/members/{memberId}") // 스터디장
-    public ResponseEntity<Void> saveParticipant(@PathVariable Long studyId, @PathVariable Long memberId,
-                                                @LoginMember Member member) {
+    public ResponseEntity<Void> saveParticipant(@PathVariable final Long studyId, @PathVariable final Long memberId,
+                                                @LoginMember final Member member) {
         participantCommandService.saveParticipant(studyId, memberId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/studies/{studyId}/members/{memberId}") // 스터디장
-    public ResponseEntity<Void> deleteParticipant(@PathVariable Long studyId, @PathVariable Long memberId,
-                                                  @LoginMember Member member) {
+    public ResponseEntity<Void> deleteParticipant(@PathVariable final Long studyId, @PathVariable final Long memberId,
+                                                  @LoginMember final Member member) {
         participantCommandService.deleteParticipant(studyId, memberId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/studies/{studyId}/members") // 스터디원
-    public ResponseEntity<Void> withdrawParticipant(@PathVariable Long studyId, @LoginMember Member member) {
+    public ResponseEntity<Void> withdrawParticipant(@PathVariable final Long studyId,
+                                                    @LoginMember final Member member) {
         participantCommandService.withdrawParticipant(studyId, member.getId(), member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/studies/{studyId}/members") // 스터디장 & 스터디원
-    public ResponseEntity<List<Participant>> getParticipant(@PathVariable Long studyId, @LoginMember Member member) {
-        List<Participant> participants = participantQueryService.findAllParticipants(studyId, member.getId());
+    public ResponseEntity<List<Participant>> getParticipant(@PathVariable final Long studyId,
+                                                            @LoginMember final Member member) {
+        final List<Participant> participants = participantQueryService.findAllParticipants(studyId, member.getId());
         return ResponseEntity.ok(participants);
     }
 }

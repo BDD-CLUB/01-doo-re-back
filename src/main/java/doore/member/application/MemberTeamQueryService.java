@@ -58,7 +58,7 @@ public class MemberTeamQueryService {
         return TeamMemberResponse.of(members, roleOfMembers);
     }
 
-    private Map<Member, TeamRoleType> getRoleOfMember(List<Member> members) {
+    private Map<Member, TeamRoleType> getRoleOfMember(final List<Member> members) {
         return members.stream()
                 .collect(Collectors.toMap(
                         member -> member,
@@ -68,8 +68,8 @@ public class MemberTeamQueryService {
                 ));
     }
 
-    private void validateExistTeamLeaderAndTeamMember(Long memberId) {
-        TeamRole teamRole = teamRoleRepository.findById(memberId)
+    private void validateExistTeamLeaderAndTeamMember(final Long memberId) {
+        final TeamRole teamRole = teamRoleRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!(teamRole.getTeamRoleType().equals(ROLE_팀장) || teamRole.getTeamRoleType().equals(ROLE_팀원))){
             throw new MemberException(UNAUTHORIZED);

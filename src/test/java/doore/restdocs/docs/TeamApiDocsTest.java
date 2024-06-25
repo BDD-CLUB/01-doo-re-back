@@ -100,7 +100,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final TeamUpdateRequest request = new TeamUpdateRequest("BDD", "개발 동아리 입니다.");
 
         // when
-        Long teamId = 1L;
+        final Long teamId = 1L;
         doNothing().when(teamCommandService).updateTeam(eq(teamId), any(TeamUpdateRequest.class), any());
 
         // then
@@ -126,7 +126,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final MockMultipartFile file = getMockImageFile();
 
         // when
-        Long teamId = 1L;
+        final Long teamId = 1L;
         doNothing().when(teamCommandService).updateTeamImage(eq(teamId), any(MultipartFile.class), any());
 
         // then
@@ -152,7 +152,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("팀을 삭제한다.")
     public void 팀을_삭제한다() throws Exception {
         // when
-        Long teamId = 1L;
+        final Long teamId = 1L;
         doNothing().when(teamCommandService).deleteTeam(eq(teamId), any());
 
         // then
@@ -169,7 +169,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("팀의 초대코드를 생성한다.")
     public void 팀의_초대코드를_생성한다() throws Exception {
         // given
-        Long teamId = 1L;
+        final Long teamId = 1L;
         final TeamInviteCodeResponse response = new TeamInviteCodeResponse("asdf");
 
         // when
@@ -193,7 +193,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     @DisplayName("초대코드를 통해 팀에 가입한다.")
     public void 초대코드를_통해_팀에_가입한다() throws Exception {
         // given
-        Long teamId = 1L;
+        final Long teamId = 1L;
         final TeamInviteCodeRequest request = new TeamInviteCodeRequest("asdf");
 
         // when
@@ -345,7 +345,6 @@ public class TeamApiDocsTest extends RestDocsTest {
                 new TeamReferenceResponse(4L, "팀4", "팀 설명입니다", "팀 이미지 Url"),
                 yearGardenResponses));
 
-        System.out.println(teamRankResponses.get(0));
         //when
         when(teamQueryService.getTeamRanks()).thenReturn(teamRankResponses);
 

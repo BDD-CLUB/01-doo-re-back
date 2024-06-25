@@ -51,17 +51,17 @@ public class DocumentCommandService {
     private final S3DocumentFileService s3DocumentFileService;
     private final GardenRepository gardenRepository;
 
-    public void createDocument(DocumentCreateRequest request, List<MultipartFile> multipartFiles,
-                               DocumentGroupType groupType, Long groupId, Long memberId) {
+    public void createDocument(final DocumentCreateRequest request, final List<MultipartFile> multipartFiles,
+                               final DocumentGroupType groupType, final Long groupId, final Long memberId) {
         validateExistMember(memberId);
         validateExistGroup(groupType, groupId);
         validateDocumentType(request.type(), request.url(), multipartFiles);
-        Document document = Document.from(request, groupType, groupId);
+        final Document document = Document.from(request, groupType, groupId);
 
         documentRepository.save(document);
 
         if (document.getType().equals(DocumentType.URL)) {
-            File newFile = File.builder()
+            final File newFile = File.builder()
                     .url(request.url())
                     .document(document)
                     .build();
@@ -69,15 +69,15 @@ public class DocumentCommandService {
             document.updateFiles(List.of(newFile));
         }
         if (!document.getType().equals(DocumentType.URL)) {
-            List<String> filePaths = uploadFilesToS3(document.getType(), multipartFiles);
-            List<File> newFiles = saveFiles(filePaths, document);
+            final List<String> filePaths = uploadFilesToS3(document.getType(), multipartFiles);
+            final List<File> newFiles = saveFiles(filePaths, document);
             document.updateFiles(newFiles);
         }
 
         createGarden(document);
     }
 
-    private void validateExistGroup(DocumentGroupType groupType, Long groupId) {
+    private void validateExistGroup(final DocumentGroupType groupType, final Long groupId) {
         if (groupType.equals(TEAM)) {
             teamRepository.findById(groupId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
         }
@@ -86,7 +86,8 @@ public class DocumentCommandService {
         }
     }
 
-    private void validateDocumentType(DocumentType type, String url, List<MultipartFile> multipartFiles) {
+    private void validateDocumentType(final DocumentType type, final String url,
+                                      final List<MultipartFile> multipartFiles) {
         if (type.equals(DocumentType.URL) && url == null) {
             throw new DocumentException(LINK_DOCUMENT_NEEDS_URL);
         }
@@ -95,9 +96,9 @@ public class DocumentCommandService {
         }
     }
 
-    private List<String> uploadFilesToS3(DocumentType type, List<MultipartFile> multipartFiles) {
-        List<String> urls = new ArrayList<>();
-        for (MultipartFile multipartFile : multipartFiles) {
+    private List<String> uploadFilesToS3(final DocumentType type, final List<MultipartFile> multipartFiles) {
+        final List<String> urls = new ArrayList<>();
+        for (final MultipartFile multipartFile : multipartFiles) {
             String url = "";
             if (type.equals(DocumentType.IMAGE)) {
                 url = s3ImageFileService.upload(multipartFile);
@@ -114,10 +115,10 @@ public class DocumentCommandService {
         return urls;
     }
 
-    private List<File> saveFiles(List<String> filePaths, Document document) {
-        List<File> files = new ArrayList<>();
-        for (String filePath : filePaths) {
-            File newfile = File.builder()
+    private List<File> saveFiles(final List<String> filePaths, final Document document) {
+        final List<File> files = new ArrayList<>();
+        for (final String filePath : filePaths) {
+            final File newfile = File.builder()
                     .document(document)
                     .url(filePath)
                     .build();
@@ -128,41 +129,41 @@ public class DocumentCommandService {
         return files;
     }
 
-    public void createGarden(Document document) {
-        Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).of(document);
+    public void createGarden(final Document document) {
+        final Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).of(document);
         gardenRepository.save(garden);
     }
 
-    public void updateDocument(DocumentUpdateRequest request, Long documentId, Long memberId) {
+    public void updateDocument(final DocumentUpdateRequest request, final Long documentId, final Long memberId) {
         validateExistMember(memberId);
-        Document document = validateExistDocument(documentId);
-        if (!document.isMine(memberId)){
+        final Document document = validateExistDocument(documentId);
+        if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
         document.update(request.title(), request.description(), request.accessType());
     }
 
-    public void deleteDocument(Long documentId, Long memberId) {
+    public void deleteDocument(final Long documentId, final Long memberId) {
         validateExistMember(memberId);
-        Document document = validateExistDocument(documentId);
-        if (!document.isMine(memberId)){
+        final Document document = validateExistDocument(documentId);
+        if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
         deleteGarden(document);
         documentRepository.deleteById(documentId);
     }
 
-    public void deleteGarden(Document document) {
-        Long contributionId = document.getId();
-        GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
+    public void deleteGarden(final Document document) {
+        final Long contributionId = document.getId();
+        final GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
         gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
 
-    private Document validateExistDocument(Long documentId) {
+    private Document validateExistDocument(final Long documentId) {
         return documentRepository.findById(documentId).orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
     }
 
-    private void validateExistMember(Long memberId) {
+    private void validateExistMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }

@@ -10,7 +10,7 @@ public class TeamFixture {
     private static TeamRepository teamRepository;
 
     @Autowired
-    public TeamFixture(TeamRepository teamRepository) {
+    public TeamFixture(final TeamRepository teamRepository) {
         TeamFixture.teamRepository = teamRepository;
     }
 

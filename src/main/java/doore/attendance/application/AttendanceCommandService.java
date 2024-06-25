@@ -22,19 +22,19 @@ public class AttendanceCommandService {
     private final MemberRepository memberRepository;
     private final AttendanceRepository attendanceRepository;
 
-    public void createAttendance(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    public void createAttendance(final Long memberId) {
+        final Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
 
         if (isMemberAlreadyAttend(member.getId())) {
             throw new AttendanceException(ALREADY_ATTENDED);
         }
-        Attendance attendance = Attendance.builder()
+        final Attendance attendance = Attendance.builder()
                 .memberId(memberId)
                 .build();
         attendanceRepository.save(attendance);
     }
 
-    private boolean isMemberAlreadyAttend(Long memberId) {
+    private boolean isMemberAlreadyAttend(final Long memberId) {
         return attendanceRepository.existsByMemberIdAndDate(memberId, LocalDate.now());
     }
 }
