@@ -4,6 +4,7 @@ import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
+import com.google.common.collect.ImmutableList;
 import doore.attendance.domain.Attendance;
 import doore.attendance.domain.repository.AttendanceRepository;
 import doore.garden.application.GardenQueryService;
@@ -25,6 +26,7 @@ import doore.team.exception.TeamException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,16 +97,17 @@ public class TeamQueryService {
     }
 
     public List<TeamRankResponse> getTeamRanks() {
-        List<Team> teams = teamRepository.findAll();
-        List<TeamRankResponse> teamRanks = new ArrayList<>();
-        for (Team team : teams) {
-            final int point = calculatePoint(team);
-            final List<DayGardenResponse> yearGardenResponses = gardenQueryService.getAllGarden(team.getId());
-            teamRanks.add(new TeamRankResponse(point, TeamReferenceResponse.from(team), yearGardenResponses));
-        }
+        final List<Team> teams = teamRepository.findAll();
+        List<TeamRankResponse> teamRanks = teams.stream().map(this::convertTeamToTeamRankResponse).toList();
         return teamRanks.stream()
                 .sorted(Comparator.comparingInt(TeamRankResponse::point).reversed())
                 .toList();
+    }
+
+    private TeamRankResponse convertTeamToTeamRankResponse(Team team) {
+        final int point = calculatePoint(team);
+        final List<DayGardenResponse> yearGardenResponses = gardenQueryService.getAllGarden(team.getId());
+        return new TeamRankResponse(point, TeamReferenceResponse.from(team), yearGardenResponses);
     }
 
     private int calculatePoint(final Team team) {
