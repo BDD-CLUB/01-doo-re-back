@@ -350,9 +350,7 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].teamReferenceResponse.name", "팀의 이름"),
                 stringFieldWithPath("[].teamReferenceResponse.description", "팀의 설명"),
                 stringFieldWithPath("[].teamReferenceResponse.imageUrl", "팀의 이미지 URL"),
-                numberFieldWithPath("[].teamGardenResponse.[].dayOfYear", "1년 중 몇번째 날인가(0~365)"),
-                numberFieldWithPath("[].teamGardenResponse.[].dayOfWeek", "1주 중 몇번째 요일인가(월요일부터 시작, 0~7)"),
-                numberFieldWithPath("[].teamGardenResponse.[].weekOfYear", "1년 중 몇번째 주인가(0~52)"),
+                stringFieldWithPath("[].teamGardenResponse.[].contributeDate", "기여된 날짜"),
                 numberFieldWithPath("[].teamGardenResponse.[].contributeCount", "그날의 기여도(기여된 횟수)")
         );
 

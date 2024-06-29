@@ -48,7 +48,7 @@ public class GardenApiDocsTest extends RestDocsTest {
                 .andDo(document("garden-get",
                         pathParameters(parameterWithName("teamId").description("팀 id")),
                         responseFields(
-                                numberFieldWithPath("[].contributeDate", "기여된 날짜"),
+                                stringFieldWithPath("[].contributeDate", "기여된 날짜"),
                                 numberFieldWithPath("[].contributeCount", "그날의 기여도(기여된 횟수)")
                         )));
     }
