@@ -139,3 +139,17 @@ include::{snippets}/get-team-week-rank/http-response.adoc[]
 
 .Response Body's Fields
 include::{snippets}/get-team-week-rank/response-fields.adoc[]
+
+== `GET`: 나의 팀과 스터디 조회
+
+.HTTP Request
+include::{snippets}/my-teams-and-studies/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/my-teams-and-studies/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/my-teams-and-studies/http-response.adoc[]
+
+.Response Body's Fields
+include::{snippets}/my-teams-and-studies/response-fields.adoc[]
