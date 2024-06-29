@@ -15,6 +15,7 @@ import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.study.domain.repository.StudyRepository;
+import doore.team.application.dto.response.MyTeamResponse;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
@@ -40,14 +41,14 @@ public class TeamQueryService {
     private final MemberTeamRepository memberTeamRepository;
     private final GardenQueryService gardenQueryService;
 
-    public List<TeamResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
+    public List<MyTeamResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
         validateMember(memberId);
         checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         final Member member = memberRepository.findById(tokenMemberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
         final List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
 
         return myTeams.stream()
-                .map(myTeam -> TeamResponse.of(myTeam, member)).toList();
+                .map(myTeam -> MyTeamResponse.of(myTeam, member)).toList();
     }
 
     public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId, final Long tokenMemberId) {
