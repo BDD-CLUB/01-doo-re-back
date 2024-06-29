@@ -31,7 +31,7 @@ public class MemberTeamController {
     }
 
     @DeleteMapping("/teams/{teamId}/members/{memberId}") //팀장
-    public ResponseEntity<Void> deleteMemberTeam(@PathVariable Long teamId, @PathVariable Long memberId,
+    public ResponseEntity<Void> deleteMemberTeam(@PathVariable final Long teamId, @PathVariable final Long memberId,
                                                  @LoginMember final Member member) {
         memberTeamCommandService.deleteMemberTeam(teamId, memberId, member.getId());
         return ResponseEntity.noContent().build();
