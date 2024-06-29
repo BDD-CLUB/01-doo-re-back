@@ -6,6 +6,7 @@ import static doore.member.MemberFixture.짱구;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -108,6 +109,6 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
         //when & then
         assertThatThrownBy(() -> {
             memberTeamCommandService.deleteMemberTeam(team.getId(), otherTeamMember.getId(), teamLeader.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(NOT_FOUND_MEMBER_ROLE_IN_TEAM.errorMessage());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 }

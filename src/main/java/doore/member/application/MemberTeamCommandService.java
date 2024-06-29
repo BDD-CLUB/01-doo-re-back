@@ -1,7 +1,6 @@
 package doore.member.application;
 
-import static doore.member.exception.MemberExceptionType.CANNOT_DELETE_TEAM_LEADER;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.member.domain.TeamRole;
 import doore.member.domain.TeamRoleType;
@@ -32,9 +31,9 @@ public class MemberTeamCommandService {
 
     private void validateTeamMember(final Long deleteMemberId, final Long teamId) {
         TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, deleteMemberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
         if (teamRole.getTeamRoleType().equals(TeamRoleType.ROLE_팀장)) {
-            throw new MemberException(CANNOT_DELETE_TEAM_LEADER);
+            throw new MemberException(UNAUTHORIZED);
         }
     }
 
@@ -44,7 +43,7 @@ public class MemberTeamCommandService {
 
     private void validateTeamLeader(Long teamLeaderId, Long teamId) {
         teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, teamLeaderId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 
 }
