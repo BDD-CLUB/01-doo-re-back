@@ -4,10 +4,13 @@ import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -97,5 +100,20 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("member-team-find-search", queryParameters, responseFields));
+    }
+
+    @Test
+    @DisplayName("팀원을 삭제할 수 있다.")
+    public void 팀원을_삭제할_수_있다() throws Exception {
+        //when
+        doNothing().when(memberTeamCommandService).deleteMemberTeam(any(), any(), any());
+
+        //then
+        mockMvc.perform(delete("/teams/{teamId}/members/{memberId}", 1, 1)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isNoContent())
+                .andDo(document("member-team-delete", pathParameters(
+                        parameterWithName("teamId").description("팀 id"),
+                        parameterWithName("memberId").description("삭제할 멤버 id"))));
     }
 }
