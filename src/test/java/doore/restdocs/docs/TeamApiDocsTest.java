@@ -30,6 +30,7 @@ import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -312,38 +313,32 @@ public class TeamApiDocsTest extends RestDocsTest {
     public void 팀_목록팀_랭킹을_조회한다() throws Exception {
         //given
         final List<TeamRankResponse> teamRankResponses = new ArrayList<>();
-        final List<DayGardenResponse> yearGardenResponses = List.of(
+        final List<DayGardenResponse> gardenResponse = List.of(
                 DayGardenResponse.builder()
-                        .dayOfYear(0)
-                        .weekOfYear(0)
-                        .dayOfWeek(0)
+                        .contributeDate(LocalDate.of(2024,1,1))
                         .contributeCount(2)
                         .build(),
                 DayGardenResponse.builder()
-                        .dayOfYear(1)
-                        .weekOfYear(0)
-                        .dayOfWeek(1)
+                        .contributeDate(LocalDate.of(2024,1,2))
                         .contributeCount(1)
                         .build(),
                 DayGardenResponse.builder()
-                        .dayOfYear(7)
-                        .weekOfYear(1)
-                        .dayOfWeek(0)
+                        .contributeDate(LocalDate.of(2024,1,7))
                         .contributeCount(5)
                         .build()
         );
         teamRankResponses.add(new TeamRankResponse(20,
                 new TeamReferenceResponse(3L, "팀3", "팀 설명입니다", "팀 이미지 Url"),
-                yearGardenResponses));
+                gardenResponse));
         teamRankResponses.add(new TeamRankResponse(15,
                 new TeamReferenceResponse(2L, "팀2", "팀 설명입니다", "팀 이미지 Url"),
-                yearGardenResponses));
+                gardenResponse));
         teamRankResponses.add(new TeamRankResponse(5,
                 new TeamReferenceResponse(1L, "팀1", "팀 설명입니다", "팀 이미지 Url"),
-                yearGardenResponses));
+                gardenResponse));
         teamRankResponses.add(new TeamRankResponse(0,
                 new TeamReferenceResponse(4L, "팀4", "팀 설명입니다", "팀 이미지 Url"),
-                yearGardenResponses));
+                gardenResponse));
 
         //when
         when(teamQueryService.getTeamRanks()).thenReturn(teamRankResponses);

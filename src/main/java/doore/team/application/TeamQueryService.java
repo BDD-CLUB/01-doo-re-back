@@ -105,7 +105,7 @@ public class TeamQueryService {
 
     private TeamRankResponse convertTeamToTeamRankResponse(final Team team) {
         final int point = calculatePoint(team);
-        final List<DayGardenResponse> yearGardenResponses = gardenQueryService.getAllGarden(team.getId());
+        final List<DayGardenResponse> yearGardenResponses = gardenQueryService.getGardens(team.getId());
         return new TeamRankResponse(point, TeamReferenceResponse.from(team), yearGardenResponses);
     }
 
