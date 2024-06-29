@@ -1,5 +1,7 @@
 package doore.team.application.dto.response;
 
+import doore.member.application.dto.response.MemberReferenceResponse;
+import doore.member.domain.Member;
 import doore.team.domain.Team;
 import lombok.Builder;
 
@@ -9,6 +11,7 @@ public record TeamResponse(
         String name,
         String description,
         String imageUrl,
+        MemberReferenceResponse memberReference,
         long attendanceRatio
 ) {
     public static TeamResponse of(final Team team, final long attendanceRatio) {
@@ -18,6 +21,16 @@ public record TeamResponse(
                 .description(team.getDescription())
                 .imageUrl(team.getImageUrl())
                 .attendanceRatio(attendanceRatio)
+                .build();
+    }
+
+    public static TeamResponse of(final Team team, final Member member) {
+        return TeamResponse.builder()
+                .id(team.getId())
+                .name(team.getName())
+                .description(team.getDescription())
+                .imageUrl(team.getImageUrl())
+                .memberReference(MemberReferenceResponse.from(member))
                 .build();
     }
 }

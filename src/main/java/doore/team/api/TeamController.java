@@ -10,7 +10,6 @@ import doore.team.application.dto.request.TeamUpdateRequest;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamRankResponse;
-import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -95,7 +94,7 @@ public class TeamController {
     }
 
     @GetMapping("/members/{memberId}") // 회원
-    public ResponseEntity<List<TeamReferenceResponse>> getMyTeams(@PathVariable final Long memberId,
+    public ResponseEntity<List<TeamResponse>> getMyTeams(@PathVariable final Long memberId,
                                                                   @LoginMember final Member member) {
         // TODO: 3/22/24 토큰의 주인이 memberId와 동일인물인지 검증 (2024/5/14 완료 -> 서비스에서 진행)
         return ResponseEntity.ok(teamQueryService.findMyTeams(memberId, member.getId()));
