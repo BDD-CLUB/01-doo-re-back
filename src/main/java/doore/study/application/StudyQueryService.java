@@ -18,6 +18,8 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.application.dto.response.StudyRankResponse;
+import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
@@ -29,6 +31,7 @@ import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,5 +103,16 @@ public class StudyQueryService {
         final long checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(
                 curriculumItemIds);
         return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
+    }
+
+    public List<StudyRankResponse> getTeamStudies(Long teamId, Pageable pageable) {
+        return studyRepository.findAllByTeamId(teamId, pageable)
+                .map(study -> new StudyRankResponse(calculatePoint(study),
+                        StudyReferenceResponse.of(study, checkStudyProgressRatio(study.getId())))).getContent();
+    }
+
+    private int calculatePoint(Study study) { // check된 커리큘럼 수 + 업로드된 document 수
+        //todo: 점수 계산
+        return 0;
     }
 }
