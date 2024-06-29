@@ -20,22 +20,20 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.garden.application.dto.response.DayGardenResponse;
+import doore.member.application.dto.response.MemberReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.request.TeamCreateRequest;
 import doore.team.application.dto.request.TeamInviteCodeRequest;
 import doore.team.application.dto.request.TeamUpdateRequest;
+import doore.team.application.dto.response.MyTeamResponse;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
 import doore.team.application.dto.response.TeamInviteCodeResponse;
 import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -219,9 +217,10 @@ public class TeamApiDocsTest extends RestDocsTest {
     void 나의_팀_목록을_조회한다() throws Exception {
         //given
         final Long memberId = 1L;
-        final List<TeamReferenceResponse> response = List.of(
-                new TeamReferenceResponse(1L, "BDD", "개발 동아리입니다", "image.png"),
-                new TeamReferenceResponse(3L, "KEEPER", "보안 동아리입니다", "image.png")
+        final MemberReferenceResponse memberReferenceResponse = new MemberReferenceResponse("회원 이름", "https://~");
+        final List<MyTeamResponse> response = List.of(
+                new MyTeamResponse(1L, "BDD", "개발 동아리입니다", "image.png", memberReferenceResponse),
+                new MyTeamResponse(3L, "KEEPER", "보안 동아리입니다", "image.png", memberReferenceResponse)
         );
 
         final PathParametersSnippet pathParameters = pathParameters(
@@ -231,7 +230,9 @@ public class TeamApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("[].id", "팀의 ID"),
                 stringFieldWithPath("[].name", "팀의 이름"),
                 stringFieldWithPath("[].description", "팀의 설명"),
-                stringFieldWithPath("[].imageUrl", "팀의 프로필 이미지 url")
+                stringFieldWithPath("[].imageUrl", "팀의 프로필 이미지 url"),
+                stringFieldWithPath("[].memberReference.name", "로그인 되어 있는 회원 이름"),
+                stringFieldWithPath("[].memberReference.imageUrl", "로그인 되어 있는 회원 이미지 url")
         );
 
         //when
