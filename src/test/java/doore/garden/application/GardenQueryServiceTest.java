@@ -1,5 +1,6 @@
 package doore.garden.application;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.garden.application.dto.response.DayGardenResponse;
@@ -9,6 +10,7 @@ import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
 import java.time.LocalDate;
 import java.util.List;
+import net.bytebuddy.asm.Advice.Local;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class GardenQueryServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 팀의 텃밭을 정상적으로 조회할 수 있다.")
-    public void getAllGarden_팀의_텃밭을_정상적으로_조회할_수_있다_성공() throws Exception {
+    public void getGardens_팀의_텃밭을_정상적으로_조회할_수_있다_성공() throws Exception {
         //given
         final Long teamId = 1L;
         final Long otherTeamId = 2L;
@@ -34,8 +36,8 @@ public class GardenQueryServiceTest extends IntegrationTest {
                 .contributionId(1L)
                 .type(GardenType.DOCUMENT_UPLOAD)
                 .build();
-        final Garden lastYearGarden = Garden.builder()
-                .contributedDate(LocalDate.now().minusYears(1))
+        final Garden before15WeeksGarden = Garden.builder()
+                .contributedDate(LocalDate.now().minusWeeks(15))
                 .teamId(teamId)
                 .memberId(1L)
                 .contributionId(2L)
@@ -49,33 +51,32 @@ public class GardenQueryServiceTest extends IntegrationTest {
                 .type(GardenType.STUDY_CURRICULUM_COMPLETION)
                 .build();
 
-        gardenRepository.saveAll(List.of(garden, lastYearGarden, otherTeamGarden));
+        gardenRepository.saveAll(List.of(garden, before15WeeksGarden, otherTeamGarden));
 
         //when
         final List<Garden> allGardens = gardenRepository.findAll();
-        assertEquals(1, gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId).size());
-        final List<DayGardenResponse> gardenResponses = gardenQueryService.getAllGarden(teamId);
+        final List<DayGardenResponse> gardenResponses = gardenQueryService.getGardens(teamId);
 
         //then
         assertEquals(3, allGardens.size());
-        assertEquals(1, gardenResponses.size()); //올해의 텃밭 데이터만 가져온다, 우리 팀의 텃밭 데이터만 가져온다.
+        assertEquals(1, gardenResponses.size()); //최근 15주의 텃밭 데이터만 가져온다, 우리 팀의 텃밭 데이터만 가져온다.
     }
 
     @Test
     @DisplayName("[성공] 정상적으로 동일한 날의 기여도를 계산할 수 있다.")
     public void calculateContributes_정상적으로_동일한_날의_기여도를_계산할_수_있다_성공() throws Exception {
         //given
-        final LocalDate January1st = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+        final LocalDate before1Week = LocalDate.now().minusWeeks(1);
         final Long teamId = 1L;
         final Garden todaysGarden = Garden.builder()
-                .contributedDate(January1st)
+                .contributedDate(before1Week)
                 .teamId(teamId)
                 .memberId(1L)
                 .contributionId(1L)
                 .type(GardenType.DOCUMENT_UPLOAD)
                 .build();
         final Garden otherTodaysGarden = Garden.builder()
-                .contributedDate(January1st)
+                .contributedDate(before1Week)
                 .teamId(teamId)
                 .memberId(1L)
                 .contributionId(2L)
@@ -85,12 +86,11 @@ public class GardenQueryServiceTest extends IntegrationTest {
         gardenRepository.saveAll(gardens);
 
         //when
-        final List<DayGardenResponse> gardenResponses = gardenQueryService.getAllGarden(teamId);
+        final List<DayGardenResponse> gardenResponses = gardenQueryService.getGardens(teamId);
 
         //then
         assertEquals(1, gardenResponses.size());
         assertEquals(2, gardenResponses.get(0).contributeCount());
-        assertEquals(0, gardenResponses.get(0).dayOfYear());
-        assertEquals(0, gardenResponses.get(0).weekOfYear());
+        assertEquals(before1Week, gardenResponses.get(0).contributeDate());
     }
 }
