@@ -17,7 +17,6 @@ import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.exception.MemberException;
-import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
@@ -60,10 +59,10 @@ class TeamQueryServiceTest extends IntegrationTest {
                 .member(member)
                 .isDeleted(false)
                 .build());
-        final List<TeamReferenceResponse> expectedResponses = List.of(TeamReferenceResponse.from(myTeam));
+        final List<TeamResponse> expectedResponses = List.of(TeamResponse.of(myTeam, member));
 
         // when
-        final List<TeamReferenceResponse> actualResponses = teamQueryService.findMyTeams(member.getId(), tokenMemberId);
+        final List<TeamResponse> actualResponses = teamQueryService.findMyTeams(member.getId(), tokenMemberId);
 
         // then
         Assertions.assertThat(actualResponses)
