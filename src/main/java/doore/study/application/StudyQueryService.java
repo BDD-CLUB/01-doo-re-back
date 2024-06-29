@@ -12,6 +12,7 @@ import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
 import doore.crop.exception.CropException;
+import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
@@ -65,12 +66,15 @@ public class StudyQueryService {
                 .map(Participant::getStudyId)
                 .toList();
         final List<Study> studies = studyRepository.findAllById(studyIds);
+        final Member member = memberRepository.findById(tokenMemberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
 
         return studies.stream()
                 .map(study -> StudyResponse.of(study,
                         teamRepository.findById(study.getTeamId()).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM)),
                         cropRepository.findById(study.getCropId())
                                 .orElseThrow(() -> new CropException(NOT_FOUND_CROP)),
+                        member,
                         checkStudyProgressRatio(study.getId())))
                 .toList();
     }
