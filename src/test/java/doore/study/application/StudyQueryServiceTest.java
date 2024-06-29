@@ -102,7 +102,6 @@ public class StudyQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
@@ -134,8 +133,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
 
         // when
         final List<StudyResponse> expectedResponses = List.of(
-                StudyResponse.of(study, teamOfStudy, cropOfTeam, 50),
-                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, 0)
+                StudyResponse.of(study, teamOfStudy, cropOfTeam, member,50),
+                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, member, 0)
         );
         final List<StudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
                 tokenMemberId);
