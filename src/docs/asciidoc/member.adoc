@@ -43,3 +43,17 @@ include::{snippets}/delete-member/http-response.adoc[]
 
 .HTTP Response
 include::{snippets}/delete-member/http-response.adoc[]
+
+== `GET`: 사이드바 정보 조회
+
+.HTTP Request
+include::{snippets}/get-sidebar-info/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/get-sidebar-info/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/get-sidebar-info/http-response.adoc[]
+
+.Response Body's Fields
+include::{snippets}/get-sidebar-info/response-body.adoc[]

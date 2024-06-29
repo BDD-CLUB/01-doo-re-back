@@ -22,7 +22,6 @@ import doore.team.application.dto.response.TeamResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -49,22 +48,17 @@ public class TeamQueryService {
                 .toList();
     }
 
-    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId, final Long tokenMemberId) {
-        validateMember(memberId);
-        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
-        final List<MyTeamsAndStudiesResponse> myTeamsAndStudiesResponses = new ArrayList<>();
+    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId) {
         final List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
 
-        for (final Team myTeam : myTeams) {
-            final List<StudyNameResponse> studyNameResponses =
-                    studyRepository.findAllByTeamId(myTeam.getId()).stream()
+        return myTeams.stream()
+                .map(team -> {
+                    List<StudyNameResponse> studyNameResponses = studyRepository.findAllByTeamId(team.getId()).stream()
                             .map(StudyNameResponse::from)
                             .toList();
-            final MyTeamsAndStudiesResponse myTeamsAndStudiesResponse =
-                    new MyTeamsAndStudiesResponse(myTeam.getId(), myTeam.getName(), studyNameResponses);
-            myTeamsAndStudiesResponses.add(myTeamsAndStudiesResponse);
-        }
-        return myTeamsAndStudiesResponses;
+                    return MyTeamsAndStudiesResponse.of(team, studyNameResponses);
+                })
+                .toList();
     }
 
     public TeamResponse findTeamByTeamId(final Long teamId) {
