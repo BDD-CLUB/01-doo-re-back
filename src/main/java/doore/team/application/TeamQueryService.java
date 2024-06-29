@@ -8,7 +8,6 @@ import doore.attendance.domain.Attendance;
 import doore.attendance.domain.repository.AttendanceRepository;
 import doore.garden.application.GardenQueryService;
 import doore.garden.application.dto.response.DayGardenResponse;
-import doore.member.application.dto.response.MemberReferenceResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberRepository;
@@ -49,21 +48,15 @@ public class TeamQueryService {
                 .toList();
     }
 
-    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId, final Long tokenMemberId) {
-        validateMember(memberId);
-        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
-
+    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId) {
         final List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
-        final Member member = memberRepository.findById(tokenMemberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
-        final MemberReferenceResponse memberReferenceResponse = new MemberReferenceResponse(member.getName(), member.getImageUrl());
 
         return myTeams.stream()
                 .map(team -> {
                     List<StudyNameResponse> studyNameResponses = studyRepository.findAllByTeamId(team.getId()).stream()
                             .map(StudyNameResponse::from)
                             .toList();
-                    return MyTeamsAndStudiesResponse.of(team, studyNameResponses, memberReferenceResponse);
+                    return MyTeamsAndStudiesResponse.of(team, studyNameResponses);
                 })
                 .toList();
     }
