@@ -3,6 +3,8 @@ package doore.study.application.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.crop.domain.Crop;
 import doore.crop.response.CropReferenceResponse;
+import doore.member.application.dto.response.MemberReferenceResponse;
+import doore.member.domain.Member;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
@@ -11,7 +13,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record StudyResponse(
+public record MyStudyResponse(
         Long id,
         String name,
         String description,
@@ -22,11 +24,10 @@ public record StudyResponse(
         StudyStatus status,
         TeamReferenceResponse teamReference,
         CropReferenceResponse cropReference,
-        long studyProgressRatio
-
+        MemberReferenceResponse memberReference
 ) {
-    public static StudyResponse of(final Study study, final Team team, final Crop crop, final long studyProgressRatio) {
-        return StudyResponse.builder()
+    public static MyStudyResponse of(final Study study, final Team team, final Crop crop, final Member member) {
+        return MyStudyResponse.builder()
                 .id(study.getId())
                 .name(study.getName())
                 .description(study.getDescription())
@@ -35,7 +36,7 @@ public record StudyResponse(
                 .status(study.getStatus())
                 .teamReference(TeamReferenceResponse.from(team))
                 .cropReference(CropReferenceResponse.from(crop))
-                .studyProgressRatio(studyProgressRatio)
+                .memberReference(MemberReferenceResponse.from(member))
                 .build();
     }
 }

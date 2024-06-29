@@ -19,6 +19,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.application.dto.response.MyStudyResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
@@ -58,7 +59,7 @@ public class StudyQueryService {
         return StudyResponse.of(study, team, crop, studyProgressRatio);
     }
 
-    public List<StudyResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {
+    public List<MyStudyResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {
         checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
 
         final List<Participant> participants = participantRepository.findByMemberId(memberId);
@@ -70,12 +71,11 @@ public class StudyQueryService {
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
 
         return studies.stream()
-                .map(study -> StudyResponse.of(study,
+                .map(study -> MyStudyResponse.of(study,
                         teamRepository.findById(study.getTeamId()).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM)),
                         cropRepository.findById(study.getCropId())
                                 .orElseThrow(() -> new CropException(NOT_FOUND_CROP)),
-                        member,
-                        checkStudyProgressRatio(study.getId())))
+                        member))
                 .toList();
     }
 
