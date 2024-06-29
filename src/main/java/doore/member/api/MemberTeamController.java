@@ -30,10 +30,10 @@ public class MemberTeamController {
         return ResponseEntity.ok(memberResponses);
     }
 
-    @DeleteMapping("/teams/{teamId}/members/{memberId}") //팀장
-    public ResponseEntity<Void> deleteMemberTeam(@PathVariable final Long teamId, @PathVariable final Long memberId,
+    @DeleteMapping("/teams/{teamId}/members/{deleteMemberId}") //팀장
+    public ResponseEntity<Void> deleteMemberTeam(@PathVariable final Long teamId, @PathVariable final Long deleteMemberId,
                                                  @LoginMember final Member member) {
-        memberTeamCommandService.deleteMemberTeam(teamId, memberId, member.getId());
+        memberTeamCommandService.deleteMemberTeam(teamId, deleteMemberId, member.getId());
         return ResponseEntity.noContent().build();
     }
 }

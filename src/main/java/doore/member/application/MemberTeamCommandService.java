@@ -23,15 +23,15 @@ public class MemberTeamCommandService {
     private final TeamRoleRepository teamRoleRepository;
     private final TeamRepository teamRepository;
 
-    public void deleteMemberTeam(final Long teamId, final Long memberId, final Long teamLeaderId) {
+    public void deleteMemberTeam(final Long teamId, final Long deleteMemberId, final Long teamLeaderId) {
         validateExistTeam(teamId);
         validateTeamLeader(teamLeaderId, teamId);
-        validateTeamMember(memberId, teamId);
-        memberTeamRepository.deleteByTeamIdAndMemberId(teamId, memberId);
+        validateTeamMember(deleteMemberId, teamId);
+        memberTeamRepository.deleteByTeamIdAndMemberId(teamId, deleteMemberId);
     }
 
-    private void validateTeamMember(final Long memberId, final Long teamId) {
-        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+    private void validateTeamMember(final Long deleteMemberId, final Long teamId) {
+        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, deleteMemberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (teamRole.getTeamRoleType().equals(TeamRoleType.ROLE_팀장)) {
             throw new MemberException(CANNOT_DELETE_TEAM_LEADER);
