@@ -15,6 +15,7 @@ import doore.member.application.dto.response.MemberReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.MyStudyResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
@@ -99,13 +100,13 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .build();
     }
 
-    private StudyResponse getStudyResponseWithMemberInfo() {
+    private MyStudyResponse getStudyResponseWithMemberInfo() {
         final TeamReferenceResponse teamReferenceResponse =
                 new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
         final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
         final MemberReferenceResponse memberReferenceResponse = new MemberReferenceResponse("회원 이름", "https://~");
 
-        return StudyResponse.builder()
+        return MyStudyResponse.builder()
                 .id(1L)
                 .name("알고리즘")
                 .description("알고리즘 스터디입니다.")
@@ -115,7 +116,6 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .teamReference(teamReferenceResponse)
                 .cropReference(cropReferenceResponse)
                 .memberReference(memberReferenceResponse)
-                .studyProgressRatio(50)
                 .build();
     }
 
@@ -191,7 +191,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     @DisplayName("나의 스터디 목록을 조회한다.")
     public void 나의_스터디_목록을_조회한다() throws Exception {
         final Long memberId = 1L;
-        final List<StudyResponse> response = List.of(
+        final List<MyStudyResponse> response = List.of(
                 getStudyResponseWithMemberInfo(),
                 getStudyResponseWithMemberInfo()
         );
@@ -211,8 +211,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].cropReference.name", "스터디의 작물의 이름"),
                 stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
                 stringFieldWithPath("[].memberReference.name", "로그인 되어 있는 회원 이름"),
-                stringFieldWithPath("[].memberReference.imageUrl", "로그인 되어 있는 회원 이미지 url"),
-                numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
+                stringFieldWithPath("[].memberReference.imageUrl", "로그인 되어 있는 회원 이미지 url")
         );
 
         when(studyQueryService.findMyStudies(any(), any())).thenReturn(response);

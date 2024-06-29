@@ -21,7 +21,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
-import doore.study.application.dto.response.StudyResponse;
+import doore.study.application.dto.response.MyStudyResponse;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
@@ -132,11 +132,11 @@ public class StudyQueryServiceTest extends IntegrationTest {
                 member.getId());
 
         // when
-        final List<StudyResponse> expectedResponses = List.of(
-                StudyResponse.of(study, teamOfStudy, cropOfTeam, member,50),
-                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, member, 0)
+        final List<MyStudyResponse> expectedResponses = List.of(
+                MyStudyResponse.of(study, teamOfStudy, cropOfTeam, member),
+                MyStudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, member)
         );
-        final List<StudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
+        final List<MyStudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
                 tokenMemberId);
 
         // then
