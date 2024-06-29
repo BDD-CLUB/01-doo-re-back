@@ -14,6 +14,7 @@ import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
@@ -95,6 +96,20 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .teamReference(teamReferenceResponse)
                 .cropReference(cropReferenceResponse)
                 .studyProgressRatio(50)
+                .studyLeaderId(1L)
+                .build();
+    }
+
+    private StudyReferenceResponse getStudyReferenceResponse() {
+        return StudyReferenceResponse.builder()
+                .id(1L)
+                .name("알고리즘")
+                .description("알고리즘 스터디입니다.")
+                .startDate(LocalDate.parse("2020-01-01"))
+                .endDate(LocalDate.parse("2020-01-02"))
+                .status(StudyStatus.IN_PROGRESS)
+                .cropId(1L)
+                .studyProgressRatio(50)
                 .build();
     }
 
@@ -170,9 +185,9 @@ public class StudyApiDocsTest extends RestDocsTest {
     @DisplayName("나의 스터디 목록을 조회한다.")
     public void 나의_스터디_목록을_조회한다() throws Exception {
         final Long memberId = 1L;
-        final List<StudyResponse> response = List.of(
-                getStudyResponse(),
-                getStudyResponse()
+        final List<StudyReferenceResponse> response = List.of(
+                getStudyReferenceResponse(),
+                getStudyReferenceResponse()
         );
 
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
@@ -182,13 +197,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].startDate", "스터디의 시작일"),
                 stringFieldWithPath("[].endDate", "스터디의 종료일"),
                 stringFieldWithPath("[].status", "스터디의 진행 상태"),
-                numberFieldWithPath("[].teamReference.id", "스터디가 속한 팀의 ID"),
-                stringFieldWithPath("[].teamReference.name", "스터디가 속한 팀의 이름"),
-                stringFieldWithPath("[].teamReference.description", "스터디가 속한 팀의 설명"),
-                stringFieldWithPath("[].teamReference.imageUrl", "스터디가 속한 팀의 이미지 url"),
-                numberFieldWithPath("[].cropReference.id", "스터디의 작물의 ID"),
-                stringFieldWithPath("[].cropReference.name", "스터디의 작물의 이름"),
-                stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
+                numberFieldWithPath("[].cropId", "스터디의 작물 ID"),
                 numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
         );
 
