@@ -1,5 +1,6 @@
 package doore.member.application;
 
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.member.domain.TeamRole;
@@ -31,7 +32,7 @@ public class MemberTeamCommandService {
 
     private void validateTeamMember(final Long deleteMemberId, final Long teamId) {
         TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, deleteMemberId)
-                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (teamRole.getTeamRoleType().equals(TeamRoleType.ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
         }
@@ -43,7 +44,7 @@ public class MemberTeamCommandService {
 
     private void validateTeamLeader(Long teamLeaderId, Long teamId) {
         teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, teamLeaderId)
-                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
     }
 
 }
