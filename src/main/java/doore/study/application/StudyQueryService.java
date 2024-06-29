@@ -18,6 +18,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
@@ -47,6 +48,7 @@ public class StudyQueryService {
 
     public StudyResponse findStudyById(final Long studyId) {
         final Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        final Long studyLeaderId = studyRoleRepository.findLeaderIdByStudyId(study.getId());
 
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
@@ -54,10 +56,10 @@ public class StudyQueryService {
                 .orElseThrow(() -> new CropException(NOT_FOUND_CROP));
         final long studyProgressRatio = checkStudyProgressRatio(studyId);
 
-        return StudyResponse.of(study, team, crop, studyProgressRatio);
+        return StudyResponse.of(study, team, crop, studyProgressRatio, studyLeaderId);
     }
 
-    public List<StudyResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {
+    public List<StudyReferenceResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {
         checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
 
         final List<Participant> participants = participantRepository.findByMemberId(memberId);
@@ -67,11 +69,7 @@ public class StudyQueryService {
         final List<Study> studies = studyRepository.findAllById(studyIds);
 
         return studies.stream()
-                .map(study -> StudyResponse.of(study,
-                        teamRepository.findById(study.getTeamId()).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM)),
-                        cropRepository.findById(study.getCropId())
-                                .orElseThrow(() -> new CropException(NOT_FOUND_CROP)),
-                        checkStudyProgressRatio(study.getId())))
+                .map(study -> StudyReferenceResponse.of(study, checkStudyProgressRatio(study.getId())))
                 .toList();
     }
 
