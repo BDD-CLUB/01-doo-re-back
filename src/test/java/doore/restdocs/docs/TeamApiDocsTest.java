@@ -247,7 +247,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     void 팀_상세목록을_조회한다() throws Exception {
         final Long teamId = 1L;
 
-        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50);
+        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50, 1L);
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("조회하고자 하는 팀 ID")
         );
@@ -257,7 +257,8 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("name", "팀 이름"),
                 stringFieldWithPath("description", "팀 설명"),
                 stringFieldWithPath("imageUrl", "이미지 url"),
-                numberFieldWithPath("attendanceRatio", "출석률")
+                numberFieldWithPath("attendanceRatio", "출석률"),
+                numberFieldWithPath("teamLeaderId", "팀장 ID")
         );
 
         when(teamQueryService.findTeamByTeamId(teamId)).thenReturn(teamResponse);
@@ -275,15 +276,15 @@ public class TeamApiDocsTest extends RestDocsTest {
         final List<TeamRankResponse> teamRankResponses = new ArrayList<>();
         final List<DayGardenResponse> gardenResponse = List.of(
                 DayGardenResponse.builder()
-                        .contributeDate(LocalDate.of(2024,1,1))
+                        .contributeDate(LocalDate.of(2024, 1, 1))
                         .contributeCount(2)
                         .build(),
                 DayGardenResponse.builder()
-                        .contributeDate(LocalDate.of(2024,1,2))
+                        .contributeDate(LocalDate.of(2024, 1, 2))
                         .contributeCount(1)
                         .build(),
                 DayGardenResponse.builder()
-                        .contributeDate(LocalDate.of(2024,1,7))
+                        .contributeDate(LocalDate.of(2024, 1, 7))
                         .contributeCount(5)
                         .build()
         );
