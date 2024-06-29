@@ -65,7 +65,6 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
                 .teamRoleType(ROLE_팀장)
                 .teamId(team.getId())
                 .build();
-        teamRepository.save(team);
         teamRoleMember = TeamRole.builder()
                 .memberId(teamMember.getId())
                 .teamRoleType(ROLE_팀원)
@@ -87,8 +86,7 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
                 .member(teamMember)
                 .isDeleted(false)
                 .build();
-        memberTeamRepository.save(memberTeamLeader);
-        memberTeamRepository.save(memberTeamMember);
+        memberTeamRepository.saveAll(List.of(memberTeamLeader, memberTeamMember));
     }
 
     @Test
