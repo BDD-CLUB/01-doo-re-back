@@ -20,6 +20,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.garden.application.dto.response.DayGardenResponse;
+import doore.member.application.dto.response.MemberReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.request.TeamCreateRequest;
@@ -31,11 +32,7 @@ import doore.team.application.dto.response.TeamRankResponse;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -256,8 +253,9 @@ public class TeamApiDocsTest extends RestDocsTest {
                 new StudyNameResponse(1L, "알고리즘 스터디"),
                 new StudyNameResponse(2L, "개발 스터디")
         );
+        final MemberReferenceResponse memberReferenceResponse = new MemberReferenceResponse("멤버 이름", "멤버 프로필 사진");
         final List<MyTeamsAndStudiesResponse> response = List.of(
-                new MyTeamsAndStudiesResponse(1L, "BDD", studyResponses)
+                new MyTeamsAndStudiesResponse(1L, "BDD", studyResponses, memberReferenceResponse)
         );
 
         final PathParametersSnippet pathParameters = pathParameters(
@@ -267,7 +265,9 @@ public class TeamApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("[].teamId", "팀의 ID"),
                 stringFieldWithPath("[].teamName", "팀의 이름"),
                 numberFieldWithPath("[].teamStudies.[].id", "팀에 포함되는 스터디 id"),
-                stringFieldWithPath("[].teamStudies.[].name", "팀에 포함되는 스터디 이름")
+                stringFieldWithPath("[].teamStudies.[].name", "팀에 포함되는 스터디 이름"),
+                stringFieldWithPath("[].memberReference.name", "로그인 되어 있는 회원 이름"),
+                stringFieldWithPath("[].memberReference.imageUrl", "로그인 되어 있는 회원 이미지 url")
         );
 
         //when
