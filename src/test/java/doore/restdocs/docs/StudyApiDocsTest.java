@@ -11,6 +11,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.crop.response.CropReferenceResponse;
+import doore.member.application.dto.response.MemberReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -98,6 +99,26 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .build();
     }
 
+    private StudyResponse getStudyResponseWithMemberInfo() {
+        final TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
+        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
+        final MemberReferenceResponse memberReferenceResponse = new MemberReferenceResponse("회원 이름", "https://~");
+
+        return StudyResponse.builder()
+                .id(1L)
+                .name("알고리즘")
+                .description("알고리즘 스터디입니다.")
+                .startDate(LocalDate.parse("2020-01-01"))
+                .endDate(LocalDate.parse("2020-01-02"))
+                .status(StudyStatus.IN_PROGRESS)
+                .teamReference(teamReferenceResponse)
+                .cropReference(cropReferenceResponse)
+                .memberReference(memberReferenceResponse)
+                .studyProgressRatio(50)
+                .build();
+    }
+
     @Test
     @DisplayName("스터디를 삭제한다.")
     public void 스터디를_삭제한다() throws Exception {
@@ -171,8 +192,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     public void 나의_스터디_목록을_조회한다() throws Exception {
         final Long memberId = 1L;
         final List<StudyResponse> response = List.of(
-                getStudyResponse(),
-                getStudyResponse()
+                getStudyResponseWithMemberInfo(),
+                getStudyResponseWithMemberInfo()
         );
 
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
@@ -189,6 +210,8 @@ public class StudyApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("[].cropReference.id", "스터디의 작물의 ID"),
                 stringFieldWithPath("[].cropReference.name", "스터디의 작물의 이름"),
                 stringFieldWithPath("[].cropReference.imageUrl", "스터디의 작물의 이미지 url"),
+                stringFieldWithPath("[].memberReference.name", "로그인 되어 있는 회원 이름"),
+                stringFieldWithPath("[].memberReference.imageUrl", "로그인 되어 있는 회원 이미지 url"),
                 numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
         );
 
