@@ -19,6 +19,7 @@ import doore.login.utils.JwtTokenGenerator;
 import doore.member.api.MemberController;
 import doore.member.api.MemberTeamController;
 import doore.member.application.MemberCommandService;
+import doore.member.application.MemberQueryService;
 import doore.member.application.MemberTeamQueryService;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.api.CurriculumItemController;
@@ -108,6 +109,9 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected GardenQueryService gardenQueryService;
+
+    @MockBean
+    protected MemberQueryService memberQueryService;
 
     @MockBean
     protected JwtTokenGenerator jwtTokenGenerator;
