@@ -34,8 +34,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -102,8 +100,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 new DocumentCondensedResponse(1L, "학습자료1", "학습자료1 입니다.", LocalDate.parse("2020-02-02"), 1L);
         final DocumentCondensedResponse otherDocumentCondensedResponse =
                 new DocumentCondensedResponse(2L, "학습자료2", "학습자료2 입니다.", LocalDate.parse("2020-02-03"), 2L);
-        final Page<DocumentCondensedResponse> documentCondensedResponses = new PageImpl<>(
-                List.of(documentCondensedResponse, otherDocumentCondensedResponse), PageRequest.of(0, 4), 2);
+        final List<DocumentCondensedResponse> documentCondensedResponses = List.of(documentCondensedResponse, otherDocumentCondensedResponse);
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
                 .thenReturn(documentCondensedResponses);

@@ -50,13 +50,13 @@ public class DocumentController {
     }
 
     @GetMapping("/{groupType}/{groupId}/documents") // 비회원
-    public ResponseEntity<Page<DocumentCondensedResponse>> getAllDocument(
+    public ResponseEntity<List<DocumentCondensedResponse>> getAllDocument(
             @PathVariable final String groupType,
             @PathVariable final Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero final int page,
             @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
         final DocumentGroupType group = DocumentGroupType.value(groupType);
-        final Page<DocumentCondensedResponse> condensedDocuments =
+        final List<DocumentCondensedResponse> condensedDocuments =
                 documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
         return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
     }

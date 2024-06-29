@@ -23,7 +23,6 @@ import doore.member.exception.MemberException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,11 +36,11 @@ public class DocumentQueryService {
     private final MemberRepository memberRepository;
     private final StudyRoleRepository studyRoleRepository;
 
-    public Page<DocumentCondensedResponse> getAllDocument(
+    public List<DocumentCondensedResponse> getAllDocument(
             final DocumentGroupType groupType, final Long groupId, final Pageable pageable) {
 
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
-                .map(this::toDocumentCondensedResponse);
+                .map(this::toDocumentCondensedResponse).getContent();
     }
 
     private DocumentCondensedResponse toDocumentCondensedResponse(final Document document) {
