@@ -14,9 +14,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GardenQueryService {
     private final GardenRepository gardenRepository;
+    private static final int RECENT_WEEK_NUMBER = 13;
 
-    public List<DayGardenResponse> getAllGarden(final Long teamId) {
-        final List<Garden> gardens = gardenRepository.findAllOfThisYearByTeamIdOrderByContributedDateAsc(teamId);
+    public List<DayGardenResponse> getGardens(final Long teamId) {
+        final List<Garden> gardens = gardenRepository.findRecentNthWeekGardenByTeamIdOrderByContributedDateAsc(teamId, RECENT_WEEK_NUMBER);
         return calculateContributes(gardens);
     }
 
