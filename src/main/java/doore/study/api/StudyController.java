@@ -2,6 +2,7 @@ package doore.study.api;
 
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
+import doore.study.application.ParticipantCommandService;
 import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
@@ -30,11 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudyController {
     private final StudyCommandService studyCommandService;
     private final StudyQueryService studyQueryService;
+    private final ParticipantCommandService participantCommandService;
 
     @PostMapping("/teams/{teamId}/studies") //회원
     public ResponseEntity<Void> createStudy(@Valid @RequestBody final StudyCreateRequest studyRequest,
                                             @PathVariable final Long teamId, @LoginMember final Member member) {
-        studyCommandService.createStudy(studyRequest, teamId, member.getId());
+        Long studyId = studyCommandService.createStudy(studyRequest, teamId, member.getId());
+        participantCommandService.saveParticipant(studyId,member.getId(),member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
