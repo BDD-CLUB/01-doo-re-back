@@ -11,8 +11,11 @@ import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 
 import doore.file.application.S3ImageFileService;
+import doore.member.domain.Member;
+import doore.member.domain.MemberTeam;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.CurriculumItem;
@@ -48,6 +51,7 @@ public class TeamCommandService {
     private final StudyRepository studyRepository;
     private final CurriculumItemRepository curriculumItemRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private final MemberTeamRepository memberTeamRepository;
     private final S3ImageFileService s3ImageFileService;
     private final RedisUtil redisUtil;
 
@@ -55,7 +59,7 @@ public class TeamCommandService {
 
     public void createTeam(final TeamCreateRequest request, final MultipartFile file, final Long memberId) {
         // TODO: 팀 생성자를 팀 관리자로 등록 (2024/5/9 완료)
-        validateExistMember(memberId);
+        Member member = validateExistMember(memberId);
         final String imageUrl = s3ImageFileService.upload(file);
         try {
             final Team team = Team.builder()
@@ -71,6 +75,12 @@ public class TeamCommandService {
                     .teamRoleType(ROLE_팀장)
                     .build();
             teamRoleRepository.save(teamRole);
+            final MemberTeam memberTeam = MemberTeam.builder()
+                    .member(member)
+                    .isDeleted(false)
+                    .teamId(team.getId())
+                    .build();
+            memberTeamRepository.save(memberTeam);
         } catch (final Exception e) {
             s3ImageFileService.deleteFile(imageUrl);
         }
@@ -123,7 +133,7 @@ public class TeamCommandService {
 
     public void joinTeam(final Long teamId, final TeamInviteCodeRequest request, final Long memberId) {
         validateExistTeam(teamId);
-        validateExistMember(memberId);
+        Member member = validateExistMember(memberId);
 
         final Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isPresent()) {
@@ -136,6 +146,12 @@ public class TeamCommandService {
                     .memberId(memberId)
                     .build();
             teamRoleRepository.save(teamRole);
+            final MemberTeam memberTeam = MemberTeam.builder()
+                    .member(member)
+                    .isDeleted(false)
+                    .teamId(teamId)
+                    .build();
+            memberTeamRepository.save(memberTeam);
         }
         throw new TeamException(EXPIRED_LINK);
     }
@@ -146,8 +162,8 @@ public class TeamCommandService {
         }
     }
 
-    private void validateExistMember(final Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    private Member validateExistMember(final Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
     private void validateExistTeamLeader(final Long memberId) {
