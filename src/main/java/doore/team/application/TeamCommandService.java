@@ -138,7 +138,7 @@ public class TeamCommandService {
         final Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isPresent()) {
             validateMatchLink(link.get(), request.code());
-            // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리. (2024/5/13 완료)
+            // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리. (2024/7/3 완료)
             duplicateCheckTeamMember(memberId);
             final TeamRole teamRole = TeamRole.builder()
                     .teamId(teamId)
