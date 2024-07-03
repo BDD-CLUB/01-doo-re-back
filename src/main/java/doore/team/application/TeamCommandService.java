@@ -167,7 +167,6 @@ public class TeamCommandService {
     }
 
     private void validateExistTeamLeader(final Long teamId, final Long memberId) {
-        System.out.println("======"+ teamId + " ===" + memberId +"======");
         final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
@@ -178,8 +177,7 @@ public class TeamCommandService {
     private void duplicateCheckTeamMember(final Long teamId, final Long memberId) {
         if (memberTeamRepository.existsByTeamIdAndMemberId(teamId, memberId)) {
             throw new MemberException(ALREADY_JOIN_TEAM_MEMBER);
-        }
-        ;
+        };
     }
 
     private void deleteStudyAndCurriculumItemAndParticipantCurriculumItem(final Long teamId) {
