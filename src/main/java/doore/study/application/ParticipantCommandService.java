@@ -39,7 +39,10 @@ public class ParticipantCommandService {
                 .member(member)
                 .build();
         participantRepository.save(participant);
+        assignParticipantRole(studyId, memberId, studyLeaderId);
+    }
 
+    private void assignParticipantRole(Long studyId, Long memberId, Long studyLeaderId) {
         if (!memberId.equals(studyLeaderId)) {
             studyRoleRepository.save(StudyRole.builder()
                     .studyRoleType(ROLE_스터디원)
