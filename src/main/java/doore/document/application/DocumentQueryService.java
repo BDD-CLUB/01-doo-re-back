@@ -20,6 +20,8 @@ import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.domain.Study;
+import doore.study.domain.repository.StudyRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class DocumentQueryService {
 
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
+    private final StudyRepository studyRepository;
     private final StudyRoleRepository studyRoleRepository;
 
     public List<DocumentCondensedResponse> getAllDocument(
@@ -54,8 +57,9 @@ public class DocumentQueryService {
         final Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
         final DocumentGroupType documentGroupType = document.getGroupType();
+        final Study study = studyRepository.findByDocumentId(documentId);
         if (documentGroupType == STUDY) {
-            validateMemberRoleForStudy(memberId);
+            validateMemberRoleForStudy(study.getId(), memberId);
         }
         return toDocumentDetailResponse(document);
     }
@@ -87,8 +91,8 @@ public class DocumentQueryService {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 
-    private void validateMemberRoleForStudy(final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateMemberRoleForStudy(final Long studyId, final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!(studyRole.getStudyRoleType() == ROLE_스터디장 || studyRole.getStudyRoleType() == ROLE_스터디원)) {
             throw new MemberException(UNAUTHORIZED);

@@ -62,7 +62,7 @@ public class StudyCommandService {
     }
 
     public void deleteStudy(final Long studyId, final Long memberId) {
-        validateExistStudyLeader(memberId);
+        validateExistStudyLeader(studyId, memberId);
         validateExistStudy(studyId);
 
         final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(studyId);
@@ -82,19 +82,19 @@ public class StudyCommandService {
     }
 
     public void updateStudy(final StudyUpdateRequest request, final Long studyId, final Long memberId) {
-        validateExistStudyLeader(memberId);
+        validateExistStudyLeader(studyId, memberId);
         final Study study = validateExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
     public void terminateStudy(final Long studyId, final Long memberId) {
-        validateExistStudyLeader(memberId);
+        validateExistStudyLeader(studyId, memberId);
         final Study study = validateExistStudy(studyId);
         study.terminate();
     }
 
     public void changeStudyStatus(final String status, final Long studyId, final Long memberId) {
-        validateExistStudyLeader(memberId);
+        validateExistStudyLeader(studyId, memberId);
         final Study study = validateExistStudy(studyId);
         try {
             final StudyStatus changedStatus = StudyStatus.valueOf(status);
@@ -116,8 +116,8 @@ public class StudyCommandService {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private void validateExistStudyLeader(final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeader(final Long studyId, final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
