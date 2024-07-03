@@ -41,8 +41,9 @@ public class StudyCommandService {
     private final StudyRoleRepository studyRoleRepository;
     private final CurriculumItemRepository curriculumItemRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private final ParticipantCommandService participantCommandService;
 
-    public Long createStudy(final StudyCreateRequest request, final Long teamId, final Long memberId) {
+    public void createStudy(final StudyCreateRequest request, final Long teamId, final Long memberId) {
         validateExistMember(memberId);
         validateExistTeam(teamId);
         checkEndDateValid(request.startDate(), request.endDate());
@@ -52,7 +53,11 @@ public class StudyCommandService {
                 .studyId(study.getId())
                 .memberId(memberId)
                 .build());
-        return study.getId();
+        saveParticipant(study.getId(), memberId, memberId);
+    }
+
+    private void saveParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
+        participantCommandService.saveParticipant(studyId,memberId,studyLeaderId);
     }
 
     private void checkEndDateValid(final LocalDate startDate, final LocalDate endDate) {

@@ -163,9 +163,10 @@ public class StudyCommandServiceTest extends IntegrationTest {
             @Test
             @DisplayName("[성공] 스터디 생성자는 스터디장 권한이 부여된다.")
             void createStudy_스터디_생성자는_스터디장_권한이_부여된다_성공() throws Exception {
-                Long studyId = studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
+                studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
+                Study study = studyRepository.findAllByMemberId(memberId).get(0);
 
-                final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId).orElseThrow();
+                final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(), memberId).orElseThrow();
                 assertThat(studyRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
             }
         }
