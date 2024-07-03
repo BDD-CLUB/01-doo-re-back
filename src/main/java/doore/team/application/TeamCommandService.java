@@ -87,13 +87,13 @@ public class TeamCommandService {
     }
 
     public void updateTeam(final Long teamId, final TeamUpdateRequest request, final Long memberId) {
-        validateExistTeamLeader(memberId);
+        validateExistTeamLeader(teamId, memberId);
         final Team team = validateExistTeam(teamId);
         team.update(request.name(), request.description());
     }
 
     public void updateTeamImage(final Long teamId, final MultipartFile file, final Long memberId) {
-        validateExistTeamLeader(memberId);
+        validateExistTeamLeader(teamId, memberId);
         final Team team = validateExistTeam(teamId);
 
         if (team.hasImage()) {
@@ -105,7 +105,7 @@ public class TeamCommandService {
     }
 
     public void deleteTeam(final Long teamId, final Long memberId) {
-        validateExistTeamLeader(memberId);
+        validateExistTeamLeader(teamId, memberId);
         final Team team = validateExistTeam(teamId);
         teamRepository.delete(team);
         if (team.hasImage()) {
@@ -139,7 +139,7 @@ public class TeamCommandService {
         if (link.isPresent()) {
             validateMatchLink(link.get(), request.code());
             // TODO: 2/14/24 권한 관련 작업이 추가되면 팀원으로 회원 추가, 이미 가입된 팀원이라면 예외 처리. (2024/7/3 완료)
-            duplicateCheckTeamMember(memberId);
+            duplicateCheckTeamMember(teamId, memberId);
             final TeamRole teamRole = TeamRole.builder()
                     .teamId(teamId)
                     .teamRoleType(ROLE_팀원)
@@ -166,16 +166,20 @@ public class TeamCommandService {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
-    private void validateExistTeamLeader(final Long memberId) {
-        final TeamRole teamRole = teamRoleRepository.findById(memberId)
+    private void validateExistTeamLeader(final Long teamId, final Long memberId) {
+        System.out.println("======"+ teamId + " ===" + memberId +"======");
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
 
-    private void duplicateCheckTeamMember(final Long memberId) {
-        teamRoleRepository.findById(memberId).orElseThrow(() -> new MemberException(ALREADY_JOIN_TEAM_MEMBER));
+    private void duplicateCheckTeamMember(final Long teamId, final Long memberId) {
+        if (memberTeamRepository.existsByTeamIdAndMemberId(teamId, memberId)) {
+            throw new MemberException(ALREADY_JOIN_TEAM_MEMBER);
+        }
+        ;
     }
 
     private void deleteStudyAndCurriculumItemAndParticipantCurriculumItem(final Long teamId) {
