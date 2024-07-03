@@ -39,6 +39,14 @@ public class ParticipantCommandService {
                 .member(member)
                 .build();
         participantRepository.save(participant);
+
+        if (!memberId.equals(studyLeaderId)) {
+            studyRoleRepository.save(StudyRole.builder()
+                    .studyRoleType(ROLE_스터디원)
+                    .studyId(studyId)
+                    .memberId(memberId)
+                    .build());
+        }
     }
 
     public void deleteParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
