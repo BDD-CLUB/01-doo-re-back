@@ -46,13 +46,13 @@ public class CurriculumItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("studies/{studyId}/curriculums/all") // 비회원
+    @GetMapping("/studies/{studyId}/curriculums/all") // 비회원
     public ResponseEntity<List<CurriculumItemResponse>> getCurriculums(@PathVariable final Long studyId) {
         final List<CurriculumItemResponse> responses = curriculumItemQueryService.getCurriculums(studyId);
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("studies/{studyId}/curriculums") // 참여자
+    @GetMapping("/studies/{studyId}/curriculums") // 참여자
     public ResponseEntity<List<PersonalCurriculumItemResponse>> getMyCurriculum(@PathVariable final Long studyId,
                                                                                 @LoginMember final Member member) {
         final List<PersonalCurriculumItemResponse> response = curriculumItemQueryService.getMyCurriculum(studyId, member.getId());
