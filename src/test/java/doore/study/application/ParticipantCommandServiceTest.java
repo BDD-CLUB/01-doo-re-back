@@ -82,11 +82,6 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //Given
             final Long studyId = study.getId();
             final Member participant = createMember();
-            studyRoleRepository.save(StudyRole.builder()
-                    .studyRoleType(ROLE_스터디원)
-                    .studyId(studyId)
-                    .memberId(participant.getId())
-                    .build());
             participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
 
             //when
@@ -104,11 +99,6 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //Given
             final Long studyId = study.getId();
             final Member participant = createMember();
-            studyRoleRepository.save(StudyRole.builder()
-                    .memberId(participant.getId())
-                    .studyId(studyId)
-                    .studyRoleType(ROLE_스터디원)
-                    .build());
 
             participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
 
@@ -125,8 +115,6 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 존재하지 않는 회원인 경우 실패한다.")
     void notExistMember_존재하지_않는_회원인_경우_실패한다_실패() {
-        final Study study = algorithmStudy();
-        studyRepository.save(study);
         final Long notExistingMemberId = 50L;
 
         assertThatThrownBy(
