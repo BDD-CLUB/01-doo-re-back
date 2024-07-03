@@ -287,7 +287,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
             }
 
             @Test
-            @Disabled //스터디 존재 유무 처리보다 권한 처리가 우선시된다.
+            @Disabled // 권한 처리 코드 주석 후 테스트 필요
             @DisplayName("[실패] 존재하지_않는_스터디를_수정할_수_없다.")
             void updateStudy_존재하지_않는_스터디를_수정할_수_없다_실패() throws Exception {
                 final Long notExistingStudyId = 0L;
@@ -327,7 +327,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled // 스터디 존재 유무 확인보다 권한 처리가 먼저 처리된다.
+    @Disabled // 권한 처리 코드 주석 후 테스트 필요
     @DisplayName("[실패] 존재하지 않는 스터디인 경우 실패한다.")
     void notExistStudy_존재하지_않는_스터디인_경우_실패한다_실패() {
         final Long notExistingStudyId = 50L;

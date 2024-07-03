@@ -159,7 +159,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled //스터디 존재 유무 처리보다 권한 처리가 우선시된다.
+    @Disabled // 권한 처리 코드 주석 후 테스트 필요
     @DisplayName("[실패] 존재하지 않는 스터디는 커리큘럼이 생성되지 않는다.")
     public void createCurriculum_존재하지_않는_스터디는_커리큘럼이_생성되지_않는다() throws Exception {
         assertThatThrownBy(() -> {
