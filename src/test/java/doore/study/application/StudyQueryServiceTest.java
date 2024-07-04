@@ -1,18 +1,20 @@
 package doore.study.application;
 
+import static doore.crop.CropFixture.rice;
 import static doore.member.MemberFixture.미나;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.CurriculumItemFixture.curriculumItem;
 import static doore.study.ParticipantCurriculumItemFixture.participantCurriculumItem;
 import static doore.study.StudyFixture.algorithmStudy;
-import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
+import doore.crop.response.CropReferenceResponse;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
@@ -22,6 +24,7 @@ import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyReferenceResponse;
+import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
@@ -29,11 +32,11 @@ import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
+import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -67,11 +70,15 @@ public class StudyQueryServiceTest extends IntegrationTest {
     private StudyRole studyRole;
     private Study study;
     private Team team;
+    private Crop crop;
+
 
     @BeforeEach
     void setUp() {
         member = memberRepository.save(미나());
-        study = studyRepository.save(createStudy());
+        team = teamRepository.save(team());
+        crop = cropRepository.save(rice());
+        study = studyRepository.save(algorithmStudy());
         studyRole = studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(ROLE_스터디장)
                 .memberId(member.getId())
@@ -79,16 +86,39 @@ public class StudyQueryServiceTest extends IntegrationTest {
                 .build());
     }
 
+    private StudyResponse getStudyResponse() {
+        final TeamReferenceResponse teamReferenceResponse =
+                new TeamReferenceResponse(team.getId(), team.getName(), team.getDescription(), team.getImageUrl());
+        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(crop.getId(), crop.getName(),
+                crop.getImageUrl());
+
+        return StudyResponse.builder()
+                .id(study.getId())
+                .name(study.getName())
+                .description(study.getDescription())
+                .startDate(study.getStartDate())
+                .endDate(study.getEndDate())
+                .status(study.getStatus())
+                .teamReference(teamReferenceResponse)
+                .cropReference(cropReferenceResponse)
+                .studyProgressRatio(0)
+                .studyLeaderId(1L)
+                .build();
+    }
+
     @Nested
     @DisplayName("스터디 Query 테스트")
     class studyTest {
         @Test
-        @Disabled
         @DisplayName("[성공] 정상적으로 스터디 정보를 조회할 수 있다.")
         void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
-            final Study study = createStudy();
-            studyRepository.save(study);
-            assertEquals(study.getId(), studyQueryService.findStudyById(study.getId()).id());
+            StudyResponse expectedResponse = getStudyResponse();
+            StudyResponse actualResponse = studyQueryService.findStudyById(study.getId());
+
+            assertThat(actualResponse)
+                    .usingRecursiveComparison()
+                    .ignoringCollectionOrder()
+                    .isEqualTo(expectedResponse);
         }
 
         @Test
@@ -114,7 +144,8 @@ public class StudyQueryServiceTest extends IntegrationTest {
 
         final CurriculumItem curriculumItemForStudy1 = curriculumItemRepository.save(curriculumItem(study));
         final CurriculumItem curriculumItemForStudy2 = curriculumItemRepository.save(curriculumItem(study));
-        final CurriculumItem curriculumItemForAnotherStudy = curriculumItemRepository.save(curriculumItem(anotherStudy));
+        final CurriculumItem curriculumItemForAnotherStudy = curriculumItemRepository.save(
+                curriculumItem(anotherStudy));
 
         final ParticipantCurriculumItem participantCurriculumItem1 = participantCurriculumItemRepository.save(
                 participantCurriculumItem(participantForStudy.getId(), curriculumItemForStudy1));
