@@ -92,12 +92,12 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[성공] 팀장은 정상적으로 팀원을 삭제할 수 있다.")
     public void deleteMemberTeam_팀장은_정상적으로_팀원을_삭제할_수_있다_성공() throws Exception {
-        long memberCount = memberTeamRepository.findAllByTeamId(team.getId()).stream().count();
+        long memberCount = memberTeamRepository.countByTeamId(team.getId());
         //when
         memberTeamCommandService.deleteMemberTeam(team.getId(), teamMember.getId(), teamLeader.getId());
 
         //then
-        long resultMemberCount = memberTeamRepository.findAllByTeamId(team.getId()).stream().count();
+        long resultMemberCount = memberTeamRepository.countByTeamId(team.getId());
         assertThat(resultMemberCount).isEqualTo(memberCount - 1);
     }
 

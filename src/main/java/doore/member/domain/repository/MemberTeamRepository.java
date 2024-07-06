@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
     List<MemberTeam> findAllByTeamId(final Long teamId);
 
+    Long countByTeamId(final Long teamId);
+
     @Query("select mt from MemberTeam mt "
             + "where mt.teamId = :teamId "
             + "and (mt.member.name like :keyword% or mt.member.email like :keyword%)")
