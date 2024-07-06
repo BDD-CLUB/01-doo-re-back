@@ -6,6 +6,7 @@ import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -70,8 +71,8 @@ public class StudyController {
     }
 
     @GetMapping("/studies/members/{memberId}") // 회원
-    public ResponseEntity<List<StudyResponse>> getMyStudies(@PathVariable final Long memberId,
-                                                            @LoginMember final Member member) {
+    public ResponseEntity<List<StudyReferenceResponse>> getMyStudies(@PathVariable final Long memberId,
+                                                                     @LoginMember final Member member) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증 (2024/5/15 완료)
         return ResponseEntity.ok(studyQueryService.findMyStudies(memberId, member.getId()));
     }

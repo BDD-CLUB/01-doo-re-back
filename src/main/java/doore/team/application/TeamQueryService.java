@@ -12,6 +12,7 @@ import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
+import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.study.domain.repository.StudyRepository;
@@ -37,6 +38,7 @@ public class TeamQueryService {
     private final StudyRepository studyRepository;
     private final AttendanceRepository attendanceRepository;
     private final MemberTeamRepository memberTeamRepository;
+    private final TeamRoleRepository teamRoleRepository;
     private final GardenQueryService gardenQueryService;
 
     public List<TeamReferenceResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
@@ -75,8 +77,9 @@ public class TeamQueryService {
         final long countAttendanceMemberTeam = attendances.size();
         final long attendanceRatio =
                 countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
+        final Long teamLeaderId = teamRoleRepository.findLeaderIdByTeamId(teamId);
 
-        return TeamResponse.of(team, attendanceRatio);
+        return TeamResponse.of(team, attendanceRatio, teamLeaderId);
     }
 
     private void validateMember(final Long memberId) {

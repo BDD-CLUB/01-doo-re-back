@@ -31,7 +31,7 @@ public class MemberTeamQueryService {
     private final TeamRoleRepository teamRoleRepository;
 
     public List<TeamMemberResponse> findMemberTeams(final Long teamId, final String keyword, final Long memberId) {
-        validateExistTeamLeaderAndTeamMember(memberId);
+        validateExistTeamLeaderAndTeamMember(teamId, memberId);
         if (keyword == null || keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
         }
@@ -68,8 +68,8 @@ public class MemberTeamQueryService {
                 ));
     }
 
-    private void validateExistTeamLeaderAndTeamMember(final Long memberId) {
-        final TeamRole teamRole = teamRoleRepository.findById(memberId)
+    private void validateExistTeamLeaderAndTeamMember(final Long teamId, final Long memberId) {
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!(teamRole.getTeamRoleType().equals(ROLE_팀장) || teamRole.getTeamRoleType().equals(ROLE_팀원))){
             throw new MemberException(UNAUTHORIZED);

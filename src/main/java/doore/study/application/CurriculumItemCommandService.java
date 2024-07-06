@@ -49,7 +49,7 @@ public class CurriculumItemCommandService {
     private final GardenRepository gardenRepository;
 
     public void manageCurriculum(final CurriculumItemManageRequest request, final Long studyId, final Long memberId) {
-        validateExistStudyLeader(memberId);
+        validateExistStudyLeader(studyId, memberId);
         final List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
         checkItemOrderDuplicate(curriculumItems);
         checkItemOrderRange(curriculumItems);
@@ -62,7 +62,8 @@ public class CurriculumItemCommandService {
     }
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
-        validateExistStudyLeaderAndStudyMember(memberId);
+        final Study study = studyRepository.findByCurriculumItemId(curriculumId);
+        validateExistStudyLeaderAndStudyMember(study.getId(),memberId);
         final CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         final Participant participant = participantRepository.findById(participantId)
@@ -174,16 +175,16 @@ public class CurriculumItemCommandService {
         curriculumItemRepository.saveAll(sortedCurriculum);
     }
 
-    private void validateExistStudyLeader(final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeader(final Long studyId, final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
             throw new MemberException(UNAUTHORIZED);
         }
     }
 
-    private void validateExistStudyLeaderAndStudyMember(final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findById(memberId)
+    private void validateExistStudyLeaderAndStudyMember(final Long studyId, final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
             throw new MemberException(UNAUTHORIZED);

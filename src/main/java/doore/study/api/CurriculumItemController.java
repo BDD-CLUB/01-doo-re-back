@@ -5,6 +5,7 @@ import doore.resolver.LoginMember;
 import doore.study.application.CurriculumItemCommandService;
 import doore.study.application.CurriculumItemQueryService;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
+import doore.study.application.dto.response.CurriculumItemReferenceResponse;
 import doore.study.application.dto.response.CurriculumItemResponse;
 import doore.study.application.dto.response.PersonalCurriculumItemResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,18 +46,16 @@ public class CurriculumItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("studies/{studyId}/curriculums/all")
+    @GetMapping("/studies/{studyId}/curriculums/all") // 비회원
     public ResponseEntity<List<CurriculumItemResponse>> getCurriculums(@PathVariable final Long studyId) {
         final List<CurriculumItemResponse> responses = curriculumItemQueryService.getCurriculums(studyId);
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("studies/{studyId}/curriculums")
+    @GetMapping("/studies/{studyId}/curriculums") // 참여자
     public ResponseEntity<List<PersonalCurriculumItemResponse>> getMyCurriculum(@PathVariable final Long studyId,
-                                                                                final HttpServletRequest request) {
-        final String memberId = request.getHeader("Authorization");
-        final List<PersonalCurriculumItemResponse> response = curriculumItemQueryService.getMyCurriculum(studyId,
-                Long.parseLong(memberId));
+                                                                                @LoginMember final Member member) {
+        final List<PersonalCurriculumItemResponse> response = curriculumItemQueryService.getMyCurriculum(studyId, member.getId());
         return ResponseEntity.ok(response);
     }
 }

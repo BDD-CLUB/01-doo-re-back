@@ -5,13 +5,13 @@ import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.CurriculumItemFixture.curriculumItem;
 import static doore.study.ParticipantCurriculumItemFixture.participantCurriculumItem;
+import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
@@ -21,7 +21,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
-import doore.study.application.dto.response.StudyResponse;
+import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
@@ -102,21 +102,15 @@ public class StudyQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
     void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
         final Long tokenMemberId = member.getId();
-        final Study anotherStudy = studyRepository.save(createStudy());
+        final Study anotherStudy = studyRepository.save(algorithmStudy());
         final Participant participantForStudy = participantRepository.save(
                 Participant.builder().member(member).studyId(study.getId()).build());
         final Participant participantForAnotherStudy = participantRepository.save(
                 Participant.builder().member(member).studyId(anotherStudy.getId()).build());
-
-        final Team teamOfStudy = teamRepository.findById(study.getTeamId()).orElseThrow();
-        final Team teamOfAnotherStudy = teamRepository.findById(anotherStudy.getTeamId()).orElseThrow();
-        final Crop cropOfTeam = cropRepository.findById(study.getCropId()).orElseThrow();
-        final Crop cropOfAnotherTeam = cropRepository.findById(anotherStudy.getCropId()).orElseThrow();
 
         final CurriculumItem curriculumItemForStudy1 = curriculumItemRepository.save(curriculumItem(study));
         final CurriculumItem curriculumItemForStudy2 = curriculumItemRepository.save(curriculumItem(study));
@@ -133,11 +127,11 @@ public class StudyQueryServiceTest extends IntegrationTest {
                 member.getId());
 
         // when
-        final List<StudyResponse> expectedResponses = List.of(
-                StudyResponse.of(study, teamOfStudy, cropOfTeam, 50),
-                StudyResponse.of(anotherStudy, teamOfAnotherStudy, cropOfAnotherTeam, 0)
+        final List<StudyReferenceResponse> expectedResponses = List.of(
+                StudyReferenceResponse.of(study, 50),
+                StudyReferenceResponse.of(anotherStudy, 0)
         );
-        final List<StudyResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
+        final List<StudyReferenceResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
                 tokenMemberId);
 
         // then
