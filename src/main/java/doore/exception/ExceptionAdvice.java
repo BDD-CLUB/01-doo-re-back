@@ -23,7 +23,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ExceptionResponse> BaseException(final BaseException e) {
         final String errorMessage = e.getMessage();
-        return ResponseEntity.badRequest().body(new ExceptionResponse(errorMessage));
+        return ResponseEntity.status(e.exceptionType().httpStatus()).body(new ExceptionResponse(errorMessage));
     }
 
     private static String getErrorMessage(final BindException e) {
