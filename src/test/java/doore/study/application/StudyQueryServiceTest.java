@@ -92,18 +92,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
         final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(crop.getId(), crop.getName(),
                 crop.getImageUrl());
 
-        return StudyResponse.builder()
-                .id(study.getId())
-                .name(study.getName())
-                .description(study.getDescription())
-                .startDate(study.getStartDate())
-                .endDate(study.getEndDate())
-                .status(study.getStatus())
-                .teamReference(teamReferenceResponse)
-                .cropReference(cropReferenceResponse)
-                .studyProgressRatio(0)
-                .studyLeaderId(1L)
-                .build();
+        return StudyResponse.of(study, team, crop, 0, 1L);
     }
 
     @Nested
