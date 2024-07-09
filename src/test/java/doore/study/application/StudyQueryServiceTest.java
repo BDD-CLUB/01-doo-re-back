@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import doore.crop.domain.Crop;
 import doore.crop.domain.repository.CropRepository;
-import doore.crop.response.CropReferenceResponse;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
@@ -32,7 +31,6 @@ import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
-import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import java.util.List;
@@ -87,11 +85,6 @@ public class StudyQueryServiceTest extends IntegrationTest {
     }
 
     private StudyResponse getStudyResponse() {
-        final TeamReferenceResponse teamReferenceResponse =
-                new TeamReferenceResponse(team.getId(), team.getName(), team.getDescription(), team.getImageUrl());
-        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(crop.getId(), crop.getName(),
-                crop.getImageUrl());
-
         return StudyResponse.of(study, team, crop, 0, 1L);
     }
 
