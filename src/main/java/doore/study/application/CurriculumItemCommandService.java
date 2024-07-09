@@ -170,7 +170,7 @@ public class CurriculumItemCommandService {
     private void sortCurriculum() {
         final List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
 
-        IntStream.range(1, sortedCurriculum.size())
+        IntStream.range(0, sortedCurriculum.size())
                 .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);
     }
