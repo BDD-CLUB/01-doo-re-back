@@ -107,12 +107,18 @@ public class StudyQueryService {
 
     public List<StudyRankResponse> getTeamStudies(Long teamId, Pageable pageable) {
         return studyRepository.findAllByTeamId(teamId, pageable)
-                .map(study -> new StudyRankResponse(calculatePoint(study),
-                        StudyReferenceResponse.of(study, checkStudyProgressRatio(study.getId())))).getContent();
+                .map(this::convertStudyToStudyRankResponse).getContent();
+        //todo: (24.07.09) point 기반 정렬 로직 추가;
     }
 
-    private int calculatePoint(Study study) { // check된 커리큘럼 수 + 업로드된 document 수
-        //todo: 점수 계산
+    private StudyRankResponse convertStudyToStudyRankResponse(Study study) {
+        StudyReferenceResponse studyReferenceResponse = StudyReferenceResponse.of(study,
+                checkStudyProgressRatio(study.getId()));
+        return new StudyRankResponse(calculatePoint(study), studyReferenceResponse);
+    }
+
+    private int calculatePoint(Study study) {
+        //todo: (24.07.09) 스터디 점수 계산 방식에 대해 논의 후 로직 추가 (디스커션 #163 참고)
         return 0;
     }
 }
