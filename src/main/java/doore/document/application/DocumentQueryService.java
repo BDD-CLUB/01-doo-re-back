@@ -13,7 +13,6 @@ import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.application.dto.response.FileResponse;
 import doore.document.domain.Document;
 import doore.document.domain.DocumentGroupType;
-import doore.document.domain.File;
 import doore.document.domain.repository.DocumentRepository;
 import doore.document.exception.DocumentException;
 import doore.member.domain.StudyRole;
@@ -22,7 +21,6 @@ import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -65,17 +63,17 @@ public class DocumentQueryService {
     }
 
     private DocumentDetailResponse toDocumentDetailResponse(final Document document) {
-        final List<FileResponse> fileResponses = new ArrayList<>();
-        for (final File file : document.getFiles()) {
-            final FileResponse fileResponse = new FileResponse(file.getId(), file.getUrl());
-            fileResponses.add(fileResponse);
-        }
+        final List<FileResponse> fileResponses = document.getFiles().stream()
+                .map(file -> new FileResponse(file.getId(), file.getUrl()))
+                .toList();
+
         final String uploaderName = memberRepository.findById(document.getUploaderId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                 .getName();
 
         return DocumentDetailResponse.of(document, fileResponses, uploaderName);
     }
+
 
     private void validateExistMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
