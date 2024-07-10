@@ -10,14 +10,14 @@ import org.springframework.data.jpa.repository.Query;
 public interface StudyRepository extends JpaRepository<Study, Long> {
 
     @Query("select s from Study s join Participant p on p.studyId=s.id where p.member.id=:memberId")
-    List<Study> findAllByMemberId(final Long memberId);
+    List<Study> findAllByMemberId(Long memberId);
 
     @Query("select s from Study s join s.curriculumItems ci on ci.study.id = s.id where ci.id = :curriculumItemId ")
-    Study findByCurriculumItemId(final Long curriculumItemId);
+    Study findByCurriculumItemId(Long curriculumItemId);
 
-    List<Study> findAllByTeamId(final Long teamId);
+    List<Study> findAllByTeamId(Long teamId);
 
-    Page<Study> findAllByTeamId(final Long teamId, final Pageable pageable);
+    Page<Study> findAllByTeamId(Long teamId, Pageable pageable);
     @Query("select s from Study s join Document d on d.groupId = s.id where d.id = :documentId")
-    Study findByDocumentId(final Long documentId);
+    Study findByDocumentId(Long documentId);
 }
