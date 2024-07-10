@@ -97,9 +97,9 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
         final DocumentCondensedResponse documentCondensedResponse =
-                new DocumentCondensedResponse(1L, "학습자료1", "학습자료1 입니다.", LocalDate.parse("2020-02-02"), 1L);
+                new DocumentCondensedResponse(1L, "학습자료1", "학습자료1 입니다.", LocalDate.parse("2020-02-02"), "이땡떙");
         final DocumentCondensedResponse otherDocumentCondensedResponse =
-                new DocumentCondensedResponse(2L, "학습자료2", "학습자료2 입니다.", LocalDate.parse("2020-02-03"), 2L);
+                new DocumentCondensedResponse(2L, "학습자료2", "학습자료2 입니다.", LocalDate.parse("2020-02-03"), "김땡떙");
         final List<DocumentCondensedResponse> documentCondensedResponses = List.of(documentCondensedResponse, otherDocumentCondensedResponse);
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
@@ -157,7 +157,7 @@ public class DocumentDocsTest extends RestDocsTest {
                                 numberFieldWithPath("files[].id", "첨부파일 id"),
                                 stringFieldWithPath("files[].url", "첨부파일 URL"),
                                 stringFieldWithPath("date", "학습자료 업로드 날짜"),
-                                stringFieldWithPath("uploaderName", "학습자료 업로더")
+                                stringFieldWithPath("uploaderName", "학습자료 업로더 이름")
                         )
                 ));
     }

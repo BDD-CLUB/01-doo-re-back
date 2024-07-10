@@ -45,10 +45,11 @@ public class DocumentQueryService {
     }
 
     private DocumentCondensedResponse toDocumentCondensedResponse(final Document document) {
-        final Long uploaderId = memberRepository.findById(document.getUploaderId())
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER)).getId();
-        return new DocumentCondensedResponse(document.getId(), document.getName(), document.getDescription(),
-                document.getCreatedAt().toLocalDate(), uploaderId);
+        final String uploaderName = memberRepository.findById(document.getUploaderId())
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
+                .getName();
+
+        return DocumentCondensedResponse.of(document, uploaderName);
     }
 
     public DocumentDetailResponse getDocument(final Long documentId, final Long memberId) {

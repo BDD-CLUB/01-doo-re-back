@@ -93,6 +93,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         //given&when
         final List<DocumentCondensedResponse> responses =
                 documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4));
+        final String uploaderName = memberRepository.findById(document.getUploaderId()).orElseThrow().getName();
 
         //then
         assertAll(
@@ -100,7 +101,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
                 () -> assertEquals(responses.get(0).title(), anotherDocument.getName()),
                 () -> assertEquals(responses.get(0).description(), anotherDocument.getDescription()),
                 () -> assertEquals(responses.get(0).date(), anotherDocument.getCreatedAt().toLocalDate()),
-                () -> assertEquals(responses.get(0).uploaderId(), anotherDocument.getUploaderId())
+                () -> assertEquals(responses.get(0).uploaderName(), uploaderName)
         );
     }
 
