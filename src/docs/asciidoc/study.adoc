@@ -99,3 +99,19 @@ include::{snippets}/my-studies/http-response.adoc[]
 
 .HTTP Response
 include::{snippets}/my-studies/response-fields.adoc[]
+
+
+== `GET`: 팀의 Study 랭킹(목록) 조회
+
+.HTTP Request
+include::{snippets}/team-studies-get/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-studies-get/path-parameters.adoc[]
+
+.Query Parameters
+include::{snippets}/team-studies-get/query-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/team-studies-get/http-response.adoc[]
+

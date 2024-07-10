@@ -9,11 +9,13 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.StudyRankResponse;
 import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.StudyStatus;
@@ -27,6 +29,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 public class StudyApiDocsTest extends RestDocsTest {
     private String accessToken;
@@ -211,5 +215,36 @@ public class StudyApiDocsTest extends RestDocsTest {
                                 parameterWithName("memberId").description("회원 id")
                         ),
                         responseFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("팀의 스터디 목록(스터디 랭킹)을 조회한다.")
+    public void 팀의_스터디_목록스터디_랭킹을_조회한다() throws Exception {
+        final StudyReferenceResponse studyReferenceResponse =
+                new StudyReferenceResponse(1L, "study1", "this is study 1", LocalDate.of(2024, 7, 6),
+                        LocalDate.of(2024, 7, 7), StudyStatus.IN_PROGRESS, 1L, 60L);
+        final StudyRankResponse studyRankResponse = new StudyRankResponse(0, studyReferenceResponse);
+        final StudyReferenceResponse otherStudyReferenceResponse =
+                new StudyReferenceResponse(2L, "study2", "this is study 2", LocalDate.of(2024, 7, 6),
+                        LocalDate.of(2024, 8, 7), StudyStatus.IN_PROGRESS, 2L, 50L);
+        final StudyRankResponse otherStudyRankResponse = new StudyRankResponse(20, otherStudyReferenceResponse);
+
+        when(studyQueryService.getTeamStudies(any(), any())).thenReturn(
+                List.of(studyRankResponse, otherStudyRankResponse));
+
+        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            add("page", "0");
+            add("size", "4");
+        }};
+        mockMvc.perform(get("/teams/{teamId}/studies", 1).params(params))
+                .andExpect(status().isOk())
+                .andDo(document("team-studies-get",
+                        pathParameters(
+                                parameterWithName("teamId").description("팀 id")
+                        ),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 (default: 0)"),
+                                parameterWithName("size").description("한 페이지당 불러올 개수 (default: 4)")
+                        )));
     }
 }

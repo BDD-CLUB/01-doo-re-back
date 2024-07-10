@@ -6,11 +6,14 @@ import doore.study.application.StudyCommandService;
 import doore.study.application.StudyQueryService;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
+import doore.study.application.dto.response.StudyRankResponse;
 import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -75,5 +78,15 @@ public class StudyController {
                                                                      @LoginMember final Member member) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증 (2024/5/15 완료)
         return ResponseEntity.ok(studyQueryService.findMyStudies(memberId, member.getId()));
+    }
+
+    @GetMapping("/teams/{teamId}/studies") // 비회원
+    public ResponseEntity<List<StudyRankResponse>> getTeamStudies(
+            @PathVariable final Long teamId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero final int page,
+            @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
+        final List<StudyRankResponse> studyReferenceResponses =
+                studyQueryService.getTeamStudies(teamId, PageRequest.of(page, size));
+        return ResponseEntity.status(HttpStatus.OK).body(studyReferenceResponses);
     }
 }

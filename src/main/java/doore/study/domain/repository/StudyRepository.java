@@ -2,6 +2,8 @@ package doore.study.domain.repository;
 
 import doore.study.domain.Study;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,6 +17,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     List<Study> findAllByTeamId(final Long teamId);
 
+    Page<Study> findAllByTeamId(final Long teamId, final Pageable pageable);
     @Query("select s from Study s join Document d on d.groupId = s.id where d.id = :documentId")
-    Study findByDocumentId(Long documentId);
+    Study findByDocumentId(final Long documentId);
 }
