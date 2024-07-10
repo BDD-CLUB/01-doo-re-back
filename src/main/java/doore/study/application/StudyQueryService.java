@@ -101,7 +101,7 @@ public class StudyQueryService {
                 curriculumItemIds);
         return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
     }
-
+    
     public List<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
         return studyRepository.findAllByTeamId(teamId, pageable)
                 .map(this::convertStudyToStudyRankResponse).getContent();
