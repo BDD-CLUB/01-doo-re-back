@@ -70,7 +70,7 @@ public class DocumentQueryService {
             final FileResponse fileResponse = new FileResponse(file.getId(), file.getUrl());
             fileResponses.add(fileResponse);
         }
-        final String uploaderName = memberRepository.findById(document.getId())
+        final String uploaderName = memberRepository.findById(document.getUploaderId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                 .getName();
 
