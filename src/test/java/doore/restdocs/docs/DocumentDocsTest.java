@@ -135,7 +135,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .type(IMAGE)
                 .files(List.of(fileResponse))
                 .date(LocalDate.parse("2024-02-28"))
-                .uploader("김땡땡")
+                .uploaderName("김땡땡")
                 .build();
 
         //when

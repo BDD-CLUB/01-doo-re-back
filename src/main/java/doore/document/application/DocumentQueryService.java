@@ -74,17 +74,7 @@ public class DocumentQueryService {
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                 .getName();
 
-        return DocumentDetailResponse
-                .builder()
-                .id(document.getId())
-                .title(document.getName())
-                .description(document.getDescription())
-                .accessType(document.getAccessType())
-                .type(document.getType())
-                .files(fileResponses)
-                .date(document.getCreatedAt().toLocalDate())
-                .uploader(uploaderName)
-                .build();
+        return DocumentDetailResponse.of(document, fileResponses, uploaderName);
     }
 
     private void validateExistMember(final Long memberId) {
