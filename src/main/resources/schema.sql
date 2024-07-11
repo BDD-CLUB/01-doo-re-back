@@ -3,7 +3,6 @@ drop table if exists doore.team;
 drop table if exists doore.study;
 drop table if exists doore.curriculum_item;
 drop table if exists doore.participant_curriculum_item;
-drop table if exists doore.crop;
 drop table if exists doore.member_team;
 drop table if exists doore.participant;
 drop table if exists doore.garden;
@@ -34,15 +33,6 @@ create table team
     is_deleted  boolean      not null,
     created_at  datetime(6),
     updated_at  datetime(6)
-);
-
-create table crop
-(
-    id         bigint auto_increment primary key,
-    name       varchar(255) not null,
-    image_url  varchar(255) not null,
-    created_at datetime(6),
-    updated_at datetime(6)
 );
 
 create table study
