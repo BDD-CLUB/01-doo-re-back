@@ -11,7 +11,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
-import doore.crop.response.CropReferenceResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -88,7 +87,6 @@ public class StudyApiDocsTest extends RestDocsTest {
     private StudyResponse getStudyResponse() {
         final TeamReferenceResponse teamReferenceResponse =
                 new TeamReferenceResponse(1L, "개발 동아리 BDD", "개발 동아리 BDD입니다!", "https://~");
-        final CropReferenceResponse cropReferenceResponse = new CropReferenceResponse(1L, "벼", "https://~");
 
         return StudyResponse.builder()
                 .id(1L)
@@ -98,7 +96,6 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .endDate(LocalDate.parse("2020-01-02"))
                 .status(StudyStatus.IN_PROGRESS)
                 .teamReference(teamReferenceResponse)
-                .cropReference(cropReferenceResponse)
                 .studyProgressRatio(50)
                 .studyLeaderId(1L)
                 .build();

@@ -1,6 +1,5 @@
 package doore.study.application;
 
-import static doore.crop.exception.CropExceptionType.NOT_FOUND_CROP;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
@@ -9,9 +8,6 @@ import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
-import doore.crop.domain.Crop;
-import doore.crop.domain.repository.CropRepository;
-import doore.crop.exception.CropException;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
@@ -45,7 +41,6 @@ public class StudyQueryService {
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final CurriculumItemRepository curriculumItemRepository;
     private final TeamRepository teamRepository;
-    private final CropRepository cropRepository;
     private final MemberRepository memberRepository;
 
     public StudyResponse findStudyById(final Long studyId) {
@@ -54,11 +49,9 @@ public class StudyQueryService {
 
         final Team team = teamRepository.findById(study.getTeamId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
-        final Crop crop = cropRepository.findById(study.getCropId())
-                .orElseThrow(() -> new CropException(NOT_FOUND_CROP));
         final long studyProgressRatio = checkStudyProgressRatio(studyId);
 
-        return StudyResponse.of(study, team, crop, studyProgressRatio, studyLeaderId);
+        return StudyResponse.of(study, team, studyProgressRatio, studyLeaderId);
     }
 
     public List<StudyReferenceResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {

@@ -1,6 +1,5 @@
 package doore.study.application;
 
-import static doore.crop.CropFixture.rice;
 import static doore.member.MemberFixture.미나;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
@@ -12,8 +11,6 @@ import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import doore.crop.domain.Crop;
-import doore.crop.domain.repository.CropRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
@@ -56,8 +53,6 @@ public class StudyQueryServiceTest extends IntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private CropRepository cropRepository;
-    @Autowired
     private CurriculumItemRepository curriculumItemRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
@@ -68,14 +63,12 @@ public class StudyQueryServiceTest extends IntegrationTest {
     private StudyRole studyRole;
     private Study study;
     private Team team;
-    private Crop crop;
 
 
     @BeforeEach
     void setUp() {
         member = memberRepository.save(미나());
         team = teamRepository.save(team());
-        crop = cropRepository.save(rice());
         study = studyRepository.save(algorithmStudy());
         studyRole = studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(ROLE_스터디장)
@@ -85,7 +78,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
     }
 
     private StudyResponse getStudyResponse() {
-        return StudyResponse.of(study, team, crop, 0, 1L);
+        return StudyResponse.of(study, team, 0L, 1L);
     }
 
     @Nested

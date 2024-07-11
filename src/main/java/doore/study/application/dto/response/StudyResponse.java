@@ -1,8 +1,6 @@
 package doore.study.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import doore.crop.domain.Crop;
-import doore.crop.response.CropReferenceResponse;
 import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.TeamReferenceResponse;
@@ -21,12 +19,12 @@ public record StudyResponse(
         LocalDate endDate,
         StudyStatus status,
         TeamReferenceResponse teamReference,
-        CropReferenceResponse cropReference,
+        Long cropId,
         long studyProgressRatio,
         Long studyLeaderId
 
 ) {
-    public static StudyResponse of(final Study study, final Team team, final Crop crop, final long studyProgressRatio,
+    public static StudyResponse of(final Study study, final Team team, final long studyProgressRatio,
                                    final Long studyLeaderId) {
         return StudyResponse.builder()
                 .id(study.getId())
@@ -36,7 +34,7 @@ public record StudyResponse(
                 .endDate(study.getEndDate())
                 .status(study.getStatus())
                 .teamReference(TeamReferenceResponse.from(team))
-                .cropReference(CropReferenceResponse.from(crop))
+                .cropId(study.getCropId())
                 .studyProgressRatio(studyProgressRatio)
                 .studyLeaderId(studyLeaderId)
                 .build();
