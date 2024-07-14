@@ -42,4 +42,8 @@ public class Participant extends BaseEntity {
         this.studyId = studyId;
         this.member = member;
     }
+
+    public void delete() {
+        this.isDeleted = true;
+    }
 }

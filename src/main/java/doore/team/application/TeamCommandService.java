@@ -13,9 +13,11 @@ import static doore.team.exception.TeamExceptionType.NOT_MATCH_LINK;
 import doore.file.application.S3ImageFileService;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
+import doore.member.domain.Participant;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.CurriculumItem;
@@ -52,6 +54,7 @@ public class TeamCommandService {
     private final CurriculumItemRepository curriculumItemRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final MemberTeamRepository memberTeamRepository;
+    private final ParticipantRepository participantRepository;
     private final S3ImageFileService s3ImageFileService;
     private final RedisUtil redisUtil;
 
@@ -111,6 +114,7 @@ public class TeamCommandService {
         if (team.hasImage()) {
             s3ImageFileService.deleteFile(team.getImageUrl());
         }
+        deleteMemberTeamAndParticipant(teamId);
         deleteStudyAndCurriculumItemAndParticipantCurriculumItem(teamId);
     }
 
@@ -177,7 +181,18 @@ public class TeamCommandService {
     private void duplicateCheckTeamMember(final Long teamId, final Long memberId) {
         if (memberTeamRepository.existsByTeamIdAndMemberId(teamId, memberId)) {
             throw new MemberException(ALREADY_JOIN_TEAM_MEMBER);
-        };
+        }
+    }
+
+    private void deleteMemberTeamAndParticipant(final Long teamId) {
+        final List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
+        memberTeams.forEach(MemberTeam::delete);
+
+        final List<Study> studies = studyRepository.findAllByTeamId(teamId);
+        studies.forEach(study -> {
+            final List<Participant> participants = participantRepository.findAllByStudyId(study.getId());
+            participants.forEach(Participant::delete);
+        });
     }
 
     private void deleteStudyAndCurriculumItemAndParticipantCurriculumItem(final Long teamId) {
