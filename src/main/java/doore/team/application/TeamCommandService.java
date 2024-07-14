@@ -73,7 +73,7 @@ public class TeamCommandService {
             teamRepository.save(team);
 
             createMemberTeam(member, team.getId());
-            createTeamRole(team.getId(), memberId);
+            assignTeamRole(team.getId(), memberId);
         } catch (final Exception e) {
             s3ImageFileService.deleteFile(imageUrl);
         }
