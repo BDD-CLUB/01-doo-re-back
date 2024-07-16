@@ -54,15 +54,15 @@ public class MemberTeamQueryService {
                 .sorted(Comparator.comparing(Member::getName))
                 .collect(Collectors.toList());
 
-        final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(members);
+        final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(teamId, members);
         return TeamMemberResponse.of(members, roleOfMembers);
     }
 
-    private Map<Member, TeamRoleType> getRoleOfMember(final List<Member> members) {
+    private Map<Member, TeamRoleType> getRoleOfMember(final Long teamId, final List<Member> members) {
         return members.stream()
                 .collect(Collectors.toMap(
                         member -> member,
-                        member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
+                        member -> teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, member.getId())
                                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                                 .getTeamRoleType()
                 ));
