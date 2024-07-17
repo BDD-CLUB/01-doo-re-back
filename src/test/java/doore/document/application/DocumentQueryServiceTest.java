@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.document.DocumentFixture;
-import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.domain.Document;
 import doore.document.domain.DocumentGroupType;
@@ -91,7 +90,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 비회원이_정상적으로 팀 학습자료 목록을 조회할 수 있다")
     public void getAllDocumentList_비회원이_정상적으로_팀_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
-        final List<DocumentCondensedResponse> responses =
+        final List<DocumentDetailResponse> responses =
                 documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4));
         final String uploaderName = memberRepository.findById(document.getUploaderId()).orElseThrow().getName();
 
