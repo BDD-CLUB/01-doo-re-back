@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,13 +49,13 @@ public class DocumentController {
     }
 
     @GetMapping("/{groupType}/{groupId}/documents") // 비회원
-    public ResponseEntity<List<DocumentResponse>> getAllDocument(
+    public ResponseEntity<Page<DocumentResponse>> getAllDocument(
             @PathVariable final String groupType,
             @PathVariable final Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero final int page,
             @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
         final DocumentGroupType group = DocumentGroupType.value(groupType);
-        final List<DocumentResponse> documents =
+        final Page<DocumentResponse> documents =
                 documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
         return ResponseEntity.status(HttpStatus.OK).body(documents);
     }

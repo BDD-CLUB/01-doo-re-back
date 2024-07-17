@@ -22,6 +22,7 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +37,11 @@ public class DocumentQueryService {
     private final StudyRepository studyRepository;
     private final StudyRoleRepository studyRoleRepository;
 
-    public List<DocumentResponse> getAllDocument(
+    public Page<DocumentResponse> getAllDocument(
             final DocumentGroupType groupType, final Long groupId, final Pageable pageable) {
 
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
-                .map(this::toDocumentResponse).getContent();
+                .map(this::toDocumentResponse);
     }
 
     public DocumentResponse getDocument(final Long documentId, final Long memberId) {
