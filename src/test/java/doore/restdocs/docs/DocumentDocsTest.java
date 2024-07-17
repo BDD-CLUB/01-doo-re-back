@@ -33,6 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -117,9 +119,10 @@ public class DocumentDocsTest extends RestDocsTest {
                 .uploaderName("김땡땡")
                 .build();
         final List<DocumentResponse> documents = List.of(document, otherDocument);
+        final Page<DocumentResponse> documentResponsePage = new PageImpl<>(documents, PageRequest.of(0,4),documents.size());
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
-                .thenReturn(documents);
+                .thenReturn(documentResponsePage);
 
         //then
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
