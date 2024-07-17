@@ -8,7 +8,6 @@ import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
-import doore.document.application.dto.response.DocumentCondensedResponse;
 import doore.document.application.dto.response.DocumentDetailResponse;
 import doore.document.application.dto.response.FileResponse;
 import doore.document.domain.Document;
@@ -37,19 +36,11 @@ public class DocumentQueryService {
     private final StudyRepository studyRepository;
     private final StudyRoleRepository studyRoleRepository;
 
-    public List<DocumentCondensedResponse> getAllDocument(
+    public List<DocumentDetailResponse> getAllDocument(
             final DocumentGroupType groupType, final Long groupId, final Pageable pageable) {
 
         return documentRepository.findAllByGroupTypeAndGroupId(groupType, groupId, pageable)
-                .map(this::toDocumentCondensedResponse).getContent();
-    }
-
-    private DocumentCondensedResponse toDocumentCondensedResponse(final Document document) {
-        final String uploaderName = memberRepository.findById(document.getUploaderId())
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
-                .getName();
-
-        return DocumentCondensedResponse.of(document, uploaderName);
+                .map(this::toDocumentDetailResponse).getContent();
     }
 
     public DocumentDetailResponse getDocument(final Long documentId, final Long memberId) {
