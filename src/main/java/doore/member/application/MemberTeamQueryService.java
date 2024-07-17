@@ -43,7 +43,7 @@ public class MemberTeamQueryService {
                 .sorted(Comparator.comparing(member -> member.getName().length()))
                 .toList();
 
-        final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(members);
+        final Map<Member, TeamRoleType> roleOfMembers = getRoleOfMember(teamId, members);
         return TeamMemberResponse.of(members, roleOfMembers);
     }
 
