@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
-import doore.document.application.dto.response.DocumentDetailResponse;
+import doore.document.application.dto.response.DocumentResponse;
 import doore.document.application.dto.response.FileResponse;
 import doore.document.domain.DocumentAccessType;
 import doore.restdocs.RestDocsTest;
@@ -96,7 +96,7 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
         final FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        final DocumentDetailResponse document = DocumentDetailResponse.builder()
+        final DocumentResponse document = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
                 .description("학습자료 입니다.")
@@ -106,7 +106,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .date(LocalDate.parse("2024-02-28"))
                 .uploaderName("김땡땡")
                 .build();
-        final DocumentDetailResponse otherDocument = DocumentDetailResponse.builder()
+        final DocumentResponse otherDocument = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
                 .description("학습자료 입니다.")
@@ -116,7 +116,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .date(LocalDate.parse("2024-02-28"))
                 .uploaderName("김땡땡")
                 .build();
-        final List<DocumentDetailResponse> documents = List.of(document, otherDocument);
+        final List<DocumentResponse> documents = List.of(document, otherDocument);
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
                 .thenReturn(documents);
@@ -143,7 +143,7 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료를_조회한다() throws Exception {
         //given
         final FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        final DocumentDetailResponse documentDetailResponse = DocumentDetailResponse.builder()
+        final DocumentResponse documentResponse = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
                 .description("학습자료 입니다.")
@@ -155,7 +155,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .build();
 
         //when
-        when(documentQueryService.getDocument(any(), any())).thenReturn(documentDetailResponse);
+        when(documentQueryService.getDocument(any(), any())).thenReturn(documentResponse);
 
         //then
         mockMvc.perform(get("/{documentId}", 1).header(HttpHeaders.AUTHORIZATION, accessToken))
