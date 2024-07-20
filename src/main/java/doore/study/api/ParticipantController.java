@@ -1,10 +1,10 @@
 package doore.study.api;
 
 import doore.member.domain.Member;
-import doore.member.domain.Participant;
 import doore.resolver.LoginMember;
 import doore.study.application.ParticipantCommandService;
 import doore.study.application.ParticipantQueryService;
+import doore.study.application.dto.response.ParticipantResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,9 +43,9 @@ public class ParticipantController {
     }
 
     @GetMapping("/studies/{studyId}/members") // 스터디장 & 스터디원
-    public ResponseEntity<List<Participant>> getParticipant(@PathVariable final Long studyId,
-                                                            @LoginMember final Member member) {
-        final List<Participant> participants = participantQueryService.findAllParticipants(studyId, member.getId());
+    public ResponseEntity<List<ParticipantResponse>> getParticipant(@PathVariable final Long studyId,
+                                                                    @LoginMember final Member member) {
+        final List<ParticipantResponse> participants = participantQueryService.findAllParticipants(studyId, member.getId());
         return ResponseEntity.ok(participants);
     }
 }
