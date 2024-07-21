@@ -4,8 +4,7 @@ import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
-import doore.document.application.dto.response.DocumentCondensedResponse;
-import doore.document.application.dto.response.DocumentDetailResponse;
+import doore.document.application.dto.response.DocumentResponse;
 import doore.document.domain.DocumentGroupType;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
@@ -50,21 +49,21 @@ public class DocumentController {
     }
 
     @GetMapping("/{groupType}/{groupId}/documents") // 비회원
-    public ResponseEntity<List<DocumentCondensedResponse>> getAllDocument(
+    public ResponseEntity<Page<DocumentResponse>> getAllDocument(
             @PathVariable final String groupType,
             @PathVariable final Long groupId,
             @RequestParam(defaultValue = "0") @PositiveOrZero final int page,
             @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
         final DocumentGroupType group = DocumentGroupType.value(groupType);
-        final List<DocumentCondensedResponse> condensedDocuments =
+        final Page<DocumentResponse> documents =
                 documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
-        return ResponseEntity.status(HttpStatus.OK).body(condensedDocuments);
+        return ResponseEntity.status(HttpStatus.OK).body(documents);
     }
 
     @GetMapping("/{documentId}")  // 팀 학습자료 -> 비회원, 스터디 학습자료 -> 스터디 구성원
-    public ResponseEntity<DocumentDetailResponse> getDocument(@PathVariable final Long documentId,
-                                                              @LoginMember final Member member) {
-        final DocumentDetailResponse response = documentQueryService.getDocument(documentId, member.getId());
+    public ResponseEntity<DocumentResponse> getDocument(@PathVariable final Long documentId,
+                                                        @LoginMember final Member member) {
+        final DocumentResponse response = documentQueryService.getDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

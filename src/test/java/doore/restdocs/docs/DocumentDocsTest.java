@@ -22,8 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
-import doore.document.application.dto.response.DocumentCondensedResponse;
-import doore.document.application.dto.response.DocumentDetailResponse;
+import doore.document.application.dto.response.DocumentResponse;
 import doore.document.application.dto.response.FileResponse;
 import doore.document.domain.DocumentAccessType;
 import doore.restdocs.RestDocsTest;
@@ -34,6 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -96,14 +97,32 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료 목록을 조회한다.")
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
-        final DocumentCondensedResponse documentCondensedResponse =
-                new DocumentCondensedResponse(1L, "학습자료1", "학습자료1 입니다.", LocalDate.parse("2020-02-02"), "이땡떙");
-        final DocumentCondensedResponse otherDocumentCondensedResponse =
-                new DocumentCondensedResponse(2L, "학습자료2", "학습자료2 입니다.", LocalDate.parse("2020-02-03"), "김땡떙");
-        final List<DocumentCondensedResponse> documentCondensedResponses = List.of(documentCondensedResponse, otherDocumentCondensedResponse);
+        final FileResponse fileResponse = new FileResponse(1L, "s3 url");
+        final DocumentResponse document = DocumentResponse.builder()
+                .id(1L)
+                .title("학습자료")
+                .description("학습자료 입니다.")
+                .accessType(ALL)
+                .type(IMAGE)
+                .files(List.of(fileResponse))
+                .date(LocalDate.parse("2024-02-28"))
+                .uploaderName("김땡땡")
+                .build();
+        final DocumentResponse otherDocument = DocumentResponse.builder()
+                .id(1L)
+                .title("학습자료")
+                .description("학습자료 입니다.")
+                .accessType(ALL)
+                .type(IMAGE)
+                .files(List.of(fileResponse))
+                .date(LocalDate.parse("2024-02-28"))
+                .uploaderName("김땡땡")
+                .build();
+        final List<DocumentResponse> documents = List.of(document, otherDocument);
+        final Page<DocumentResponse> documentResponsePage = new PageImpl<>(documents, PageRequest.of(0,4),documents.size());
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
-                .thenReturn(documentCondensedResponses);
+                .thenReturn(documentResponsePage);
 
         //then
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -127,7 +146,7 @@ public class DocumentDocsTest extends RestDocsTest {
     public void 학습자료를_조회한다() throws Exception {
         //given
         final FileResponse fileResponse = new FileResponse(1L, "s3 url");
-        final DocumentDetailResponse documentDetailResponse = DocumentDetailResponse.builder()
+        final DocumentResponse documentResponse = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
                 .description("학습자료 입니다.")
@@ -139,7 +158,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .build();
 
         //when
-        when(documentQueryService.getDocument(any(), any())).thenReturn(documentDetailResponse);
+        when(documentQueryService.getDocument(any(), any())).thenReturn(documentResponse);
 
         //then
         mockMvc.perform(get("/{documentId}", 1).header(HttpHeaders.AUTHORIZATION, accessToken))

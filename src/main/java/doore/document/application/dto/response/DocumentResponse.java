@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record DocumentDetailResponse(
+public record DocumentResponse(
         Long id,
         String title,
         String description,
@@ -18,9 +18,9 @@ public record DocumentDetailResponse(
         LocalDate date,
         String uploaderName
 ) {
-    public static DocumentDetailResponse of(final Document document, final List<FileResponse> fileResponses,
-                                            final String uploaderName) {
-        return DocumentDetailResponse
+    public static DocumentResponse of(final Document document, final List<FileResponse> fileResponses,
+                                      final String uploaderName) {
+        return DocumentResponse
                 .builder()
                 .id(document.getId())
                 .title(document.getName())

@@ -77,7 +77,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
-                DocumentType.FILE, null, mock(Member.class).getId());
+                DocumentType.DOCUMENT, null, mock(Member.class).getId());
         study = createStudy();
         study = studyRepository.save(algorithmStudy());
         member = memberRepository.save(미나());
@@ -97,7 +97,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             final FileInputStream fileInputStream = new FileInputStream(filePath);
 
             final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                    DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
+                    DocumentAccessType.TEAM, DocumentType.DOCUMENT, null, mock(Member.class).getId());
 
             final MultipartFile file = new MockMultipartFile(
                     fileName,
@@ -318,7 +318,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         final Long invalidMemberId = 10L;
 
         final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                DocumentAccessType.TEAM, DocumentType.FILE, null, mock(Member.class).getId());
+                DocumentAccessType.TEAM, DocumentType.DOCUMENT, null, mock(Member.class).getId());
 
         assertThatThrownBy(() ->
                 documentCommandService.createDocument(fileRequest, null, STUDY, study.getId(), invalidMemberId))

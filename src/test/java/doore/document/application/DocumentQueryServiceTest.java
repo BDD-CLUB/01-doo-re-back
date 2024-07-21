@@ -13,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.document.DocumentFixture;
-import doore.document.application.dto.response.DocumentCondensedResponse;
-import doore.document.application.dto.response.DocumentDetailResponse;
+import doore.document.application.dto.response.DocumentResponse;
 import doore.document.domain.Document;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.repository.DocumentRepository;
@@ -27,11 +26,11 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 
@@ -91,17 +90,17 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 비회원이_정상적으로 팀 학습자료 목록을 조회할 수 있다")
     public void getAllDocumentList_비회원이_정상적으로_팀_학습자료_목록을_조회할_수_있다_성공() {
         //given&when
-        final List<DocumentCondensedResponse> responses =
+        final Page<DocumentResponse> responses =
                 documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4));
         final String uploaderName = memberRepository.findById(document.getUploaderId()).orElseThrow().getName();
 
         //then
         assertAll(
-                () -> assertThat(responses.size()).isNotZero(),
-                () -> assertEquals(responses.get(0).title(), anotherDocument.getName()),
-                () -> assertEquals(responses.get(0).description(), anotherDocument.getDescription()),
-                () -> assertEquals(responses.get(0).date(), anotherDocument.getCreatedAt().toLocalDate()),
-                () -> assertEquals(responses.get(0).uploaderName(), uploaderName)
+                () -> assertThat(responses.getTotalElements()).isNotZero(),
+                () -> assertEquals(responses.getContent().get(0).title(), anotherDocument.getName()),
+                () -> assertEquals(responses.getContent().get(0).description(), anotherDocument.getDescription()),
+                () -> assertEquals(responses.getContent().get(0).date(), anotherDocument.getCreatedAt().toLocalDate()),
+                () -> assertEquals(responses.getContent().get(0).uploaderName(), uploaderName)
         );
     }
 
@@ -109,7 +108,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 팀 학습자료 상세를 조회할 수 있다.")
     public void getDocument_정상적으로_팀_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        final DocumentDetailResponse response = documentQueryService.getDocument(anotherDocument.getId(),
+        final DocumentResponse response = documentQueryService.getDocument(anotherDocument.getId(),
                 notMember.getId());
 
         //then
@@ -125,7 +124,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     @DisplayName("[성공] 정상적으로 스터디 학습자료 상세를 조회할 수 있다")
     public void getDocument_정상적으로_스터디_학습자료_상세를_조회할_수_있다_성공() {
         //given&when
-        final DocumentDetailResponse response = documentQueryService.getDocument(document.getId(), member.getId());
+        final DocumentResponse response = documentQueryService.getDocument(document.getId(), member.getId());
 
         //then
         assertAll(
