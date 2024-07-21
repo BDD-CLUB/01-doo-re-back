@@ -1,9 +1,5 @@
 package doore.study.application;
 
-import static doore.member.domain.StudyRoleType.ROLE_스터디원;
-import static doore.member.domain.StudyRoleType.ROLE_스터디장;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.exception.CurriculumItemExceptionType.CANNOT_CREATE_CURRICULUM_ITEM;
 import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
@@ -13,11 +9,9 @@ import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import doore.garden.domain.Garden;
 import doore.garden.domain.GardenType;
 import doore.garden.domain.repository.GardenRepository;
+import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.domain.Participant;
-import doore.member.domain.StudyRole;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.member.domain.repository.StudyRoleRepository;
-import doore.member.exception.MemberException;
 import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
@@ -45,11 +39,12 @@ public class CurriculumItemCommandService {
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
-    private final StudyRoleRepository studyRoleRepository;
     private final GardenRepository gardenRepository;
 
+    private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
+
     public void manageCurriculum(final CurriculumItemManageRequest request, final Long studyId, final Long memberId) {
-        validateExistStudyLeader(studyId, memberId);
+        studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         final List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
         checkItemOrderDuplicate(curriculumItems);
         checkItemOrderRange(curriculumItems);
@@ -63,7 +58,7 @@ public class CurriculumItemCommandService {
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
         final Study study = studyRepository.findByCurriculumItemId(curriculumId);
-        validateExistStudyLeaderAndStudyMember(study.getId(), memberId);
+        studyRoleValidateAccessPermission.validateExistStudyLeaderAndStudyMember(study.getId(), memberId);
         final CurriculumItem curriculumItem = getCurriculumItemOrThrow(curriculumId);
         final Participant participant = getParticipantOrThrow(participantId);
         final ParticipantCurriculumItem participantCurriculumItem = getParticipantCurriculumItemOrThrow(curriculumItem,
@@ -180,22 +175,6 @@ public class CurriculumItemCommandService {
         IntStream.range(0, sortedCurriculum.size())
                 .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);
-    }
-
-    private void validateExistStudyLeader(final Long studyId, final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
-            throw new MemberException(UNAUTHORIZED);
-        }
-    }
-
-    private void validateExistStudyLeaderAndStudyMember(final Long studyId, final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
-            throw new MemberException(UNAUTHORIZED);
-        }
     }
 
     private Study getStudyOrThrow(final Long studyId) {
