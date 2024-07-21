@@ -111,7 +111,7 @@ public class CurriculumItemCommandService {
     }
 
     private void createCurriculum(final Long studyId, final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        if (curriculumItemRepository.findAll().size() >= 99) {
+        if (curriculumItemRepository.count() >= 99) {
             throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
         }
         curriculumItems.stream()
