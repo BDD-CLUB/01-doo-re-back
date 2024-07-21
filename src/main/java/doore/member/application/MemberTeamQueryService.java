@@ -1,15 +1,11 @@
 package doore.member.application;
 
-import static doore.member.domain.TeamRoleType.ROLE_팀원;
-import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
+import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.application.dto.response.TeamMemberResponse;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
-import doore.member.domain.TeamRole;
 import doore.member.domain.TeamRoleType;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
@@ -29,9 +25,11 @@ public class MemberTeamQueryService {
 
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRoleRepository teamRoleRepository;
+    
+    private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
 
     public List<TeamMemberResponse> findMemberTeams(final Long teamId, final String keyword, final Long memberId) {
-        validateExistTeamLeaderAndTeamMember(teamId, memberId);
+        teamRoleValidateAccessPermission.validateExistTeamLeaderAndTeamMember(teamId, memberId);
         if (keyword == null || keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
         }
@@ -66,13 +64,5 @@ public class MemberTeamQueryService {
                                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER))
                                 .getTeamRoleType()
                 ));
-    }
-
-    private void validateExistTeamLeaderAndTeamMember(final Long teamId, final Long memberId) {
-        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
-        if (!(teamRole.getTeamRoleType().equals(ROLE_팀장) || teamRole.getTeamRoleType().equals(ROLE_팀원))){
-            throw new MemberException(UNAUTHORIZED);
-        }
     }
 }
