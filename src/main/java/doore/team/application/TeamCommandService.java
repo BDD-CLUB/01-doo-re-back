@@ -208,10 +208,10 @@ public class TeamCommandService {
             final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(study.getId());
 
             curriculumItems.forEach(curriculumItem -> {
-                curriculumItem.delete();
+                curriculumItem.delete(); // todo: 수료증 개발 시 확인 필
                 final List<ParticipantCurriculumItem> participantCurriculumItems = participantCurriculumItemRepository.findAllByCurriculumItemId(
                         curriculumItem.getId());
-                participantCurriculumItems.forEach(ParticipantCurriculumItem::delete);
+                participantCurriculumItems.forEach(ParticipantCurriculumItem::delete); // todo: 수료증 개발 시 delete 로직 확인 필요
             });
         });
     }

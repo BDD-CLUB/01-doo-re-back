@@ -127,12 +127,12 @@ public class StudyCommandService {
                 .map(CurriculumItem::getId)
                 .toList();
 
-        curriculumItems.forEach(CurriculumItem::delete);
+        curriculumItems.forEach(CurriculumItem::delete); // todo: 수료증 개발 시 delete 로직 확인 필요
 
         curriculumItemIds.forEach(curriculumItemId -> {
             final List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
                     curriculumItemId);
-            items.forEach(ParticipantCurriculumItem::delete);
+            items.forEach(ParticipantCurriculumItem::delete); // todo: 수료증 개발 시 delete 로직 확인 필요
         });
     }
 
