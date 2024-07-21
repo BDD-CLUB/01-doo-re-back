@@ -63,7 +63,7 @@ public class CurriculumItemCommandService {
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
         final Study study = studyRepository.findByCurriculumItemId(curriculumId);
-        validateExistStudyLeaderAndStudyMember(study.getId(),memberId);
+        validateExistStudyLeaderAndStudyMember(study.getId(), memberId);
         final CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
                 .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
         final Participant participant = participantRepository.findById(participantId)
@@ -128,25 +128,35 @@ public class CurriculumItemCommandService {
 
     public void createCurriculumItemAndAssignToParticipants(final Long studyId,
                                                             final CurriculumItemManageDetailRequest curriculumItemRequest) {
-        final Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+        final Study study = getStudyOrThrow(studyId);
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
-
-        final CurriculumItem createCurriculumItem = CurriculumItem.builder()
-                .name(curriculumItemRequest.name())
-                .itemOrder(curriculumItemRequest.itemOrder())
-                .study(study)
-                .build();
-        curriculumItemRepository.save(createCurriculumItem);
-
-        final List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
-                .map(participant -> ParticipantCurriculumItem.builder()
-                        .curriculumItem(createCurriculumItem)
-                        .participantId(participant.getId())
-                        .build())
-                .toList();
+        final CurriculumItem curriculumItems = createCurriculumItem(curriculumItemRequest, study);
+        final List<ParticipantCurriculumItem> participantCurriculumItems = createParticipantCurriculumItems(
+                curriculumItems, participants);
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
+    private Study getStudyOrThrow(final Long studyId) {
+        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    }
+
+    private CurriculumItem createCurriculumItem(final CurriculumItemManageDetailRequest request, final Study study) {
+        return curriculumItemRepository.save(CurriculumItem.builder()
+                .name(request.name())
+                .itemOrder(request.itemOrder())
+                .study(study)
+                .build());
+    }
+
+    private List<ParticipantCurriculumItem> createParticipantCurriculumItems(final CurriculumItem curriculumItem,
+                                                                             final List<Participant> participants) {
+        return participants.stream()
+                .map(participant -> ParticipantCurriculumItem.builder()
+                        .curriculumItem(curriculumItem)
+                        .participantId(participant.getId())
+                        .build())
+                .toList();
+    }
 
     private void updateCurriculum(final List<CurriculumItemManageDetailRequest> curriculumItems) {
         for (final CurriculumItemManageDetailRequest requestItem : curriculumItems) {
