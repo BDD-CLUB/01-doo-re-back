@@ -64,19 +64,13 @@ public class CurriculumItemCommandService {
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
         final Study study = studyRepository.findByCurriculumItemId(curriculumId);
         validateExistStudyLeaderAndStudyMember(study.getId(), memberId);
-        final CurriculumItem curriculumItem = curriculumItemRepository.findById(curriculumId)
-                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
-        final Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
-        final ParticipantCurriculumItem participantCurriculumItem = participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
-                curriculumItem.getId(), participant.getId()).orElseThrow();
+        final CurriculumItem curriculumItem = getCurriculumItemOrThrow(curriculumId);
+        final Participant participant = getParticipantOrThrow(participantId);
+        final ParticipantCurriculumItem participantCurriculumItem = getParticipantCurriculumItemOrThrow(curriculumItem,
+                participant);
 
         participantCurriculumItem.checkCompletion();
-        if (participantCurriculumItem.getIsChecked()) {
-            createGarden(participantCurriculumItem);
-            return;
-        }
-        deleteGarden(participantCurriculumItem);
+        handleGardenBasedOnCompletionStatus(participantCurriculumItem);
     }
 
     private void createGarden(final ParticipantCurriculumItem participantCurriculumItem) {
@@ -89,6 +83,14 @@ public class CurriculumItemCommandService {
         final Long contributionId = participantCurriculumItem.getId();
         final GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
         gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
+    }
+
+    private void handleGardenBasedOnCompletionStatus(final ParticipantCurriculumItem participantCurriculumItem) {
+        if (participantCurriculumItem.getIsChecked()) {
+            createGarden(participantCurriculumItem);
+            return;
+        }
+        deleteGarden(participantCurriculumItem);
     }
 
     private void checkItemOrderDuplicate(final List<CurriculumItemManageDetailRequest> curriculumItems) {
@@ -136,10 +138,6 @@ public class CurriculumItemCommandService {
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
-    private Study getStudyOrThrow(final Long studyId) {
-        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-    }
-
     private CurriculumItem createCurriculumItem(final CurriculumItemManageDetailRequest request, final Study study) {
         return curriculumItemRepository.save(CurriculumItem.builder()
                 .name(request.name())
@@ -160,8 +158,7 @@ public class CurriculumItemCommandService {
 
     private void updateCurriculum(final List<CurriculumItemManageDetailRequest> curriculumItems) {
         for (final CurriculumItemManageDetailRequest requestItem : curriculumItems) {
-            final CurriculumItem existingItem = curriculumItemRepository.findById(requestItem.id())
-                    .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
+            final CurriculumItem existingItem = getCurriculumItemOrThrow(requestItem.id());
 
             existingItem.updateIfNameDifferent(requestItem.name());
             existingItem.updateIfItemOrderDifferent(requestItem.itemOrder());
@@ -199,5 +196,25 @@ public class CurriculumItemCommandService {
         if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
             throw new MemberException(UNAUTHORIZED);
         }
+    }
+
+    private Study getStudyOrThrow(final Long studyId) {
+        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+    }
+
+    private CurriculumItem getCurriculumItemOrThrow(final Long curriculumId) {
+        return curriculumItemRepository.findById(curriculumId)
+                .orElseThrow(() -> new CurriculumItemException(NOT_FOUND_CURRICULUM_ITEM));
+    }
+
+    private Participant getParticipantOrThrow(final Long participantId) {
+        return participantRepository.findById(participantId)
+                .orElseThrow(() -> new StudyException(NOT_FOUND_PARTICIPANT));
+    }
+
+    private ParticipantCurriculumItem getParticipantCurriculumItemOrThrow(final CurriculumItem curriculumItem,
+                                                                          final Participant participant) {
+        return participantCurriculumItemRepository.findByCurriculumItemIdAndParticipantId(
+                curriculumItem.getId(), participant.getId()).orElseThrow();
     }
 }
