@@ -32,6 +32,14 @@ public class TeamRoleValidateAccessPermission {
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
     }
 
+    public void validateExistTeamLeader(final Long teamId, final Long memberId) {
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+    }
+
     public void validateExistTeamLeaderAndTeamMember(final Long teamId, final Long memberId) {
         final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
