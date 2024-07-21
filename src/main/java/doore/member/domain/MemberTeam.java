@@ -43,8 +43,4 @@ public class MemberTeam extends BaseEntity {
         this.member = member;
         this.isDeleted = isDeleted;
     }
-
-    public void delete() {
-        this.isDeleted = true;
-    }
 }
