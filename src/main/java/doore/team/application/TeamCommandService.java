@@ -190,12 +190,12 @@ public class TeamCommandService {
 
     private void deleteMemberTeamAndParticipant(final Long teamId) {
         final List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
-        memberTeams.forEach(MemberTeam::delete);
+        memberTeamRepository.deleteAll(memberTeams);
 
         final List<Study> studies = studyRepository.findAllByTeamId(teamId);
         studies.forEach(study -> {
             final List<Participant> participants = participantRepository.findAllByStudyId(study.getId());
-            participants.forEach(Participant::delete);
+            participantRepository.deleteAll(participants);
         });
     }
 

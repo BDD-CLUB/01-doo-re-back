@@ -138,6 +138,6 @@ public class StudyCommandService {
 
     private void deleteParticipant(final Long studyId) {
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
-        participants.forEach(Participant::delete);
+        participantRepository.deleteAll(participants);
     }
 }

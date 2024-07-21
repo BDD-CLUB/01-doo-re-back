@@ -2,7 +2,6 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.아마란스;
-import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +89,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
                     participant.getId());
 
             //then
-            assertThat(participants).hasSize(0);
+            assertThat(participants.get(0).getIsDeleted()).isEqualTo(true);
         }
 
         @Test
@@ -108,7 +107,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
                     participant.getId());
 
             //then
-            assertThat(participants).hasSize(0);
+            assertThat(participants.get(0).getIsDeleted()).isEqualTo(true);
         }
     }
 

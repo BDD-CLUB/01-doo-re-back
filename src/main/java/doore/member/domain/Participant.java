@@ -13,10 +13,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE participant SET is_deleted = true where id = ?")
 public class Participant extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,9 +43,5 @@ public class Participant extends BaseEntity {
         this.isDeleted = false;
         this.studyId = studyId;
         this.member = member;
-    }
-
-    public void delete() {
-        this.isDeleted = true;
     }
 }
