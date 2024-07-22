@@ -23,7 +23,7 @@ public class ParticipantQueryService {
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 
     public List<Participant> findAllParticipants(final Long studyId, final Long memberId) {
-        studyRoleValidateAccessPermission.validateExistStudyLeaderAndStudyMember(studyId, memberId);
+        studyRoleValidateAccessPermission.validateExistParticipant(studyId, memberId);
         studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
         return participantRepository.findAllByStudyId(studyId);
     }

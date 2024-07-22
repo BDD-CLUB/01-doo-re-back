@@ -29,7 +29,7 @@ public class MemberTeamQueryService {
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
 
     public List<TeamMemberResponse> findMemberTeams(final Long teamId, final String keyword, final Long memberId) {
-        teamRoleValidateAccessPermission.validateExistTeamLeaderAndTeamMember(teamId, memberId);
+        teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, memberId);
         if (keyword == null || keyword.isBlank()) {
             return findAllMemberOfTeam(teamId);
         }

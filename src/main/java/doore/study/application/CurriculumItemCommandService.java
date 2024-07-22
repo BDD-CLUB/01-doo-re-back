@@ -58,7 +58,7 @@ public class CurriculumItemCommandService {
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
         final Study study = studyRepository.findByCurriculumItemId(curriculumId);
-        studyRoleValidateAccessPermission.validateExistStudyLeaderAndStudyMember(study.getId(), memberId);
+        studyRoleValidateAccessPermission.validateExistParticipant(study.getId(), memberId);
         final CurriculumItem curriculumItem = getCurriculumItemOrThrow(curriculumId);
         final Participant participant = getParticipantOrThrow(participantId);
         final ParticipantCurriculumItem participantCurriculumItem = getParticipantCurriculumItemOrThrow(curriculumItem,

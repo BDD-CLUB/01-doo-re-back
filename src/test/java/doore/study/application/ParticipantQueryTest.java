@@ -2,7 +2,7 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.보름;
 import static doore.member.MemberFixture.아마란스;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -81,7 +81,7 @@ public class ParticipantQueryTest extends IntegrationTest {
 
             assertThatThrownBy(() -> participantQueryService.findAllParticipants(study.getId(), member.getId()))
                     .isInstanceOf(MemberException.class)
-                    .hasMessage(NOT_FOUND_MEMBER_ROLE_IN_STUDY.errorMessage());
+                    .hasMessage(UNAUTHORIZED.errorMessage());
         }
     }
 }
