@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamRoleValidateAccessPermission {
     private final TeamRoleRepository teamRoleRepository;
 
-    public void validateTeamMember(final Long deleteMemberId, final Long teamId) {
-        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, deleteMemberId)
+    public void validateTeamMember(final Long memberId, final Long teamId) {
+        TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (teamRole.getTeamRoleType().equals(TeamRoleType.ROLE_팀장)) {
             throw new MemberException(UNAUTHORIZED);
