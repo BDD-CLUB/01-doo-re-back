@@ -9,9 +9,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import doore.member.domain.Member;
-import doore.member.domain.Participant;
+import doore.member.domain.StudyRoleType;
 import doore.restdocs.RestDocsTest;
+import doore.study.application.dto.response.ParticipantResponse;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,19 +69,10 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     @Test
     @DisplayName("참여자를 조회한다.")
     void 참여자를_조회한다_성공() throws Exception {
-        final Member member = Member.builder()
-                .id(1L)
-                .name("팜")
-                .email("pom@gmail.com")
-                .googleId("0123456789")
-                .imageUrl(null)
-                .build();
-        final Participant participant = Participant.builder()
-                .studyId(1L)
-                .member(member)
-                .build();
+        final ParticipantResponse participantResponse = new ParticipantResponse(
+                1L, "팜", "pom@gmail.com", "imageUrl", StudyRoleType.ROLE_스터디원);
 
-        when(participantQueryService.findAllParticipants(any(), any())).thenReturn(List.of(participant));
+        when(participantQueryService.findAllParticipants(any(), any())).thenReturn(List.of(participantResponse));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
