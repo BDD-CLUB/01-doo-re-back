@@ -20,8 +20,8 @@ public class MemberTeamCommandService {
 
     public void deleteMemberTeam(final Long teamId, final Long deleteMemberId, final Long teamLeaderId) {
         validateExistTeam(teamId);
-        teamRoleValidateAccessPermission.validateTeamLeader(teamLeaderId, teamId);
-        teamRoleValidateAccessPermission.validateTeamMember(deleteMemberId, teamId);
+        teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, teamLeaderId);
+        teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, deleteMemberId);
         memberTeamRepository.deleteByTeamIdAndMemberId(teamId, deleteMemberId);
     }
 
