@@ -8,8 +8,10 @@ import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
+import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
@@ -40,6 +42,7 @@ public class StudyCommandService {
     private final StudyRoleRepository studyRoleRepository;
     private final CurriculumItemRepository curriculumItemRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private final ParticipantRepository participantRepository;
     private final ParticipantCommandService participantCommandService;
 
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
@@ -58,7 +61,7 @@ public class StudyCommandService {
     }
 
     private void saveParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
-        participantCommandService.saveParticipant(studyId,memberId,studyLeaderId);
+        participantCommandService.saveParticipant(studyId, memberId, studyLeaderId);
     }
 
     private void checkEndDateValid(final LocalDate startDate, final LocalDate endDate) {
@@ -71,19 +74,8 @@ public class StudyCommandService {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         validateExistStudy(studyId);
 
-        final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(studyId);
-        final List<Long> curriculumItemIds = curriculumItems.stream()
-                .map(CurriculumItem::getId)
-                .toList();
-
-        curriculumItems.forEach(CurriculumItem::delete);
-
-        curriculumItemIds.forEach(curriculumItemId -> {
-            final List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
-                    curriculumItemId);
-            items.forEach(ParticipantCurriculumItem::delete);
-        });
-
+        deleteCurriculumItemAndParticipantCurriculumItem(studyId);
+        deleteParticipant(studyId);
         studyRepository.deleteById(studyId);
     }
 
@@ -120,5 +112,25 @@ public class StudyCommandService {
 
     private void validateExistMember(final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    private void deleteCurriculumItemAndParticipantCurriculumItem(final Long studyId) {
+        final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAllByStudyId(studyId);
+        final List<Long> curriculumItemIds = curriculumItems.stream()
+                .map(CurriculumItem::getId)
+                .toList();
+
+        curriculumItems.forEach(CurriculumItem::delete); // todo: 수료증 개발 시 delete 로직 확인 필요
+
+        curriculumItemIds.forEach(curriculumItemId -> {
+            final List<ParticipantCurriculumItem> items = participantCurriculumItemRepository.findAllByCurriculumItemId(
+                    curriculumItemId);
+            items.forEach(ParticipantCurriculumItem::delete); // todo: 수료증 개발 시 delete 로직 확인 필요
+        });
+    }
+
+    private void deleteParticipant(final Long studyId) {
+        final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
+        participantRepository.deleteAll(participants);
     }
 }

@@ -14,6 +14,7 @@ import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.ParticipantResponse;
@@ -37,6 +38,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
     private MemberRepository memberRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     private Member member;
     private Study study;
@@ -86,11 +89,9 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.deleteParticipant(studyId, participant.getId(), member.getId());
-            final List<ParticipantResponse> participantResponses = participantQueryService.findAllParticipants(studyId,
-                    participant.getId());
 
             //then
-            assertThat(participantResponses).hasSize(0);
+            assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
         }
 
         @Test
@@ -104,11 +105,9 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.withdrawParticipant(studyId, participant.getId(), participant.getId());
-            final List<ParticipantResponse> participantResponses = participantQueryService.findAllParticipants(studyId,
-                    participant.getId());
 
             //then
-            assertThat(participantResponses).hasSize(0);
+            assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
         }
     }
 
