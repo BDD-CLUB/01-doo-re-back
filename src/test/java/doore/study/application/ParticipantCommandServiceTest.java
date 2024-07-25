@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
-import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.application.dto.response.ParticipantResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import java.util.List;
@@ -37,6 +38,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
     private MemberRepository memberRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     private Member member;
     private Study study;
@@ -68,10 +71,11 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             participantCommandService.saveParticipant(studyId, memberId, member.getId());
 
             //then
-            final List<Participant> participants = participantQueryService.findAllParticipants(studyId, memberId);
+            final List<ParticipantResponse> participantResponses = participantQueryService.findAllParticipants(studyId,
+                    memberId);
             assertAll(
-                    () -> assertThat(participants).hasSize(1),
-                    () -> assertEquals(memberId, participants.get(0).getMember().getId())
+                    () -> assertThat(participantResponses).hasSize(1),
+                    () -> assertEquals(memberId, participantResponses.get(0).memberId())
             );
         }
 
@@ -85,11 +89,9 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.deleteParticipant(studyId, participant.getId(), member.getId());
-            final List<Participant> participants = participantQueryService.findAllParticipants(studyId,
-                    participant.getId());
 
             //then
-            assertThat(participants.get(0).getIsDeleted()).isEqualTo(true);
+            assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
         }
 
         @Test
@@ -103,11 +105,9 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             //when
             participantCommandService.withdrawParticipant(studyId, participant.getId(), participant.getId());
-            final List<Participant> participants = participantQueryService.findAllParticipants(studyId,
-                    participant.getId());
 
             //then
-            assertThat(participants.get(0).getIsDeleted()).isEqualTo(true);
+            assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
         }
     }
 
