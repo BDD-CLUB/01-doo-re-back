@@ -34,11 +34,12 @@ class LoginServiceTest extends IntegrationTest {
         //given
         final Long expectedMemberId = member.getId();
         final String validCode = "valid_code";
-        final GoogleLoginRequest request = new GoogleLoginRequest(validCode);
+        final String redirectionUri = "redirection_uri";
+        final GoogleLoginRequest request = new GoogleLoginRequest(validCode, redirectionUri);
         final GoogleAccountProfileResponse profile = new GoogleAccountProfileResponse(
                 member.getGoogleId(), "aaa@gmail.com", true, "아마란스", "마란스", "아", "https://aaa", "ko"
         );
-        given(googleClient.getGoogleAccountProfile(validCode)).willReturn(profile);
+        given(googleClient.getGoogleAccountProfile(validCode, redirectionUri)).willReturn(profile);
 
         //when
         final Long actualMemberId = loginService.loginByGoogle(request)
@@ -55,12 +56,13 @@ class LoginServiceTest extends IntegrationTest {
         //given
         final Long beforeCount = memberRepository.count();
         final String code = "valid_code";
+        final String redirectionUri = "redirection_uri";
         final String googleId = "4321";
-        final GoogleLoginRequest request = new GoogleLoginRequest(code);
+        final GoogleLoginRequest request = new GoogleLoginRequest(code,redirectionUri);
         final GoogleAccountProfileResponse profile = new GoogleAccountProfileResponse(
                 googleId, "ppp@gmail.com", true, "프리지아", "리지아", "프", "https://aaa", "ko"
         );
-        given(googleClient.getGoogleAccountProfile(code)).willReturn(profile);
+        given(googleClient.getGoogleAccountProfile(code, redirectionUri)).willReturn(profile);
 
         //when
         final Long actual = loginService.loginByGoogle(request)

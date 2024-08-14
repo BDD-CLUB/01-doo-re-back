@@ -28,9 +28,6 @@ public class GoogleClient {
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String redirectUri;
-
     @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
     private String authorizationCode;
 
@@ -42,12 +39,12 @@ public class GoogleClient {
 
     private final RestTemplate restTemplate;
 
-    public GoogleAccountProfileResponse getGoogleAccountProfile(final String code) {
-        final String accessToken = requestGoogleAccessToken(code);
+    public GoogleAccountProfileResponse getGoogleAccountProfile(final String code, final String redirectUri) {
+        final String accessToken = requestGoogleAccessToken(code, redirectUri);
         return requestGoogleAccountProfile(accessToken);
     }
 
-    private String requestGoogleAccessToken(final String code) {
+    private String requestGoogleAccessToken(final String code,  final String redirectUri) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
