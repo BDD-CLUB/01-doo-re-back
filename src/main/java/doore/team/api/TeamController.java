@@ -77,7 +77,7 @@ public class TeamController {
 
     @PostMapping("/{teamId}/invite-code") // 팀장
     public ResponseEntity<TeamInviteCodeResponse> generateTeamInviteCode(@PathVariable final Long teamId,
-                                                                         @LoginMember Member member) {
+                                                                         @LoginMember final Member member) {
         final TeamInviteCodeResponse teamInviteCodeResponse = teamCommandService.generateTeamInviteCode(teamId, member.getId());
         return ResponseEntity.ok(teamInviteCodeResponse);
     }
