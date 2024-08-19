@@ -6,6 +6,7 @@ import static doore.member.MemberFixture.아마란스;
 import static doore.member.MemberFixture.짱구;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
@@ -26,9 +27,11 @@ import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
+import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
+import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -65,6 +68,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
+    private TeamRoleRepository teamRoleRepository;
+    @Autowired
     private StudyRoleRepository studyRoleRepository;
     @Autowired
     private CurriculumItemRepository curriculumItemRepository;
@@ -94,8 +99,9 @@ public class StudyCommandServiceTest extends IntegrationTest {
         @Nested
         @DisplayName("스터디 생성 테스트")
         class StudyCreateTest {
-            StudyCreateRequest studyCreateRequest;
-            Team team;
+            private StudyCreateRequest studyCreateRequest;
+            private Team team;
+            private TeamRole teamRole;
 
             @BeforeEach
             void setUp() {
@@ -106,8 +112,12 @@ public class StudyCommandServiceTest extends IntegrationTest {
                         .endDate(null)
                         .cropId(1L)
                         .build();
-                team = team();
-                teamRepository.save(team);
+                team = teamRepository.save(team());
+                teamRole = teamRoleRepository.save(TeamRole.builder()
+                        .teamId(team.getId())
+                        .teamRoleType(ROLE_팀원)
+                        .memberId(memberId)
+                        .build());
             }
 
             @Test
@@ -166,8 +176,19 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 Study study = studyRepository.findAllByMemberId(memberId).get(0);
 
-                final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(), memberId).orElseThrow();
+                final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
+                        memberId).orElseThrow();
                 assertThat(studyRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
+            }
+
+            @Test
+            @DisplayName("[실패] 스터디 생성은 팀원 또는 팀장만 가능하다.")
+            void createStudy_스터디_생성은_팀원_또는_팀장만_가능하다_실패() throws Exception {
+                Long notTeamMemberId = memberRepository.save(보름()).getId();
+
+                assertThatThrownBy(() -> {
+                    studyCommandService.createStudy(studyCreateRequest, team.getId(), notTeamMemberId);
+                }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
             }
         }
 
