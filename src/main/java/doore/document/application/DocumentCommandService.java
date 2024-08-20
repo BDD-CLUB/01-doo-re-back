@@ -27,8 +27,10 @@ import doore.member.exception.MemberException;
 import doore.garden.domain.Garden;
 import doore.garden.domain.GardenType;
 import doore.garden.domain.repository.GardenRepository;
+import doore.study.application.convenience.StudyAuthorization;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
+import doore.team.application.convenience.TeamAuthorization;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.ArrayList;
@@ -42,14 +44,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class DocumentCommandService {
-    private final DocumentRepository documentRepository;
-    private final TeamRepository teamRepository;
-    private final StudyRepository studyRepository;
-    private final FileRepository fileRepository;
+    private final TeamAuthorization teamAuthorization;
+    private final StudyAuthorization studyAuthorization;
+    private final MemberAuthorization memberAuthorization;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
     private final GardenRepository gardenRepository;
-    private final MemberAuthorization memberAuthorization;
+    private final DocumentRepository documentRepository;
+    private final FileRepository fileRepository;
 
     public void createDocument(final DocumentCreateRequest request, final List<MultipartFile> multipartFiles,
                                final DocumentGroupType groupType, final Long groupId, final Long memberId) {
@@ -79,10 +81,10 @@ public class DocumentCommandService {
 
     private void validateExistGroup(final DocumentGroupType groupType, final Long groupId) {
         if (groupType.equals(TEAM)) {
-            teamRepository.findById(groupId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+            teamAuthorization.validateExistTeam(groupId);
         }
         if (groupType.equals(STUDY)) {
-            studyRepository.findById(groupId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+            studyAuthorization.validateExistStudy(groupId);
         }
     }
 

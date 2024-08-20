@@ -24,7 +24,6 @@ import doore.document.domain.Document;
 import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.repository.DocumentRepository;
-import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
@@ -36,7 +35,6 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import doore.team.domain.TeamRepository;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -56,11 +54,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
     private GardenRepository gardenRepository;
-    @Autowired
-    private FileRepository fileRepository;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
