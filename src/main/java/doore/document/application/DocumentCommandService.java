@@ -21,7 +21,7 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
-import doore.member.domain.repository.MemberRepository;
+import doore.member.application.convenience.MemberAuthorization;
 import doore.member.exception.MemberException;
 
 import doore.garden.domain.Garden;
@@ -46,14 +46,14 @@ public class DocumentCommandService {
     private final TeamRepository teamRepository;
     private final StudyRepository studyRepository;
     private final FileRepository fileRepository;
-    private final MemberRepository memberRepository;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
     private final GardenRepository gardenRepository;
+    private final MemberAuthorization memberAuthorization;
 
     public void createDocument(final DocumentCreateRequest request, final List<MultipartFile> multipartFiles,
                                final DocumentGroupType groupType, final Long groupId, final Long memberId) {
-        validateExistMember(memberId);
+        memberAuthorization.validateExistMember(memberId);
         validateExistGroup(groupType, groupId);
         validateDocumentType(request.type(), request.url(), multipartFiles);
         final Document document = Document.from(request, groupType, groupId);
@@ -121,7 +121,7 @@ public class DocumentCommandService {
     }
 
     public void updateDocument(final DocumentUpdateRequest request, final Long documentId, final Long memberId) {
-        validateExistMember(memberId);
+        memberAuthorization.validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
         if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
@@ -130,7 +130,7 @@ public class DocumentCommandService {
     }
 
     public void deleteDocument(final Long documentId, final Long memberId) {
-        validateExistMember(memberId);
+        memberAuthorization.validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
         if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
@@ -147,9 +147,5 @@ public class DocumentCommandService {
 
     private Document validateExistDocument(final Long documentId) {
         return documentRepository.findById(documentId).orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
-    }
-
-    private void validateExistMember(final Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }
