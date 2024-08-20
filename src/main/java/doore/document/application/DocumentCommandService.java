@@ -61,19 +61,19 @@ public class DocumentCommandService {
         documentRepository.save(document);
 
         if (document.getType().equals(DocumentType.URL)) {
-            final File newFile = File.builder()
-                    .url(request.url())
-                    .document(document)
-                    .build();
-            fileRepository.save(newFile);
+            final File newFile = saveFile(request.url(), "", document);
             document.updateFiles(List.of(newFile));
         }
         if (!document.getType().equals(DocumentType.URL)) {
-            final List<String> filePaths = uploadFilesToS3(document.getType(), multipartFiles);
-            final List<File> newFiles = saveFiles(filePaths, document);
+            final List<File> newFiles = new ArrayList<>();
+            for (MultipartFile file : multipartFiles) {
+                final String filename = file.getName();
+                final String filePath = uploadFileToS3(document.getType(), file);
+                final File newFile = saveFile(filePath, filename, document);
+                newFiles.add(newFile);
+            }
             document.updateFiles(newFiles);
         }
-
         createGarden(document);
     }
 
@@ -96,37 +96,23 @@ public class DocumentCommandService {
         }
     }
 
-    private List<String> uploadFilesToS3(final DocumentType type, final List<MultipartFile> multipartFiles) {
-        final List<String> urls = new ArrayList<>();
-        for (final MultipartFile multipartFile : multipartFiles) {
-            String url = "";
-            if (type.equals(DocumentType.IMAGE)) {
-                url = s3ImageFileService.upload(multipartFile);
-                urls.add(url);
-                continue;
-            }
-            if (type.equals(DocumentType.DOCUMENT)) {
-                url = s3DocumentFileService.upload(multipartFile);
-                urls.add(url);
-                continue;
-            }
-            throw new DocumentException(INVALID_DOCUMENT_TYPE);
+    private String uploadFileToS3(final DocumentType type, final MultipartFile file) {
+        if (type.equals(DocumentType.IMAGE)) {
+            return s3ImageFileService.upload(file);
         }
-        return urls;
+        if (type.equals(DocumentType.DOCUMENT)) {
+            return s3DocumentFileService.upload(file);
+        }
+        throw new DocumentException(INVALID_DOCUMENT_TYPE);
     }
 
-    private List<File> saveFiles(final List<String> filePaths, final Document document) {
-        final List<File> files = new ArrayList<>();
-        for (final String filePath : filePaths) {
-            final File newfile = File.builder()
-                    .document(document)
-                    .url(filePath)
-                    .build();
-
-            files.add(newfile);
-            fileRepository.save(newfile);
-        }
-        return files;
+    private File saveFile(final String filePath, final String fileName, final Document document) {
+        final File newfile = File.builder()
+                .document(document)
+                .name(fileName)
+                .url(filePath)
+                .build();
+        return fileRepository.save(newfile);
     }
 
     public void createGarden(final Document document) {
