@@ -19,7 +19,7 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
-import doore.garden.application.convenience.GardenCommandService;
+import doore.garden.application.convenience.GardenConvenience;
 import doore.member.application.convenience.MemberAuthorization;
 import doore.member.exception.MemberException;
 import doore.study.application.convenience.StudyAuthorization;
@@ -40,7 +40,7 @@ public class DocumentCommandService {
     private final MemberAuthorization memberAuthorization;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
-    private final GardenCommandService gardenCommandService;
+    private final GardenConvenience gardenCommandService;
     private final DocumentRepository documentRepository;
     private final FileRepository fileRepository;
 

@@ -27,7 +27,7 @@ import doore.document.domain.repository.DocumentRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
-import doore.garden.application.convenience.GardenCommandService;
+import doore.garden.application.convenience.GardenConvenience;
 import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
@@ -65,7 +65,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Autowired
     private DocumentCommandService documentCommandService;
     @Autowired
-    private GardenCommandService gardenCommandService;
+    private GardenConvenience gardenCommandService;
 
     private DocumentCreateRequest documentRequest;
     private Study study;

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class GardenCommandService {
+public class GardenConvenience {
     private final GardenRepository gardenRepository;
 
     public void createDocumentGarden(final Document document) {
