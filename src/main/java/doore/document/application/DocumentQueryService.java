@@ -57,7 +57,7 @@ public class DocumentQueryService {
 
     private DocumentResponse toDocumentResponse(final Document document) {
         final List<FileResponse> fileResponses = document.getFiles().stream()
-                .map(file -> new FileResponse(file.getId(), file.getUrl()))
+                .map(file -> new FileResponse(file.getId(), file.getName(), file.getUrl()))
                 .toList();
 
         final String uploaderName = memberRepository.findById(document.getUploaderId())

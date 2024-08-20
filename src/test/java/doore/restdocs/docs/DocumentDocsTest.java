@@ -97,7 +97,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료 목록을 조회한다.")
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
-        final FileResponse fileResponse = new FileResponse(1L, "s3 url");
+        final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "s3 url");
         final DocumentResponse document = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
@@ -145,7 +145,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 조회한다.")
     public void 학습자료를_조회한다() throws Exception {
         //given
-        final FileResponse fileResponse = new FileResponse(1L, "s3 url");
+        final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "s3 url");
         final DocumentResponse documentResponse = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
