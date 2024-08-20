@@ -7,8 +7,6 @@ import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS
 import static doore.document.exception.DocumentExceptionType.NOT_FOUND_DOCUMENT;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
@@ -21,18 +19,11 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
+import doore.garden.application.convenience.GardenCommandService;
 import doore.member.application.convenience.MemberAuthorization;
 import doore.member.exception.MemberException;
-
-import doore.garden.domain.Garden;
-import doore.garden.domain.GardenType;
-import doore.garden.domain.repository.GardenRepository;
 import doore.study.application.convenience.StudyAuthorization;
-import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.StudyException;
 import doore.team.application.convenience.TeamAuthorization;
-import doore.team.domain.TeamRepository;
-import doore.team.exception.TeamException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +40,7 @@ public class DocumentCommandService {
     private final MemberAuthorization memberAuthorization;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
-    private final GardenRepository gardenRepository;
+    private final GardenCommandService gardenCommandService;
     private final DocumentRepository documentRepository;
     private final FileRepository fileRepository;
 
@@ -76,7 +67,7 @@ public class DocumentCommandService {
             }
             document.updateFiles(newFiles);
         }
-        createGarden(document);
+        gardenCommandService.createDocumentGarden(document);
     }
 
     private void validateExistGroup(final DocumentGroupType groupType, final Long groupId) {
@@ -117,11 +108,6 @@ public class DocumentCommandService {
         return fileRepository.save(newfile);
     }
 
-    public void createGarden(final Document document) {
-        final Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).of(document);
-        gardenRepository.save(garden);
-    }
-
     public void updateDocument(final DocumentUpdateRequest request, final Long documentId, final Long memberId) {
         memberAuthorization.validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
@@ -137,14 +123,8 @@ public class DocumentCommandService {
         if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
-        deleteGarden(document);
+        gardenCommandService.deleteDocumentGarden(document);
         documentRepository.deleteById(documentId);
-    }
-
-    public void deleteGarden(final Document document) {
-        final Long contributionId = document.getId();
-        final GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
-        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
 
     private Document validateExistDocument(final Long documentId) {
