@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StudyAuthorization {
-    StudyRepository studyRepository;
+    private final StudyRepository studyRepository;
 
     public void validateExistStudy(Long studyId) {
         studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
