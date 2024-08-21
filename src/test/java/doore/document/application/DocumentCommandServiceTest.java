@@ -294,7 +294,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
         //then
         final List<Document> documents = documentRepository.findAll();
-        assertTrue(documents.get(0).getIsDeleted());
+        assertThat(documents).isEmpty();
     }
 
     @Test

@@ -174,6 +174,7 @@ public class DocumentDocsTest extends RestDocsTest {
                                 stringFieldWithPath("type", "학습자료 타입(IMAGE, DOCUMENT, URL)"),
                                 arrayFieldWithPath("files", "학습자료 첨부파일"),
                                 numberFieldWithPath("files[].id", "첨부파일 id"),
+                                stringFieldWithPath("files[].name", "첨부파일명"),
                                 stringFieldWithPath("files[].url", "첨부파일 URL"),
                                 stringFieldWithPath("date", "학습자료 업로드 날짜"),
                                 stringFieldWithPath("uploaderName", "학습자료 업로더 이름")
