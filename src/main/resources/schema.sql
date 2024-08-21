@@ -135,6 +135,7 @@ create table file
 (
     id          bigint auto_increment primary key,
     url         varchar(255) not null,
+    name        varchar(255),
     document_id bigint       not null
 );
 
