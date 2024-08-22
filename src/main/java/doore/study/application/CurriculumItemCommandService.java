@@ -109,35 +109,27 @@ public class CurriculumItemCommandService {
         updateCurriculum(curriculumItem); //수정
     }
 
-    private boolean isExistsCurriculumItem(final Long curriculumItemId) {
-        return curriculumItemRepository.existsById(curriculumItemId);
-    }
-
     public void createCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItemRequest) {
         final Study study = getStudyOrThrow(studyId);
+        final CurriculumItem curriculumItem = CurriculumItem.builder()
+                .name(curriculumItemRequest.name())
+                .itemOrder(curriculumItemRequest.itemOrder())
+                .study(study)
+                .build();
+        curriculumItemRepository.save(curriculumItem);
+
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
-        final CurriculumItem curriculumItems = createCurriculumItem(curriculumItemRequest, study);
-        final List<ParticipantCurriculumItem> participantCurriculumItems = createParticipantCurriculumItems(
-                curriculumItems, participants);
+        final List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
+                .map(participant -> createParticipantCurriculumItems(curriculumItem, participant)).toList();
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
-    private CurriculumItem createCurriculumItem(final CurriculumItemManageDetailRequest request, final Study study) {
-        return curriculumItemRepository.save(CurriculumItem.builder()
-                .name(request.name())
-                .itemOrder(request.itemOrder())
-                .study(study)
-                .build());
-    }
-
-    private List<ParticipantCurriculumItem> createParticipantCurriculumItems(final CurriculumItem curriculumItem,
-                                                                             final List<Participant> participants) {
-        return participants.stream()
-                .map(participant -> ParticipantCurriculumItem.builder()
-                        .curriculumItem(curriculumItem)
-                        .participantId(participant.getId())
-                        .build())
-                .toList();
+    private ParticipantCurriculumItem createParticipantCurriculumItems(final CurriculumItem curriculumItem,
+                                                                       final Participant participant) {
+        return ParticipantCurriculumItem.builder()
+                .curriculumItem(curriculumItem)
+                .participantId(participant.getId())
+                .build();
     }
 
     private void updateCurriculum(final CurriculumItemManageDetailRequest curriculumItem) {
