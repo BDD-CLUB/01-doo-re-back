@@ -106,6 +106,7 @@ public class CurriculumItemCommandService {
     private void createOrUpdateCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItem) {
         if (curriculumItem.id() == null) {
             createCurriculum(studyId, curriculumItem); // 생성
+            return;
         }
         updateCurriculum(curriculumItem); //수정
     }
@@ -135,8 +136,9 @@ public class CurriculumItemCommandService {
 
     private void updateCurriculum(final CurriculumItemManageDetailRequest curriculumItem) {
         final CurriculumItem existingItem = getCurriculumItemOrThrow(curriculumItem.id());
-        existingItem.updateIfNameDifferent(curriculumItem.name());
-        existingItem.updateIfItemOrderDifferent(curriculumItem.itemOrder());
+        if (existingItem.changed(curriculumItem.name(), curriculumItem.itemOrder())) {
+            existingItem.update(curriculumItem.name(), curriculumItem.itemOrder());
+        }
     }
 
     private void deleteCurriculum(final List<CurriculumItemManageDetailRequest> deletedCurriculumItems) {

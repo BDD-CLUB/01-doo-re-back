@@ -32,6 +32,8 @@ public class CurriculumItem extends BaseEntity {
     @Column(nullable = false)
     private Integer itemOrder;
 
+    // 직접 커리큘럼을 삭제한 경우에는 하드 딜리트한다.
+    // 스터디가 삭제된 경우에 소프트 딜리트한다.
     @Column(nullable = false)
     private Boolean isDeleted;
 
@@ -63,19 +65,16 @@ public class CurriculumItem extends BaseEntity {
         this.study = study;
     }
 
-    public void updateIfNameDifferent(String name) {
-        if (!this.name.equals(name)) {
-            this.updateName(name);
-        }
-    }
-
-    public void updateIfItemOrderDifferent(Integer itemOrder) {
-        if (!this.itemOrder.equals(itemOrder)) {
-            this.updateItemOrder(itemOrder);
-        }
-    }
-
     public void delete() {
         this.isDeleted = true;
+    }
+
+    public boolean changed(String name, Integer itemOrder) {
+        return !this.name.equals(name) || !this.itemOrder.equals(itemOrder);
+    }
+
+    public void update(String name, Integer itemOrder) {
+        this.name = name;
+        this.itemOrder = itemOrder;
     }
 }

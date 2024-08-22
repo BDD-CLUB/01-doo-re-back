@@ -10,11 +10,9 @@ public interface ParticipantCurriculumItemRepository extends JpaRepository<Parti
     Optional<ParticipantCurriculumItem> findByCurriculumItemIdAndParticipantId(Long curriculumId, Long participantId);
 
     @Query("select pc from ParticipantCurriculumItem pc "
-            + "inner join CurriculumItem c on c = pc.curriculumItem "
             + "inner join Participant p on pc.participantId = p.id "
-            + "inner join Member m on p.member.id = m.id "
-            + "where m.id = :memberId "
-            + "and c.study.id = :studyId ")
+            + "where p.member.id = :memberId "
+            + "and pc.curriculumItem.study.id = :studyId ")
     List<ParticipantCurriculumItem> findAllByStudyIdAndMemberId(Long studyId, Long memberId);
 
     List<ParticipantCurriculumItem> findAllByCurriculumItemId(Long curriculumId);
