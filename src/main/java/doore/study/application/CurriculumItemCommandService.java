@@ -4,7 +4,6 @@ import static doore.study.exception.CurriculumItemExceptionType.CANNOT_CREATE_CU
 import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
 import doore.garden.domain.Garden;
 import doore.garden.domain.GardenType;
@@ -12,6 +11,8 @@ import doore.garden.domain.repository.GardenRepository;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.study.application.convenience.StudyAuthorization;
+import doore.study.application.convenience.StudyConvenience;
 import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
@@ -19,7 +20,6 @@ import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
-import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.CurriculumItemException;
 import doore.study.exception.StudyException;
 import java.util.HashSet;
@@ -37,7 +37,8 @@ public class CurriculumItemCommandService {
 
     private final CurriculumItemRepository curriculumItemRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
-    private final StudyRepository studyRepository;
+    private final StudyConvenience studyConvenience;
+    private final StudyAuthorization studyAuthorization;
     private final ParticipantRepository participantRepository;
     private final GardenRepository gardenRepository;
 
@@ -59,7 +60,7 @@ public class CurriculumItemCommandService {
     }
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
-        final Study study = studyRepository.findByCurriculumItemId(curriculumId);
+        final Study study = studyConvenience.findByCurriculumItemId(curriculumId);
         studyRoleValidateAccessPermission.validateExistParticipant(study.getId(), memberId);
         final CurriculumItem curriculumItem = getCurriculumItemOrThrow(curriculumId);
         final Participant participant = getParticipantOrThrow(participantId);
@@ -110,7 +111,7 @@ public class CurriculumItemCommandService {
     }
 
     public void createCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItemRequest) {
-        final Study study = getStudyOrThrow(studyId);
+        final Study study = studyAuthorization.getStudyOrThrow(studyId);
         final CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name(curriculumItemRequest.name())
                 .itemOrder(curriculumItemRequest.itemOrder())
@@ -153,10 +154,6 @@ public class CurriculumItemCommandService {
         IntStream.range(0, sortedCurriculum.size())
                 .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);
-    }
-
-    private Study getStudyOrThrow(final Long studyId) {
-        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
     private CurriculumItem getCurriculumItemOrThrow(final Long curriculumId) {
