@@ -5,9 +5,7 @@ import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORD
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
 
-import doore.garden.domain.Garden;
-import doore.garden.domain.GardenType;
-import doore.garden.domain.repository.GardenRepository;
+import doore.garden.application.convenience.GardenConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
@@ -36,12 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CurriculumItemCommandService {
 
     private final CurriculumItemRepository curriculumItemRepository;
+    private final ParticipantRepository participantRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final StudyConvenience studyConvenience;
     private final StudyAuthorization studyAuthorization;
-    private final ParticipantRepository participantRepository;
-    private final GardenRepository gardenRepository;
-
+    private final GardenConvenience gardenConvenience;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 
     public void manageCurriculum(final CurriculumItemManageRequest request, final Long studyId, final Long memberId) {
@@ -71,24 +68,12 @@ public class CurriculumItemCommandService {
         handleGardenBasedOnCompletionStatus(participantCurriculumItem);
     }
 
-    private void createGarden(final ParticipantCurriculumItem participantCurriculumItem) {
-        final Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
-                .of(participantCurriculumItem);
-        gardenRepository.save(garden);
-    }
-
-    private void deleteGarden(final ParticipantCurriculumItem participantCurriculumItem) {
-        final Long contributionId = participantCurriculumItem.getId();
-        final GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
-        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
-    }
-
     private void handleGardenBasedOnCompletionStatus(final ParticipantCurriculumItem participantCurriculumItem) {
         if (participantCurriculumItem.getIsChecked()) {
-            createGarden(participantCurriculumItem);
+            gardenConvenience.createCurriculumGarden(participantCurriculumItem);
             return;
         }
-        deleteGarden(participantCurriculumItem);
+        gardenConvenience.deleteCurriculumGarden(participantCurriculumItem);
     }
 
     private void checkItemOrderDuplicate(final List<CurriculumItemManageDetailRequest> curriculumItems) {
