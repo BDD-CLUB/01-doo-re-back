@@ -46,9 +46,12 @@ public class CurriculumItemCommandService {
     public void manageCurriculum(final CurriculumItemManageRequest request, final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         final List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
+        if (curriculumItems.size() >= 99) {
+            throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
+        }
+
         checkItemOrderDuplicate(curriculumItems);
-        createCurriculum(studyId, curriculumItems);
-        updateCurriculum(curriculumItems);
+        curriculumItems.forEach(item -> createOrUpdateCurriculum(studyId, item));
 
         final List<CurriculumItemManageDetailRequest> deletedCurriculumItems = request.deletedCurriculumItems();
         deleteCurriculum(deletedCurriculumItems);
@@ -99,21 +102,18 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void createCurriculum(final Long studyId, final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        if (curriculumItemRepository.countByStudyId(studyId) >= 99) {
-            throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
+    private void createOrUpdateCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItem) {
+        if (curriculumItem.id() == null) {
+            createCurriculum(studyId, curriculumItem); // 생성
         }
-        curriculumItems.stream()
-                .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.id()))
-                .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
+        updateCurriculum(curriculumItem); //수정
     }
 
     private boolean isExistsCurriculumItem(final Long curriculumItemId) {
         return curriculumItemRepository.existsById(curriculumItemId);
     }
 
-    public void createCurriculumItemAndAssignToParticipants(final Long studyId,
-                                                            final CurriculumItemManageDetailRequest curriculumItemRequest) {
+    public void createCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItemRequest) {
         final Study study = getStudyOrThrow(studyId);
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
         final CurriculumItem curriculumItems = createCurriculumItem(curriculumItemRequest, study);
@@ -140,13 +140,10 @@ public class CurriculumItemCommandService {
                 .toList();
     }
 
-    private void updateCurriculum(final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        for (final CurriculumItemManageDetailRequest requestItem : curriculumItems) {
-            final CurriculumItem existingItem = getCurriculumItemOrThrow(requestItem.id());
-
-            existingItem.updateIfNameDifferent(requestItem.name());
-            existingItem.updateIfItemOrderDifferent(requestItem.itemOrder());
-        }
+    private void updateCurriculum(final CurriculumItemManageDetailRequest curriculumItem) {
+        final CurriculumItem existingItem = getCurriculumItemOrThrow(curriculumItem.id());
+        existingItem.updateIfNameDifferent(curriculumItem.name());
+        existingItem.updateIfItemOrderDifferent(curriculumItem.itemOrder());
     }
 
     private void deleteCurriculum(final List<CurriculumItemManageDetailRequest> deletedCurriculumItems) {
