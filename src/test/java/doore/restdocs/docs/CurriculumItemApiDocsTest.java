@@ -85,7 +85,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
                                 parameterWithName("studyId").description("스터디 id")),
                         requestFields(
                                 fieldWithPath("curriculumItems").description("커리큘럼 아이템 리스트"),
-                                fieldWithPath("curriculumItems[].id").description("커리큘럼 아이템 ID"),
+                                fieldWithPath("curriculumItems[].id").description("커리큘럼 아이템 ID (새로 생성된 경우 null)"),
                                 fieldWithPath("curriculumItems[].itemOrder").description("커리큘럼 아이템 순서"),
                                 fieldWithPath("curriculumItems[].name").description("커리큘럼 아이템 이름"),
                                 fieldWithPath("deletedCurriculumItems").description("삭제된 커리큘럼 아이템 리스트"),
