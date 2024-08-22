@@ -47,7 +47,6 @@ public class CurriculumItemCommandService {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         final List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
         checkItemOrderDuplicate(curriculumItems);
-        checkItemOrderRange(curriculumItems);
         createCurriculum(studyId, curriculumItems);
         updateCurriculum(curriculumItems);
 
@@ -95,16 +94,6 @@ public class CurriculumItemCommandService {
                 .map(CurriculumItemManageDetailRequest::itemOrder)
                 .forEach(itemOrder -> {
                     if (!uniqueItemOrders.add(itemOrder)) {
-                        throw new CurriculumItemException(INVALID_ITEM_ORDER);
-                    }
-                });
-    }
-
-    private void checkItemOrderRange(final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        curriculumItems.stream()
-                .mapToInt(CurriculumItemManageDetailRequest::itemOrder)
-                .forEach(itemOrder -> {
-                    if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
                         throw new CurriculumItemException(INVALID_ITEM_ORDER);
                     }
                 });
