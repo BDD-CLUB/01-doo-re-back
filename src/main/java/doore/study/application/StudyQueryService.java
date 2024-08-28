@@ -1,19 +1,16 @@
 package doore.study.application;
 
-import static doore.member.domain.StudyRoleType.ROLE_스터디원;
-import static doore.member.domain.StudyRoleType.ROLE_스터디장;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
+import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.domain.Participant;
-import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.application.convenience.StudyAuthorization;
 import doore.study.application.dto.response.StudyRankResponse;
 import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
@@ -22,6 +19,7 @@ import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
+import doore.team.application.convenience.TeamAuthorization;
 import doore.team.domain.Team;
 import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
@@ -37,19 +35,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StudyQueryService {
     private final StudyRepository studyRepository;
-    private final StudyRoleRepository studyRoleRepository;
     private final ParticipantRepository participantRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final CurriculumItemRepository curriculumItemRepository;
-    private final TeamRepository teamRepository;
-    private final MemberRepository memberRepository;
+    private final StudyAuthorization studyAuthorization;
+    private final StudyRoleConvenience studyRoleConvenience;
+    private final TeamAuthorization teamAuthorization;
 
     public StudyResponse findStudyById(final Long studyId) {
-        final Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        final Long studyLeaderId = studyRoleRepository.findLeaderIdByStudyId(study.getId());
-
-        final Team team = teamRepository.findById(study.getTeamId())
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+        final Study study = studyAuthorization.getStudyOrThrow(studyId);
+        final Long studyLeaderId = studyRoleConvenience.findStudyLeaderId(study.getId());
+        final Team team = teamAuthorization.getTeamOrThrow(study.getTeamId());
         final long studyProgressRatio = checkStudyProgressRatio(studyId);
 
         return StudyResponse.of(study, team, studyProgressRatio, studyLeaderId);
@@ -73,18 +69,6 @@ public class StudyQueryService {
         if (!memberId.equals(tokenMemberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
-    }
-
-    private void validateExistStudyLeaderAndParticipant(final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!(studyRole.getStudyRoleType().equals(ROLE_스터디장) || studyRole.getStudyRoleType().equals(ROLE_스터디원))) {
-            throw new MemberException(UNAUTHORIZED);
-        }
-    }
-
-    private void validateExistMember(final Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 
     private long checkStudyProgressRatio(final Long studyId) {
