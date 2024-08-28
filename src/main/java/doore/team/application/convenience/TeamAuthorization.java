@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TeamAuthorization {
-    TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
 
     public void validateExistTeam(final Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
