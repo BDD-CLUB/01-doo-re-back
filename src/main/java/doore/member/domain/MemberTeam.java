@@ -41,6 +41,6 @@ public class MemberTeam extends BaseEntity {
         this.id = id;
         this.teamId = teamId;
         this.member = member;
-        this.isDeleted = isDeleted;
+        this.isDeleted = false;
     }
 }
