@@ -27,6 +27,7 @@ import doore.team.domain.TeamRepository;
 import doore.team.exception.TeamException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,9 +96,9 @@ public class StudyQueryService {
         return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
     }
     
-    public List<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
+    public Page<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
         return studyRepository.findAllByTeamId(teamId, pageable)
-                .map(this::convertStudyToStudyRankResponse).getContent();
+                .map(this::convertStudyToStudyRankResponse);
         //todo: (24.07.09) point 기반 정렬 로직 추가;
     }
 

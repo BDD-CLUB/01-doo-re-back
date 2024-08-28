@@ -11,6 +11,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
+import doore.document.application.dto.response.DocumentResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -24,6 +25,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -225,9 +229,10 @@ public class StudyApiDocsTest extends RestDocsTest {
                 new StudyReferenceResponse(2L, "study2", "this is study 2", LocalDate.of(2024, 7, 6),
                         LocalDate.of(2024, 8, 7), StudyStatus.IN_PROGRESS, 2L, 50L);
         final StudyRankResponse otherStudyRankResponse = new StudyRankResponse(20, otherStudyReferenceResponse);
+        final List<StudyRankResponse> studies = List.of(studyRankResponse, otherStudyRankResponse);
+        final Page<StudyRankResponse> studyRankResponsePage = new PageImpl<>(studies, PageRequest.of(0,4),studies.size());
 
-        when(studyQueryService.getTeamStudies(any(), any())).thenReturn(
-                List.of(studyRankResponse, otherStudyRankResponse));
+        when(studyQueryService.getTeamStudies(any(), any())).thenReturn(studyRankResponsePage);
 
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             add("page", "0");

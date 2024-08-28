@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,11 +82,11 @@ public class StudyController {
     }
 
     @GetMapping("/teams/{teamId}/studies") // 비회원
-    public ResponseEntity<List<StudyRankResponse>> getTeamStudies(
+    public ResponseEntity<Page<StudyRankResponse>> getTeamStudies(
             @PathVariable final Long teamId,
             @RequestParam(defaultValue = "0") @PositiveOrZero final int page,
             @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
-        final List<StudyRankResponse> studyReferenceResponses =
+        final Page<StudyRankResponse> studyReferenceResponses =
                 studyQueryService.getTeamStudies(teamId, PageRequest.of(page, size));
         return ResponseEntity.status(HttpStatus.OK).body(studyReferenceResponses);
     }
