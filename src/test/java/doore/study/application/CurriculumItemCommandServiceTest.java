@@ -105,7 +105,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
         curriculumItems.add(
                 CurriculumItemManageDetailRequest.builder().id(3L).itemOrder(2).name("Infra Study").build());
         curriculumItems.add(
-                CurriculumItemManageDetailRequest.builder().id(4L).itemOrder(3).name("Algorithm Study").build());
+                CurriculumItemManageDetailRequest.builder().itemOrder(3).name("Algorithm Study").build());
         return curriculumItems;
     }
 
