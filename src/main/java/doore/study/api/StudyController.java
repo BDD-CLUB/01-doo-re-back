@@ -34,7 +34,7 @@ public class StudyController {
     private final StudyCommandService studyCommandService;
     private final StudyQueryService studyQueryService;
 
-    @PostMapping("/teams/{teamId}/studies") //회원
+    @PostMapping("/teams/{teamId}/studies") // 팀원 & 팀장
     public ResponseEntity<Void> createStudy(@Valid @RequestBody final StudyCreateRequest studyRequest,
                                             @PathVariable final Long teamId, @LoginMember final Member member) {
         studyCommandService.createStudy(studyRequest, teamId, member.getId());

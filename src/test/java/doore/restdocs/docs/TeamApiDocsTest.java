@@ -168,7 +168,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         final TeamInviteCodeResponse response = new TeamInviteCodeResponse("asdf");
 
         // when
-        when(teamCommandService.generateTeamInviteCode(eq(teamId))).thenReturn(response);
+        when(teamCommandService.generateTeamInviteCode(eq(teamId), any())).thenReturn(response);
 
         // then
         final PathParametersSnippet pathParameters = pathParameters(

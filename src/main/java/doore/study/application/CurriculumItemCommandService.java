@@ -4,14 +4,13 @@ import static doore.study.exception.CurriculumItemExceptionType.CANNOT_CREATE_CU
 import static doore.study.exception.CurriculumItemExceptionType.INVALID_ITEM_ORDER;
 import static doore.study.exception.CurriculumItemExceptionType.NOT_FOUND_CURRICULUM_ITEM;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 
-import doore.garden.domain.Garden;
-import doore.garden.domain.GardenType;
-import doore.garden.domain.repository.GardenRepository;
+import doore.garden.application.convenience.GardenConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.study.application.convenience.StudyAuthorization;
+import doore.study.application.convenience.StudyConvenience;
 import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
 import doore.study.domain.CurriculumItem;
@@ -19,7 +18,6 @@ import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
-import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.CurriculumItemException;
 import doore.study.exception.StudyException;
 import java.util.HashSet;
@@ -36,20 +34,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class CurriculumItemCommandService {
 
     private final CurriculumItemRepository curriculumItemRepository;
-    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
-    private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
-    private final GardenRepository gardenRepository;
-
+    private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
+    private final StudyConvenience studyConvenience;
+    private final StudyAuthorization studyAuthorization;
+    private final GardenConvenience gardenConvenience;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 
     public void manageCurriculum(final CurriculumItemManageRequest request, final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         final List<CurriculumItemManageDetailRequest> curriculumItems = request.curriculumItems();
+        if (curriculumItems.size() >= 99) {
+            throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
+        }
+
         checkItemOrderDuplicate(curriculumItems);
-        checkItemOrderRange(curriculumItems);
-        createCurriculum(studyId, curriculumItems);
-        updateCurriculum(curriculumItems);
+        curriculumItems.forEach(item -> createOrUpdateCurriculum(studyId, item));
 
         final List<CurriculumItemManageDetailRequest> deletedCurriculumItems = request.deletedCurriculumItems();
         deleteCurriculum(deletedCurriculumItems);
@@ -57,7 +57,7 @@ public class CurriculumItemCommandService {
     }
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
-        final Study study = studyRepository.findByCurriculumItemId(curriculumId);
+        final Study study = studyConvenience.findByCurriculumItemId(curriculumId);
         studyRoleValidateAccessPermission.validateExistParticipant(study.getId(), memberId);
         final CurriculumItem curriculumItem = getCurriculumItemOrThrow(curriculumId);
         final Participant participant = getParticipantOrThrow(participantId);
@@ -68,24 +68,12 @@ public class CurriculumItemCommandService {
         handleGardenBasedOnCompletionStatus(participantCurriculumItem);
     }
 
-    private void createGarden(final ParticipantCurriculumItem participantCurriculumItem) {
-        final Garden garden = GardenType.getSupplierOf(participantCurriculumItem.getClass().getSimpleName())
-                .of(participantCurriculumItem);
-        gardenRepository.save(garden);
-    }
-
-    private void deleteGarden(final ParticipantCurriculumItem participantCurriculumItem) {
-        final Long contributionId = participantCurriculumItem.getId();
-        final GardenType gardenType = GardenType.getGardenTypeOf(participantCurriculumItem.getClass().getSimpleName());
-        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
-    }
-
     private void handleGardenBasedOnCompletionStatus(final ParticipantCurriculumItem participantCurriculumItem) {
         if (participantCurriculumItem.getIsChecked()) {
-            createGarden(participantCurriculumItem);
+            gardenConvenience.createCurriculumGarden(participantCurriculumItem);
             return;
         }
-        deleteGarden(participantCurriculumItem);
+        gardenConvenience.deleteCurriculumGarden(participantCurriculumItem);
     }
 
     private void checkItemOrderDuplicate(final List<CurriculumItemManageDetailRequest> curriculumItems) {
@@ -100,63 +88,41 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void checkItemOrderRange(final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        curriculumItems.stream()
-                .mapToInt(CurriculumItemManageDetailRequest::itemOrder)
-                .forEach(itemOrder -> {
-                    if (itemOrder < Integer.MIN_VALUE || itemOrder > Integer.MAX_VALUE) {
-                        throw new CurriculumItemException(INVALID_ITEM_ORDER);
-                    }
-                });
-    }
-
-    private void createCurriculum(final Long studyId, final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        if (curriculumItemRepository.count() >= 99) {
-            throw new CurriculumItemException(CANNOT_CREATE_CURRICULUM_ITEM);
+    private void createOrUpdateCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItem) {
+        if (curriculumItem.id() == null) {
+            createCurriculum(studyId, curriculumItem); // 생성
+            return;
         }
-        curriculumItems.stream()
-                .filter(curriculumItem -> !isExistsCurriculumItem(curriculumItem.id()))
-                .forEach(curriculumItem -> createCurriculumItemAndAssignToParticipants(studyId, curriculumItem));
+        updateCurriculum(curriculumItem); //수정
     }
 
-    private boolean isExistsCurriculumItem(final Long curriculumItemId) {
-        return curriculumItemRepository.existsById(curriculumItemId);
-    }
+    public void createCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItemRequest) {
+        final Study study = studyAuthorization.getStudyOrThrow(studyId);
+        final CurriculumItem curriculumItem = CurriculumItem.builder()
+                .name(curriculumItemRequest.name())
+                .itemOrder(curriculumItemRequest.itemOrder())
+                .study(study)
+                .build();
+        curriculumItemRepository.save(curriculumItem);
 
-    public void createCurriculumItemAndAssignToParticipants(final Long studyId,
-                                                            final CurriculumItemManageDetailRequest curriculumItemRequest) {
-        final Study study = getStudyOrThrow(studyId);
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
-        final CurriculumItem curriculumItems = createCurriculumItem(curriculumItemRequest, study);
-        final List<ParticipantCurriculumItem> participantCurriculumItems = createParticipantCurriculumItems(
-                curriculumItems, participants);
+        final List<ParticipantCurriculumItem> participantCurriculumItems = participants.stream()
+                .map(participant -> createParticipantCurriculumItems(curriculumItem, participant)).toList();
         participantCurriculumItemRepository.saveAll(participantCurriculumItems);
     }
 
-    private CurriculumItem createCurriculumItem(final CurriculumItemManageDetailRequest request, final Study study) {
-        return curriculumItemRepository.save(CurriculumItem.builder()
-                .name(request.name())
-                .itemOrder(request.itemOrder())
-                .study(study)
-                .build());
+    private ParticipantCurriculumItem createParticipantCurriculumItems(final CurriculumItem curriculumItem,
+                                                                       final Participant participant) {
+        return ParticipantCurriculumItem.builder()
+                .curriculumItem(curriculumItem)
+                .participantId(participant.getId())
+                .build();
     }
 
-    private List<ParticipantCurriculumItem> createParticipantCurriculumItems(final CurriculumItem curriculumItem,
-                                                                             final List<Participant> participants) {
-        return participants.stream()
-                .map(participant -> ParticipantCurriculumItem.builder()
-                        .curriculumItem(curriculumItem)
-                        .participantId(participant.getId())
-                        .build())
-                .toList();
-    }
-
-    private void updateCurriculum(final List<CurriculumItemManageDetailRequest> curriculumItems) {
-        for (final CurriculumItemManageDetailRequest requestItem : curriculumItems) {
-            final CurriculumItem existingItem = getCurriculumItemOrThrow(requestItem.id());
-
-            existingItem.updateIfNameDifferent(requestItem.name());
-            existingItem.updateIfItemOrderDifferent(requestItem.itemOrder());
+    private void updateCurriculum(final CurriculumItemManageDetailRequest curriculumItem) {
+        final CurriculumItem existingItem = getCurriculumItemOrThrow(curriculumItem.id());
+        if (existingItem.changed(curriculumItem.name(), curriculumItem.itemOrder())) {
+            existingItem.update(curriculumItem.name(), curriculumItem.itemOrder());
         }
     }
 
@@ -175,10 +141,6 @@ public class CurriculumItemCommandService {
         IntStream.range(0, sortedCurriculum.size())
                 .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);
-    }
-
-    private Study getStudyOrThrow(final Long studyId) {
-        return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
     private CurriculumItem getCurriculumItemOrThrow(final Long curriculumId) {

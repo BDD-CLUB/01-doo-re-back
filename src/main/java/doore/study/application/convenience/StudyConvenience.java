@@ -16,4 +16,7 @@ public class StudyConvenience {
         return studyRepository.findByDocumentId(documentId);
     }
 
+    public Study findByCurriculumItemId(Long curriculumId) {
+        return studyRepository.findByCurriculumItemId(curriculumId);
+    }
 }

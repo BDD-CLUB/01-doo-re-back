@@ -113,8 +113,9 @@ public class TeamCommandService {
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 
-    public TeamInviteCodeResponse generateTeamInviteCode(final Long teamId) {
+    public TeamInviteCodeResponse generateTeamInviteCode(final Long teamId, final Long memberId) {
         validateExistTeam(teamId);
+        teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, memberId);
 
         final Optional<String> link = redisUtil.getData(INVITE_LINK_PREFIX.formatted(teamId), String.class);
         if (link.isEmpty()) {

@@ -8,6 +8,7 @@ import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
+import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.repository.MemberRepository;
@@ -45,11 +46,14 @@ public class StudyCommandService {
     private final ParticipantRepository participantRepository;
     private final ParticipantCommandService participantCommandService;
 
+    private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId, final Long memberId) {
         validateExistMember(memberId);
         validateExistTeam(teamId);
+        teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, memberId);
+
         checkEndDateValid(request.startDate(), request.endDate());
         final Study study = studyRepository.save(request.toStudy(teamId));
         studyRoleRepository.save(StudyRole.builder()
