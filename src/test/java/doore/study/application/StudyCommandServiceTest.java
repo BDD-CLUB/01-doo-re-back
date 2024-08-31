@@ -68,6 +68,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
+    private TeamRoleRepository teamRoleRepository;
+    @Autowired
     private StudyRoleRepository studyRoleRepository;
     @Autowired
     private CurriculumItemRepository curriculumItemRepository;
@@ -77,8 +79,6 @@ public class StudyCommandServiceTest extends IntegrationTest {
     private ParticipantRepository participantRepository;
     @Autowired
     private MemberTeamRepository memberTeamRepository;
-    @Autowired
-    private TeamRoleRepository teamRoleRepository;
 
     private Member member;
     private Long memberId;
@@ -103,8 +103,9 @@ public class StudyCommandServiceTest extends IntegrationTest {
         @Nested
         @DisplayName("스터디 생성 테스트")
         class StudyCreateTest {
-            StudyCreateRequest studyCreateRequest;
-            Team team;
+            private StudyCreateRequest studyCreateRequest;
+            private Team team;
+            private TeamRole teamRole;
 
             @BeforeEach
             void setUp() {
@@ -184,8 +185,19 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 Study study = studyRepository.findAllByMemberId(memberId).get(0);
 
-                final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(), memberId).orElseThrow();
+                final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(),
+                        memberId).orElseThrow();
                 assertThat(studyRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
+            }
+
+            @Test
+            @DisplayName("[실패] 스터디 생성은 팀원 또는 팀장만 가능하다.")
+            void createStudy_스터디_생성은_팀원_또는_팀장만_가능하다_실패() throws Exception {
+                Long notTeamMemberId = memberRepository.save(보름()).getId();
+
+                assertThatThrownBy(() -> {
+                    studyCommandService.createStudy(studyCreateRequest, team.getId(), notTeamMemberId);
+                }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
             }
         }
 

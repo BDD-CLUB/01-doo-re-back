@@ -2,6 +2,7 @@ package doore.study.api;
 
 import static doore.member.MemberFixture.createMember;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.study.StudyFixture.createStudy;
 import static doore.team.TeamFixture.createTeam;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,6 +41,7 @@ public class StudyControllerTest extends IntegrationTest {
     private Team team;
     private String token;
     private StudyRole studyRole;
+    private TeamRole teamRole;
 
     @BeforeEach
     void setUp() {

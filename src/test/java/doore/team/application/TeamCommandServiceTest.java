@@ -120,7 +120,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @Disabled // TODO: 만료된 초대 링크 수정
     @DisplayName("[실패] 이미 가입된 팀원이라면 팀 가입을 할 수 없다.")
     public void joinTeam_이미_가입된_팀원이라면_팀_가입을_할_수_없다_실패() {
-        final var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var createdCode = teamCommandService.generateTeamInviteCode(teamId, memberId).code();
 
         assertThatThrownBy(() -> {
             teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId);
@@ -133,7 +133,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     public void generateTeamInviteCode_초대코드는_생성된다_성공() {
 
         //when
-        final var teamInviteLinkResponse = teamCommandService.generateTeamInviteCode(teamId);
+        final var teamInviteLinkResponse = teamCommandService.generateTeamInviteCode(teamId, memberId);
 
         //then
         final Optional<String> data = redisUtil.getData("teamId:%d".formatted(teamId), String.class);
@@ -145,13 +145,28 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 이미 존재하는 초대코드가 있을 경우 초대코드를 반환한다.")
     public void generateTeamInviteCode_이미_존재하는_초대코드가_있을_경우_초대코드를_반환한다_성공() {
         //given
-        final var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var createdCode = teamCommandService.generateTeamInviteCode(teamId, memberId).code();
 
         //when
-        final var getCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var getCode = teamCommandService.generateTeamInviteCode(teamId, memberId).code();
 
         //then
         assertThat(createdCode).isEqualTo(getCode);
+    }
+
+    @Test
+    @DisplayName("[살패] 팀장이 아니라면 초대코드 발급은 실패한다.")
+    public void generateTeamInviteCode_팀장이_아니라면_초대코드_발급은_실패한다_실패() {
+        Member member = memberRepository.save(보름());
+        teamRoleRepository.save(TeamRole.builder()
+                .memberId(member.getId())
+                .teamRoleType(ROLE_팀원)
+                .teamId(teamId)
+                .build());
+
+        assertThatThrownBy(() -> {
+            teamCommandService.generateTeamInviteCode(teamId, member.getId());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 
     @Test
@@ -159,7 +174,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @DisplayName("[성공] 초대코드와 유저코드가 일치하면 팀 가입은 성공한다.")
     public void joinTeam_초대코드와_유저코드가_일치하면_팀_가입은_성공한다_성공() {
         //given
-        final var createdCode = teamCommandService.generateTeamInviteCode(teamId).code();
+        final var createdCode = teamCommandService.generateTeamInviteCode(teamId, memberId).code();
 
         //when & then
         assertDoesNotThrow(() -> teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId));
@@ -169,7 +184,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
     @DisplayName("[실패] 초대코드와 유저코드가 일치하지 않으면 팀 가입은 실패한다.")
     public void joinTeam_초대코드와_유저코드가_일치하지_않으면_팀_가입은_실패한다() {
         //given
-        teamCommandService.generateTeamInviteCode(teamId).code();
+        teamCommandService.generateTeamInviteCode(teamId, memberId).code();
 
         //when & then
         assertThatThrownBy(() -> {

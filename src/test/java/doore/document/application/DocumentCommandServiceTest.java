@@ -24,10 +24,10 @@ import doore.document.domain.Document;
 import doore.document.domain.DocumentAccessType;
 import doore.document.domain.DocumentType;
 import doore.document.domain.repository.DocumentRepository;
-import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
+import doore.garden.application.convenience.GardenConvenience;
 import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
@@ -36,7 +36,6 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import doore.team.domain.TeamRepository;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -56,11 +55,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
     private GardenRepository gardenRepository;
-    @Autowired
-    private FileRepository fileRepository;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -69,6 +64,8 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     private S3DocumentFileService s3DocumentFileService;
     @Autowired
     private DocumentCommandService documentCommandService;
+    @Autowired
+    private GardenConvenience gardenCommandService;
 
     private DocumentCreateRequest documentRequest;
     private Study study;
@@ -297,7 +294,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
         //then
         final List<Document> documents = documentRepository.findAll();
-        assertTrue(documents.get(0).getIsDeleted());
+        assertThat(documents).isEmpty();
     }
 
     @Test
@@ -333,7 +330,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         final Document document = new DocumentFixture().buildDocument();
 
         //when
-        documentCommandService.createGarden(document);
+        gardenCommandService.createDocumentGarden(document);
 
         //then
         final Garden garden = gardenRepository.findAll().get(0);

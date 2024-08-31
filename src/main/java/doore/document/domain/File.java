@@ -24,13 +24,16 @@ public class File {
     @Column(nullable = false)
     String url;
 
+    String name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id", nullable = false)
     Document document;
 
     @Builder
-    public File(String url, Document document) {
+    public File(String url, String name, Document document) {
         this.url = url;
+        this.name = name;
         this.document = document;
     }
 }

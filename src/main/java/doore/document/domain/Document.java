@@ -1,7 +1,5 @@
 package doore.document.domain;
 
-import static jakarta.persistence.CascadeType.REMOVE;
-
 import doore.base.BaseEntity;
 import doore.document.application.dto.request.DocumentCreateRequest;
 import jakarta.persistence.Column;
@@ -20,10 +18,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Table(name = "document")
+@SQLRestriction("is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE document SET is_deleted = true where id = ?")
 public class Document extends BaseEntity {
@@ -53,7 +53,7 @@ public class Document extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DocumentType type;
 
-    @OneToMany(mappedBy = "document", cascade = REMOVE)
+    @OneToMany(mappedBy = "document")
     @Column(nullable = false)
     private final List<File> files = new ArrayList<>();
 

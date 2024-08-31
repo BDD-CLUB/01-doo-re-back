@@ -14,4 +14,6 @@ public interface CurriculumItemRepository extends JpaRepository<CurriculumItem, 
 
     @Query("SELECT ci.id FROM CurriculumItem ci WHERE ci.study.id = :studyId")
     List<Long> findIdsByStudyId(Long studyId);
+
+    Long countByStudyId(Long studyId);
 }

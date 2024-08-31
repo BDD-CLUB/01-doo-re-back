@@ -75,11 +75,10 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{teamId}/invite-code")
-    public ResponseEntity<TeamInviteCodeResponse> generateTeamInviteCode(
-            @PathVariable final Long teamId
-    ) {
-        final TeamInviteCodeResponse teamInviteCodeResponse = teamCommandService.generateTeamInviteCode(teamId);
+    @PostMapping("/{teamId}/invite-code") // 팀장
+    public ResponseEntity<TeamInviteCodeResponse> generateTeamInviteCode(@PathVariable final Long teamId,
+                                                                         @LoginMember final Member member) {
+        final TeamInviteCodeResponse teamInviteCodeResponse = teamCommandService.generateTeamInviteCode(teamId, member.getId());
         return ResponseEntity.ok(teamInviteCodeResponse);
     }
 

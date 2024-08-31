@@ -97,7 +97,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료 목록을 조회한다.")
     public void 학습자료_목록을_조회한다() throws Exception {
         //given
-        final FileResponse fileResponse = new FileResponse(1L, "s3 url");
+        final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "s3 url");
         final DocumentResponse document = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
@@ -145,7 +145,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @DisplayName("학습자료를 조회한다.")
     public void 학습자료를_조회한다() throws Exception {
         //given
-        final FileResponse fileResponse = new FileResponse(1L, "s3 url");
+        final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "s3 url");
         final DocumentResponse documentResponse = DocumentResponse.builder()
                 .id(1L)
                 .title("학습자료")
@@ -174,6 +174,7 @@ public class DocumentDocsTest extends RestDocsTest {
                                 stringFieldWithPath("type", "학습자료 타입(IMAGE, DOCUMENT, URL)"),
                                 arrayFieldWithPath("files", "학습자료 첨부파일"),
                                 numberFieldWithPath("files[].id", "첨부파일 id"),
+                                stringFieldWithPath("files[].name", "첨부파일명"),
                                 stringFieldWithPath("files[].url", "첨부파일 URL"),
                                 stringFieldWithPath("date", "학습자료 업로드 날짜"),
                                 stringFieldWithPath("uploaderName", "학습자료 업로더 이름")

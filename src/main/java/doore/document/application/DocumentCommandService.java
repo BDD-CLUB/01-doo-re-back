@@ -7,8 +7,6 @@ import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS
 import static doore.document.exception.DocumentExceptionType.NOT_FOUND_DOCUMENT;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.document.application.dto.request.DocumentCreateRequest;
 import doore.document.application.dto.request.DocumentUpdateRequest;
@@ -21,16 +19,11 @@ import doore.document.domain.repository.FileRepository;
 import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
-import doore.member.domain.repository.MemberRepository;
+import doore.garden.application.convenience.GardenConvenience;
+import doore.member.application.convenience.MemberAuthorization;
 import doore.member.exception.MemberException;
-
-import doore.garden.domain.Garden;
-import doore.garden.domain.GardenType;
-import doore.garden.domain.repository.GardenRepository;
-import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.StudyException;
-import doore.team.domain.TeamRepository;
-import doore.team.exception.TeamException;
+import doore.study.application.convenience.StudyAuthorization;
+import doore.team.application.convenience.TeamAuthorization;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,18 +35,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class DocumentCommandService {
-    private final DocumentRepository documentRepository;
-    private final TeamRepository teamRepository;
-    private final StudyRepository studyRepository;
-    private final FileRepository fileRepository;
-    private final MemberRepository memberRepository;
+    private final TeamAuthorization teamAuthorization;
+    private final StudyAuthorization studyAuthorization;
+    private final MemberAuthorization memberAuthorization;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
-    private final GardenRepository gardenRepository;
+    private final GardenConvenience gardenCommandService;
+    private final DocumentRepository documentRepository;
+    private final FileRepository fileRepository;
 
     public void createDocument(final DocumentCreateRequest request, final List<MultipartFile> multipartFiles,
                                final DocumentGroupType groupType, final Long groupId, final Long memberId) {
-        validateExistMember(memberId);
+        memberAuthorization.validateExistMember(memberId);
         validateExistGroup(groupType, groupId);
         validateDocumentType(request.type(), request.url(), multipartFiles);
         final Document document = Document.from(request, groupType, groupId);
@@ -61,28 +54,28 @@ public class DocumentCommandService {
         documentRepository.save(document);
 
         if (document.getType().equals(DocumentType.URL)) {
-            final File newFile = File.builder()
-                    .url(request.url())
-                    .document(document)
-                    .build();
-            fileRepository.save(newFile);
+            final File newFile = saveFile(request.url(), "", document);
             document.updateFiles(List.of(newFile));
         }
         if (!document.getType().equals(DocumentType.URL)) {
-            final List<String> filePaths = uploadFilesToS3(document.getType(), multipartFiles);
-            final List<File> newFiles = saveFiles(filePaths, document);
+            final List<File> newFiles = new ArrayList<>();
+            for (MultipartFile file : multipartFiles) {
+                final String filename = file.getName();
+                final String filePath = uploadFileToS3(document.getType(), file);
+                final File newFile = saveFile(filePath, filename, document);
+                newFiles.add(newFile);
+            }
             document.updateFiles(newFiles);
         }
-
-        createGarden(document);
+        gardenCommandService.createDocumentGarden(document);
     }
 
     private void validateExistGroup(final DocumentGroupType groupType, final Long groupId) {
         if (groupType.equals(TEAM)) {
-            teamRepository.findById(groupId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+            teamAuthorization.validateExistTeam(groupId);
         }
         if (groupType.equals(STUDY)) {
-            studyRepository.findById(groupId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
+            studyAuthorization.validateExistStudy(groupId);
         }
     }
 
@@ -96,46 +89,27 @@ public class DocumentCommandService {
         }
     }
 
-    private List<String> uploadFilesToS3(final DocumentType type, final List<MultipartFile> multipartFiles) {
-        final List<String> urls = new ArrayList<>();
-        for (final MultipartFile multipartFile : multipartFiles) {
-            String url = "";
-            if (type.equals(DocumentType.IMAGE)) {
-                url = s3ImageFileService.upload(multipartFile);
-                urls.add(url);
-                continue;
-            }
-            if (type.equals(DocumentType.DOCUMENT)) {
-                url = s3DocumentFileService.upload(multipartFile);
-                urls.add(url);
-                continue;
-            }
-            throw new DocumentException(INVALID_DOCUMENT_TYPE);
+    private String uploadFileToS3(final DocumentType type, final MultipartFile file) {
+        if (type.equals(DocumentType.IMAGE)) {
+            return s3ImageFileService.upload(file);
         }
-        return urls;
+        if (type.equals(DocumentType.DOCUMENT)) {
+            return s3DocumentFileService.upload(file);
+        }
+        throw new DocumentException(INVALID_DOCUMENT_TYPE);
     }
 
-    private List<File> saveFiles(final List<String> filePaths, final Document document) {
-        final List<File> files = new ArrayList<>();
-        for (final String filePath : filePaths) {
-            final File newfile = File.builder()
-                    .document(document)
-                    .url(filePath)
-                    .build();
-
-            files.add(newfile);
-            fileRepository.save(newfile);
-        }
-        return files;
-    }
-
-    public void createGarden(final Document document) {
-        final Garden garden = GardenType.getSupplierOf(document.getClass().getSimpleName()).of(document);
-        gardenRepository.save(garden);
+    private File saveFile(final String filePath, final String fileName, final Document document) {
+        final File newfile = File.builder()
+                .document(document)
+                .name(fileName)
+                .url(filePath)
+                .build();
+        return fileRepository.save(newfile);
     }
 
     public void updateDocument(final DocumentUpdateRequest request, final Long documentId, final Long memberId) {
-        validateExistMember(memberId);
+        memberAuthorization.validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
         if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
@@ -144,26 +118,16 @@ public class DocumentCommandService {
     }
 
     public void deleteDocument(final Long documentId, final Long memberId) {
-        validateExistMember(memberId);
+        memberAuthorization.validateExistMember(memberId);
         final Document document = validateExistDocument(documentId);
         if (!document.isMine(memberId)) {
             throw new MemberException(UNAUTHORIZED);
         }
-        deleteGarden(document);
+        gardenCommandService.deleteDocumentGarden(document);
         documentRepository.deleteById(documentId);
-    }
-
-    public void deleteGarden(final Document document) {
-        final Long contributionId = document.getId();
-        final GardenType gardenType = GardenType.getGardenTypeOf(document.getClass().getSimpleName());
-        gardenRepository.deleteByContributionIdAndType(contributionId, gardenType);
     }
 
     private Document validateExistDocument(final Long documentId) {
         return documentRepository.findById(documentId).orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
-    }
-
-    private void validateExistMember(final Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }

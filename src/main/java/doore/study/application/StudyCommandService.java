@@ -38,8 +38,9 @@ public class StudyCommandService {
     private final StudyRoleConvenience studyRoleConvenience;
     private final StudyAuthorization studyAuthorization;
     private final TeamAuthorization teamAuthorization;
-    private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
+
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
+    private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 
     public void createStudy(final StudyCreateRequest request, final Long teamId, final Long memberId) {
         teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, memberId);
