@@ -53,7 +53,7 @@ public class CurriculumItemCommandService {
 
         final List<CurriculumItemManageDetailRequest> deletedCurriculumItems = request.deletedCurriculumItems();
         deleteCurriculum(deletedCurriculumItems);
-        sortCurriculum();
+        sortCurriculum(studyId);
     }
 
     public void checkCurriculum(final Long curriculumId, final Long participantId, final Long memberId) {
@@ -135,9 +135,9 @@ public class CurriculumItemCommandService {
                 });
     }
 
-    private void sortCurriculum() {
-        final List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByOrderByItemOrderAsc();
-
+    private void sortCurriculum(final Long studyId) {
+        final List<CurriculumItem> sortedCurriculum = curriculumItemRepository.findAllByStudyIdOrderByItemOrderAsc(
+                studyId);
         IntStream.range(0, sortedCurriculum.size())
                 .forEach(i -> sortedCurriculum.get(i).updateItemOrder(i + 1));
         curriculumItemRepository.saveAll(sortedCurriculum);

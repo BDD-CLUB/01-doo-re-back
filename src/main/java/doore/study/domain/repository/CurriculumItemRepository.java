@@ -16,4 +16,6 @@ public interface CurriculumItemRepository extends JpaRepository<CurriculumItem, 
     List<Long> findIdsByStudyId(Long studyId);
 
     Long countByStudyId(Long studyId);
+
+    List<CurriculumItem> findAllByStudyIdOrderByItemOrderAsc(Long studyId);
 }
