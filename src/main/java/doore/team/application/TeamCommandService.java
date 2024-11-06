@@ -138,8 +138,9 @@ public class TeamCommandService {
             duplicateCheckTeamMember(teamId, memberId);
             assignTeamMemberRole(teamId, memberId);
             createMemberTeam(member, teamId);
+        } else {
+            throw new TeamException(EXPIRED_LINK);
         }
-        throw new TeamException(EXPIRED_LINK);
     }
 
     private void validateMatchLink(final String link, final String userLink) {
