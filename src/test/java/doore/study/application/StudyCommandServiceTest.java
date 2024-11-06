@@ -9,6 +9,7 @@ import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
+import static doore.study.domain.StudyStatus.IN_PROGRESS;
 import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.INVALID_ENDDATE;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
@@ -39,7 +40,6 @@ import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.ParticipantCurriculumItem;
 import doore.study.domain.Study;
-import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
@@ -164,8 +164,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
             }
 
             @Test
-            @DisplayName("[실패] 스터디 종료일이 스터디 시작일보다 앞설 수 없다.")
-            void createStudy_스터디_종료일이_스터디_시작일보다_앞설_수_없다_실패() throws Exception {
+            @DisplayName("[실패] 스터디 종료일이 스터디 시작일보다 앞선다면 스터디 생성은 실패한다..")
+            void createStudy_스터디_종료일이_스터디_시작일보다_앞선다면_스터디_생성은_실패한다_실패() throws Exception {
                 final StudyCreateRequest wrongRequest = StudyCreateRequest.builder()
                         .name("스터디")
                         .description("스터디입니다.")
@@ -174,8 +174,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
                         .cropId(1L)
                         .build();
                 assertThatThrownBy(() -> studyCommandService.createStudy(wrongRequest, team.getId(), memberId))
-                        .isInstanceOf(StudyException.class)
-                        .hasMessage(INVALID_ENDDATE.errorMessage());
+                        .isInstanceOf(StudyException.class).hasMessage(INVALID_ENDDATE.errorMessage());
             }
 
             @Test
@@ -304,7 +303,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
                     .description("스프링 스터디 입니다.")
                     .startDate(LocalDate.parse("2023-01-01"))
                     .endDate(LocalDate.parse("2024-01-01"))
-                    .status(StudyStatus.IN_PROGRESS)
+                    .status(IN_PROGRESS)
                     .build();
 
             @Test
@@ -337,6 +336,20 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 assertThatThrownBy(() -> studyCommandService.updateStudy(request, study.getId(), member.getId()))
                         .isInstanceOf(MemberException.class)
                         .hasMessage(UNAUTHORIZED.errorMessage());
+            }
+
+            @Test
+            @DisplayName("[실패] 스터디 종료일이 스터디 시작일보다 앞선다면 스터디 수정은 실패한다.")
+            void updateStudy_스터디_종료일이_스터디_시작일보다_앞선다면_스터디_수정은_실패한다_실패() throws Exception {
+                final StudyUpdateRequest wrongRequest = StudyUpdateRequest.builder()
+                        .name("스터디")
+                        .description("스터디입니다.")
+                        .startDate(LocalDate.parse("2020-02-02"))
+                        .endDate(LocalDate.parse("2000-02-02"))
+                        .status(IN_PROGRESS)
+                        .build();
+                assertThatThrownBy(() -> studyCommandService.updateStudy(wrongRequest, study.getId(), memberId))
+                        .isInstanceOf(StudyException.class).hasMessage(INVALID_ENDDATE.errorMessage());
             }
         }
 
