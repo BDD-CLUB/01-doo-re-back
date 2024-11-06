@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import doore.document.DocumentFixture;
@@ -40,12 +40,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,13 +58,13 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private S3ImageFileService s3ImageFileService;
-    @Autowired
-    private S3DocumentFileService s3DocumentFileService;
-    @Autowired
     private DocumentCommandService documentCommandService;
     @Autowired
     private GardenConvenience gardenCommandService;
+    @MockBean
+    private S3ImageFileService s3ImageFileService;
+    @MockBean
+    private S3DocumentFileService s3DocumentFileService;
 
     private DocumentCreateRequest documentRequest;
     private Study study;
@@ -82,50 +81,46 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Nested
     class createDocumentTest {
-        @Disabled // S3 문제
+
         @Test
         @DisplayName("[성공] 정상적으로 파일 학습자료를 생성할 수 있다.")
         void createDocument_정상적으로_파일_학습자료를_생성할_수_있다_성공() throws IOException {
             // given
-            final String folderName = "documents/";
             final String fileName = "document";
             final String contentType = "pdf";
             final String filePath = "src/test/resources/testDocument/document.pdf";
             final FileInputStream fileInputStream = new FileInputStream(filePath);
 
-            final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                    DocumentAccessType.TEAM, DocumentType.DOCUMENT, null, mock(Member.class).getId());
-
             final MultipartFile file = new MockMultipartFile(
                     fileName,
                     fileName + "." + contentType,
                     contentType,
-                    fileInputStream);
+                    fileInputStream
+            );
 
-            BDDMockito.given(s3DocumentFileService.upload(any()))
-                    .willReturn(fileName);
-            BDDMockito.given(s3ImageFileService.upload(any()))
-                    .willReturn(fileName);
+            given(s3DocumentFileService.upload(any(MultipartFile.class))).willReturn(fileName);
+            given(s3ImageFileService.upload(any(MultipartFile.class))).willReturn(fileName);
 
-            // when
-            documentCommandService.createDocument(fileRequest, List.of(file), STUDY,
-                    study.getId(), member.getId());
+            documentCommandService.createDocument(
+                    documentRequest,
+                    List.of(file),
+                    STUDY,
+                    study.getId(),
+                    member.getId()
+            );
 
-            // then
             final List<Document> documents = documentRepository.findAll();
             assertAll(
                     () -> assertThat(documents).hasSize(1),
                     () -> assertThat(documents.get(0).getFiles()).hasSize(1),
-                    () -> assertEquals(documents.get(0).getName(), fileRequest.title())
+                    () -> assertEquals(documents.get(0).getName(), documentRequest.title())
             );
         }
 
-        @Disabled // S3 문제
         @Test
         @DisplayName("[성공] 정상적으로 이미지 학습자료를 생성할 수 있다.")
         void createDocument_정상적으로_이미지_학습자료를_생성할_수_있다_성공() throws IOException {
             // given
-            final String folderName = "images/";
             final String fileName = "testImage";
             final String contentType = "png";
             final String filePath = "src/test/resources/images/testImage.png";
@@ -140,9 +135,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     contentType,
                     fileInputStream);
 
-            BDDMockito.given(s3DocumentFileService.upload(any()))
+            given(s3DocumentFileService.upload(any()))
                     .willReturn(fileName);
-            BDDMockito.given(s3ImageFileService.upload(any()))
+            given(s3ImageFileService.upload(any()))
                     .willReturn(fileName);
 
             // when
@@ -177,7 +172,6 @@ public class DocumentCommandServiceTest extends IntegrationTest {
             );
         }
 
-        @Disabled // S3 문제
         @Test
         @DisplayName("[성공] 하나의 학습자료에 여러개의 파일을 업로드할 수 있다.")
         void createDocument_하나의_학습자료에_여러개의_파일을_업로드할_수_있다_성공() throws IOException {
@@ -203,9 +197,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     contentType,
                     fileInputStream2);
 
-            BDDMockito.given(s3DocumentFileService.upload(any()))
+            given(s3DocumentFileService.upload(any()))
                     .willReturn(fileName);
-            BDDMockito.given(s3ImageFileService.upload(any()))
+            given(s3ImageFileService.upload(any()))
                     .willReturn(fileName);
 
             // when
