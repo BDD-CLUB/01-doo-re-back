@@ -17,9 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
+import doore.member.domain.MemberTeam;
 import doore.member.domain.Participant;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
@@ -61,6 +63,8 @@ public class TeamCommandServiceTest extends IntegrationTest {
     private ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     @Autowired
     private ParticipantRepository participantRepository;
+    @Autowired
+    private MemberTeamRepository memberTeamRepository;
 
     private Long teamId;
     private Long memberId;
@@ -117,18 +121,22 @@ public class TeamCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled // TODO: 만료된 초대 링크 수정
     @DisplayName("[실패] 이미 가입된 팀원이라면 팀 가입을 할 수 없다.")
     public void joinTeam_이미_가입된_팀원이라면_팀_가입을_할_수_없다_실패() {
+        Member alreadyJoinMember = memberRepository.findById(memberId).orElseThrow();
+        MemberTeam alreadyJoinMemberTeam = memberTeamRepository.save(MemberTeam.builder()
+                .teamId(teamId)
+                .member(alreadyJoinMember)
+                .isDeleted(false)
+                .build());
         final var createdCode = teamCommandService.generateTeamInviteCode(teamId, memberId).code();
 
         assertThatThrownBy(() -> {
-            teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), memberId);
+            teamCommandService.joinTeam(teamId, new TeamInviteCodeRequest(createdCode), alreadyJoinMemberTeam.getId());
         }).isInstanceOf(MemberException.class).hasMessage(ALREADY_JOIN_TEAM_MEMBER.errorMessage());
     }
 
     @Test
-    @Disabled // TODO: 2/14/24 수정 S3 문제
     @DisplayName("[성공] 초대코드는 생성된다.")
     public void generateTeamInviteCode_초대코드는_생성된다_성공() {
 
@@ -136,7 +144,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
         final var teamInviteLinkResponse = teamCommandService.generateTeamInviteCode(teamId, memberId);
 
         //then
-        final Optional<String> data = redisUtil.getData("teamId:%d".formatted(teamId), String.class);
+        final Optional<String> data = redisUtil.getData("teamId=%d".formatted(teamId), String.class);
         assertThat(data).isNotEmpty();
         assertThat(data.get()).isEqualTo(teamInviteLinkResponse.code());
     }
@@ -170,7 +178,6 @@ public class TeamCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled // TODO: 2/14/24 수정 S3 문제
     @DisplayName("[성공] 초대코드와 유저코드가 일치하면 팀 가입은 성공한다.")
     public void joinTeam_초대코드와_유저코드가_일치하면_팀_가입은_성공한다_성공() {
         //given
