@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +39,8 @@ public class DocumentController {
     private final DocumentCommandService documentCommandService;
     private final DocumentQueryService documentQueryService;
 
-    @PostMapping("/{groupType}/{groupId}/documents") // 회원
+    @PostMapping(value = "/{groupType}/{groupId}/documents", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE}) // 회원
     public ResponseEntity<Void> createDocument(@Valid @RequestPart final DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
                                                @PathVariable final String groupType,
