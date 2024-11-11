@@ -1,8 +1,11 @@
 package doore.study;
 
+import static doore.study.domain.StudyStatus.ENDED;
+import static doore.study.domain.StudyStatus.IN_PROGRESS;
+import static doore.study.domain.StudyStatus.UPCOMING;
+
 import doore.study.domain.CurriculumItem;
 import doore.study.domain.Study;
-import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.TeamFixture;
 import doore.team.domain.TeamRepository;
@@ -36,7 +39,49 @@ public class StudyFixture {
                 .startDate(LocalDate.parse("2023-01-01"))
                 .endDate(LocalDate.parse("2024-01-01"))
                 .teamId(teamId)
-                .status(StudyStatus.IN_PROGRESS)
+                .status(IN_PROGRESS)
+                .isDeleted(false)
+                .cropId(cropId)
+                .curriculumItems(new ArrayList<CurriculumItem>())
+                .build();
+    }
+
+    public static Study inProgressStudy() {
+        return Study.builder()
+                .name("알고리즘")
+                .description("알고리즘 스터디 입니다.")
+                .startDate(LocalDate.parse("2024-01-01"))
+                .endDate(LocalDate.parse("2025-01-01"))
+                .teamId(teamId)
+                .status(IN_PROGRESS)
+                .isDeleted(false)
+                .cropId(cropId)
+                .curriculumItems(new ArrayList<CurriculumItem>())
+                .build();
+    }
+
+    public static Study upComingStudy() {
+        return Study.builder()
+                .name("알고리즘")
+                .description("알고리즘 스터디 입니다.")
+                .startDate(LocalDate.parse("2025-01-01"))
+                .endDate(LocalDate.parse("2026-01-01"))
+                .teamId(teamId)
+                .status(UPCOMING)
+                .isDeleted(false)
+                .cropId(cropId)
+                .curriculumItems(new ArrayList<CurriculumItem>())
+                .build();
+    }
+
+    public static Study endedStudy() {
+        return Study.builder()
+                .name("알고리즘")
+                .description("알고리즘 스터디 입니다.")
+                .startDate(LocalDate.parse("2023-01-01"))
+                .endDate(LocalDate.parse("2024-01-01"))
+                .teamId(teamId)
+                .status(ENDED)
                 .isDeleted(false)
                 .cropId(cropId)
                 .curriculumItems(new ArrayList<CurriculumItem>())
