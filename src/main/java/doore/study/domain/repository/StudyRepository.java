@@ -18,6 +18,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     List<Study> findAllByTeamId(Long teamId);
 
     Page<Study> findAllByTeamId(Long teamId, Pageable pageable);
+    
     @Query("select s from Study s join Document d on d.groupId = s.id where d.id = :documentId")
     Study findByDocumentId(Long documentId);
 
