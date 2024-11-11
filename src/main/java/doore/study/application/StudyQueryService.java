@@ -1,14 +1,10 @@
 package doore.study.application;
 
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
-import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.domain.Participant;
-import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.convenience.StudyAuthorization;
 import doore.study.application.dto.response.StudyRankResponse;
@@ -18,11 +14,8 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.StudyException;
 import doore.team.application.convenience.TeamAuthorization;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
-import doore.team.exception.TeamException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -81,7 +74,7 @@ public class StudyQueryService {
     }
     
     public Page<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
-        return studyRepository.findAllByTeamId(teamId, pageable)
+        return studyRepository.findAllByTeamIdOrderByStudyStatusNative(teamId, pageable)
                 .map(this::convertStudyToStudyRankResponse);
         //todo: (24.07.09) point 기반 정렬 로직 추가;
     }
