@@ -1,9 +1,12 @@
 package doore.member.application.convenience;
 
 import static doore.member.domain.StudyRoleType.*;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 
 import doore.member.domain.StudyRole;
+import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.StudyRoleRepository;
+import doore.member.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,12 @@ public class StudyRoleConvenience {
                     .memberId(memberId)
                     .build());
         }
+    }
+
+    public StudyRoleType findStudyRoleType(Long studyId, Long memberId) {
+        return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY))
+                .getStudyRoleType();
     }
 
     public Long findStudyLeaderId(final Long studyId) {

@@ -22,9 +22,9 @@ public class ParticipantController {
     private final ParticipantQueryService participantQueryService;
 
     @PostMapping("/studies/{studyId}/members/{memberId}") // 스터디장
-    public ResponseEntity<Void> saveParticipant(@PathVariable final Long studyId, @PathVariable final Long memberId,
+    public ResponseEntity<Void> createParticipant(@PathVariable final Long studyId, @PathVariable final Long memberId,
                                                 @LoginMember final Member member) {
-        participantCommandService.saveParticipant(studyId, memberId, member.getId());
+        participantCommandService.createParticipant(studyId, memberId, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -43,9 +43,9 @@ public class ParticipantController {
     }
 
     @GetMapping("/studies/{studyId}/members") // 스터디장 & 스터디원
-    public ResponseEntity<List<ParticipantResponse>> getParticipant(@PathVariable final Long studyId,
+    public ResponseEntity<List<ParticipantResponse>> getParticipants(@PathVariable final Long studyId,
                                                                     @LoginMember final Member member) {
-        final List<ParticipantResponse> participants = participantQueryService.findAllParticipants(studyId, member.getId());
+        final List<ParticipantResponse> participants = participantQueryService.getParticipants(studyId, member.getId());
         return ResponseEntity.ok(participants);
     }
 }

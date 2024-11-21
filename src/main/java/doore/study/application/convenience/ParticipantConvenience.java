@@ -21,7 +21,7 @@ public class ParticipantConvenience {
                 .build());
     }
 
-    public void deleteParticipant(final Long studyId) {
+    public void deleteAllParticipant(final Long studyId) {
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
         participantRepository.deleteAll(participants);
     }

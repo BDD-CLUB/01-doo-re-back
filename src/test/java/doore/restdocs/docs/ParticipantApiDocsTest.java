@@ -72,7 +72,7 @@ public class ParticipantApiDocsTest extends RestDocsTest {
         final ParticipantResponse participantResponse = new ParticipantResponse(
                 1L, "팜", "pom@gmail.com", "imageUrl", StudyRoleType.ROLE_스터디원);
 
-        when(participantQueryService.findAllParticipants(any(), any())).thenReturn(List.of(participantResponse));
+        when(participantQueryService.getParticipants(any(), any())).thenReturn(List.of(participantResponse));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}/members", 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))

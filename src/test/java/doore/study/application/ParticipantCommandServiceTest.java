@@ -2,7 +2,7 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.아마란스;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,16 +62,16 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
         @Test
         @DisplayName("[성공] 정상적으로 참여자를 추가할 수 있다.")
-        void saveParticipant_정상적으로_참여자를_추가할_수_있다_성공() {
+        void createParticipant_정상적으로_참여자를_추가할_수_있다_성공() {
             //Given
             final Long studyId = study.getId();
             final Long memberId = member.getId();
 
             //when
-            participantCommandService.saveParticipant(studyId, memberId, member.getId());
+            participantCommandService.createParticipant(studyId, memberId, member.getId());
 
             //then
-            final List<ParticipantResponse> participantResponses = participantQueryService.findAllParticipants(studyId,
+            final List<ParticipantResponse> participantResponses = participantQueryService.getParticipants(studyId,
                     memberId);
             assertAll(
                     () -> assertThat(participantResponses).hasSize(1),
@@ -80,12 +80,23 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         }
 
         @Test
+        @DisplayName("[실패] 존재하지 않는 회원인 경우 실패한다.")
+        void notExistMember_존재하지_않는_회원인_경우_실패한다_실패() {
+            final Long notExistingMemberId = 50L;
+
+            assertThatThrownBy(
+                    () -> participantCommandService.createParticipant(study.getId(), notExistingMemberId, member.getId()))
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(UNAUTHORIZED.errorMessage());
+        }
+
+        @Test
         @DisplayName("[성공] 정상적으로 참여자를 삭제할 수 있다.")
         void deleteParticipant_정상적으로_참여자를_삭제할_수_있다_성공() {
             //Given
             final Long studyId = study.getId();
             final Member participant = createMember();
-            participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
+            participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
 
             //when
             participantCommandService.deleteParticipant(studyId, participant.getId(), member.getId());
@@ -101,7 +112,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             final Long studyId = study.getId();
             final Member participant = createMember();
 
-            participantCommandService.saveParticipant(studyId, participant.getId(), member.getId());
+            participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
 
             //when
             participantCommandService.withdrawParticipant(studyId, participant.getId(), participant.getId());
@@ -109,16 +120,5 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //then
             assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
         }
-    }
-
-    @Test
-    @DisplayName("[실패] 존재하지 않는 회원인 경우 실패한다.")
-    void notExistMember_존재하지_않는_회원인_경우_실패한다_실패() {
-        final Long notExistingMemberId = 50L;
-
-        assertThatThrownBy(
-                () -> participantCommandService.saveParticipant(study.getId(), notExistingMemberId, member.getId()))
-                .isInstanceOf(MemberException.class)
-                .hasMessage(NOT_FOUND_MEMBER.errorMessage());
     }
 }
