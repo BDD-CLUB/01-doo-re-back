@@ -9,7 +9,7 @@ import doore.garden.application.convenience.GardenConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.study.application.convenience.StudyAuthorization;
+import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.study.application.convenience.StudyConvenience;
 import doore.study.application.dto.request.CurriculumItemManageDetailRequest;
 import doore.study.application.dto.request.CurriculumItemManageRequest;
@@ -37,7 +37,7 @@ public class CurriculumItemCommandService {
     private final ParticipantRepository participantRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final StudyConvenience studyConvenience;
-    private final StudyAuthorization studyAuthorization;
+    private final StudyValidateAccessPermission studyAuthorization;
     private final GardenConvenience gardenConvenience;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class StudyAuthorization {
+public class StudyValidateAccessPermission {
     private final StudyRepository studyRepository;
 
     public void validateExistStudy(Long studyId) {

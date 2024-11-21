@@ -8,7 +8,7 @@ import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.study.application.convenience.StudyAuthorization;
+import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
 import doore.study.domain.CurriculumItem;
@@ -19,7 +19,7 @@ import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.study.exception.StudyException;
-import doore.team.application.convenience.TeamAuthorization;
+import doore.team.application.convenience.TeamValidateAccessPermission;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,8 @@ public class StudyCommandService {
     private final ParticipantRepository participantRepository;
     private final ParticipantCommandService participantCommandService;
     private final StudyRoleConvenience studyRoleConvenience;
-    private final StudyAuthorization studyAuthorization;
-    private final TeamAuthorization teamAuthorization;
+    private final StudyValidateAccessPermission studyAuthorization;
+    private final TeamValidateAccessPermission teamAuthorization;
 
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;

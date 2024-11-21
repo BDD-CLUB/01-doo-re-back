@@ -20,10 +20,10 @@ import doore.document.exception.DocumentException;
 import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
 import doore.garden.application.convenience.GardenConvenience;
-import doore.member.application.convenience.MemberAuthorization;
+import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.exception.MemberException;
-import doore.study.application.convenience.StudyAuthorization;
-import doore.team.application.convenience.TeamAuthorization;
+import doore.study.application.convenience.StudyValidateAccessPermission;
+import doore.team.application.convenience.TeamValidateAccessPermission;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +35,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class DocumentCommandService {
-    private final TeamAuthorization teamAuthorization;
-    private final StudyAuthorization studyAuthorization;
-    private final MemberAuthorization memberAuthorization;
+    private final TeamValidateAccessPermission teamAuthorization;
+    private final StudyValidateAccessPermission studyAuthorization;
+    private final MemberValidateAccessPermission memberAuthorization;
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
     private final GardenConvenience gardenCommandService;

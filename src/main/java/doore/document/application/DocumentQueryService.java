@@ -9,7 +9,7 @@ import doore.document.domain.Document;
 import doore.document.domain.DocumentGroupType;
 import doore.document.domain.repository.DocumentRepository;
 import doore.document.exception.DocumentException;
-import doore.member.application.convenience.MemberConvenience;
+import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.study.application.convenience.StudyConvenience;
 import doore.study.domain.Study;
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DocumentQueryService {
 
     private final DocumentRepository documentRepository;
-    private final MemberConvenience memberConvenience;
+    private final MemberValidateAccessPermission memberValidateAccessPermission;
     private final StudyConvenience studyConvenience;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
 
@@ -53,7 +53,8 @@ public class DocumentQueryService {
                 .map(file -> new FileResponse(file.getId(), file.getName(), file.getUrl()))
                 .toList();
 
-        final String uploaderName = memberConvenience.findById(document.getUploaderId()).getName();
+        final String uploaderName = memberValidateAccessPermission.getValidateExistMember(document.getUploaderId())
+                .getName();
 
         return DocumentResponse.of(document, fileResponses, uploaderName);
     }
