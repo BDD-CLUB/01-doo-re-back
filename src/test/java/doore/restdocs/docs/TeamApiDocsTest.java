@@ -230,7 +230,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         );
 
         //when
-        when(teamQueryService.findMyTeams(any(), any())).thenReturn(response);
+        when(teamQueryService.getMyTeams(any(), any())).thenReturn(response);
 
         //then
         mockMvc.perform(get("/teams/members/{memberId}", memberId)
@@ -261,7 +261,7 @@ public class TeamApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("teamLeaderId", "팀장 ID")
         );
 
-        when(teamQueryService.findTeamByTeamId(teamId)).thenReturn(teamResponse);
+        when(teamQueryService.getTeams(teamId)).thenReturn(teamResponse);
 
         mockMvc.perform(get("/teams/{teamId}", teamId)
                         .contentType(MediaType.APPLICATION_JSON))

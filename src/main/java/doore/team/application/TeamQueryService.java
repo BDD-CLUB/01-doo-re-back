@@ -41,7 +41,7 @@ public class TeamQueryService {
     private final MemberConvenience memberConvenience;
     private final MemberValidateAccessPermission memberValidateAccessPermission;
 
-    public List<TeamReferenceResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
+    public List<TeamReferenceResponse> getMyTeams(final Long memberId, final Long tokenMemberId) {
         memberValidateAccessPermission.validateExistMember(memberId);
         memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         return teamRepository.findAllByMemberId(memberId)
@@ -50,7 +50,7 @@ public class TeamQueryService {
                 .toList();
     }
 
-    public List<MyTeamsAndStudiesResponse> findMyTeamsAndStudies(final Long memberId) {
+    public List<MyTeamsAndStudiesResponse> getMyTeamsAndStudies(final Long memberId) {
         final List<Team> myTeams = teamRepository.findAllByMemberId(memberId);
 
         return myTeams.stream()
@@ -63,7 +63,7 @@ public class TeamQueryService {
                 .toList();
     }
 
-    public TeamResponse findTeamByTeamId(final Long teamId) {
+    public TeamResponse getTeams(final Long teamId) {
         final Team team = teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
         final List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
         final List<Long> memberIds = memberTeams.stream()

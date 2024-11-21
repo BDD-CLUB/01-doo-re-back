@@ -24,7 +24,7 @@ public class MemberQueryService {
         checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         final Member member = memberRepository.findById(tokenMemberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
-        return MemberAndMyTeamsAndStudiesResponse.of(member, teamQueryService.findMyTeamsAndStudies(memberId));
+        return MemberAndMyTeamsAndStudiesResponse.of(member, teamQueryService.getMyTeamsAndStudies(memberId));
     }
 
     private void validateMember(final Long memberId) {
