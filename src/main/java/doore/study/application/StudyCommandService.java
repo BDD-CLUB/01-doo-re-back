@@ -69,19 +69,19 @@ public class StudyCommandService {
     public void updateStudy(final StudyUpdateRequest request, final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         checkEndDateValid(request.startDate(), request.endDate());
-        final Study study = studyValidateAccessPermission.getStudyOrThrow(studyId);
+        final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
 
     public void terminateStudy(final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
-        final Study study = studyValidateAccessPermission.getStudyOrThrow(studyId);
+        final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
         study.terminate();
     }
 
     public void changeStudyStatus(final String status, final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
-        final Study study = studyValidateAccessPermission.getStudyOrThrow(studyId);
+        final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
         try {
             final StudyStatus changedStatus = StudyStatus.valueOf(status);
             study.changeStatus(changedStatus);

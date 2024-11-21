@@ -39,8 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudyQueryServiceTest extends IntegrationTest {
     @Autowired
-    private StudyCommandService studyCommandService;
-    @Autowired
     private StudyQueryService studyQueryService;
     @Autowired
     private CurriculumItemCommandService curriculumItemCommandService;
@@ -86,9 +84,9 @@ public class StudyQueryServiceTest extends IntegrationTest {
     class studyTest {
         @Test
         @DisplayName("[성공] 정상적으로 스터디 정보를 조회할 수 있다.")
-        void findStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
+        void getStudyById_정상적으로_스터디를_조회할_수_있다_성공() throws Exception {
             StudyResponse expectedResponse = getStudyResponse();
-            StudyResponse actualResponse = studyQueryService.findStudyById(study.getId());
+            StudyResponse actualResponse = studyQueryService.getStudy(study.getId());
 
             assertThat(actualResponse)
                     .usingRecursiveComparison()
@@ -98,9 +96,9 @@ public class StudyQueryServiceTest extends IntegrationTest {
 
         @Test
         @DisplayName("[실패] 존재하지 않는 스터디를 조회할 수 없다.")
-        void findStudyById_존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
+        void getStudyById_존재하지_않는_스터디를_조회할_수_없다_실패() throws Exception {
             final Long notExistingStudyId = 0L;
-            assertThatThrownBy(() -> studyQueryService.findStudyById(notExistingStudyId))
+            assertThatThrownBy(() -> studyQueryService.getStudy(notExistingStudyId))
                     .isInstanceOf(StudyException.class)
                     .hasMessage(NOT_FOUND_STUDY.errorMessage());
         }
@@ -108,7 +106,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 내가 속한 스터디 목록을 조회할 수 있다.")
-    void findMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
+    void getMyStudies_내가_속한_스터디_목록을_조회할_수_있다_성공() {
         // given
         final Long tokenMemberId = member.getId();
         final Study anotherStudy = studyRepository.save(algorithmStudy());
@@ -137,7 +135,7 @@ public class StudyQueryServiceTest extends IntegrationTest {
                 StudyReferenceResponse.of(study, 50),
                 StudyReferenceResponse.of(anotherStudy, 0)
         );
-        final List<StudyReferenceResponse> actualResponses = studyQueryService.findMyStudies(member.getId(),
+        final List<StudyReferenceResponse> actualResponses = studyQueryService.getMyStudies(member.getId(),
                 tokenMemberId);
 
         // then
@@ -153,11 +151,10 @@ public class StudyQueryServiceTest extends IntegrationTest {
     // TODO: 3/21/24 자기 자신이 아닌 사람의 스터디 목록을 조회하면 권한 예외가 발생한다. (2024/5/15 완료)
     @Test
     @DisplayName("[실패] 다른 사람의 스터디 목록 조회는 불가능하다.")
-    void findMyStudy_다른_사람의_스터디_목록_조회는_불가능하다_실패() {
+    void getMyStudy_다른_사람의_스터디_목록_조회는_불가능하다_실패() {
         final Long anotherMemberId = 2L;
-        // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {
-            studyQueryService.findMyStudies(member.getId(), anotherMemberId);
+            studyQueryService.getMyStudies(member.getId(), anotherMemberId);
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 }

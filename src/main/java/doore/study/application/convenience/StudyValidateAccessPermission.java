@@ -19,7 +19,7 @@ public class StudyValidateAccessPermission {
         studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
-    public Study getStudyOrThrow(final Long studyId) {
+    public Study getValidateExistStudy(final Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 }

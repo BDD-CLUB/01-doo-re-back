@@ -97,7 +97,7 @@ public class CurriculumItemCommandService {
     }
 
     public void createCurriculum(final Long studyId, final CurriculumItemManageDetailRequest curriculumItemRequest) {
-        final Study study = studyAuthorization.getStudyOrThrow(studyId);
+        final Study study = studyAuthorization.getValidateExistStudy(studyId);
         final CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name(curriculumItemRequest.name())
                 .itemOrder(curriculumItemRequest.itemOrder())
