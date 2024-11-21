@@ -33,12 +33,12 @@ public class StudyQueryService {
     private final CurriculumItemRepository curriculumItemRepository;
     private final StudyValidateAccessPermission studyAuthorization;
     private final StudyRoleConvenience studyRoleConvenience;
-    private final TeamValidateAccessPermission teamAuthorization;
+    private final TeamValidateAccessPermission teamValidateAccessPermission;
 
     public StudyResponse findStudyById(final Long studyId) {
         final Study study = studyAuthorization.getStudyOrThrow(studyId);
         final Long studyLeaderId = studyRoleConvenience.findStudyLeaderId(study.getId());
-        final Team team = teamAuthorization.getTeamOrThrow(study.getTeamId());
+        final Team team = teamValidateAccessPermission.getValidateExistTeam(study.getTeamId());
         final long studyProgressRatio = checkStudyProgressRatio(studyId);
 
         return StudyResponse.of(study, team, studyProgressRatio, studyLeaderId);
