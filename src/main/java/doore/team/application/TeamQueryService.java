@@ -1,19 +1,17 @@
 package doore.team.application;
 
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.attendance.domain.Attendance;
 import doore.attendance.domain.repository.AttendanceRepository;
 import doore.garden.application.GardenQueryService;
 import doore.garden.application.dto.response.DayGardenResponse;
+import doore.member.application.convenience.MemberConvenience;
+import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
-import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
-import doore.member.exception.MemberException;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
@@ -34,16 +32,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TeamQueryService {
     private final TeamRepository teamRepository;
-    private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
     private final AttendanceRepository attendanceRepository;
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRoleRepository teamRoleRepository;
     private final GardenQueryService gardenQueryService;
 
+    private final MemberConvenience memberConvenience;
+    private final MemberValidateAccessPermission memberValidateAccessPermission;
+
     public List<TeamReferenceResponse> findMyTeams(final Long memberId, final Long tokenMemberId) {
-        validateMember(memberId);
-        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+        memberValidateAccessPermission.validateExistMember(memberId);
+        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         return teamRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(TeamReferenceResponse::from)
@@ -80,16 +80,6 @@ public class TeamQueryService {
         final Long teamLeaderId = teamRoleRepository.findLeaderIdByTeamId(teamId);
 
         return TeamResponse.of(team, attendanceRatio, teamLeaderId);
-    }
-
-    private void validateMember(final Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
-    }
-
-    private void checkSameMemberIdAndTokenMemberId(final Long memberId, final Long tokenMemberId) {
-        if (!memberId.equals(tokenMemberId)) {
-            throw new MemberException(UNAUTHORIZED);
-        }
     }
 
     public List<TeamRankResponse> getTeamRanks() {
