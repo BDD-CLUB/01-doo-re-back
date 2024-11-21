@@ -51,16 +51,6 @@ public class StudyCommandService {
         saveParticipant(study.getId(), memberId, memberId);
     }
 
-    private void saveParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
-        participantCommandService.saveParticipant(studyId, memberId, studyLeaderId);
-    }
-
-    private void checkEndDateValid(final LocalDate startDate, final LocalDate endDate) {
-        if (endDate != null && startDate.isAfter(endDate)) {
-            throw new StudyException(INVALID_ENDDATE);
-        }
-    }
-
     public void deleteStudy(final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
         studyAuthorization.validateExistStudy(studyId);
@@ -72,6 +62,7 @@ public class StudyCommandService {
 
     public void updateStudy(final StudyUpdateRequest request, final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, memberId);
+        checkEndDateValid(request.startDate(), request.endDate());
         final Study study = studyAuthorization.getStudyOrThrow(studyId);
         study.update(request.name(), request.description(), request.startDate(), request.endDate(), request.status());
     }
@@ -90,6 +81,16 @@ public class StudyCommandService {
             study.changeStatus(changedStatus);
         } catch (final IllegalArgumentException e) {
             throw new StudyException(NOT_FOUND_STATUS);
+        }
+    }
+
+    private void saveParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
+        participantCommandService.saveParticipant(studyId, memberId, studyLeaderId);
+    }
+
+    private void checkEndDateValid(final LocalDate startDate, final LocalDate endDate) {
+        if (endDate != null && startDate.isAfter(endDate)) {
+            throw new StudyException(INVALID_ENDDATE);
         }
     }
 

@@ -11,7 +11,7 @@
 - **포토폴리오**: '스터디 카드'를 통해 회원이 참여했던 스터디에서 개인이 착습한 내용과 업로드한 학습 자료를 정리된 레이아웃으로 제공합니다.
 
 <br>
-운영서버: https://www.doore.kro.kr <br>
+운영서버: https://doore.kro.kr/ <br>
 Rest Docs: https://www.doore.kro.kr/docs/doore.html
 <br><br>
 
