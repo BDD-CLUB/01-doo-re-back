@@ -22,6 +22,16 @@ public class StudyRoleConvenience {
                 .build());
     }
 
+    public void assignParticipantRole(Long studyId, Long memberId, Long studyLeaderId) {
+        if (!memberId.equals(studyLeaderId)) {
+            studyRoleRepository.save(StudyRole.builder()
+                    .studyRoleType(ROLE_스터디원)
+                    .studyId(studyId)
+                    .memberId(memberId)
+                    .build());
+        }
+    }
+
     public Long findStudyLeaderId(final Long studyId) {
         return studyRoleRepository.findLeaderIdByStudyId(studyId);
     }
