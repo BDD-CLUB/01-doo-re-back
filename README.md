@@ -100,7 +100,7 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
 </div>
 
 
-### 2024.3.1 ~ 진행중
+### 2024.3.1 ~ 2024.10.31
 <div align="center">
   <table>
   <tr>
@@ -145,6 +145,47 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
     <td align="center">
        BackEnd, Infra
     </td>    
+    <td align="center">
+      BackEnd
+    </td>
+    <td align="center">
+       BackEnd
+    </td>
+  </tr>
+  </table>
+</div>
+
+### 2024.11.1 ~ 진행중
+<div align="center">
+  <table>
+  <tr> 
+    </td>
+    <td align="center">
+      이지민 
+    </td>
+    <td align="center">
+      신예준
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/JJimini">
+      <img src="https://github.com/JJimini.png" width="80" alt="JJimini"/>
+      <br />
+      <sub><b>JJimini</b></sub>
+      </a>
+      <br/>
+    </td>
+    <td align="center">
+      <a href="https://github.com/yessjun">
+      <img src="https://github.com/yessjun.png" width="80" alt="yessjun"/>
+      <br />
+      <sub><b>yessjun</b></sub>
+      </a>
+      <br/>
+    </td>
+  </tr>
+      <tr>
     <td align="center">
       BackEnd
     </td>
