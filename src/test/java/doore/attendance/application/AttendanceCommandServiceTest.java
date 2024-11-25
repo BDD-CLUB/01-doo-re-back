@@ -2,7 +2,7 @@ package doore.attendance.application;
 
 import static doore.attendance.exception.AttendanceExceptionType.ALREADY_ATTENDED;
 import static doore.member.MemberFixture.아마란스;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,7 +52,7 @@ public class AttendanceCommandServiceTest extends IntegrationTest {
     public void createAttendance_회원이_없는_경우_출석을_할_수_없다_성공() {
         final Long invalidMemberId = 15L;
         assertThatThrownBy(() -> attendanceCommandService.createAttendance(invalidMemberId))
-                .isInstanceOf(MemberException.class).hasMessage(NOT_FOUND_MEMBER.errorMessage());
+                .isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 
     @Test
