@@ -25,8 +25,22 @@ public class TeamRoleValidateAccessPermission {
         }
     }
 
+    public TeamRole getValidateExistTeamLeader(final Long teamId, final Long memberId) {
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        return teamRole;
+    }
+
     public void validateExistMemberTeam(final Long teamId, final Long memberId) {
         teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    public TeamRole getValidateExistMemberTeam(final Long teamId, final Long memberId) {
+        return teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }

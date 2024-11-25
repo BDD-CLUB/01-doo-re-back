@@ -6,7 +6,7 @@ import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -197,7 +197,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
         assertThatThrownBy(() -> {
             memberCommandService.transferTeamLeader(team.getId(), invalidMemberId, member.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(NOT_FOUND_MEMBER.errorMessage());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 
     @Test

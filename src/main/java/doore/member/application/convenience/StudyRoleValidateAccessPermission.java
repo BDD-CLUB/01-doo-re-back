@@ -25,8 +25,22 @@ public class StudyRoleValidateAccessPermission {
         }
     }
 
+    public StudyRole getValidateExistStudyLeader(final Long studyId, final Long memberId) {
+        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
+        if (!studyRole.getStudyRoleType().equals(ROLE_스터디장)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        return studyRole;
+    }
+
     public void validateExistParticipant(final Long studyId, final Long memberId) {
         studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    public StudyRole getValidateExistParticipant(final Long studyId, final Long memberId) {
+        return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
 }

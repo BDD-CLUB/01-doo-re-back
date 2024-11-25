@@ -1,8 +1,9 @@
 package doore.member.application;
 
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
+import doore.member.application.convenience.MemberConvenience;
+import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
@@ -19,21 +20,15 @@ public class MemberQueryService {
     private final MemberRepository memberRepository;
     private final TeamQueryService teamQueryService;
 
+    private final MemberConvenience memberConvenience;
+
+    private final MemberValidateAccessPermission memberValidateAccessPermission;
+
     public MemberAndMyTeamsAndStudiesResponse getSideBarInfo(final Long memberId, final Long tokenMemberId) {
-        validateMember(memberId);
-        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+        memberValidateAccessPermission.validateExistMember(memberId);
+        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         final Member member = memberRepository.findById(tokenMemberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
         return MemberAndMyTeamsAndStudiesResponse.of(member, teamQueryService.getMyTeamsAndStudies(memberId));
-    }
-
-    private void validateMember(final Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
-    }
-
-    private void checkSameMemberIdAndTokenMemberId(final Long memberId, final Long tokenMemberId) {
-        if (!memberId.equals(tokenMemberId)) {
-            throw new MemberException(UNAUTHORIZED);
-        }
     }
 }
