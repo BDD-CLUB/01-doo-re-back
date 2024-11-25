@@ -26,9 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class DocumentQueryService {
 
     private final DocumentRepository documentRepository;
+
     private final MemberValidateAccessPermission memberValidateAccessPermission;
-    private final StudyConvenience studyConvenience;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
+
+    private final StudyConvenience studyConvenience;
 
     public Page<DocumentResponse> getAllDocument(
             final DocumentGroupType groupType, final Long groupId, final Pageable pageable) {
