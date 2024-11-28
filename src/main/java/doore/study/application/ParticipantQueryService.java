@@ -26,7 +26,7 @@ public class ParticipantQueryService {
     public List<ParticipantResponse> getParticipants(final Long studyId, final Long memberId) {
         studyRoleValidateAccessPermission.validateExistParticipant(studyId, memberId);
         studyValidateAccessPermission.validateExistStudy(studyId);
-        List<Participant> participants = participantRepository.findAllByStudyId(studyId);
+        List<Participant> participants = participantRepository.findAllByStudyIdAndIsDeletedFalse(studyId);
         return participants.stream()
                 .map(participant -> ParticipantResponse.of(participant,
                         studyRoleConvenience.findStudyRoleType(studyId, memberId))).toList();
