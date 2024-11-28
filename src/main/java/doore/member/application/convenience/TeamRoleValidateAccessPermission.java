@@ -1,6 +1,7 @@
 package doore.member.application.convenience;
 
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
@@ -42,5 +43,11 @@ public class TeamRoleValidateAccessPermission {
     public TeamRole getValidateExistMemberTeam(final Long teamId, final Long memberId) {
         return teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    public boolean isTeamLeader(final Long teamId, final Long memberId) {
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
+        return ROLE_팀장.equals(teamRole.getTeamRoleType());
     }
 }
