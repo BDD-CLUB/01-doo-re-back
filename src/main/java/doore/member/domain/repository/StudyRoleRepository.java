@@ -11,4 +11,6 @@ public interface StudyRoleRepository extends JpaRepository<StudyRole, Long> {
     Optional<StudyRole> findStudyRoleByStudyIdAndStudyRoleType(Long studyId, StudyRoleType studyRoleType);
     @Query("SELECT sr.memberId FROM StudyRole sr WHERE sr.studyId = :studyId AND sr.studyRoleType = 'ROLE_스터디장'")
     Long findLeaderIdByStudyId(Long studyId);
+    boolean existsByStudyIdAndMemberIdAndStudyRoleType(Long studyId, Long memberId, StudyRoleType studyRoleType);
+    void deleteByStudyIdAndMemberId(final Long studyId, final Long memberId);
 }

@@ -25,4 +25,8 @@ public class ParticipantConvenience {
         final List<Participant> participants = participantRepository.findAllByStudyId(studyId);
         participantRepository.deleteAll(participants);
     }
+
+    public void deleteByParticipantIdAndMemberId(final Long participantId, final Long memberId) {
+        participantRepository.deleteByStudyIdAndMemberId(participantId, memberId);
+    }
 }

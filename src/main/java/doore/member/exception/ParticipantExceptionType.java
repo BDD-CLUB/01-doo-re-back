@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ParticipantExceptionType implements BaseExceptionType {
 
-    CANNOT_DELETE_STUDY_LEADER(HttpStatus.BAD_REQUEST, "스터디장 본인은 팀을 탈퇴할 수 없습니다.")
+    CANNOT_DELETE_STUDY_LEADER(HttpStatus.BAD_REQUEST, "스터디장 본인은 팀을 탈퇴할 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
