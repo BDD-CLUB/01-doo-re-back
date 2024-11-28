@@ -1,10 +1,13 @@
 package doore.study.application;
 
+import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER;
+
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.domain.Member;
 import doore.member.domain.repository.ParticipantRepository;
+import doore.member.exception.ParticipantException;
 import doore.study.application.convenience.ParticipantConvenience;
 import doore.study.application.convenience.StudyValidateAccessPermission;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class ParticipantCommandService {
     public void deleteParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, studyLeaderId);
         studyValidateAccessPermission.validateExistStudy(studyId);
+        checkIsEqualDeleteMemberIdAndStudyLeaderId(memberId, studyLeaderId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
     }
@@ -44,5 +48,11 @@ public class ParticipantCommandService {
         studyValidateAccessPermission.validateExistStudy(studyId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
+    }
+
+    private void checkIsEqualDeleteMemberIdAndStudyLeaderId(final Long deleteMemberId, final Long studyLeaderId) {
+        if (deleteMemberId.equals(studyLeaderId)) {
+            throw new ParticipantException(CANNOT_DELETE_STUDY_LEADER);
+        }
     }
 }
