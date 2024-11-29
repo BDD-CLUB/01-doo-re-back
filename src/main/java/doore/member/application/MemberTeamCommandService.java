@@ -1,6 +1,6 @@
 package doore.member.application;
 
-import static doore.member.exception.MemberTeamExceptionType.CANNOT_DELETE_TEAM_LEADER;
+import static doore.member.exception.MemberTeamExceptionType.CANNOT_DELETE_TEAM_LEADER_SELF;
 
 import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.TeamRoleConvenience;
@@ -42,7 +42,7 @@ public class MemberTeamCommandService {
 
     private void checkIsEqualDeleteMemberIdAndTeamLeaderId(final Long deleteMemberId, final Long teamLeaderId) {
         if (deleteMemberId.equals(teamLeaderId)) {
-            throw new MemberTeamException(CANNOT_DELETE_TEAM_LEADER);
+            throw new MemberTeamException(CANNOT_DELETE_TEAM_LEADER_SELF);
         }
     }
 

@@ -1,7 +1,7 @@
 package doore.study.application;
 
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER;
+import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER_SELF;
 
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleConvenience;
@@ -44,8 +44,8 @@ public class ParticipantCommandService {
 
     public void deleteParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyValidateAccessPermission.validateExistStudy(studyId);
-        checkStudyLeaderOrTeamLeader(studyId, memberId, studyLeaderId);
         checkIsEqualDeleteMemberIdAndStudyLeaderId(memberId, studyLeaderId);
+        checkStudyLeaderOrTeamLeader(studyId, memberId, studyLeaderId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
         studyRoleConvenience.deleteByStudyIdAndMemberId(studyId, memberId);
@@ -61,7 +61,7 @@ public class ParticipantCommandService {
 
     private void checkIsEqualDeleteMemberIdAndStudyLeaderId(final Long deleteMemberId, final Long studyLeaderId) {
         if (deleteMemberId.equals(studyLeaderId)) {
-            throw new ParticipantException(CANNOT_DELETE_STUDY_LEADER);
+            throw new ParticipantException(CANNOT_DELETE_STUDY_LEADER_SELF);
         }
     }
 
