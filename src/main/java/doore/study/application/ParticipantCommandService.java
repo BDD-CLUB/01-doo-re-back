@@ -44,8 +44,8 @@ public class ParticipantCommandService {
 
     public void deleteParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyValidateAccessPermission.validateExistStudy(studyId);
-        checkIsEqualDeleteMemberIdAndStudyLeaderId(memberId, studyLeaderId);
         checkStudyLeaderOrTeamLeader(studyId, memberId, studyLeaderId);
+        checkIsEqualDeleteMemberIdAndStudyLeaderId(memberId, studyLeaderId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
         studyRoleConvenience.deleteByStudyIdAndMemberId(studyId, memberId);
