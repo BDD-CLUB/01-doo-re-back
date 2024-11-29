@@ -44,7 +44,7 @@ public class ParticipantCommandService {
 
     public void deleteParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyValidateAccessPermission.validateExistStudy(studyId);
-        checkStudyLeaderOrTeamLeader(studyId, studyLeaderId);
+        checkStudyLeaderOrTeamLeader(studyId, memberId, studyLeaderId);
         checkIsEqualDeleteMemberIdAndStudyLeaderId(memberId, studyLeaderId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
@@ -65,12 +65,21 @@ public class ParticipantCommandService {
         }
     }
 
-    private void checkStudyLeaderOrTeamLeader(final Long studyId, final Long memberId) {
+    private void checkStudyLeaderOrTeamLeader(final Long studyId, final Long deleteMemberId, final Long leaderId) {
         final Study study = studyConvenience.findById(studyId);
         final Long teamId = study.getTeamId();
-        if (!(studyRoleValidateAccessPermission.isStudyLeader(studyId, memberId)
-                || teamRoleValidateAccessPermission.isTeamLeader(teamId, memberId))) {
+        if (!(studyRoleValidateAccessPermission.isStudyLeader(studyId, leaderId)
+                || teamRoleValidateAccessPermission.isTeamLeader(teamId, leaderId))) {
             throw new MemberException(UNAUTHORIZED);
+        }
+        assignStudyLeaderToTeamLeader(studyId, deleteMemberId, teamId, leaderId);
+    }
+
+    private void assignStudyLeaderToTeamLeader(final Long studyId, final Long deleteMemberId, final Long teamId,
+                                               final Long leaderId) {
+        if (studyRoleValidateAccessPermission.isStudyLeader(studyId, deleteMemberId)
+                && teamRoleValidateAccessPermission.isTeamLeader(teamId, leaderId)) {
+            studyRoleConvenience.assignStudyLeaderRole(studyId, leaderId);
         }
     }
 }
