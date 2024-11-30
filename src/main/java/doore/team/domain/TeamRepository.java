@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    @Query("select t from Team t join MemberTeam mt on mt.teamId=t.id where mt.member.id=:memberId")
+    @Query("SELECT t FROM Team t JOIN MemberTeam mt ON mt.teamId = t.id " +
+            "WHERE mt.member.id = :memberId AND mt.isDeleted = false")
     List<Team> findAllByMemberId(final Long memberId);
 
 }
