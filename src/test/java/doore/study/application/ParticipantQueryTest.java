@@ -2,6 +2,7 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.보름;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,8 +14,10 @@ import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
+import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.StudyRoleRepository;
+import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.application.dto.response.ParticipantResponse;
 import doore.study.domain.Study;
@@ -37,6 +40,8 @@ public class ParticipantQueryTest extends IntegrationTest {
     private ParticipantQueryService participantQueryService;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private TeamRoleRepository teamRoleRepository;
 
     private Member member;
     private Study study;
@@ -61,6 +66,11 @@ public class ParticipantQueryTest extends IntegrationTest {
         @DisplayName("[성공] 참여자를 정상적으로 조회할 수 있다.")
         void getParticipants_참여자를_정상적으로_조회할_수_있다_성공() {
             //given
+            teamRoleRepository.save(TeamRole.builder()
+                    .teamId(study.getTeamId())
+                    .memberId(member.getId())
+                    .teamRoleType(ROLE_팀원)
+                    .build());
             participantCommandService.createParticipant(study.getId(), member.getId(), member.getId());
 
             //when

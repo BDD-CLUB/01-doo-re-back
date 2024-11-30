@@ -3,6 +3,7 @@ package doore.study.application;
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER_SELF;
@@ -54,6 +55,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
     private Member member;
     private Study study;
     private StudyRole studyRole;
+    private TeamRole teamLeaderRole;
     private TeamRole teamRole;
 
     @BeforeEach
@@ -66,10 +68,15 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
                 .studyId(study.getId())
                 .memberId(member.getId())
                 .build());
-        teamRole = teamRoleRepository.save(TeamRole.builder()
+        teamLeaderRole = teamRoleRepository.save(TeamRole.builder()
                 .teamId(study.getTeamId())
                 .teamRoleType(ROLE_팀장)
                 .memberId(teamLeader.getId())
+                .build());
+        teamRole = teamRoleRepository.save(TeamRole.builder()
+                .teamId(study.getTeamId())
+                .teamRoleType(ROLE_팀원)
+                .memberId(member.getId())
                 .build());
     }
 
@@ -97,6 +104,15 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         }
 
         @Test
+        @DisplayName("[실패] 추가하려는 참여자가 팀원이 아닌 경우 참여자 추가는 실패한다.")
+        void createParticipant_추가하려는_참여자가_팀원이_아닌_경우_참여자_추가는_실패한다_실패() {
+            final Member notMemberTeam = createMember();
+            assertThatThrownBy(
+                    () -> participantCommandService.createParticipant(study.getId(), notMemberTeam.getId(), member.getId()))
+                    .isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+        }
+
+        @Test
         @DisplayName("[실패] 존재하지 않는 회원인 경우 실패한다.")
         void notExistMember_존재하지_않는_회원인_경우_실패한다_실패() {
             final Long notExistingMemberId = 50L;
@@ -114,6 +130,11 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //Given
             final Long studyId = study.getId();
             final Member participant = createMember();
+            teamRoleRepository.save(TeamRole.builder()
+                    .teamId(study.getTeamId())
+                    .memberId(participant.getId())
+                    .teamRoleType(ROLE_팀원)
+                    .build());
             participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
 
             //when
@@ -159,7 +180,11 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //Given
             final Long studyId = study.getId();
             final Member participant = createMember();
-
+            teamRoleRepository.save(TeamRole.builder()
+                    .teamId(study.getTeamId())
+                    .memberId(participant.getId())
+                    .teamRoleType(ROLE_팀원)
+                    .build());
             participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
 
             //when
