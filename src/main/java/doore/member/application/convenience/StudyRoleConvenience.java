@@ -1,12 +1,16 @@
 package doore.member.application.convenience;
 
-import static doore.member.domain.StudyRoleType.*;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.exception.MemberExceptionType.CANNOT_DELETE_STUDY_LEADER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.domain.Study;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,5 +47,18 @@ public class StudyRoleConvenience {
 
     public Long findStudyLeaderId(final Long studyId) {
         return studyRoleRepository.findLeaderIdByStudyId(studyId);
+    }
+
+    public void isStudyLeader(final List<Study> studies, final Long memberId) {
+        boolean isStudyLeader = studies.stream().anyMatch(
+                study -> studyRoleRepository.existsByStudyIdAndMemberIdAndStudyRoleType(study.getId(), memberId,
+                        ROLE_스터디장));
+        if (isStudyLeader) {
+            throw new MemberException(CANNOT_DELETE_STUDY_LEADER);
+        }
+    }
+
+    public void deleteByStudyIdAndMemberId(final Long studyId, final Long memberId) {
+        studyRoleRepository.deleteByStudyIdAndMemberId(studyId, memberId);
     }
 }

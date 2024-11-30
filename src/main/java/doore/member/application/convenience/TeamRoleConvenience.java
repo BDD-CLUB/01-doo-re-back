@@ -30,4 +30,8 @@ public class TeamRoleConvenience {
                 .memberId(memberId)
                 .build());
     }
+
+    public void deleteByTeamIdAndMemberId(final Long teamId, final Long memberId) {
+        teamRoleRepository.deleteByTeamIdAndMemberId(teamId, memberId);
+    }
 }

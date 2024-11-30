@@ -43,4 +43,10 @@ public class StudyRoleValidateAccessPermission {
         return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
+
+    public boolean isStudyLeader(final Long studyId, final Long memberId) {
+        return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+                .map(studyRole -> ROLE_스터디장.equals(studyRole.getStudyRoleType()))
+                .orElse(false);
+    }
 }

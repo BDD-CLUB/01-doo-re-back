@@ -14,4 +14,5 @@ public interface TeamRoleRepository extends JpaRepository<TeamRole, Long> {
     @Query("SELECT tr.memberId FROM TeamRole tr WHERE tr.teamId = :teamId AND tr.teamRoleType = 'ROLE_팀장'")
     Long findLeaderIdByTeamId(Long teamId);
     List<TeamRole> findAllByTeamId(final Long teamId);
+    void deleteByTeamIdAndMemberId(final Long teamId, final Long memberId);
 }

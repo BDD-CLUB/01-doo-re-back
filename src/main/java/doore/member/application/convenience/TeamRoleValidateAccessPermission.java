@@ -43,4 +43,10 @@ public class TeamRoleValidateAccessPermission {
         return teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(UNAUTHORIZED));
     }
+
+    public boolean isTeamLeader(final Long teamId, final Long memberId) {
+        return teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .map(teamRole -> ROLE_팀장.equals(teamRole.getTeamRoleType()))
+                .orElse(false);
+    }
 }
