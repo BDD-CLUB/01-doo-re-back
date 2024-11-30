@@ -36,8 +36,10 @@ public class ParticipantCommandService {
 
     public void createParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, studyLeaderId);
-        studyValidateAccessPermission.validateExistStudy(studyId);
+        final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
+        final Long teamId = study.getTeamId();
+        teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, memberId);
         participantConvenience.assignParticipant(studyId, member);
         studyRoleConvenience.assignParticipantRole(studyId, memberId, studyLeaderId);
     }
