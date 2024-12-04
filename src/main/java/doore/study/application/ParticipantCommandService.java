@@ -27,6 +27,7 @@ public class ParticipantCommandService {
     public void createParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, studyLeaderId);
         studyValidateAccessPermission.validateExistStudy(studyId);
+        studyRoleConvenience.duplicateCheckStudyMember(studyId, memberId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantConvenience.assignParticipant(studyId, member);
         studyRoleConvenience.assignParticipantRole(studyId, memberId, studyLeaderId);

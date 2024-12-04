@@ -1,8 +1,5 @@
 package doore.member.application.convenience;
 
-import static doore.member.domain.StudyRoleType.*;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
-
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.StudyRoleRepository;
@@ -11,11 +8,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
+import static doore.member.exception.MemberExceptionType.ALREADY_JOIN_STUDY_MEMBER;
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class StudyRoleConvenience {
     private final StudyRoleRepository studyRoleRepository;
+
+    public void duplicateCheckStudyMember(final Long studyId, final Long memberId) {
+        if (studyRoleRepository.existsByStudyIdAndMemberId(studyId, memberId)) {
+            throw new MemberException(ALREADY_JOIN_STUDY_MEMBER);
+        }
+    }
 
     public void assignStudyLeaderRole(final Long studyId, final Long memberId) {
         studyRoleRepository.save(StudyRole.builder()
