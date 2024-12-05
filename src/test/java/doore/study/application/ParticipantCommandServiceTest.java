@@ -1,14 +1,5 @@
 package doore.study.application;
 
-import static doore.member.MemberFixture.createMember;
-import static doore.member.MemberFixture.아마란스;
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.StudyFixture.algorithmStudy;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
@@ -20,12 +11,23 @@ import doore.member.exception.MemberException;
 import doore.study.application.dto.response.ParticipantResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static doore.member.MemberFixture.createMember;
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.exception.MemberExceptionType.ALREADY_JOIN_STUDY_MEMBER;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.study.StudyFixture.algorithmStudy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParticipantCommandServiceTest extends IntegrationTest {
     @Autowired
@@ -65,18 +67,31 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         void createParticipant_정상적으로_참여자를_추가할_수_있다_성공() {
             //Given
             final Long studyId = study.getId();
-            final Long memberId = member.getId();
+            final Member participant = createMember();
 
             //when
-            participantCommandService.createParticipant(studyId, memberId, member.getId());
+            participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
 
             //then
             final List<ParticipantResponse> participantResponses = participantQueryService.getParticipants(studyId,
-                    memberId);
+                    participant.getId());
             assertAll(
                     () -> assertThat(participantResponses).hasSize(1),
-                    () -> assertEquals(memberId, participantResponses.get(0).memberId())
+                    () -> assertEquals(participant.getId(), participantResponses.get(0).memberId())
             );
+        }
+
+        @Test
+        @DisplayName("[실패] 이미 가입된 스티디원이라면 중복해서 초대를 할 수 없다.")
+        void createParticipant_이미_가입된_스터디원이라면_중복해서_초대를_할_수_없다_실패() {
+            final Long studyId = study.getId();
+            final Member participant = createMember();
+
+            participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
+            assertThatThrownBy(
+                    () -> participantCommandService.createParticipant(studyId, participant.getId(), member.getId()))
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(ALREADY_JOIN_STUDY_MEMBER.errorMessage());
         }
 
         @Test
