@@ -1,14 +1,5 @@
 package doore.study.application;
 
-import static doore.member.MemberFixture.보름;
-import static doore.member.MemberFixture.아마란스;
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.StudyFixture.algorithmStudy;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
@@ -19,12 +10,22 @@ import doore.member.exception.MemberException;
 import doore.study.application.dto.response.ParticipantResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static doore.member.MemberFixture.보름;
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.study.StudyFixture.algorithmStudy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParticipantQueryTest extends IntegrationTest {
     @Autowired
@@ -38,18 +39,20 @@ public class ParticipantQueryTest extends IntegrationTest {
     @Autowired
     private StudyRoleRepository studyRoleRepository;
 
+    private Member leader;
     private Member member;
     private Study study;
     private StudyRole studyRole;
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(아마란스());
+        leader = memberRepository.save(아마란스());
+        member = memberRepository.save(보름());
         study = studyRepository.save(algorithmStudy());
         studyRole = studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(StudyRoleType.ROLE_스터디장)
                 .studyId(study.getId())
-                .memberId(member.getId())
+                .memberId(leader.getId())
                 .build());
     }
 
@@ -61,7 +64,7 @@ public class ParticipantQueryTest extends IntegrationTest {
         @DisplayName("[성공] 참여자를 정상적으로 조회할 수 있다.")
         void getParticipants_참여자를_정상적으로_조회할_수_있다_성공() {
             //given
-            participantCommandService.createParticipant(study.getId(), member.getId(), member.getId());
+            participantCommandService.createParticipant(study.getId(), member.getId(), leader.getId());
 
             //when
             final List<ParticipantResponse> participantResponses = participantQueryService.getParticipants(study.getId(),
@@ -77,8 +80,6 @@ public class ParticipantQueryTest extends IntegrationTest {
         @Test
         @DisplayName("[실패] 스터디_구성원이 아니라면 참여자를 조회할 수 없다.")
         void getParticipants_스터디_구성원이_아니라면_참여자를_조회할_수_없다_실패() throws Exception {
-            final Member member = memberRepository.save(보름());
-
             assertThatThrownBy(() -> participantQueryService.getParticipants(study.getId(), member.getId()))
                     .isInstanceOf(MemberException.class)
                     .hasMessage(UNAUTHORIZED.errorMessage());
