@@ -85,11 +85,11 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         @DisplayName("[실패] 이미 가입된 스티디원이라면 중복해서 초대를 할 수 없다.")
         void createParticipant_이미_가입된_스터디원이라면_중복해서_초대를_할_수_없다_실패() {
             final Long studyId = study.getId();
-            final Member participant = createMember();
+            final Member alreadyJoinedParticipant = createMember();
 
-            participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
+            participantCommandService.createParticipant(studyId, alreadyJoinedParticipant.getId(), member.getId());
             assertThatThrownBy(
-                    () -> participantCommandService.createParticipant(studyId, participant.getId(), member.getId()))
+                    () -> participantCommandService.createParticipant(studyId, alreadyJoinedParticipant.getId(), member.getId()))
                     .isInstanceOf(MemberException.class)
                     .hasMessage(ALREADY_JOIN_STUDY_MEMBER.errorMessage());
         }

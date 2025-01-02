@@ -19,7 +19,7 @@ import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_I
 public class StudyRoleConvenience {
     private final StudyRoleRepository studyRoleRepository;
 
-    public void duplicateCheckStudyMember(final Long studyId, final Long memberId) {
+    public void duplicateCheckStudyParticipant(final Long studyId, final Long memberId) {
         if (studyRoleRepository.existsByStudyIdAndMemberId(studyId, memberId)) {
             throw new MemberException(ALREADY_JOIN_STUDY_MEMBER);
         }
