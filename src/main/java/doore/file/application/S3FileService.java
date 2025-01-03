@@ -3,15 +3,19 @@ package doore.file.application;
 import static doore.file.exception.FileExceptionType.FILE_IS_NULL;
 import static doore.file.exception.FileExceptionType.INVALID_FILE_ACCESS;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import doore.file.exception.FileException;
 import doore.file.exception.FileExceptionType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +35,18 @@ public abstract class S3FileService {
     @Value("${aws.s3.bucket}")
     protected String bucket;
 
+    @Value("${aws.s3.baseUrl}")
+    protected String baseUrl;
+
     public String upload(final MultipartFile file) {
         validateNotNull(file);
 
         final String fileExtension = getFileExtension(file);
+        final String originalFileName = Objects.requireNonNull(file.getOriginalFilename());
         final String newFileName = createFileName(fileExtension);
         final ObjectMetadata objectMetadata = getObjectMetadata(file);
+
+        objectMetadata.addUserMetadata("original-file-name", originalFileName);
 
         try (final InputStream inputStream = file.getInputStream()) {
             amazonS3.putObject(new PutObjectRequest(bucket, newFileName, inputStream, objectMetadata));
@@ -86,5 +96,26 @@ public abstract class S3FileService {
     public void deleteFile(final String fileName) {
         final String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
         amazonS3.deleteObject(bucket, decodedFileName);
+    }
+
+    public String getS3Url(String fileName) {
+        return String.format("%s/%s", baseUrl, getFileFolder() + fileName);
+    }
+
+    public String generatePresignedUrl(String fileName) {
+        ObjectMetadata metadata = amazonS3.getObjectMetadata(bucket, getFileFolder() + fileName);
+        String originalFileName = metadata.getUserMetaDataOf("original-file-name");
+
+        Date expiration = new Date();
+        expiration.setTime(System.currentTimeMillis() + 1000 * 60 * 60);
+
+        ResponseHeaderOverrides headerOverrides = new ResponseHeaderOverrides();
+        headerOverrides.setContentDisposition("attachment; filename=\"" + originalFileName + "\"");
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, getFileFolder() + fileName)
+            .withMethod(HttpMethod.GET)
+            .withExpiration(expiration)
+            .withResponseHeaders(headerOverrides);
+
+        return amazonS3.generatePresignedUrl(request).toString();
     }
 }
