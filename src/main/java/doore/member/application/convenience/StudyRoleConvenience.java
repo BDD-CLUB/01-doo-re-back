@@ -50,11 +50,16 @@ public class StudyRoleConvenience {
     }
 
     public void isStudyLeader(final List<Study> studies, final Long memberId) {
-        boolean isStudyLeader = studies.stream().anyMatch(
-                study -> studyRoleRepository.existsByStudyIdAndMemberIdAndStudyRoleType(study.getId(), memberId,
-                        ROLE_스터디장));
-        if (isStudyLeader) {
-            throw new MemberException(CANNOT_DELETE_STUDY_LEADER);
+        final List<String> leaderStudyNames = studies.stream()
+                .filter(study -> studyRoleRepository.existsByStudyIdAndMemberIdAndStudyRoleType(
+                        study.getId(), memberId, ROLE_스터디장))
+                .map(Study::getName)
+                .toList();
+
+        if (!leaderStudyNames.isEmpty()) {
+            String joinedNames = String.join(", ", leaderStudyNames);
+            String formattedMessage = String.format(CANNOT_DELETE_STUDY_LEADER.errorMessage(), joinedNames);
+            throw new MemberException(CANNOT_DELETE_STUDY_LEADER, formattedMessage);
         }
     }
 
