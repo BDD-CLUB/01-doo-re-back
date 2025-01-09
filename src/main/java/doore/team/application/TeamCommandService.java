@@ -88,24 +88,25 @@ public class TeamCommandService {
     public void updateTeamImage(final Long teamId, final MultipartFile file, final Long memberId) {
         teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, memberId);
         final Team team = teamValidateAccessPermission.getValidateExistTeam(teamId);
-
-        if (team.hasImage()) {
-            final String beforeImageUrl = team.getImageUrl();
-            s3ImageFileService.deleteFile(beforeImageUrl);
-        }
+        checkHasImageAndDelete(team);
 
         final String newImageUrl = s3ImageFileService.upload(file);
         team.updateImageUrl(newImageUrl);
+    }
+
+    public void deleteTeamImage(final Long teamId, final Long memberId) {
+        final Team team = teamValidateAccessPermission.getValidateExistTeam(teamId);
+        teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, memberId);
+        checkHasImageAndDelete(team);
+
+        team.updateImageUrl(DEFAULT_IMAGE_URL);
     }
 
     public void deleteTeam(final Long teamId, final Long memberId) {
         teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, memberId);
         final Team team = teamValidateAccessPermission.getValidateExistTeam(teamId);
         teamRepository.delete(team);
-
-        if (team.hasImage()) {
-            s3ImageFileService.deleteFile(team.getImageUrl());
-        }
+        checkHasImageAndDelete(team);
 
         deleteMemberTeamAndParticipant(teamId);
         deleteStudyAndCurriculumItemAndParticipantCurriculumItem(teamId);
@@ -171,5 +172,11 @@ public class TeamCommandService {
                 participantCurriculumItems.forEach(ParticipantCurriculumItem::delete); // todo: 수료증 개발 시 delete 로직 확인 필요
             });
         });
+    }
+
+    private void checkHasImageAndDelete(final Team team) {
+        if (team.hasImage()) {
+            s3ImageFileService.deleteFile(team.getImageUrl());
+        }
     }
 }
