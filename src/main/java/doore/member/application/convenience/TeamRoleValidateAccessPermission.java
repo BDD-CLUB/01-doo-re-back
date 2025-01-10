@@ -35,7 +35,7 @@ public class TeamRoleValidateAccessPermission {
         return teamRole;
     }
 
-    public void validateExistTeamMember(final Long teamId, final Long memberId) { // Only 팀원인지 확인. Not 팀장
+    public void validateExistMemberTeamOnly(final Long teamId, final Long memberId) { // Only 팀원인지 확인. Not 팀장
         final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
         if (!teamRole.getTeamRoleType().equals(ROLE_팀원)) {

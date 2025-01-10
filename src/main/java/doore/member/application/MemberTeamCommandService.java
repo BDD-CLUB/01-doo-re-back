@@ -42,7 +42,7 @@ public class MemberTeamCommandService {
 
     public void withdrawMemberTeam(final Long teamId, final Long memberId) {
         teamValidateAccessPermission.validateExistTeam(teamId);
-        teamRoleValidateAccessPermission.validateExistTeamMember(teamId, memberId);
+        teamRoleValidateAccessPermission.validateExistMemberTeamOnly(teamId, memberId);
         deleteStudyRoleAndParticipants(teamId, memberId);
         memberTeamRepository.deleteByTeamIdAndMemberId(teamId, memberId);
         teamRoleConvenience.deleteByTeamIdAndMemberId(teamId, memberId);
