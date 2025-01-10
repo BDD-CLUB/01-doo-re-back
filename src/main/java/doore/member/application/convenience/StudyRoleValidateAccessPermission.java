@@ -35,7 +35,7 @@ public class StudyRoleValidateAccessPermission {
         return studyRole;
     }
 
-    public void validateExistParticipantOnly(final Long studyId, final Long memberId) { // Only 스터디원인지 확인. Not 스터디
+    public void validateExistParticipantOnly(final Long studyId, final Long memberId) { // Only 스터디원인지 확인. Not 스터디장
         final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
         if (!studyRole.getStudyRoleType().equals(ROLE_스터디원)) {
