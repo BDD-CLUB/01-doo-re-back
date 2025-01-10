@@ -53,9 +53,9 @@ public class ParticipantCommandService {
         studyRoleConvenience.deleteByStudyIdAndMemberId(studyId, memberId);
     }
 
-    public void withdrawParticipant(final Long studyId, final Long memberId, final Long participantId) {
-        studyRoleValidateAccessPermission.validateExistParticipant(studyId, participantId);
+    public void withdrawParticipant(final Long studyId, final Long memberId) {
         studyValidateAccessPermission.validateExistStudy(studyId);
+        studyRoleValidateAccessPermission.validateExistParticipantOnly(studyId, memberId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
         studyRoleConvenience.deleteByStudyIdAndMemberId(studyId, memberId);

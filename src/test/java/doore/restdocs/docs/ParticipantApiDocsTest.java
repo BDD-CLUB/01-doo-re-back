@@ -2,8 +2,6 @@ package doore.restdocs.docs;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -61,8 +59,7 @@ public class ParticipantApiDocsTest extends RestDocsTest {
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("participant-withdraw",
-                        pathParameters(parameterWithName("studyId").description("스터디 id")),
-                        requestHeaders(headerWithName("Authorization").description("member id"))
+                        pathParameters(parameterWithName("studyId").description("스터디 id"))
                 ));
     }
 
