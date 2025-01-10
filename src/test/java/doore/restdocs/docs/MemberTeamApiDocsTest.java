@@ -116,4 +116,18 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
                         parameterWithName("teamId").description("팀 id"),
                         parameterWithName("memberId").description("삭제할 멤버 id"))));
     }
+
+    @Test
+    @DisplayName("팀원이 스스로 탈퇴할 수 있다.")
+    public void 팀원이_스스로_탈퇴할_수_있다() throws Exception {
+        //when
+        doNothing().when(memberTeamCommandService).withdrawMemberTeam(any(), any());
+
+        //then
+        mockMvc.perform(delete("/teams/{teamId}/members", 1)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isNoContent())
+                .andDo(document("member-team-withdraw", pathParameters(
+                        parameterWithName("teamId").description("팀 id"))));
+    }
 }
