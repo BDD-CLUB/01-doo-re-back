@@ -163,4 +163,25 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
             memberTeamCommandService.deleteMemberTeam(team.getId(), studyLeaderMember.getId(), teamLeader.getId());
         }).isInstanceOf(MemberException.class).hasMessage(CANNOT_DELETE_STUDY_LEADER.errorMessage());
     }
+
+    @Test
+    @DisplayName("[성공] 팀원은 정상적으로 스스로 탈퇴할 수 있다.")
+    public void withdrawMemberTeam_팀원은_정상적으로_스스로_탈퇴할_수_있다_성공() throws Exception {
+        long memberCount = memberTeamRepository.countByTeamId(team.getId());
+
+        //when
+        memberTeamCommandService.withdrawMemberTeam(team.getId(), teamMember.getId());
+
+        //then
+        long resultMemberCount = memberTeamRepository.countByTeamId(team.getId());
+        assertThat(resultMemberCount).isEqualTo(memberCount - 1);
+    }
+
+    @Test
+    @DisplayName("[실패] 팀장은 스스로 탈퇴할 수 없다.")
+    public void withdrawMemberTeam_팀장은_스스로_탈퇴할_수_없다_실패() throws Exception {
+        assertThatThrownBy(() -> {
+            memberTeamCommandService.withdrawMemberTeam(team.getId(), teamLeader.getId());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+    }
 }
