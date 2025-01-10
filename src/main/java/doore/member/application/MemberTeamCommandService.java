@@ -35,9 +35,17 @@ public class MemberTeamCommandService {
         checkIsEqualDeleteMemberIdAndTeamLeaderId(deleteMemberId, teamLeaderId);
         teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, teamLeaderId);
         teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, deleteMemberId);
-        deleteStudiesAndParticipants(teamId, deleteMemberId);
+        deleteStudyRoleAndParticipants(teamId, deleteMemberId);
         memberTeamRepository.deleteByTeamIdAndMemberId(teamId, deleteMemberId);
         teamRoleConvenience.deleteByTeamIdAndMemberId(teamId, deleteMemberId);
+    }
+
+    public void withdrawMemberTeam(final Long teamId, final Long memberId) {
+        teamValidateAccessPermission.validateExistTeam(teamId);
+        teamRoleValidateAccessPermission.validateExistTeamMember(teamId, memberId);
+        deleteStudyRoleAndParticipants(teamId, memberId);
+        memberTeamRepository.deleteByTeamIdAndMemberId(teamId, memberId);
+        teamRoleConvenience.deleteByTeamIdAndMemberId(teamId, memberId);
     }
 
     private void checkIsEqualDeleteMemberIdAndTeamLeaderId(final Long deleteMemberId, final Long teamLeaderId) {
@@ -46,7 +54,7 @@ public class MemberTeamCommandService {
         }
     }
 
-    private void deleteStudiesAndParticipants(final Long teamId, final Long deleteMemberId) {
+    private void deleteStudyRoleAndParticipants(final Long teamId, final Long deleteMemberId) {
         List<Study> studies = studyConvenience.findAllByTeamIdAndMemberId(teamId, deleteMemberId);
         studyRoleConvenience.isStudyLeader(studies, deleteMemberId);
 
