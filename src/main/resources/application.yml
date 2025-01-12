@@ -52,6 +52,7 @@ cors:
 aws:
   s3:
     bucket: test
+    baseUrl: https://s3.url
     folder:
       imageFolder: images/
       documentFolder: documents/
