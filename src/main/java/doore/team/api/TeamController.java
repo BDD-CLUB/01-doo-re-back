@@ -69,6 +69,13 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{teamId}/image") // 팀장
+    public ResponseEntity<Void> deleteTeamImage(@PathVariable final Long teamId, @LoginMember final Member member
+    ) {
+        teamCommandService.deleteTeamImage(teamId, member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{teamId}") // 팀장
     public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId, @LoginMember final Member member) {
         teamCommandService.deleteTeam(teamId, member.getId());
