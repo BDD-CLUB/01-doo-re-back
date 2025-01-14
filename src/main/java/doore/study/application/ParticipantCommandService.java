@@ -3,6 +3,7 @@ package doore.study.application;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER_SELF;
 
+import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
@@ -28,6 +29,7 @@ public class ParticipantCommandService {
     private final StudyRoleConvenience studyRoleConvenience;
     private final ParticipantConvenience participantConvenience;
     private final StudyConvenience studyConvenience;
+    private final MemberConvenience memberConvenience;
 
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
@@ -79,8 +81,10 @@ public class ParticipantCommandService {
 
     private void assignStudyLeaderToTeamLeader(final Long studyId, final Long deleteMemberId, final Long teamId,
                                                final Long leaderId) {
+        Member leader = memberConvenience.findByMember(leaderId);
         if (studyRoleValidateAccessPermission.isStudyLeader(studyId, deleteMemberId)
                 && teamRoleValidateAccessPermission.isTeamLeader(teamId, leaderId)) {
+            participantConvenience.assignParticipant(studyId, leader);
             studyRoleConvenience.assignStudyLeaderRole(studyId, leaderId);
         }
     }

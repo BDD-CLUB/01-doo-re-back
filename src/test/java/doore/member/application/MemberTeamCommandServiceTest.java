@@ -159,8 +159,10 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
                 .memberId(studyLeaderMember.getId())
                 .build());
 
+        final String expectedMessage = String.format(CANNOT_DELETE_STUDY_LEADER.errorMessage(), "알고리즘");
+
         assertThatThrownBy(() -> {
             memberTeamCommandService.deleteMemberTeam(team.getId(), studyLeaderMember.getId(), teamLeader.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(CANNOT_DELETE_STUDY_LEADER.errorMessage());
+        }).isInstanceOf(MemberException.class).hasMessage(expectedMessage);
     }
 }
