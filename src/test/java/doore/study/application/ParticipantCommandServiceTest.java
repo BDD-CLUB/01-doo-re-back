@@ -188,7 +188,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             participantCommandService.createParticipant(studyId, participant.getId(), member.getId());
 
             //when
-            participantCommandService.withdrawParticipant(studyId, participant.getId(), participant.getId());
+            participantCommandService.withdrawParticipant(studyId, participant.getId());
 
             //then
             assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);

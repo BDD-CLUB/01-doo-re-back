@@ -36,4 +36,10 @@ public class MemberTeamController {
         memberTeamCommandService.deleteMemberTeam(teamId, deleteMemberId, member.getId());
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/teams/{teamId}/members") // 팀원
+    public ResponseEntity<Void> withdrawMemberTeam(@PathVariable final Long teamId, @LoginMember final Member member) {
+        memberTeamCommandService.withdrawMemberTeam(teamId, member.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
