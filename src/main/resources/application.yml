@@ -46,15 +46,17 @@ jwt:
 
 cors:
   allow:
-    origins: https://www.doore.kro.kr
+    origins: https://doore.pnu.app
     methods: GET, POST, PUT, DELETE, PATCH, OPTION
 
 aws:
   s3:
     bucket: test
+    baseUrl: https://s3.url
     folder:
       imageFolder: images/
       documentFolder: documents/
   credentials:
     access-key: test
     secret-key: test
+  region: ap-northeast-2

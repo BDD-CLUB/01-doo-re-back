@@ -59,7 +59,7 @@ public class DocumentCommandService {
         if (!document.getType().equals(DocumentType.URL)) {
             final List<File> newFiles = new ArrayList<>();
             for (MultipartFile file : multipartFiles) {
-                final String filename = file.getName();
+                final String filename = file.getOriginalFilename();
                 final String filePath = uploadFileToS3(document.getType(), file);
                 final File newFile = createFile(filePath, filename, document);
                 newFiles.add(newFile);
