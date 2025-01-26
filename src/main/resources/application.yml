@@ -2,11 +2,11 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/doore
     username: root
-    password: bdd@2024
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
-      mode: never
+      mode: always
   jpa:
     hibernate:
       ddl-auto: none
@@ -46,7 +46,7 @@ jwt:
 
 cors:
   allow:
-    origins: https://www.doore.kro.kr
+    origins: https://doore.pnu.app
     methods: GET, POST, PUT, DELETE, PATCH, OPTION
 
 aws:
@@ -59,6 +59,4 @@ aws:
   credentials:
     access-key: test
     secret-key: test
-
-server:
-  port: 8000
+  region: ap-northeast-2
