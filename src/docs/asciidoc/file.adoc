@@ -15,7 +15,6 @@ endif::[]
 
 link:../doore.html[API 목록으로 돌아가기]
 
-
 == `GET`: 이미지 파일 URL 조회
 
 .Http Request
@@ -29,7 +28,6 @@ include::{snippets}/file-get-image-url/http-response.adoc[]
 
 .Http Response Headers
 include::{snippets}/file-get-image-url/response-headers.adoc[]
-
 
 == `GET`: 문서 파일 Presigned URL 생성
 

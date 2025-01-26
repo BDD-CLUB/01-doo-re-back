@@ -112,9 +112,9 @@ public abstract class S3FileService {
         ResponseHeaderOverrides headerOverrides = new ResponseHeaderOverrides();
         headerOverrides.setContentDisposition("attachment; filename=\"" + originalFileName + "\"");
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, getFileFolder() + fileName)
-            .withMethod(HttpMethod.GET)
-            .withExpiration(expiration)
-            .withResponseHeaders(headerOverrides);
+                .withMethod(HttpMethod.GET)
+                .withExpiration(expiration)
+                .withResponseHeaders(headerOverrides);
 
         return amazonS3.generatePresignedUrl(request).toString();
     }
