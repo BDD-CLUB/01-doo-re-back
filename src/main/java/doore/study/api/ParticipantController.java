@@ -42,7 +42,7 @@ public class ParticipantController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/studies/{studyId}/members") // 스터디장 & 스터디원
+    @GetMapping("/studies/{studyId}/members") // 스터디장 & 스터디원 & 팀장
     public ResponseEntity<List<ParticipantResponse>> getParticipants(@PathVariable final Long studyId,
                                                                     @LoginMember final Member member) {
         final List<ParticipantResponse> participants = participantQueryService.getParticipants(studyId, member.getId());

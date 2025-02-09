@@ -39,7 +39,7 @@ public class StudyRoleConvenience {
         }
     }
 
-    public StudyRoleType findStudyRoleType(Long studyId, Long memberId) {
+    public StudyRoleType findStudyRoleType(final Long studyId, final Long memberId) {
         return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY))
                 .getStudyRoleType();

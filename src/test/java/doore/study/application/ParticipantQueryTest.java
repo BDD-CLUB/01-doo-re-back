@@ -2,8 +2,10 @@ package doore.study.application;
 
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.보름;
+import static doore.member.MemberFixture.아마;
 import static doore.member.MemberFixture.아마란스;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
+import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -49,14 +51,22 @@ public class ParticipantQueryTest extends IntegrationTest {
 
     private Member member;
     private Member otherMember;
+    private Member teamLeader;
     private Study study;
     private StudyRole studyRole;
+    private TeamRole teamRole;
 
     @BeforeEach
     void setUp() {
         member = memberRepository.save(아마란스());
         otherMember = memberRepository.save(미나());
+        teamLeader = memberRepository.save(아마());
         study = studyRepository.save(algorithmStudy());
+        teamRole = teamRoleRepository.save(TeamRole.builder()
+                .teamId(study.getTeamId())
+                .memberId(teamLeader.getId())
+                .teamRoleType(ROLE_팀장)
+                .build());
         studyRole = studyRoleRepository.save(StudyRole.builder()
                 .studyRoleType(StudyRoleType.ROLE_스터디장)
                 .studyId(study.getId())
@@ -93,8 +103,8 @@ public class ParticipantQueryTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("[실패] 스터디_구성원이 아니라면 참여자를 조회할 수 없다.")
-    void getParticipants_스터디_구성원이_아니라면_참여자를_조회할_수_없다_실패() throws Exception {
+    @DisplayName("[실패] 오직 회원인 멤버는 참여자를 조회할 수 없다.")
+    void getParticipants_오직_회원인_멤버는_참여자를_조회할_수_없다_실패() throws Exception {
         final Member member = memberRepository.save(보름());
 
         assertThatThrownBy(() -> participantQueryService.getParticipants(study.getId(), member.getId()))
@@ -117,5 +127,42 @@ public class ParticipantQueryTest extends IntegrationTest {
 
         assertThat(beforeParticipantResponses.size()).isEqualTo(2);
         assertThat(afterParticipantResponses.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("[성공] 팀장은 스터디의 참여자를 조회할 수 있다.")
+    void getParticipants_팀장은_스터디의_참여자를_조회할_수_있다_성공() {
+        //given
+        teamRoleRepository.save(TeamRole.builder()
+                .teamId(study.getTeamId())
+                .memberId(member.getId())
+                .teamRoleType(ROLE_팀원)
+                .build());
+        participantCommandService.createParticipant(study.getId(), member.getId(), member.getId());
+
+        //when
+        final List<ParticipantResponse> participantResponses = participantQueryService.getParticipants(study.getId(),
+                teamLeader.getId());
+
+        //then
+        assertAll(
+                () -> assertThat(participantResponses).hasSize(1),
+                () -> assertEquals(member.getId(), participantResponses.get(0).memberId())
+        );
+    }
+
+    @Test
+    @DisplayName("[실패] 팀원은 참여자를 조회할 수 없다.")
+    void getParticipants_팀원은_참여자를_조회할_수_없다_실패() throws Exception {
+        final Member onlyMemberTeam = memberRepository.save(보름());
+        teamRoleRepository.save(TeamRole.builder()
+                .teamRoleType(ROLE_팀원)
+                .memberId(member.getId())
+                .teamId(study.getTeamId())
+                .build());
+
+        assertThatThrownBy(() -> participantQueryService.getParticipants(study.getId(), onlyMemberTeam.getId()))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
     }
 }

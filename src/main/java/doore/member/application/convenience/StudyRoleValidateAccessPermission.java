@@ -58,4 +58,10 @@ public class StudyRoleValidateAccessPermission {
                 .map(studyRole -> ROLE_스터디장.equals(studyRole.getStudyRoleType()))
                 .orElse(false);
     }
+
+    public boolean isParticipant(final Long studyId, final Long memberId) {
+        return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
+                .map(studyRole -> ROLE_스터디원.equals(studyRole.getStudyRoleType()))
+                .orElse(false);
+    }
 }
