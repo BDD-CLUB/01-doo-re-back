@@ -141,7 +141,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             participantCommandService.deleteParticipant(studyId, participant.getId(), member.getId());
 
             //then
-            assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
+            assertThat(participantRepository.findByMemberId(participant.getId()).size()).isEqualTo(0);
         }
 
         @Test
@@ -159,7 +159,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
 
             participantCommandService.deleteParticipant(study.getId(), member.getId(), teamLeader.getId());
 
-            assertThat(participantRepository.findByMemberId(member.getId()).get(0).getIsDeleted()).isEqualTo(true);
+            assertThat(participantRepository.findByMemberId(member.getId()).size()).isEqualTo(0);
         }
 
         @Test
@@ -191,7 +191,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             participantCommandService.withdrawParticipant(studyId, participant.getId());
 
             //then
-            assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
+            assertThat(participantRepository.findByMemberId(participant.getId()).size()).isEqualTo(0);
         }
     }
 }

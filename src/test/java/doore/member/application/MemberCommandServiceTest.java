@@ -15,13 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import doore.helper.IntegrationTest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.domain.Member;
+import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.StudyFixture;
+import doore.study.application.ParticipantCommandService;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.TeamFixture;
@@ -37,6 +40,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     @Autowired
     private MemberCommandService memberCommandService;
     @Autowired
+    private ParticipantCommandService participantCommandService;
+    @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private TeamRepository teamRepository;
@@ -46,16 +51,21 @@ class MemberCommandServiceTest extends IntegrationTest {
     private TeamRoleRepository teamRoleRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     private Member member;
+    private Member otherMember;
     private Team team;
     private Study study;
     private TeamRole previousTeamLeaderRole;
     private StudyRole previousStudyLeaderRole;
+    private TeamRole teamMemberRole;
 
     @BeforeEach
     void init() {
         member = memberRepository.save(아마란스());
+        otherMember = memberRepository.save(미나());
         team = teamRepository.save(TeamFixture.team());
         study = studyRepository.save(StudyFixture.algorithmStudy());
         previousTeamLeaderRole = TeamRole.builder()
@@ -70,6 +80,11 @@ class MemberCommandServiceTest extends IntegrationTest {
                 .memberId(member.getId())
                 .build();
         studyRoleRepository.save(previousStudyLeaderRole);
+        teamMemberRole = teamRoleRepository.save(TeamRole.builder()
+                .teamId(team.getId())
+                .teamRoleType(ROLE_팀원)
+                .memberId(otherMember.getId())
+                .build());
     }
 
     @Test
@@ -228,5 +243,34 @@ class MemberCommandServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> {
             memberCommandService.transferStudyLeader(study.getId(), member.getId(), notStudyLeaderMember.getId());
         });
+    }
+
+    @Test
+    @DisplayName("[성공] 팀장이 만든 스터디에 스터디장 위임 후 스터디장 삭제 시 다시 팀장이 스터디장이 된다.")
+    void transferStudyLeader_팀장이_만든_스터디에_스터디장_위임_후_스터디장_삭제_시_다시_팀장이_스터디장이_된다_성공() {
+        // 스터디 가입
+        participantRepository.save(Participant.builder().studyId(study.getId()).member(member).build());
+        participantRepository.save(Participant.builder().studyId(study.getId()).member(otherMember).build());
+        studyRoleRepository.save(StudyRole.builder()
+                .studyId(study.getId())
+                .studyRoleType(ROLE_스터디원)
+                .memberId(otherMember.getId())
+                .build());
+
+        // 팀장 위임
+        memberCommandService.transferStudyLeader(study.getId(), otherMember.getId(), member.getId());
+
+        // 스터디원이 된 팀장은 스터디 탈퇴
+        participantCommandService.withdrawParticipant(study.getId(), member.getId());
+        assertThat(participantRepository.findByMemberId(member.getId()).size()).isEqualTo(0);
+
+        // 팀장이 스터디장 삭제
+        participantCommandService.deleteParticipant(study.getId(), otherMember.getId(), member.getId());
+
+        // 팀장이 스터디장이 되었는지 확인
+        StudyRole lastStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(study.getId(), member.getId())
+                .orElseThrow();
+        assertThat(lastStudyRole.getStudyRoleType()).isEqualTo(ROLE_스터디장);
+        assertThat(participantRepository.findByMemberId(member.getId()).get(0).getIsDeleted()).isEqualTo(false);
     }
 }
