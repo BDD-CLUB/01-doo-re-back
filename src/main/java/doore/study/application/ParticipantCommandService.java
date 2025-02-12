@@ -81,11 +81,25 @@ public class ParticipantCommandService {
 
     private void assignStudyLeaderToTeamLeader(final Long studyId, final Long deleteMemberId, final Long teamId,
                                                final Long leaderId) {
-        Member leader = memberConvenience.findByMember(leaderId);
+        final Member leader = memberConvenience.findByMember(leaderId);
         if (studyRoleValidateAccessPermission.isStudyLeader(studyId, deleteMemberId)
                 && teamRoleValidateAccessPermission.isTeamLeader(teamId, leaderId)) {
-            participantConvenience.assignParticipant(studyId, leader);
-            studyRoleConvenience.assignStudyLeaderRole(studyId, leaderId);
+            final boolean isTeamLeaderAlreadyParticipant = checkIsPresentParticipantAndUpdateStudyRole(studyId,
+                    leaderId);
+            if (!isTeamLeaderAlreadyParticipant) {
+                participantConvenience.assignParticipant(studyId, leader);
+                studyRoleConvenience.assignStudyLeaderRole(studyId, leaderId);
+            }
         }
     }
+
+    private boolean checkIsPresentParticipantAndUpdateStudyRole(final Long studyId, final Long leaderId) {
+        return studyRoleConvenience.findStudyRoleByStudyIdAndMemberId(studyId, leaderId)
+                .map(studyRole -> {
+                    studyRole.updateStudyLeaderRole();
+                    return true;
+                })
+                .orElse(false);
+    }
+
 }

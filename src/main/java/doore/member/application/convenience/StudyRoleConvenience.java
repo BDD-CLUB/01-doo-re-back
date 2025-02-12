@@ -11,6 +11,7 @@ import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,5 +66,9 @@ public class StudyRoleConvenience {
 
     public void deleteByStudyIdAndMemberId(final Long studyId, final Long memberId) {
         studyRoleRepository.deleteByStudyIdAndMemberId(studyId, memberId);
+    }
+
+    public Optional<StudyRole> findStudyRoleByStudyIdAndMemberId(final Long studyId, final Long memberId) {
+        return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId);
     }
 }
