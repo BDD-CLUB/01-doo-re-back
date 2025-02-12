@@ -3,6 +3,8 @@ package doore.study.application;
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
@@ -17,7 +19,6 @@ import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
-import doore.member.domain.StudyRoleType;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
@@ -29,6 +30,7 @@ import doore.study.application.dto.response.ParticipantResponse;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -64,7 +66,7 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         member = memberRepository.save(아마란스());
         study = studyRepository.save(algorithmStudy());
         studyRole = studyRoleRepository.save(StudyRole.builder()
-                .studyRoleType(StudyRoleType.ROLE_스터디장)
+                .studyRoleType(ROLE_스터디장)
                 .studyId(study.getId())
                 .memberId(member.getId())
                 .build());
@@ -108,7 +110,8 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
         void createParticipant_추가하려는_참여자가_팀원이_아닌_경우_참여자_추가는_실패한다_실패() {
             final Member notMemberTeam = createMember();
             assertThatThrownBy(
-                    () -> participantCommandService.createParticipant(study.getId(), notMemberTeam.getId(), member.getId()))
+                    () -> participantCommandService.createParticipant(study.getId(), notMemberTeam.getId(),
+                            member.getId()))
                     .isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
         }
 
@@ -193,5 +196,24 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
             //then
             assertThat(participantRepository.findByMemberId(participant.getId()).get(0).getIsDeleted()).isEqualTo(true);
         }
+    }
+
+    @Test
+    @DisplayName("[성공] 팀장이 스터디원이고 팀장이 스터디장을 탈퇴시켰을 때 팀장의 직위는 스터디장으로 변경된다.")
+    void deleteParticipant_팀장이_스터디원이고_팀장이_스터디장을_탈퇴시켰을_때_팀장의_직위는_스터디장으로_변경된다_성공() {
+        participantCommandService.createParticipant(study.getId(), teamLeader.getId(), member.getId());
+        final Optional<StudyRole> prevTeamLeaderStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(
+                study.getId(), teamLeader.getId());
+        assertThat(prevTeamLeaderStudyRole).isPresent();
+        assertThat(prevTeamLeaderStudyRole.get().getStudyRoleType()).isEqualTo(ROLE_스터디원);
+
+        participantCommandService.deleteParticipant(study.getId(), member.getId(), teamLeader.getId());
+        final List<Participant> participants = participantRepository.findAllByStudyId(study.getId());
+        final Optional<StudyRole> newTeamLeaderStudyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(
+                study.getId(), teamLeader.getId());
+
+        assertThat(participants.size()).isEqualTo(1);
+        assertThat(newTeamLeaderStudyRole).isPresent();
+        assertThat(newTeamLeaderStudyRole.get().getStudyRoleType()).isEqualTo(ROLE_스터디장);
     }
 }
