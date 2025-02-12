@@ -31,7 +31,7 @@ import doore.member.exception.MemberTeamException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

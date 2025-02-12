@@ -5,7 +5,7 @@ import doore.study.domain.Study;
 import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.TeamFixture;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;

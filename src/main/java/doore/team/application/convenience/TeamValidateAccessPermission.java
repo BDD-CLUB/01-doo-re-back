@@ -3,7 +3,7 @@ package doore.team.application.convenience;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

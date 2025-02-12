@@ -24,7 +24,7 @@ package doore.member.application;
         import doore.study.domain.repository.StudyRepository;
         import doore.team.application.TeamQueryService;
         import doore.team.domain.Team;
-        import doore.team.domain.TeamRepository;
+        import doore.team.domain.repository.TeamRepository;
         import org.junit.jupiter.api.BeforeEach;
         import org.junit.jupiter.api.DisplayName;
         import org.junit.jupiter.api.Test;
