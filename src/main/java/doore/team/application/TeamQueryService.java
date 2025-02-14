@@ -55,7 +55,8 @@ public class TeamQueryService {
 
         return myTeams.stream()
                 .map(team -> {
-                    List<StudyNameResponse> studyNameResponses = studyRepository.findAllByTeamId(team.getId()).stream()
+                    List<StudyNameResponse> studyNameResponses = studyRepository.findAllByTeamIdAndMemberId(
+                                    team.getId(), memberId).stream()
                             .map(StudyNameResponse::from)
                             .toList();
                     return MyTeamsAndStudiesResponse.of(team, studyNameResponses);

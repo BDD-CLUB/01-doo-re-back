@@ -113,4 +113,16 @@ public class MemberQueryServiceTest extends IntegrationTest {
         assertThat(actual.myTeamsAndStudies().size()).isEqualTo(1);
         assertThat(actual.myTeamsAndStudies().get(0).teamStudies().size()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("[성공] 삭제된 스터디는 나의 팀 내역에 포함되지 않는다.")
+    void getSideBarInfo_삭제된_스터디는_나의_팀_내역에_포함되지_않는다_성공() {
+        participantRepository.deleteByStudyIdAndMemberId(study.getId(), member.getId());
+
+        final MemberAndMyTeamsAndStudiesResponse actual = memberQueryService.getSideBarInfo(member.getId(),
+                member.getId());
+
+        assertThat(actual.myTeamsAndStudies().size()).isEqualTo(2);
+        assertThat(actual.myTeamsAndStudies().get(0).teamStudies().size()).isEqualTo(0);
+    }
 }
