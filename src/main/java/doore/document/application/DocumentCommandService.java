@@ -21,7 +21,6 @@ import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.team.application.convenience.TeamValidateAccessPermission;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,24 +52,11 @@ public class DocumentCommandService {
             studyRoleValidateAccessPermission.validateExistParticipant(groupId, memberId);
         }
         documentValidateAccessPermission.validateDocumentType(request.type(), request.url(), multipartFiles);
+
         final Document document = Document.from(request, groupType, groupId);
-
         documentRepository.save(document);
+        processDocumentFiles(document, request.url(), multipartFiles);
 
-        if (document.getType().equals(DocumentType.URL)) {
-            final File newFile = createFile(request.url(), "", document);
-            document.updateFiles(List.of(newFile));
-        }
-        if (!document.getType().equals(DocumentType.URL)) {
-            final List<File> newFiles = new ArrayList<>();
-            for (MultipartFile file : multipartFiles) {
-                final String filename = file.getOriginalFilename();
-                final String filePath = uploadFileToS3(document.getType(), file);
-                final File newFile = createFile(filePath, filename, document);
-                newFiles.add(newFile);
-            }
-            document.updateFiles(newFiles);
-        }
         gardenCommandService.createDocumentGarden(document);
     }
 
@@ -96,6 +82,31 @@ public class DocumentCommandService {
         if (groupType.equals(STUDY)) {
             studyValidateAccessPermission.validateExistStudy(groupId);
         }
+    }
+
+    private void processDocumentFiles(final Document document, final String url,
+                                      final List<MultipartFile> multipartFiles) {
+        if (document.getType().equals(DocumentType.URL)) {
+            processUrlDocument(document, url);
+        } else {
+            processUploadedFiles(document, multipartFiles);
+        }
+    }
+
+    private void processUrlDocument(final Document document, final String url) {
+        final File newFile = createFile(url, "", document);
+        document.updateFiles(List.of(newFile));
+    }
+
+    private void processUploadedFiles(final Document document, final List<MultipartFile> multipartFiles) {
+        List<File> newFiles = multipartFiles.stream()
+                .map(file -> {
+                    final String filename = file.getOriginalFilename();
+                    final String filePath = uploadFileToS3(document.getType(), file);
+                    return createFile(filePath, filename, document);
+                })
+                .toList();
+        document.updateFiles(newFiles);
     }
 
     //todo: 파일 관련 코드 정리 필요
