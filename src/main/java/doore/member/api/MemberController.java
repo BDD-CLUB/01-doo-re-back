@@ -69,4 +69,10 @@ public class MemberController {
         memberCommandService.updateMyPageImage(memberId, file, member.getId());
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/myPage/members/{memberId}/image") // 개인
+    public ResponseEntity<Void> deleteMyPageImage(@PathVariable final Long memberId, @LoginMember final Member member) {
+        memberCommandService.deleteMyPageImage(memberId, member.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
