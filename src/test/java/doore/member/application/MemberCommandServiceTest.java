@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import doore.helper.IntegrationTest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -228,5 +229,29 @@ class MemberCommandServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> {
             memberCommandService.transferStudyLeader(study.getId(), member.getId(), notStudyLeaderMember.getId());
         });
+    }
+
+    @Test
+    @DisplayName("[성공] 정상적으로 마이페이지 정보를 수정할 수 있다.")
+    void updateMyPage_정상적으로_마이페이지_정보를_수정할_수_있다_성공() {
+        final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
+        final Member beforeMemberInfo = memberRepository.findById(member.getId()).orElseThrow();
+        assertThat(beforeMemberInfo.getName()).isEqualTo("아마란스");
+
+        memberCommandService.updateMyPage(request, member.getId(), member.getId());
+        final Member afterMemberInfo = memberRepository.findById(member.getId()).orElseThrow();
+
+        assertThat(afterMemberInfo.getName()).isEqualTo(request.name());
+    }
+
+    @Test
+    @DisplayName("[실패] 본인이 아니라면 마이페이지 정보를 수정할 수 없다.")
+    void updateMyPage_본인이_아니라면_마이페이지_정보를_수정할_수_없다_실패() {
+        final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
+        final Member otherMember = memberRepository.save(미나());
+
+        assertThatThrownBy(() -> {
+            memberCommandService.updateMyPage(request, member.getId(), otherMember.getId());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 }
