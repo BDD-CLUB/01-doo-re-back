@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 class MemberCommandServiceTest extends IntegrationTest {
     @Autowired
@@ -252,6 +253,17 @@ class MemberCommandServiceTest extends IntegrationTest {
 
         assertThatThrownBy(() -> {
             memberCommandService.updateMyPage(request, member.getId(), otherMember.getId());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
+    @DisplayName("[실패] 본인이 아니라면 마이페이지 이미지를 수정할 수 없다.")
+    void updateMyPageImage_본인이_아니라면_마이페이지_이미지를_수정할_수_없다_실패() {
+        final Member otherMember = memberRepository.save(미나());
+        final MultipartFile file = getMockImageFile();
+
+        assertThatThrownBy(() -> {
+            memberCommandService.updateMyPageImage(member.getId(), file, otherMember.getId());
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 }
