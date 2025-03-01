@@ -266,4 +266,14 @@ class MemberCommandServiceTest extends IntegrationTest {
             memberCommandService.updateMyPageImage(member.getId(), file, otherMember.getId());
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
+
+    @Test
+    @DisplayName("[실패] 본인이 아니라면 마이페이지 이미지를 삭제할 수 없다.")
+    void deleteMyPageImage_본인이_아니라면_마이페이지_이미지를_삭제할_수_없다_실패() {
+        final Member otherMember = memberRepository.save(미나());
+
+        assertThatThrownBy(() -> {
+            memberCommandService.deleteMyPageImage(member.getId(), otherMember.getId());
+        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+    }
 }
