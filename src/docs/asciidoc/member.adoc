@@ -79,3 +79,14 @@ include::{snippets}/myPage-image-update/http-response.adoc[]
 
 .Path Parameters
 include::{snippets}/myPage-image-update/path-parameters.adoc[]
+
+== `DELETE`: 마이페이지 이미지 삭제
+
+.HTTP Request
+include::{snippets}/myPage-image-delete/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-image-delete/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/myPage-image-delete/path-parameters.adoc[]

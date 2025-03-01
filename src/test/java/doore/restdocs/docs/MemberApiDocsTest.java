@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -158,5 +159,19 @@ public class MemberApiDocsTest extends RestDocsTest {
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("myPage-image-update", requestParts, pathParameters));
+    }
+
+    @Test
+    @DisplayName("[성공] 마이페이지의 이미지를 삭제한다.")
+    public void deleteMyPageImage_마이페이지의_이미지를_삭제한다_성공() throws Exception {
+        doNothing().when(memberCommandService).deleteMyPageImage(any(), any());
+
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("memberId").description("멤버 id")
+        );
+        mockMvc.perform(delete("/myPage/members/{memberId}/image", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isNoContent())
+                .andDo(document("myPage-image-delete", pathParameters));
     }
 }
