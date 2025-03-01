@@ -18,6 +18,7 @@ import doore.file.application.S3DocumentFileService;
 import doore.file.application.S3ImageFileService;
 import doore.garden.application.convenience.GardenConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
+import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.team.application.convenience.TeamValidateAccessPermission;
 import java.util.ArrayList;
@@ -36,10 +37,11 @@ public class DocumentCommandService {
 
     private final S3ImageFileService s3ImageFileService;
     private final S3DocumentFileService s3DocumentFileService;
-    private final GardenConvenience gardenCommandService;
 
+    private final GardenConvenience gardenCommandService;
     private final TeamValidateAccessPermission teamValidateAccessPermission;
     private final StudyValidateAccessPermission studyValidateAccessPermission;
+    private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
     private final MemberValidateAccessPermission memberValidateAccessPermission;
     private final DocumentValidateAccessPermission documentValidateAccessPermission;
 
@@ -47,6 +49,9 @@ public class DocumentCommandService {
                                final DocumentGroupType groupType, final Long groupId, final Long memberId) {
         memberValidateAccessPermission.validateExistMember(memberId);
         validateExistGroup(groupType, groupId);
+        if (groupType == STUDY) {
+            studyRoleValidateAccessPermission.validateExistParticipant(groupId, memberId);
+        }
         documentValidateAccessPermission.validateDocumentType(request.type(), request.url(), multipartFiles);
         final Document document = Document.from(request, groupType, groupId);
 
