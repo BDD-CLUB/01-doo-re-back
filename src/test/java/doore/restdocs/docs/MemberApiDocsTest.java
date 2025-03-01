@@ -5,12 +5,14 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
@@ -106,5 +108,24 @@ public class MemberApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("get-sidebar-info", pathParameters, responseFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("[성공] 마이페이지를 수정한다.")
+    public void updateMyPage_마이페이지를_수정한다_성공() throws Exception {
+        final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
+
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/myPage/members/{memberId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent())
+                .andDo(document("myPage-update",
+                        pathParameters(
+                                parameterWithName("memberId").description("멤버 id")
+                        ),
+                        requestFields(
+                                stringFieldWithPath("name", "수정할 이름")
+                        )
+                ));
     }
 }

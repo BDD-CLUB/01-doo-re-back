@@ -57,3 +57,14 @@ include::{snippets}/get-sidebar-info/http-response.adoc[]
 
 .Response Body's Fields
 include::{snippets}/get-sidebar-info/response-body.adoc[]
+
+== `PATCH`: 마이페이지 수정
+
+.HTTP Request
+include::{snippets}/myPage-update/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-update/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/myPage-update/path-parameters.adoc[]
