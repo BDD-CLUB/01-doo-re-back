@@ -3,8 +3,10 @@ package doore.member.api;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberQueryService;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
@@ -46,7 +49,15 @@ public class MemberController {
 
     @GetMapping("/members/{memberId}")
     public ResponseEntity<MemberAndMyTeamsAndStudiesResponse> getSideBarInfo(@PathVariable final Long memberId,
-                                                                                   @LoginMember final Member member) {
+                                                                             @LoginMember final Member member) {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
     }
+
+    @PatchMapping("/myPage/members/{memberId}")
+    public ResponseEntity<Void> updateMyPage(@Valid @RequestBody final MyPageUpdateRequest request,
+                                             @PathVariable final Long memberId, @LoginMember final Member member) {
+        memberCommandService.updateMyPage(request, memberId, member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
 }

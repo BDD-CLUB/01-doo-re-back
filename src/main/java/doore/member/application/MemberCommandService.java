@@ -1,9 +1,11 @@
 package doore.member.application;
 
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
+import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -20,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberCommandService {
 
     private final MemberRepository memberRepository;
+
+    private final MemberConvenience memberConvenience;
 
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
@@ -67,4 +71,11 @@ public class MemberCommandService {
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         memberRepository.delete(member);
     }
+
+    public void updateMyPage(final MyPageUpdateRequest request, final Long memberId, final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
+        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+        member.updateMyPage(request.name());
+    }
+
 }
