@@ -47,13 +47,13 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/{memberId}")
+    @GetMapping("/members/{memberId}") // 개인
     public ResponseEntity<MemberAndMyTeamsAndStudiesResponse> getSideBarInfo(@PathVariable final Long memberId,
                                                                              @LoginMember final Member member) {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
     }
 
-    @PatchMapping("/myPage/members/{memberId}")
+    @PatchMapping("/myPage/members/{memberId}") // 개인
     public ResponseEntity<Void> updateMyPage(@Valid @RequestBody final MyPageUpdateRequest request,
                                              @PathVariable final Long memberId, @LoginMember final Member member) {
         memberCommandService.updateMyPage(request, memberId, member.getId());
