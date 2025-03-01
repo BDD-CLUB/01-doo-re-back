@@ -1,5 +1,6 @@
 package doore.member.application;
 
+import doore.file.application.S3ImageFileService;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
@@ -15,6 +16,7 @@ import doore.team.application.convenience.TeamValidateAccessPermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -24,6 +26,8 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
 
     private final MemberConvenience memberConvenience;
+
+    private final S3ImageFileService s3ImageFileService;
 
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
@@ -76,6 +80,21 @@ public class MemberCommandService {
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
         member.updateMyPage(request.name());
+    }
+
+    public void updateMyPageImage(final Long memberId, final MultipartFile file, final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
+        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+        checkHasImageAndDelete(member);
+
+        final String newImageUrl = s3ImageFileService.upload(file);
+        member.updateImageUrl(newImageUrl);
+    }
+
+    private void checkHasImageAndDelete(final Member member) {
+        if (member.hasImage()) {
+            s3ImageFileService.deleteFile(member.getImageUrl());
+        }
     }
 
 }

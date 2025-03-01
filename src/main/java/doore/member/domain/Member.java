@@ -51,4 +51,12 @@ public class Member extends BaseEntity {
     public void updateMyPage(String name) {
         this.name = name;
     }
+
+    public boolean hasImage() {
+        return !imageUrl.equals("");
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

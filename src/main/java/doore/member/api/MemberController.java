@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Validated
 @RestController
@@ -60,4 +62,11 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/myPage/members/{memberId}/image") // 개인
+    public ResponseEntity<Void> updateMyPageImage(@PathVariable final Long memberId,
+                                                  @RequestPart(required = false) final MultipartFile file,
+                                                  @LoginMember final Member member) {
+        memberCommandService.updateMyPageImage(memberId, file, member.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
