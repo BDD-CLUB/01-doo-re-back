@@ -1,10 +1,13 @@
 package doore.member.api;
 
+import doore.document.application.DocumentQueryService;
+import doore.document.application.dto.response.DocumentResponse;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberQueryService;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +24,7 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
     private final MemberQueryService memberQueryService;
+    private final DocumentQueryService documentQueryService;
 
     @PatchMapping("/teams/{teamId}/mandate/{newTeamLeaderId}") // 팀장
     public ResponseEntity<Void> transferTeamLeader(@PathVariable final Long teamId,
@@ -46,7 +50,12 @@ public class MemberController {
 
     @GetMapping("/members/{memberId}")
     public ResponseEntity<MemberAndMyTeamsAndStudiesResponse> getSideBarInfo(@PathVariable final Long memberId,
-                                                                                   @LoginMember final Member member) {
+                                                                             @LoginMember final Member member) {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
+    }
+
+    @GetMapping("/members/documents")
+    public ResponseEntity<List<DocumentResponse>> getDocuments(@LoginMember final Member member) {
+        return ResponseEntity.ok(documentQueryService.getDocumentsByMemberId(member.getId()));
     }
 }
