@@ -6,7 +6,10 @@ import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
+import doore.study.application.StudyQueryService;
+import doore.study.application.dto.response.StudyRankResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +29,7 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
     private final MemberQueryService memberQueryService;
+    private final StudyQueryService studyQueryService;
 
     @PatchMapping("/teams/{teamId}/mandate/{newTeamLeaderId}") // 팀장
     public ResponseEntity<Void> transferTeamLeader(@PathVariable final Long teamId,
@@ -73,5 +77,10 @@ public class MemberController {
     public ResponseEntity<Void> deleteMyPageImage(@LoginMember final Member member) {
         memberCommandService.deleteMyPageImage(member.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/members/studies")
+    public ResponseEntity<List<StudyRankResponse>> getStudies(@LoginMember final Member member) {
+        return ResponseEntity.ok(studyQueryService.getMemberStudies(member.getId()));
     }
 }
