@@ -33,7 +33,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
 
 class MemberCommandServiceTest extends IntegrationTest {
     @Autowired
@@ -239,41 +238,10 @@ class MemberCommandServiceTest extends IntegrationTest {
         final Member beforeMemberInfo = memberRepository.findById(member.getId()).orElseThrow();
         assertThat(beforeMemberInfo.getName()).isEqualTo("아마란스");
 
-        memberCommandService.updateMyPage(request, member.getId(), member.getId());
+        memberCommandService.updateMyPage(request, member.getId());
         final Member afterMemberInfo = memberRepository.findById(member.getId()).orElseThrow();
 
         assertThat(afterMemberInfo.getName()).isEqualTo(request.name());
     }
 
-    @Test
-    @DisplayName("[실패] 본인이 아니라면 마이페이지 정보를 수정할 수 없다.")
-    void updateMyPage_본인이_아니라면_마이페이지_정보를_수정할_수_없다_실패() {
-        final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
-        final Member otherMember = memberRepository.save(미나());
-
-        assertThatThrownBy(() -> {
-            memberCommandService.updateMyPage(request, member.getId(), otherMember.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
-    }
-
-    @Test
-    @DisplayName("[실패] 본인이 아니라면 마이페이지 이미지를 수정할 수 없다.")
-    void updateMyPageImage_본인이_아니라면_마이페이지_이미지를_수정할_수_없다_실패() {
-        final Member otherMember = memberRepository.save(미나());
-        final MultipartFile file = getMockImageFile();
-
-        assertThatThrownBy(() -> {
-            memberCommandService.updateMyPageImage(member.getId(), file, otherMember.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
-    }
-
-    @Test
-    @DisplayName("[실패] 본인이 아니라면 마이페이지 이미지를 삭제할 수 없다.")
-    void deleteMyPageImage_본인이_아니라면_마이페이지_이미지를_삭제할_수_없다_실패() {
-        final Member otherMember = memberRepository.save(미나());
-
-        assertThatThrownBy(() -> {
-            memberCommandService.deleteMyPageImage(member.getId(), otherMember.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
-    }
 }

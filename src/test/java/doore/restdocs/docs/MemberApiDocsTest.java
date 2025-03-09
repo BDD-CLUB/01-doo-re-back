@@ -122,14 +122,11 @@ public class MemberApiDocsTest extends RestDocsTest {
     public void updateMyPage_마이페이지를_수정한다_성공() throws Exception {
         final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
 
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/myPage/members/{memberId}", 1)
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/members/me", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNoContent())
                 .andDo(document("myPage-update",
-                        pathParameters(
-                                parameterWithName("memberId").description("멤버 id")
-                        ),
                         requestFields(
                                 stringFieldWithPath("name", "수정할 이름")
                         )
@@ -141,15 +138,13 @@ public class MemberApiDocsTest extends RestDocsTest {
     public void updateMyPageImage_마이페이지의_이미지를_수정한다_성공() throws Exception {
         final MockMultipartFile file = getMockImageFile();
 
-        doNothing().when(memberCommandService).updateMyPageImage(any(), any(MultipartFile.class), any());
+        doNothing().when(memberCommandService).updateMyPageImage(any(MultipartFile.class), any());
 
         final RequestPartsSnippet requestParts = requestParts(
                 partWithName("file").description("마이페이지 프로필 이미지 파일")
         );
-        final PathParametersSnippet pathParameters = pathParameters(
-                parameterWithName("memberId").description("멤버 id")
-        );
-        mockMvc.perform(multipart("/myPage/members/{memberId}/image", 1L)
+
+        mockMvc.perform(multipart("/members/me/image", 1L)
                         .file(file)
                         .with(request -> {
                             request.setMethod("PATCH");
@@ -158,20 +153,17 @@ public class MemberApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
-                .andDo(document("myPage-image-update", requestParts, pathParameters));
+                .andDo(document("myPage-image-update", requestParts));
     }
 
     @Test
     @DisplayName("[성공] 마이페이지의 이미지를 삭제한다.")
     public void deleteMyPageImage_마이페이지의_이미지를_삭제한다_성공() throws Exception {
-        doNothing().when(memberCommandService).deleteMyPageImage(any(), any());
+        doNothing().when(memberCommandService).deleteMyPageImage(any());
 
-        final PathParametersSnippet pathParameters = pathParameters(
-                parameterWithName("memberId").description("멤버 id")
-        );
-        mockMvc.perform(delete("/myPage/members/{memberId}/image", 1L)
+        mockMvc.perform(delete("/members/me/image", 1L)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
-                .andDo(document("myPage-image-delete", pathParameters));
+                .andDo(document("myPage-image-delete"));
     }
 }

@@ -55,24 +55,23 @@ public class MemberController {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
     }
 
-    @PatchMapping("/myPage/members/{memberId}") // 개인
+    @PatchMapping("/members/me") // 개인
     public ResponseEntity<Void> updateMyPage(@Valid @RequestBody final MyPageUpdateRequest request,
-                                             @PathVariable final Long memberId, @LoginMember final Member member) {
-        memberCommandService.updateMyPage(request, memberId, member.getId());
+                                             @LoginMember final Member member) {
+        memberCommandService.updateMyPage(request, member.getId());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/myPage/members/{memberId}/image") // 개인
-    public ResponseEntity<Void> updateMyPageImage(@PathVariable final Long memberId,
-                                                  @RequestPart(required = false) final MultipartFile file,
+    @PatchMapping("/members/me/image") // 개인
+    public ResponseEntity<Void> updateMyPageImage(@RequestPart(required = false) final MultipartFile file,
                                                   @LoginMember final Member member) {
-        memberCommandService.updateMyPageImage(memberId, file, member.getId());
+        memberCommandService.updateMyPageImage(file, member.getId());
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/myPage/members/{memberId}/image") // 개인
-    public ResponseEntity<Void> deleteMyPageImage(@PathVariable final Long memberId, @LoginMember final Member member) {
-        memberCommandService.deleteMyPageImage(memberId, member.getId());
+    @DeleteMapping("/members/me/image") // 개인
+    public ResponseEntity<Void> deleteMyPageImage(@LoginMember final Member member) {
+        memberCommandService.deleteMyPageImage(member.getId());
         return ResponseEntity.noContent().build();
     }
 }
