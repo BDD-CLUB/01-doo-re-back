@@ -47,4 +47,16 @@ public class Member extends BaseEntity {
         this.imageUrl = imageUrl;
         this.isDeleted = false;
     }
+
+    public void updateMyPage(String name) {
+        this.name = name;
+    }
+
+    public boolean hasImage() {
+        return !imageUrl.equals("");
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
