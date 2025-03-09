@@ -35,6 +35,8 @@ public class MemberCommandService {
     private final StudyValidateAccessPermission studyValidateAccessPermission;
     private final MemberValidateAccessPermission memberValidateAccessPermission;
 
+    private static final String DEFAULT_IMAGE_URL = "TEMP_URL";
+
     // TODO: 1/23/24 추후 소셜 로그인 플랫폼이 늘어나는 경우의 확장성 관련해서 논의
     public Member findOrCreateMemberBy(final GoogleAccountProfileResponse profile) {
         return memberRepository.findByGoogleId(profile.id())
@@ -76,19 +78,24 @@ public class MemberCommandService {
         memberRepository.delete(member);
     }
 
-    public void updateMyPage(final MyPageUpdateRequest request, final Long memberId, final Long tokenMemberId) {
-        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
-        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+    public void updateMyPage(final MyPageUpdateRequest request, final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(tokenMemberId);
         member.updateMyPage(request.name());
     }
 
-    public void updateMyPageImage(final Long memberId, final MultipartFile file, final Long tokenMemberId) {
-        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
-        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+    public void updateMyPageImage(final MultipartFile file, final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(tokenMemberId);
         checkHasImageAndDelete(member);
 
         final String newImageUrl = s3ImageFileService.upload(file);
         member.updateImageUrl(newImageUrl);
+    }
+
+    public void deleteMyPageImage(final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(tokenMemberId);
+        checkHasImageAndDelete(member);
+
+        member.updateImageUrl(DEFAULT_IMAGE_URL);
     }
 
     private void checkHasImageAndDelete(final Member member) {
