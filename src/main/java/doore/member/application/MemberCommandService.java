@@ -6,7 +6,7 @@ import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
-import doore.member.application.dto.request.MyPageUpdateRequest;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import doore.helper.IntegrationTest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
-import doore.member.application.dto.request.MyPageUpdateRequest;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -243,5 +243,4 @@ class MemberCommandServiceTest extends IntegrationTest {
 
         assertThat(afterMemberInfo.getName()).isEqualTo(request.name());
     }
-
 }

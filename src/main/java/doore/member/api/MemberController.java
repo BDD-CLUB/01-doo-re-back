@@ -3,7 +3,7 @@ package doore.member.api;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberQueryService;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
-import doore.member.application.dto.request.MyPageUpdateRequest;
+import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
 import jakarta.validation.Valid;
