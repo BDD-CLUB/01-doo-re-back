@@ -2,8 +2,8 @@ package doore.member.api;
 
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberQueryService;
+import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
-import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
 import jakarta.validation.Valid;
@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Validated
 @RestController
@@ -47,17 +49,29 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/{memberId}")
+    @GetMapping("/members/{memberId}") // 개인
     public ResponseEntity<MemberAndMyTeamsAndStudiesResponse> getSideBarInfo(@PathVariable final Long memberId,
                                                                              @LoginMember final Member member) {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
     }
 
-    @PatchMapping("/myPage/members/{memberId}")
+    @PatchMapping("/members/me") // 개인
     public ResponseEntity<Void> updateMyPage(@Valid @RequestBody final MyPageUpdateRequest request,
-                                             @PathVariable final Long memberId, @LoginMember final Member member) {
-        memberCommandService.updateMyPage(request, memberId, member.getId());
+                                             @LoginMember final Member member) {
+        memberCommandService.updateMyPage(request, member.getId());
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/members/me/image") // 개인
+    public ResponseEntity<Void> updateMyPageImage(@RequestPart(required = false) final MultipartFile file,
+                                                  @LoginMember final Member member) {
+        memberCommandService.updateMyPageImage(file, member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/members/me/image") // 개인
+    public ResponseEntity<Void> deleteMyPageImage(@LoginMember final Member member) {
+        memberCommandService.deleteMyPageImage(member.getId());
+        return ResponseEntity.noContent().build();
+    }
 }

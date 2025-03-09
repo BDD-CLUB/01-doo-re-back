@@ -1,11 +1,12 @@
 package doore.member.application;
 
+import doore.file.application.S3ImageFileService;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
-import doore.member.application.dto.response.MyPageUpdateRequest;
+import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -15,6 +16,7 @@ import doore.team.application.convenience.TeamValidateAccessPermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -25,11 +27,15 @@ public class MemberCommandService {
 
     private final MemberConvenience memberConvenience;
 
+    private final S3ImageFileService s3ImageFileService;
+
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
     private final TeamValidateAccessPermission teamValidateAccessPermission;
     private final StudyValidateAccessPermission studyValidateAccessPermission;
     private final MemberValidateAccessPermission memberValidateAccessPermission;
+
+    private static final String DEFAULT_IMAGE_URL = "TEMP_URL";
 
     // TODO: 1/23/24 추후 소셜 로그인 플랫폼이 늘어나는 경우의 확장성 관련해서 논의
     public Member findOrCreateMemberBy(final GoogleAccountProfileResponse profile) {
@@ -72,10 +78,30 @@ public class MemberCommandService {
         memberRepository.delete(member);
     }
 
-    public void updateMyPage(final MyPageUpdateRequest request, final Long memberId, final Long tokenMemberId) {
-        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
-        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+    public void updateMyPage(final MyPageUpdateRequest request, final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(tokenMemberId);
         member.updateMyPage(request.name());
+    }
+
+    public void updateMyPageImage(final MultipartFile file, final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(tokenMemberId);
+        checkHasImageAndDelete(member);
+
+        final String newImageUrl = s3ImageFileService.upload(file);
+        member.updateImageUrl(newImageUrl);
+    }
+
+    public void deleteMyPageImage(final Long tokenMemberId) {
+        final Member member = memberValidateAccessPermission.getValidateExistMember(tokenMemberId);
+        checkHasImageAndDelete(member);
+
+        member.updateImageUrl(DEFAULT_IMAGE_URL);
+    }
+
+    private void checkHasImageAndDelete(final Member member) {
+        if (member.hasImage()) {
+            s3ImageFileService.deleteFile(member.getImageUrl());
+        }
     }
 
 }
