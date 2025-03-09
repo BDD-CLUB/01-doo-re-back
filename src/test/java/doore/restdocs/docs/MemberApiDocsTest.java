@@ -15,8 +15,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
-import doore.member.application.dto.response.MyPageUpdateRequest;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
@@ -166,4 +166,5 @@ public class MemberApiDocsTest extends RestDocsTest {
                 .andExpect(status().isNoContent())
                 .andDo(document("myPage-image-delete"));
     }
+
 }

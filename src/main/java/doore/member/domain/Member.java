@@ -59,4 +59,5 @@ public class Member extends BaseEntity {
     public void updateImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
 }
