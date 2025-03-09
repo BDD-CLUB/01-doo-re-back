@@ -1,4 +1,4 @@
-package doore.member.application.dto.response;
+package doore.member.application.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 
