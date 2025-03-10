@@ -67,7 +67,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 new FileInputStream("src/test/resources/images/testImage.png")
         );
 
-        mockMvc.perform(multipart("/{groupType}/{groupId}/documents", "teams", 1)
+        mockMvc.perform(multipart("/documents/{groupType}/{groupId}/documents", "teams", 1)
                         .part(mockPart)
                         .file(file)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -119,7 +119,8 @@ public class DocumentDocsTest extends RestDocsTest {
                 .uploaderName("김땡땡")
                 .build();
         final List<DocumentResponse> documents = List.of(document, otherDocument);
-        final Page<DocumentResponse> documentResponsePage = new PageImpl<>(documents, PageRequest.of(0,4),documents.size());
+        final Page<DocumentResponse> documentResponsePage = new PageImpl<>(documents, PageRequest.of(0, 4),
+                documents.size());
         //when
         when(documentQueryService.getAllDocument(any(), any(), any(PageRequest.class)))
                 .thenReturn(documentResponsePage);
@@ -128,7 +129,7 @@ public class DocumentDocsTest extends RestDocsTest {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("page", "0");
         params.add("size", "4");
-        mockMvc.perform(get("/{groupType}/{groupId}/documents", "teams", 1).params(params)
+        mockMvc.perform(get("/documents/{groupType}/{groupId}/documents", "teams", 1).params(params)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("document-get-list", pathParameters(
@@ -161,7 +162,7 @@ public class DocumentDocsTest extends RestDocsTest {
         when(documentQueryService.getDocument(any(), any())).thenReturn(documentResponse);
 
         //then
-        mockMvc.perform(get("/{documentId}", 1).header(HttpHeaders.AUTHORIZATION, accessToken))
+        mockMvc.perform(get("/documents/{documentId}", 1).header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("document-get", pathParameters(
                                 parameterWithName("documentId").description("학습자료 id")
@@ -189,7 +190,7 @@ public class DocumentDocsTest extends RestDocsTest {
         final DocumentUpdateRequest request = new DocumentUpdateRequest("수정된 제목", "수정된 설명", TEAM);
 
         //then
-        mockMvc.perform(put("/{documentId}", 1)
+        mockMvc.perform(put("/documents/{documentId}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
@@ -209,7 +210,7 @@ public class DocumentDocsTest extends RestDocsTest {
     @Test
     @DisplayName("학습자료를 삭제한다.")
     public void 학습자료를_삭제한다() throws Exception {
-        mockMvc.perform(delete("/{documentId}", 1)
+        mockMvc.perform(delete("/documents/{documentId}", 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
                 .andDo(document("document-delete", pathParameters(
