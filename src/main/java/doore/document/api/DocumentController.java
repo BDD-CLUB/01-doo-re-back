@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/documents")
 public class DocumentController {
 
     private final DocumentCommandService documentCommandService;
