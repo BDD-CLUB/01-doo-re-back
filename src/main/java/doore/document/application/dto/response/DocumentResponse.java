@@ -16,10 +16,11 @@ public record DocumentResponse(
         DocumentType type,
         List<FileResponse> files,
         LocalDate date,
-        String uploaderName
+        String uploaderName,
+        Long uploaderMemberId
 ) {
     public static DocumentResponse of(final Document document, final List<FileResponse> fileResponses,
-                                      final String uploaderName) {
+                                      final String uploaderName, final Long uploaderMemberId) {
         return DocumentResponse
                 .builder()
                 .id(document.getId())
@@ -30,6 +31,7 @@ public record DocumentResponse(
                 .files(fileResponses)
                 .date(document.getCreatedAt().toLocalDate())
                 .uploaderName(uploaderName)
+                .uploaderMemberId(uploaderMemberId)
                 .build();
     }
 }

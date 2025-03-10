@@ -107,9 +107,10 @@ public class DocumentDocsTest extends RestDocsTest {
                 .files(List.of(fileResponse))
                 .date(LocalDate.parse("2024-02-28"))
                 .uploaderName("김땡땡")
+                .uploaderMemberId(2L)
                 .build();
         final DocumentResponse otherDocument = DocumentResponse.builder()
-                .id(1L)
+                .id(2L)
                 .title("학습자료")
                 .description("학습자료 입니다.")
                 .accessType(ALL)
@@ -117,6 +118,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .files(List.of(fileResponse))
                 .date(LocalDate.parse("2024-02-28"))
                 .uploaderName("김땡땡")
+                .uploaderMemberId(3L)
                 .build();
         final List<DocumentResponse> documents = List.of(document, otherDocument);
         final Page<DocumentResponse> documentResponsePage = new PageImpl<>(documents, PageRequest.of(0, 4),
@@ -156,6 +158,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 .files(List.of(fileResponse))
                 .date(LocalDate.parse("2024-02-28"))
                 .uploaderName("김땡땡")
+                .uploaderMemberId(2L)
                 .build();
 
         //when
@@ -178,7 +181,8 @@ public class DocumentDocsTest extends RestDocsTest {
                                 stringFieldWithPath("files[].name", "첨부파일명"),
                                 stringFieldWithPath("files[].url", "첨부파일 URL"),
                                 stringFieldWithPath("date", "학습자료 업로드 날짜"),
-                                stringFieldWithPath("uploaderName", "학습자료 업로더 이름")
+                                stringFieldWithPath("uploaderName", "학습자료 업로더 이름"),
+                                numberFieldWithPath("uploaderMemberId", "학습자료 업로더 member ID")
                         )
                 ));
     }
