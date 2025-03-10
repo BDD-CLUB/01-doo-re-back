@@ -1,4 +1,4 @@
-package doore.member.domain.repository;
+package doore.member.domain;
 
 import static doore.member.MemberFixture.보름;
 import static doore.member.MemberFixture.비비아마;
@@ -9,8 +9,8 @@ import static doore.member.MemberFixture.아마어마어마;
 import static doore.member.MemberFixture.짱구;
 
 import doore.helper.RepositorySliceTest;
-import doore.member.domain.Member;
-import doore.member.domain.MemberTeam;
+import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.MemberTeamRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
