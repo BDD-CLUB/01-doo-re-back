@@ -63,7 +63,9 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(documents);
     }
 
-    @GetMapping("/{documentId}")  // 팀 학습자료 -> 비회원, 스터디 학습자료 -> 스터디 구성원
+    @GetMapping("/{documentId}")
+    // 팀 학습자료 - 전체 공개 -> 회원 이상, 팀 학습자료 - 팀 공개 -> 팀원 이상, 스터디 학습자료 -> 스터디 구성원
+    // DocumentGroupType 의 STUDY(studies)는 기획 상 삭제
     public ResponseEntity<DocumentResponse> getDocument(@PathVariable final Long documentId,
                                                         @LoginMember final Member member) {
         final DocumentResponse response = documentQueryService.getDocument(documentId, member.getId());
