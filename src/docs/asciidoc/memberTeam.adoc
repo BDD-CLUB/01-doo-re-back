@@ -37,3 +37,13 @@ include::{snippets}/member-team-delete/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/member-team-delete/http-response.adoc[]
+
+== `DELETE`: 팀원 탈퇴
+.HTTP Request
+include::{snippets}/member-team-withdraw/http-request.adoc[]
+
+.Query Parameters
+include::{snippets}/member-team-withdraw/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/member-team-withdraw/http-response.adoc[]

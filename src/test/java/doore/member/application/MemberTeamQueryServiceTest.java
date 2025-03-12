@@ -11,7 +11,7 @@ import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.team.TeamFixture.team;
 import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import doore.helper.IntegrationTest;
 import doore.member.application.dto.response.TeamMemberResponse;
@@ -23,7 +23,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -33,6 +33,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class MemberTeamQueryServiceTest extends IntegrationTest {
+    @Autowired
+    private MemberTeamCommandService memberTeamCommandService;
     @Autowired
     private MemberTeamQueryService memberTeamQueryService;
     @Autowired
@@ -65,15 +67,16 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
         비비아마 = memberRepository.save(비비아마());
         아마 = memberRepository.save(아마());
 
-        memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(아마란스).isDeleted(false).build());
-        memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(아마어마어마).isDeleted(false).build());
-        memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(아마스).isDeleted(false).build());
-        memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(보름).isDeleted(false).build());
-        memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(짱구).isDeleted(false).build());
-        memberTeamRepository.save(MemberTeam.builder().teamId(1L).member(비비아마).isDeleted(false).build());
+        team = teamRepository.save(team());
+
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(아마란스).isDeleted(false).build());
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(아마어마어마).isDeleted(false).build());
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(아마스).isDeleted(false).build());
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(보름).isDeleted(false).build());
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(짱구).isDeleted(false).build());
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(비비아마).isDeleted(false).build());
         memberTeamRepository.save(MemberTeam.builder().teamId(2L).member(아마).isDeleted(false).build());
 
-        team = teamRepository.save(team());
         teamLeaderRole = teamRoleRepository.save(
                 TeamRole.builder().teamId(team.getId()).memberId(보름.getId()).teamRoleType(ROLE_팀장).build());
         teamMemberRole = teamRoleRepository.save(
@@ -158,5 +161,35 @@ class MemberTeamQueryServiceTest extends IntegrationTest {
         Assertions.assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("[성공] 팀원 삭제 후 재초대 시 정상적으로 팀원 목록 조회가 된다.")
+    void findMemberTeams_팀원_삭제_후_재초대_시_정상적으로_팀원_목록_조회가_된다_성공() {
+        //given
+        memberTeamCommandService.deleteMemberTeam(team.getId(), 아마스.getId(), 보름.getId());
+        memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(아마스).isDeleted(false).build());
+        teamRoleRepository.save(
+                TeamRole.builder().teamId(team.getId()).memberId(아마스.getId()).teamRoleType(ROLE_팀원).build());
+
+        final List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(team.getId());
+        final List<Member> members = memberTeams.stream()
+                .map(MemberTeam::getMember)
+                .toList();
+        final Map<Member, TeamRoleType> roleOfMembers = members.stream()
+                .collect(toMap(
+                        member -> member,
+                        member -> teamRoleRepository.findTeamRoleByMemberId(member.getId())
+                                .orElseThrow()
+                                .getTeamRoleType()
+                ));
+        final List<TeamMemberResponse> expected = TeamMemberResponse.of(members, roleOfMembers);
+
+        //when
+        final List<TeamMemberResponse> actual = memberTeamQueryService.findMemberTeams(team.getId(), null,
+                teamMemberRole.getId());
+
+        //then
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 }

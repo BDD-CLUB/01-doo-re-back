@@ -8,7 +8,6 @@
 
 - **경쟁**: Github의 잔디를 모티브로 한 '텃밭'이 팀별로 존재 하며, 이름 지표로 팀 랭킹이 매겨집니다.
 - **협업**: 팀원들은 스터디, 학습자료 업로드 등의 활동을 통해 팀의 '텃밭'에 기여할 수 있습니다.
-- **포토폴리오**: '스터디 카드'를 통해 회원이 참여했던 스터디에서 개인이 착습한 내용과 업로드한 학습 자료를 정리된 레이아웃으로 제공합니다.
 
 <br>
 운영서버: https://doore.kro.kr/ <br>
@@ -100,7 +99,7 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
 </div>
 
 
-### 2024.3.1 ~ 진행중
+### 2024.3.1 ~ 2024.10.31
 <div align="center">
   <table>
   <tr>
@@ -145,6 +144,47 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
     <td align="center">
        BackEnd, Infra
     </td>    
+    <td align="center">
+      BackEnd
+    </td>
+    <td align="center">
+       BackEnd
+    </td>
+  </tr>
+  </table>
+</div>
+
+### 2024.11.1 ~ 진행중
+<div align="center">
+  <table>
+  <tr> 
+    </td>
+    <td align="center">
+      이지민 
+    </td>
+    <td align="center">
+      신예준
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/JJimini">
+      <img src="https://github.com/JJimini.png" width="80" alt="JJimini"/>
+      <br />
+      <sub><b>JJimini</b></sub>
+      </a>
+      <br/>
+    </td>
+    <td align="center">
+      <a href="https://github.com/yessjun">
+      <img src="https://github.com/yessjun.png" width="80" alt="yessjun"/>
+      <br />
+      <sub><b>yessjun</b></sub>
+      </a>
+      <br/>
+    </td>
+  </tr>
+      <tr>
     <td align="center">
       BackEnd
     </td>
@@ -244,11 +284,9 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
 ### 팀원
 - **팀원 목록**: 해당 팀에 참여하고 있는 회원 목록을 제공합니다.
 - **초대**: 팀장은 초대 버튼을 통해 팀에 새로운 회원을 초대할 수 있습니다.
-- **출석률**: 오늘의 출석 인원 비율을 원 그래프로 확인할 수 있습니다.
 ### 팀 활동
 - **스터디**: 팀에서 진행중인 스터디 목록과, 그 진행률을 확인할 수 있습니다.
 - **학습자료**: 팀에 업로드된 학습자료 목록을 확인할 수 있습니다.
-- ~**작물창고(데모 이후 개발)**: 팀에서 수집한 작물의 종류와 그 개수를 확인할 수 있습니다.~
 
 <div align="center">
   <table>
@@ -275,7 +313,6 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
 - **참여자 목록**: 해당 스터디에 참여하고 있는 회원 목록을 제공합니다.
 - **스터디 진행률**: 모든 팀원의 진척도를 합산하여 스터디 진행률을 계산합니다. 스터디 진행률에 따라 작물 일러스트가 성장합니다.
 - **스터디 커리큘럼**: 개인별로 진행한 커리큘럼을 완료처리하거나, 커리큘럼의 순서를 바꿀 수 있습니다. 스터디장은 커리큘럼을 수정할 수 있습니다.
-- **스터디 피드**: 모든 스터디 참여자의 진행상황을 피드에서 확인할 수 있습니다. 참여자가 커리큘럼을 완료하거나 학습자료를 업로드 할시 피드가 업데이트 됩니다.
 <div align="center">
   <table>
   <tr>
@@ -301,7 +338,6 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
 ### 학습자료
 - **학습자료**: 스터디에서 공부한 내용을 학습자료 형태로 업로드 할 수 있습니다. 스터디에 업로드한 학습자료는 팀에도 공유됩니다.
   - 학습자료는 이미지, 파일, 링크의 형태로 업로드 가능합니다.
-- ~북마크: 업로드된 학습자료를 북마크할 수 있습니다.~
 <div align="center">
   <table>
   <tr>
@@ -331,10 +367,9 @@ Rest Docs: https://www.doore.kro.kr/docs/doore.html
 
 ### 마이페이지
 
-- **텃밭**: 회원의 텃밭을 확인 가능합니다.
-- **연속 출석일**: 회원의 연속 출석일을 확인 가능합니다.
 - **나의 팀**: 소속된 팀을 아이콘 형태로 확인 가능합니다.
-- **나의 스터디**: 소속된 스터디를 확인 가능합니다. 진행중인 스터디와 종료된 스터디를 나누어 확인할 수 있습니다. 
+- **나의 스터디**: 소속된 스터디를 확인 가능합니다. 진행중인 스터디와 종료된 스터디를 나누어 확인할 수 있습니다.
+- **나의 학습자료**: 내가 업로드한 학습자료를 확인할 수 있습니다.
 
 <div align="center">
   <table>

@@ -50,7 +50,7 @@ public class StudyController {
 
     @GetMapping("/studies/{studyId}") // 비회원
     public ResponseEntity<StudyResponse> getStudy(@PathVariable final Long studyId) {
-        final StudyResponse studyDetailResponse = studyQueryService.findStudyById(studyId);
+        final StudyResponse studyDetailResponse = studyQueryService.getStudy(studyId);
         return ResponseEntity.ok(studyDetailResponse);
     }
 
@@ -78,7 +78,7 @@ public class StudyController {
     public ResponseEntity<List<StudyReferenceResponse>> getMyStudies(@PathVariable final Long memberId,
                                                                      @LoginMember final Member member) {
         // TODO: 3/22/24 토큰의 주인과 회원아이디가 같은지 검증 (2024/5/15 완료)
-        return ResponseEntity.ok(studyQueryService.findMyStudies(memberId, member.getId()));
+        return ResponseEntity.ok(studyQueryService.getMyStudies(memberId, member.getId()));
     }
 
     @GetMapping("/teams/{teamId}/studies") // 비회원

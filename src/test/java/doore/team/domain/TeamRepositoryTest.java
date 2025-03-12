@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import doore.helper.RepositorySliceTest;
 import doore.team.TeamFixture;
+import doore.team.domain.repository.TeamRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

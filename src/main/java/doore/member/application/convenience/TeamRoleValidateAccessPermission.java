@@ -1,5 +1,6 @@
 package doore.member.application.convenience;
 
+import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_TEAM;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
@@ -25,8 +26,36 @@ public class TeamRoleValidateAccessPermission {
         }
     }
 
-    public void validateExistMemberTeam(final Long teamId, final Long memberId) {
+    public TeamRole getValidateExistTeamLeader(final Long teamId, final Long memberId) {
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        if (!teamRole.getTeamRoleType().equals(ROLE_팀장)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        return teamRole;
+    }
+
+    public void validateExistMemberTeamOnly(final Long teamId, final Long memberId) { // Only 팀원인지 확인. Not 팀장
+        final TeamRole teamRole = teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_TEAM));
+        if (!teamRole.getTeamRoleType().equals(ROLE_팀원)) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+    }
+
+    public void validateExistMemberTeam(final Long teamId, final Long memberId) { // Both 팀원 and 팀장
         teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
                 .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    public TeamRole getValidateExistMemberTeam(final Long teamId, final Long memberId) {
+        return teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    public boolean isTeamLeader(final Long teamId, final Long memberId) {
+        return teamRoleRepository.findTeamRoleByTeamIdAndMemberId(teamId, memberId)
+                .map(teamRole -> ROLE_팀장.equals(teamRole.getTeamRoleType()))
+                .orElse(false);
     }
 }

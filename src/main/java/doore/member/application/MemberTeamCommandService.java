@@ -1,10 +1,17 @@
 package doore.member.application;
 
+import static doore.member.exception.MemberTeamExceptionType.CANNOT_DELETE_TEAM_LEADER_SELF;
+
+import doore.member.application.convenience.StudyRoleConvenience;
+import doore.member.application.convenience.TeamRoleConvenience;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.domain.repository.MemberTeamRepository;
-import doore.team.domain.TeamRepository;
-import doore.team.exception.TeamException;
-import doore.team.exception.TeamExceptionType;
+import doore.member.exception.MemberTeamException;
+import doore.study.application.convenience.ParticipantConvenience;
+import doore.study.application.convenience.StudyConvenience;
+import doore.study.domain.Study;
+import doore.team.application.convenience.TeamValidateAccessPermission;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,18 +21,46 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberTeamCommandService {
     private final MemberTeamRepository memberTeamRepository;
-    private final TeamRepository teamRepository;
 
     private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
+    private final TeamValidateAccessPermission teamValidateAccessPermission;
+
+    private final TeamRoleConvenience teamRoleConvenience;
+    private final StudyConvenience studyConvenience;
+    private final StudyRoleConvenience studyRoleConvenience;
+    private final ParticipantConvenience participantConvenience;
 
     public void deleteMemberTeam(final Long teamId, final Long deleteMemberId, final Long teamLeaderId) {
-        validateExistTeam(teamId);
+        teamValidateAccessPermission.validateExistTeam(teamId);
+        checkIsEqualDeleteMemberIdAndTeamLeaderId(deleteMemberId, teamLeaderId);
         teamRoleValidateAccessPermission.validateExistTeamLeader(teamId, teamLeaderId);
         teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, deleteMemberId);
+        deleteStudyRoleAndParticipants(teamId, deleteMemberId);
         memberTeamRepository.deleteByTeamIdAndMemberId(teamId, deleteMemberId);
+        teamRoleConvenience.deleteByTeamIdAndMemberId(teamId, deleteMemberId);
     }
 
-    private void validateExistTeam(final Long teamId) {
-        teamRepository.findById(teamId).orElseThrow(() -> new TeamException(TeamExceptionType.NOT_FOUND_TEAM));
+    public void withdrawMemberTeam(final Long teamId, final Long memberId) {
+        teamValidateAccessPermission.validateExistTeam(teamId);
+        teamRoleValidateAccessPermission.validateExistMemberTeamOnly(teamId, memberId);
+        deleteStudyRoleAndParticipants(teamId, memberId);
+        memberTeamRepository.deleteByTeamIdAndMemberId(teamId, memberId);
+        teamRoleConvenience.deleteByTeamIdAndMemberId(teamId, memberId);
+    }
+
+    private void checkIsEqualDeleteMemberIdAndTeamLeaderId(final Long deleteMemberId, final Long teamLeaderId) {
+        if (deleteMemberId.equals(teamLeaderId)) {
+            throw new MemberTeamException(CANNOT_DELETE_TEAM_LEADER_SELF);
+        }
+    }
+
+    private void deleteStudyRoleAndParticipants(final Long teamId, final Long deleteMemberId) {
+        List<Study> studies = studyConvenience.findAllByTeamIdAndMemberId(teamId, deleteMemberId);
+        studyRoleConvenience.isStudyLeader(studies, deleteMemberId);
+
+        studies.forEach(study -> {
+            participantConvenience.deleteByParticipantIdAndMemberId(study.getId(), deleteMemberId);
+            studyRoleConvenience.deleteByStudyIdAndMemberId(study.getId(), deleteMemberId);
+        });
     }
 }

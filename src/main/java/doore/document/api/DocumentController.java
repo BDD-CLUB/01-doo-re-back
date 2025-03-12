@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/documents")
 public class DocumentController {
 
     private final DocumentCommandService documentCommandService;
@@ -58,7 +59,7 @@ public class DocumentController {
             @RequestParam(defaultValue = "4") @PositiveOrZero final int size) {
         final DocumentGroupType group = DocumentGroupType.value(groupType);
         final Page<DocumentResponse> documents =
-                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size));
+                documentQueryService.getAllDocument(group, groupId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
         return ResponseEntity.status(HttpStatus.OK).body(documents);
     }
 

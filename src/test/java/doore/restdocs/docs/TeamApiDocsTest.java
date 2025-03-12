@@ -144,6 +144,23 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
+    @DisplayName("팀의 이미지를 삭제한다.")
+    public void 팀의_이미지를_삭제한다() throws Exception {
+        // when
+        final Long teamId = 1L;
+        doNothing().when(teamCommandService).deleteTeamImage(eq(teamId), any());
+
+        // then
+        final PathParametersSnippet pathParameters = pathParameters(
+                parameterWithName("teamId").description("팀 ID")
+        );
+        mockMvc.perform(delete("/teams/{teamId}/image", teamId)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isNoContent())
+                .andDo(document("team-image-delete", pathParameters));
+    }
+
+    @Test
     @DisplayName("팀을 삭제한다.")
     public void 팀을_삭제한다() throws Exception {
         // when
@@ -230,7 +247,7 @@ public class TeamApiDocsTest extends RestDocsTest {
         );
 
         //when
-        when(teamQueryService.findMyTeams(any(), any())).thenReturn(response);
+        when(teamQueryService.getMyTeams(any(), any())).thenReturn(response);
 
         //then
         mockMvc.perform(get("/teams/members/{memberId}", memberId)
@@ -261,7 +278,7 @@ public class TeamApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("teamLeaderId", "팀장 ID")
         );
 
-        when(teamQueryService.findTeamByTeamId(teamId)).thenReturn(teamResponse);
+        when(teamQueryService.getTeams(teamId)).thenReturn(teamResponse);
 
         mockMvc.perform(get("/teams/{teamId}", teamId)
                         .contentType(MediaType.APPLICATION_JSON))

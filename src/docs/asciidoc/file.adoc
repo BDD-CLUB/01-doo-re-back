@@ -1,0 +1,44 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= DOCUMENT API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+
+== API 목록
+
+link:../doore.html[API 목록으로 돌아가기]
+
+== `GET`: 이미지 파일 URL 조회
+
+.Http Request
+include::{snippets}/file-get-image-url/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/file-get-image-url/path-parameters.adoc[]
+
+.Http Response
+include::{snippets}/file-get-image-url/http-response.adoc[]
+
+.Http Response Headers
+include::{snippets}/file-get-image-url/response-headers.adoc[]
+
+== `GET`: 문서 파일 Presigned URL 생성
+
+.Http Request
+include::{snippets}/file-generate-presigned-url/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/file-generate-presigned-url/path-parameters.adoc[]
+
+.Http Response
+include::{snippets}/file-generate-presigned-url/http-response.adoc[]
+
+.Http Response Headers
+include::{snippets}/file-generate-presigned-url/response-headers.adoc[]

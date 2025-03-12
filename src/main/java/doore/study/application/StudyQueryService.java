@@ -1,12 +1,10 @@
 package doore.study.application;
 
-import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-
+import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.domain.Participant;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.member.exception.MemberException;
-import doore.study.application.convenience.StudyAuthorization;
+import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.study.application.dto.response.StudyRankResponse;
 import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
@@ -14,7 +12,7 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
-import doore.team.application.convenience.TeamAuthorization;
+import doore.team.application.convenience.TeamValidateAccessPermission;
 import doore.team.domain.Team;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,21 +29,24 @@ public class StudyQueryService {
     private final ParticipantRepository participantRepository;
     private final ParticipantCurriculumItemRepository participantCurriculumItemRepository;
     private final CurriculumItemRepository curriculumItemRepository;
-    private final StudyAuthorization studyAuthorization;
-    private final StudyRoleConvenience studyRoleConvenience;
-    private final TeamAuthorization teamAuthorization;
 
-    public StudyResponse findStudyById(final Long studyId) {
-        final Study study = studyAuthorization.getStudyOrThrow(studyId);
+    private final StudyRoleConvenience studyRoleConvenience;
+    private final MemberConvenience memberConvenience;
+
+    private final TeamValidateAccessPermission teamValidateAccessPermission;
+    private final StudyValidateAccessPermission studyValidateAccessPermission;
+
+    public StudyResponse getStudy(final Long studyId) {
+        final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
         final Long studyLeaderId = studyRoleConvenience.findStudyLeaderId(study.getId());
-        final Team team = teamAuthorization.getTeamOrThrow(study.getTeamId());
+        final Team team = teamValidateAccessPermission.getValidateExistTeam(study.getTeamId());
         final long studyProgressRatio = checkStudyProgressRatio(studyId);
 
         return StudyResponse.of(study, team, studyProgressRatio, studyLeaderId);
     }
 
-    public List<StudyReferenceResponse> findMyStudies(final Long memberId, final Long tokenMemberId) {
-        checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
+    public List<StudyReferenceResponse> getMyStudies(final Long memberId, final Long tokenMemberId) {
+        memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
 
         final List<Participant> participants = participantRepository.findByMemberId(memberId);
         final List<Long> studyIds = participants.stream()
@@ -57,11 +58,11 @@ public class StudyQueryService {
                 .map(study -> StudyReferenceResponse.of(study, checkStudyProgressRatio(study.getId())))
                 .toList();
     }
-
-    private void checkSameMemberIdAndTokenMemberId(final Long memberId, final Long tokenMemberId) {
-        if (!memberId.equals(tokenMemberId)) {
-            throw new MemberException(UNAUTHORIZED);
-        }
+    
+    public Page<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
+        return studyRepository.findAllByTeamId(teamId, pageable)
+                .map(this::convertStudyToStudyRankResponse);
+        //todo: (24.07.09) point 기반 정렬 로직 추가;
     }
 
     private long checkStudyProgressRatio(final Long studyId) {
@@ -71,12 +72,6 @@ public class StudyQueryService {
         final long checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(
                 curriculumItemIds);
         return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
-    }
-    
-    public Page<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
-        return studyRepository.findAllByTeamIdOrderByStudyStatusNative(teamId, pageable)
-                .map(this::convertStudyToStudyRankResponse);
-        //todo: (24.07.09) point 기반 정렬 로직 추가;
     }
 
     private StudyRankResponse convertStudyToStudyRankResponse(final Study study) {

@@ -9,7 +9,7 @@ import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.team.TeamFixture;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -22,7 +22,7 @@ import doore.member.exception.MemberException;
 import doore.team.application.dto.response.TeamReferenceResponse;
 import doore.team.application.dto.response.TeamResponse;
 import doore.team.domain.Team;
-import doore.team.domain.TeamRepository;
+import doore.team.domain.repository.TeamRepository;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,7 +74,7 @@ class TeamQueryServiceTest extends IntegrationTest {
         final List<TeamReferenceResponse> expectedResponses = List.of(TeamReferenceResponse.from(myTeam));
 
         // when
-        final List<TeamReferenceResponse> actualResponses = teamQueryService.findMyTeams(member.getId(), tokenMemberId);
+        final List<TeamReferenceResponse> actualResponses = teamQueryService.getMyTeams(member.getId(), tokenMemberId);
 
         // then
         Assertions.assertThat(actualResponses)
@@ -89,13 +89,13 @@ class TeamQueryServiceTest extends IntegrationTest {
         final Long anotherMemberId = 2L;
         // 로그인 되어있는 아이디와 조회하려는 아이디가 다른 경우 실패 (주석은 확인 후 삭제할 예정입니다.)
         assertThatThrownBy(() -> {
-            teamQueryService.findMyTeams(member.getId(), anotherMemberId);
+            teamQueryService.getMyTeams(member.getId(), anotherMemberId);
         }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
     }
 
     @Test
     @DisplayName("[성공] 팀 상세 조회를 할 수 있다.")
-    void findTeamByTeamId_팀_상세_조회를_할_수_있다_성공() {
+    void findTeams_팀_상세_조회를_할_수_있다_성공() {
         final Member anotherMember = createMember();
         memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(member).isDeleted(false).build());
         memberTeamRepository.save(
@@ -105,7 +105,7 @@ class TeamQueryServiceTest extends IntegrationTest {
         final long attendanceRatio = 50L;
 
         final TeamResponse expectTeamResponse = TeamResponse.of(team, attendanceRatio, member.getId());
-        final TeamResponse actualTeamResponse = teamQueryService.findTeamByTeamId(team.getId());
+        final TeamResponse actualTeamResponse = teamQueryService.getTeams(team.getId());
 
         assertThat(actualTeamResponse).isEqualTo(expectTeamResponse);
         assertThat(actualTeamResponse.teamLeaderId()).isEqualTo(member.getId());

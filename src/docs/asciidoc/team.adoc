@@ -56,6 +56,17 @@ include::{snippets}/team-image-update/request-parts.adoc[]
 .HTTP Response
 include::{snippets}/team-image-update/http-response.adoc[]
 
+== `DELETE`: Team 이미지 삭제
+
+.HTTP Request
+include::{snippets}/team-image-delete/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/team-image-delete/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/team-image-delete/http-response.adoc[]
+
 == `DELETE`: Team 삭제
 
 .HTTP Request

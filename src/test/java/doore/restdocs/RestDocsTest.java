@@ -10,6 +10,9 @@ import doore.config.WebMvcConfig;
 import doore.document.api.DocumentController;
 import doore.document.application.DocumentCommandService;
 import doore.document.application.DocumentQueryService;
+import doore.file.api.FileController;
+import doore.file.application.S3DocumentFileService;
+import doore.file.application.S3ImageFileService;
 import doore.garden.api.GardenController;
 import doore.garden.application.GardenQueryService;
 import doore.helper.ApiTestHelper;
@@ -19,8 +22,8 @@ import doore.login.utils.JwtTokenGenerator;
 import doore.member.api.MemberController;
 import doore.member.api.MemberTeamController;
 import doore.member.application.MemberCommandService;
-import doore.member.application.MemberTeamCommandService;
 import doore.member.application.MemberQueryService;
+import doore.member.application.MemberTeamCommandService;
 import doore.member.application.MemberTeamQueryService;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.api.CurriculumItemController;
@@ -63,6 +66,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
         LoginController.class,
         MemberController.class,
         GardenController.class,
+        FileController.class,
 })
 public abstract class RestDocsTest extends ApiTestHelper {
 
@@ -71,6 +75,12 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected DocumentCommandService documentCommandService;
+
+    @MockBean
+    protected S3ImageFileService s3ImageFileService;
+
+    @MockBean
+    protected S3DocumentFileService s3DocumentFileService;
 
     @MockBean
     protected CurriculumItemCommandService curriculumItemCommandService;

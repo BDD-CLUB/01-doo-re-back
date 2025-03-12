@@ -12,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class StudyAuthorization {
+public class StudyValidateAccessPermission {
     private final StudyRepository studyRepository;
 
     public void validateExistStudy(Long studyId) {
         studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 
-    public Study getStudyOrThrow(final Long studyId) {
+    public Study getValidateExistStudy(final Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
 }

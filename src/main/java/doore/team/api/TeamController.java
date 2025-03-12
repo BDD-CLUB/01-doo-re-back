@@ -69,6 +69,13 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{teamId}/image") // 팀장
+    public ResponseEntity<Void> deleteTeamImage(@PathVariable final Long teamId, @LoginMember final Member member
+    ) {
+        teamCommandService.deleteTeamImage(teamId, member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{teamId}") // 팀장
     public ResponseEntity<Void> deleteTeam(@PathVariable final Long teamId, @LoginMember final Member member) {
         teamCommandService.deleteTeam(teamId, member.getId());
@@ -95,17 +102,16 @@ public class TeamController {
     @GetMapping("/members/{memberId}") // 회원
     public ResponseEntity<List<TeamReferenceResponse>> getMyTeams(@PathVariable final Long memberId,
                                                                   @LoginMember final Member member) {
-        // TODO: 3/22/24 토큰의 주인이 memberId와 동일인물인지 검증 (2024/5/14 완료 -> 서비스에서 진행)
-        return ResponseEntity.ok(teamQueryService.findMyTeams(memberId, member.getId()));
+        return ResponseEntity.ok(teamQueryService.getMyTeams(memberId, member.getId()));
     }
 
     @GetMapping("/{teamId}") // 비회원
-    public ResponseEntity<TeamResponse> getTeam(@PathVariable final Long teamId) {
-        return ResponseEntity.ok(teamQueryService.findTeamByTeamId(teamId));
+    public ResponseEntity<TeamResponse> getTeams(@PathVariable final Long teamId) {
+        return ResponseEntity.ok(teamQueryService.getTeams(teamId));
     }
 
     @GetMapping // 비회원
-    public ResponseEntity<List<TeamRankResponse>> getTeams(
+    public ResponseEntity<List<TeamRankResponse>> getTeamsRanks(
     ) {
         final List<TeamRankResponse> teamRankResponses = teamQueryService.getTeamRanks();
         return ResponseEntity.ok(teamRankResponses);

@@ -4,12 +4,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
@@ -20,9 +26,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.PathParametersSnippet;
+import org.springframework.restdocs.request.RequestPartsSnippet;
+import org.springframework.web.multipart.MultipartFile;
 
 public class MemberApiDocsTest extends RestDocsTest {
     private String accessToken;
@@ -107,4 +116,55 @@ public class MemberApiDocsTest extends RestDocsTest {
                 .andExpect(status().isOk())
                 .andDo(document("get-sidebar-info", pathParameters, responseFieldsSnippet));
     }
+
+    @Test
+    @DisplayName("[성공] 마이페이지를 수정한다.")
+    public void updateMyPage_마이페이지를_수정한다_성공() throws Exception {
+        final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
+
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/members/me", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent())
+                .andDo(document("myPage-update",
+                        requestFields(
+                                stringFieldWithPath("name", "수정할 이름")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("[성공] 마이페이지의 이미지를 수정한다.")
+    public void updateMyPageImage_마이페이지의_이미지를_수정한다_성공() throws Exception {
+        final MockMultipartFile file = getMockImageFile();
+
+        doNothing().when(memberCommandService).updateMyPageImage(any(MultipartFile.class), any());
+
+        final RequestPartsSnippet requestParts = requestParts(
+                partWithName("file").description("마이페이지 프로필 이미지 파일")
+        );
+
+        mockMvc.perform(multipart("/members/me/image", 1L)
+                        .file(file)
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isNoContent())
+                .andDo(document("myPage-image-update", requestParts));
+    }
+
+    @Test
+    @DisplayName("[성공] 마이페이지의 이미지를 삭제한다.")
+    public void deleteMyPageImage_마이페이지의_이미지를_삭제한다_성공() throws Exception {
+        doNothing().when(memberCommandService).deleteMyPageImage(any());
+
+        mockMvc.perform(delete("/members/me/image", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isNoContent())
+                .andDo(document("myPage-image-delete"));
+    }
+
 }

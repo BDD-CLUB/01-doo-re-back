@@ -1,21 +1,21 @@
 package doore.study.application;
 
-import static doore.member.domain.StudyRoleType.ROLE_스터디원;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER_SELF;
 
+import doore.member.application.convenience.MemberConvenience;
+import doore.member.application.convenience.MemberValidateAccessPermission;
+import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
+import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.domain.Member;
-import doore.member.domain.Participant;
-import doore.member.domain.StudyRole;
-import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
-import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
-import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.StudyException;
+import doore.member.exception.ParticipantException;
+import doore.study.application.convenience.ParticipantConvenience;
+import doore.study.application.convenience.StudyConvenience;
+import doore.study.application.convenience.StudyValidateAccessPermission;
+import doore.study.domain.Study;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,63 +24,82 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ParticipantCommandService {
-    private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
-    private final MemberRepository memberRepository;
-    private final StudyRoleRepository studyRoleRepository;
+
+    private final StudyRoleConvenience studyRoleConvenience;
+    private final ParticipantConvenience participantConvenience;
+    private final StudyConvenience studyConvenience;
+    private final MemberConvenience memberConvenience;
 
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
+    private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
+    private final MemberValidateAccessPermission memberValidateAccessPermission;
+    private final StudyValidateAccessPermission studyValidateAccessPermission;
 
-    public void saveParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
+    public void createParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, studyLeaderId);
-        validateExistStudy(studyId);
-        final Member member = validateExistMember(memberId);
-        final Participant participant = Participant.builder()
-                .studyId(studyId)
-                .member(member)
-                .build();
-        participantRepository.save(participant);
-        assignParticipantRole(studyId, memberId, studyLeaderId);
-    }
-
-    private void assignParticipantRole(Long studyId, Long memberId, Long studyLeaderId) {
-        if (!memberId.equals(studyLeaderId)) {
-            studyRoleRepository.save(StudyRole.builder()
-                    .studyRoleType(ROLE_스터디원)
-                    .studyId(studyId)
-                    .memberId(memberId)
-                    .build());
-        }
+        final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
+        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
+        final Long teamId = study.getTeamId();
+        teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, memberId);
+        participantConvenience.assignParticipant(studyId, member);
+        studyRoleConvenience.assignParticipantRole(studyId, memberId, studyLeaderId);
     }
 
     public void deleteParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
-        studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, studyLeaderId);
-        validateExistStudy(studyId);
-        final Member member = validateExistMember(memberId);
+        studyValidateAccessPermission.validateExistStudy(studyId);
+        checkStudyLeaderOrTeamLeader(studyId, memberId, studyLeaderId);
+        checkIsEqualDeleteMemberIdAndStudyLeaderId(memberId, studyLeaderId);
+        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
+        studyRoleConvenience.deleteByStudyIdAndMemberId(studyId, memberId);
     }
 
-    public void withdrawParticipant(final Long studyId, final Long memberId, final Long participantId) {
-        validateExistParticipant(studyId, participantId);
-        validateExistStudy(studyId);
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    public void withdrawParticipant(final Long studyId, final Long memberId) {
+        studyValidateAccessPermission.validateExistStudy(studyId);
+        studyRoleValidateAccessPermission.validateExistParticipantOnly(studyId, memberId);
+        final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         participantRepository.deleteByStudyIdAndMember(studyId, member);
+        studyRoleConvenience.deleteByStudyIdAndMemberId(studyId, memberId);
     }
 
-    private void validateExistStudy(final Long studyId) {
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-    }
-
-    private Member validateExistMember(final Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
-    }
-
-    private void validateExistParticipant(final Long studyId, final Long memberId) {
-        final StudyRole studyRole = studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY));
-        if (!studyRole.getStudyRoleType().equals(ROLE_스터디원)) {
-            throw new MemberException(UNAUTHORIZED);
+    private void checkIsEqualDeleteMemberIdAndStudyLeaderId(final Long deleteMemberId, final Long studyLeaderId) {
+        if (deleteMemberId.equals(studyLeaderId)) {
+            throw new ParticipantException(CANNOT_DELETE_STUDY_LEADER_SELF);
         }
     }
+
+    private void checkStudyLeaderOrTeamLeader(final Long studyId, final Long deleteMemberId, final Long leaderId) {
+        final Study study = studyConvenience.findById(studyId);
+        final Long teamId = study.getTeamId();
+        if (!(studyRoleValidateAccessPermission.isStudyLeader(studyId, leaderId)
+                || teamRoleValidateAccessPermission.isTeamLeader(teamId, leaderId))) {
+            throw new MemberException(UNAUTHORIZED);
+        }
+        assignStudyLeaderToTeamLeader(studyId, deleteMemberId, teamId, leaderId);
+    }
+
+    private void assignStudyLeaderToTeamLeader(final Long studyId, final Long deleteMemberId, final Long teamId,
+                                               final Long leaderId) {
+        final Member leader = memberConvenience.findByMember(leaderId);
+        if (studyRoleValidateAccessPermission.isStudyLeader(studyId, deleteMemberId)
+                && teamRoleValidateAccessPermission.isTeamLeader(teamId, leaderId)) {
+            final boolean isTeamLeaderAlreadyParticipant = checkIsPresentParticipantAndUpdateStudyRole(studyId,
+                    leaderId);
+            if (!isTeamLeaderAlreadyParticipant) {
+                participantConvenience.assignParticipant(studyId, leader);
+                studyRoleConvenience.assignStudyLeaderRole(studyId, leaderId);
+            }
+        }
+    }
+
+    private boolean checkIsPresentParticipantAndUpdateStudyRole(final Long studyId, final Long leaderId) {
+        return studyRoleConvenience.findStudyRoleByStudyIdAndMemberId(studyId, leaderId)
+                .map(studyRole -> {
+                    studyRole.updateStudyLeaderRole();
+                    return true;
+                })
+                .orElse(false);
+    }
+
 }

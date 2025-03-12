@@ -1,18 +1,17 @@
 package doore.study.application;
 
-import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
-import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
+import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
+import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.domain.Participant;
-
 import doore.member.domain.repository.ParticipantRepository;
-import doore.member.domain.StudyRoleType;
-import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.study.application.convenience.StudyConvenience;
+import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.study.application.dto.response.ParticipantResponse;
-import doore.study.domain.repository.StudyRepository;
-import doore.study.exception.StudyException;
+import doore.study.domain.Study;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,23 +22,32 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ParticipantQueryService {
 
-    private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
-    private final StudyRoleRepository studyRoleRepository;
+
+    private final StudyRoleConvenience studyRoleConvenience;
+    private final StudyConvenience studyConvenience;
 
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
+    private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
+    private final StudyValidateAccessPermission studyValidateAccessPermission;
 
-    public List<ParticipantResponse> findAllParticipants(final Long studyId, final Long memberId) {
-        studyRoleValidateAccessPermission.validateExistParticipant(studyId, memberId);
-        studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
-        List<Participant> participants = participantRepository.findAllByStudyId(studyId);
+    public List<ParticipantResponse> getParticipants(final Long studyId, final Long memberId) {
+        final Study study = studyConvenience.findById(studyId);
+        studyValidateAccessPermission.validateExistStudy(studyId);
+        checkStudyLeaderOrParticipantOrTeamLeader(studyId, memberId, study);
+        List<Participant> participants = participantRepository.findAllByStudyIdAndIsDeletedFalse(studyId);
         return participants.stream()
-                .map(participant -> ParticipantResponse.of(participant, getStudyRoleType(studyId, memberId))).toList();
+                .map(participant -> ParticipantResponse.of(participant,
+                        studyRoleConvenience.findStudyRoleType(studyId, participant.getMember().getId()))).toList();
     }
 
-    private StudyRoleType getStudyRoleType(Long studyId, Long memberId) {
-        return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ROLE_IN_STUDY))
-                .getStudyRoleType();
+    private void checkStudyLeaderOrParticipantOrTeamLeader(final Long studyId, final Long memberId, final Study study) {
+        final Long teamId = study.getTeamId();
+        if (!(studyRoleValidateAccessPermission.isStudyLeader(studyId, memberId)
+                || studyRoleValidateAccessPermission.isParticipant(studyId, memberId)
+                || teamRoleValidateAccessPermission.isTeamLeader(teamId, memberId))) {
+            throw new MemberException(UNAUTHORIZED);
+        }
     }
+
 }

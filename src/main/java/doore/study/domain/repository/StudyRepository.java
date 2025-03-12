@@ -18,19 +18,11 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     List<Study> findAllByTeamId(Long teamId);
 
     Page<Study> findAllByTeamId(Long teamId, Pageable pageable);
-    
+
     @Query("select s from Study s join Document d on d.groupId = s.id where d.id = :documentId")
     Study findByDocumentId(Long documentId);
 
-    @Query(
-            value = "SELECT * FROM study WHERE team_id = :teamId ORDER BY " +
-                    "CASE status " +
-                    "    WHEN 'IN_PROGRESS' THEN 1 " +
-                    "    WHEN 'UPCOMING' THEN 2 " +
-                    "    WHEN 'ENDED' THEN 3 " +
-                    "END",
-            countQuery = "SELECT COUNT(*) FROM study WHERE team_id = :teamId",
-            nativeQuery = true
-    )
-    Page<Study> findAllByTeamIdOrderByStudyStatusNative(Long teamId, Pageable pageable);
+    @Query("SELECT s FROM Study s JOIN Participant p ON s.id = p.studyId " + "WHERE s.teamId = :teamId "
+            + "  AND s.isDeleted = false " + "  AND p.member.id = :memberId " + "  AND p.isDeleted = false")
+    List<Study> findAllByTeamIdAndMemberId(Long teamId, Long memberId);
 }

@@ -3,15 +3,14 @@ package doore.restdocs.docs;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
-import doore.document.application.dto.response.DocumentResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.request.StudyCreateRequest;
 import doore.study.application.dto.request.StudyUpdateRequest;
@@ -78,7 +77,7 @@ public class StudyApiDocsTest extends RestDocsTest {
     public void 스터디_정보를_조회한다() throws Exception {
         final StudyResponse studyResponse = getStudyResponse();
 
-        when(studyQueryService.findStudyById(any())).thenReturn(studyResponse);
+        when(studyQueryService.getStudy(any())).thenReturn(studyResponse);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/{studyId}", 1))
                 .andExpect(status().isOk())
@@ -206,7 +205,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
         );
 
-        when(studyQueryService.findMyStudies(any(), any())).thenReturn(response);
+        when(studyQueryService.getMyStudies(any(), any())).thenReturn(response);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/studies/members/{memberId}", memberId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
