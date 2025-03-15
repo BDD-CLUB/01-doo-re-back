@@ -65,9 +65,9 @@ public class StudyQueryService {
         //todo: (24.07.09) point 기반 정렬 로직 추가;
     }
 
-    public List<StudyRankResponse> getMemberStudies(final Long memberId) {
+    public List<StudyReferenceResponse> getMemberStudies(final Long memberId) {
         return studyRepository.findAllByMemberId(memberId).stream()
-                .map(this::convertStudyToStudyRankResponse)
+                .map(study -> StudyReferenceResponse.of(study, checkStudyProgressRatio(study.getId())))
                 .toList();
     }
 

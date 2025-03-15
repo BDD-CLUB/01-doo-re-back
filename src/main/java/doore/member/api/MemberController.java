@@ -7,7 +7,7 @@ import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
 import doore.study.application.StudyQueryService;
-import doore.study.application.dto.response.StudyRankResponse;
+import doore.study.application.dto.response.StudyReferenceResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +80,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/studies")
-    public ResponseEntity<List<StudyRankResponse>> getStudies(@LoginMember final Member member) {
+    public ResponseEntity<List<StudyReferenceResponse>> getStudies(@LoginMember final Member member) {
         return ResponseEntity.ok(studyQueryService.getMemberStudies(member.getId()));
     }
 }
