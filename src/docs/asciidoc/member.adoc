@@ -55,5 +55,10 @@ include::{snippets}/get-sidebar-info/path-parameters.adoc[]
 .HTTP Response
 include::{snippets}/get-sidebar-info/http-response.adoc[]
 
-.Response Body's Fields
-include::{snippets}/get-sidebar-info/response-body.adoc[]
+== `GET`: 마이페이지 Document 조회
+
+.HTTP Request
+include::{snippets}/myPage-document-get-list/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-document-get-list/http-response.adoc[]

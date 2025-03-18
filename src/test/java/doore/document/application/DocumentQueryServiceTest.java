@@ -34,6 +34,7 @@ import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.domain.Team;
 import doore.team.domain.repository.TeamRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -202,5 +203,27 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         assertThatThrownBy(
                 () -> documentQueryService.getDocument(studyDocument.getId(), notParticipantMember.getId()))
                 .isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
+    @DisplayName("[성공] 회원이 업로드한 학습자료 목록을 조회할 수 있다")
+    public void getDocument_회원이_업로드한_학습자료를_목록을_조회할_수_있다_성공() {
+        final List<DocumentResponse> responses =
+                documentQueryService.getDocumentsByMemberId(participant.getId());
+        final String uploaderName = memberRepository.findById(allOpenTeamDocument.getUploaderId()).orElseThrow()
+                .getName();
+
+        assertThat(responses)
+                .hasSize(3)
+                .allSatisfy(response -> assertThat(response.uploaderName()).isEqualTo(uploaderName));
+    }
+
+    @Test
+    @DisplayName("[성공] 회원이 업로드한 학습자료가 없다면 빈 값이 반환된다")
+    public void getDocument_회원이_업로드한_학습자료가_없다면_빈_값이_반환된다_성공() {
+        final List<DocumentResponse> responses =
+                documentQueryService.getDocumentsByMemberId(notParticipantMember.getId());
+        
+        assertThat(responses).isEmpty();
     }
 }

@@ -1,5 +1,7 @@
 package doore.restdocs.docs;
 
+import static doore.document.domain.DocumentAccessType.ALL;
+import static doore.document.domain.DocumentType.IMAGE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -10,10 +12,13 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import doore.document.application.dto.response.DocumentResponse;
+import doore.document.application.dto.response.FileResponse;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -106,5 +111,40 @@ public class MemberApiDocsTest extends RestDocsTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("get-sidebar-info", pathParameters, responseFieldsSnippet));
+    }
+
+    @Test
+    @DisplayName("[성공] 본인이 등록한 학습자료를 모두 조회한다.")
+    void getMyPageDocument_본인이_등록한_학습자료를_모두_조회한다_성공() throws Exception {
+        final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "url");
+        final DocumentResponse document = DocumentResponse.builder()
+                .id(1L)
+                .title("학습자료 1")
+                .description("학습자료1 입니다")
+                .accessType(ALL)
+                .type(IMAGE)
+                .files(List.of(fileResponse))
+                .date(LocalDate.parse("2025-02-28"))
+                .uploaderName("홍길동")
+                .build();
+        final DocumentResponse otherDocument = DocumentResponse.builder()
+                .id(2L)
+                .title("학습자료 2")
+                .description("학습자료2 입니다")
+                .accessType(ALL)
+                .type(IMAGE)
+                .files(List.of(fileResponse))
+                .date(LocalDate.parse("2025-03-15"))
+                .uploaderName("홍길동")
+                .build();
+        final List<DocumentResponse> documents = List.of(document, otherDocument);
+
+        when(documentQueryService.getDocumentsByMemberId(any()))
+                .thenReturn(documents);
+
+        mockMvc.perform(get("/members/documents")
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isOk())
+                .andDo(document("myPage-document-get-list"));
     }
 }
