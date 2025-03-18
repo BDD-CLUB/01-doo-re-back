@@ -19,7 +19,10 @@ import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.restdocs.RestDocsTest;
 import doore.study.application.dto.response.StudyNameResponse;
+import doore.study.application.dto.response.StudyReferenceResponse;
+import doore.study.domain.StudyStatus;
 import doore.team.application.dto.response.MyTeamsAndStudiesResponse;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -167,4 +170,49 @@ public class MemberApiDocsTest extends RestDocsTest {
                 .andDo(document("myPage-image-delete"));
     }
 
+    @Test
+    @DisplayName("[성공] 본인이 가입한 스터디를 모두 조회한다.")
+    void getMyPageStudies_본인이_가입한_스터디를_모두_조회한다_성공() throws Exception {
+        final Long memberId = 1L;
+        final List<StudyReferenceResponse> response = List.of(
+                StudyReferenceResponse.builder()
+                        .id(1L)
+                        .name("자료구조")
+                        .description("자료구조 스터디입니다.")
+                        .startDate(LocalDate.parse("2025-02-01"))
+                        .endDate(LocalDate.parse("2025-02-28"))
+                        .status(StudyStatus.ENDED)
+                        .cropId(1L)
+                        .studyProgressRatio(50)
+                        .build(),
+                StudyReferenceResponse.builder()
+                        .id(2L)
+                        .name("알고리즘")
+                        .description("알고리즘 스터디입니다.")
+                        .startDate(LocalDate.parse("2025-03-01"))
+                        .endDate(LocalDate.parse("2025-03-31"))
+                        .status(StudyStatus.IN_PROGRESS)
+                        .cropId(1L)
+                        .studyProgressRatio(50)
+                        .build()
+        );
+
+        when(studyQueryService.getMyStudies(any(), any())).thenReturn(response);
+
+        final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
+                numberFieldWithPath("[].id", "스터디의 ID"),
+                stringFieldWithPath("[].name", "스터디의 이름"),
+                stringFieldWithPath("[].description", "스터디의 설명"),
+                stringFieldWithPath("[].startDate", "스터디의 시작일"),
+                stringFieldWithPath("[].endDate", "스터디의 종료일"),
+                stringFieldWithPath("[].status", "스터디의 진행 상태"),
+                numberFieldWithPath("[].cropId", "스터디의 작물 ID"),
+                numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
+        );
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/members/studies")
+                        .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .andExpect(status().isOk())
+                .andDo(document("myPage-studies-get-list", responseFieldsSnippet));
+    }
 }
