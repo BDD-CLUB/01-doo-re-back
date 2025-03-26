@@ -40,7 +40,7 @@ public class DocumentController {
     private final DocumentCommandService documentCommandService;
     private final DocumentQueryService documentQueryService;
 
-    @PostMapping(value = "/{groupType}/{groupId}/documents", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{groupType}/{groupId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE}) // 회원
     public ResponseEntity<Void> createDocument(@Valid @RequestPart final DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
@@ -51,7 +51,7 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{groupType}/{groupId}/documents") // 비회원
+    @GetMapping("/{groupType}/{groupId}") // 비회원
     public ResponseEntity<Page<DocumentResponse>> getAllDocument(
             @PathVariable final String groupType,
             @PathVariable final Long groupId,

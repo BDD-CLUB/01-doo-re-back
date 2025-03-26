@@ -10,8 +10,8 @@
 - **협업**: 팀원들은 스터디, 학습자료 업로드 등의 활동을 통해 팀의 '텃밭'에 기여할 수 있습니다.
 
 <br>
-운영서버: https://doore.kro.kr/ <br>
-Rest Docs: https://www.doore.kro.kr/docs/doore.html
+운영서버: https://doore.pnu.app/ <br>
+Rest Docs: https://doore.pnu.app/api/docs/doore.html
 <br><br>
 
 ## 🧑🏻‍💻 기획 & 개발
