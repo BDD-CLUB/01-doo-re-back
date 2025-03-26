@@ -67,7 +67,7 @@ public class DocumentDocsTest extends RestDocsTest {
                 new FileInputStream("src/test/resources/images/testImage.png")
         );
 
-        mockMvc.perform(multipart("/documents/{groupType}/{groupId}/documents", "teams", 1)
+        mockMvc.perform(multipart("/documents/{groupType}/{groupId}", "teams", 1)
                         .part(mockPart)
                         .file(file)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -131,7 +131,7 @@ public class DocumentDocsTest extends RestDocsTest {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("page", "0");
         params.add("size", "4");
-        mockMvc.perform(get("/documents/{groupType}/{groupId}/documents", "teams", 1).params(params)
+        mockMvc.perform(get("/documents/{groupType}/{groupId}", "teams", 1).params(params)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("document-get-list", pathParameters(
