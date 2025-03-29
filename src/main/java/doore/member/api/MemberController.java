@@ -54,7 +54,7 @@ public class MemberController {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
     }
 
-    @GetMapping("/members/documents")
+    @GetMapping("/members/me/documents")
     public ResponseEntity<List<DocumentResponse>> getDocuments(@LoginMember final Member member) {
         return ResponseEntity.ok(documentQueryService.getDocumentsByMemberId(member.getId()));
     }

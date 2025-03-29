@@ -142,7 +142,7 @@ public class MemberApiDocsTest extends RestDocsTest {
         when(documentQueryService.getDocumentsByMemberId(any()))
                 .thenReturn(documents);
 
-        mockMvc.perform(get("/members/documents")
+        mockMvc.perform(get("/members/me/documents")
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("myPage-document-get-list"));
