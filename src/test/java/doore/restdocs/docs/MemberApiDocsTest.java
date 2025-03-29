@@ -197,7 +197,7 @@ public class MemberApiDocsTest extends RestDocsTest {
                         .build()
         );
 
-        when(studyQueryService.getMyStudies(any(), any())).thenReturn(response);
+        when(studyQueryService.getMemberStudies(any())).thenReturn(response);
 
         final ResponseFieldsSnippet responseFieldsSnippet = responseFields(
                 numberFieldWithPath("[].id", "스터디의 ID"),
