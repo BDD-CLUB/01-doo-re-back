@@ -55,6 +55,7 @@ include::{snippets}/get-sidebar-info/path-parameters.adoc[]
 .HTTP Response
 include::{snippets}/get-sidebar-info/http-response.adoc[]
 
+
 == `GET`: 마이페이지 Document 조회
 
 .HTTP Request
@@ -62,3 +63,37 @@ include::{snippets}/myPage-document-get-list/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/myPage-document-get-list/http-response.adoc[]
+
+== `PATCH`: 마이페이지 수정
+
+.HTTP Request
+include::{snippets}/myPage-update/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-update/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/myPage-update/path-parameters.adoc[]
+
+== `PATCH`: 마이페이지 이미지 수정
+
+.HTTP Request
+include::{snippets}/myPage-image-update/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-image-update/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/myPage-image-update/path-parameters.adoc[]
+
+== `DELETE`: 마이페이지 이미지 삭제
+
+.HTTP Request
+include::{snippets}/myPage-image-delete/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-image-delete/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/myPage-image-delete/path-parameters.adoc[]
+

@@ -58,7 +58,7 @@ public class TeamCommandService {
     private final MemberValidateAccessPermission memberValidateAccessPermission;
 
     private static final String INVITE_LINK_PREFIX = "teamId=%d";
-    private static final String DEFAULT_IMAGE_URL = "https://doo-re-dev-bucket2.s3.ap-northeast-2.amazonaws.com/logo/logo.png";
+    private static final String DEFAULT_IMAGE_URL = "TEMP_URL";
 
     public void createTeam(final TeamCreateRequest request, final MultipartFile file, final Long memberId) {
         Member member = memberValidateAccessPermission.getValidateExistMember(memberId);

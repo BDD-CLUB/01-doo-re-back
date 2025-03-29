@@ -6,6 +6,8 @@ import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
 import static doore.garden.domain.GardenType.DOCUMENT_UPLOAD;
 import static doore.member.MemberFixture.createMember;
 import static doore.member.MemberFixture.미나;
+import static doore.member.MemberFixture.아마란스;
+import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
@@ -32,7 +34,14 @@ import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
+import doore.member.domain.Participant;
+import doore.member.domain.StudyRole;
+import doore.member.domain.TeamRole;
+import doore.member.domain.TeamRoleType;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.ParticipantRepository;
+import doore.member.domain.repository.StudyRoleRepository;
+import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
@@ -58,6 +67,13 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private ParticipantRepository participantRepository;
+    @Autowired
+    private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private TeamRoleRepository teamRoleRepository;
+
+    @Autowired
     private DocumentCommandService documentCommandService;
     @Autowired
     private GardenConvenience gardenCommandService;
@@ -69,6 +85,9 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     private DocumentCreateRequest documentRequest;
     private Study study;
     private Member member;
+    private Member notParticipantMember;
+    private StudyRole studyRole;
+    private TeamRole teamRole;
 
     @BeforeEach
     void setUp() {
@@ -77,6 +96,18 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         study = createStudy();
         study = studyRepository.save(algorithmStudy());
         member = memberRepository.save(미나());
+        notParticipantMember = memberRepository.save(아마란스());
+        participantRepository.save(Participant.builder().member(member).studyId(study.getId()).build());
+        studyRoleRepository.save(StudyRole.builder().
+                studyId(study.getId())
+                .studyRoleType(ROLE_스터디원)
+                .memberId(member.getId())
+                .build());
+        teamRoleRepository.save(TeamRole.builder()
+                .teamId(study.getTeamId())
+                .teamRoleType(TeamRoleType.ROLE_팀장)
+                .memberId(notParticipantMember.getId())
+                .build());
     }
 
     @Nested
@@ -115,6 +146,16 @@ public class DocumentCommandServiceTest extends IntegrationTest {
                     () -> assertThat(documents.get(0).getFiles()).hasSize(1),
                     () -> assertEquals(documents.get(0).getName(), documentRequest.title())
             );
+        }
+
+        @Test
+        @DisplayName("[실패] 스터디 구성원이 아니라면 스터디 학습자료를 생성할 수 없다.")
+        void createDocument_스터디_구성원이_아니라면_스터디_학습자료를_생성할_수_없다_실패() {
+            assertThatThrownBy(() ->
+                    documentCommandService.createDocument(documentRequest, null, STUDY, study.getId(),
+                            notParticipantMember.getId()))
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(UNAUTHORIZED.errorMessage());
         }
 
         @Test

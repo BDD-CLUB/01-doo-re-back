@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import doore.helper.IntegrationTest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
+import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -229,4 +230,18 @@ class MemberCommandServiceTest extends IntegrationTest {
             memberCommandService.transferStudyLeader(study.getId(), member.getId(), notStudyLeaderMember.getId());
         });
     }
+
+    @Test
+    @DisplayName("[성공] 정상적으로 마이페이지 정보를 수정할 수 있다.")
+    void updateMyPage_정상적으로_마이페이지_정보를_수정할_수_있다_성공() {
+        final MyPageUpdateRequest request = new MyPageUpdateRequest("수정된 이름");
+        final Member beforeMemberInfo = memberRepository.findById(member.getId()).orElseThrow();
+        assertThat(beforeMemberInfo.getName()).isEqualTo("아마란스");
+
+        memberCommandService.updateMyPage(request, member.getId());
+        final Member afterMemberInfo = memberRepository.findById(member.getId()).orElseThrow();
+
+        assertThat(afterMemberInfo.getName()).isEqualTo(request.name());
+    }
+
 }
