@@ -90,3 +90,17 @@ include::{snippets}/myPage-image-delete/http-response.adoc[]
 
 .Path Parameters
 include::{snippets}/myPage-image-delete/path-parameters.adoc[]
+
+== `GET`: 마이페이지 스터디 조회
+
+.HTTP Request
+include::{snippets}/myPage-studies-get-list/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/myPage-studies-get-list/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/myPage-studies-get-list/http-response.adoc[]
+
+.Response Body's Fields
+include::{snippets}/myPage-studies-get-list/response-body.adoc[]

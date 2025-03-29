@@ -79,7 +79,7 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/studies")
+    @GetMapping("/members/me/studies")
     public ResponseEntity<List<StudyReferenceResponse>> getStudies(@LoginMember final Member member) {
         return ResponseEntity.ok(studyQueryService.getMemberStudies(member.getId()));
     }

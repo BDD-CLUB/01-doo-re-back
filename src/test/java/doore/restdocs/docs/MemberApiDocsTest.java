@@ -210,7 +210,7 @@ public class MemberApiDocsTest extends RestDocsTest {
                 numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
         );
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/members/studies")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/members/me/studies")
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("myPage-studies-get-list", responseFieldsSnippet));
