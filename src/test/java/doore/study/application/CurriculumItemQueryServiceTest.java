@@ -121,7 +121,7 @@ public class CurriculumItemQueryServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 정상적으로 수정된 나의 커리큘럼을 조회할 수 있다.")
-    public void getMyCurriculum_정상적으로_수정된_나의_커리큘럼을_조회할_수_있다() throws Exception {
+    public void getMyCurriculum_정상적으로_수정된_나의_커리큘럼을_조회할_수_있다_성공() throws Exception {
         // given
         Participant participant = Participant.builder().member(member).studyId(study.getId()).build();
         participantRepository.save(participant);

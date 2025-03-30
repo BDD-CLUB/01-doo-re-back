@@ -142,8 +142,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
             }
 
             @Test
-            @DisplayName("[성공] 스터디의 status와 isDeleted가 초기값으로 초기화 된다.")
-            void createStudy_스터디의_status와_isDeleted가_초기값으로_초기화_된다_성공() throws Exception {
+            @DisplayName("[성공] 스터디의 status 와 isDeleted 가 초기값으로 초기화 된다.")
+            void createStudy_스터디의_status_와_isDeleted_가_초기값으로_초기화_된다_성공() throws Exception {
                 studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 final List<Study> studies = studyRepository.findAll();
                 final Study study = studies.get(1);
@@ -155,8 +155,8 @@ public class StudyCommandServiceTest extends IntegrationTest {
             }
 
             @Test
-            @DisplayName("[성공] 스터디 생성시 curriculum을 작성하지 않으면 빈 리스트로 생성된다.")
-            void createStudy_스터디_생성시_curriculum을_작성하지_않으면_빈_리스트로_생성된다_성공() throws Exception {
+            @DisplayName("[성공] 스터디 생성시 curriculum 을 작성하지 않으면 빈 리스트로 생성된다.")
+            void createStudy_스터디_생성_시_curriculum_을_작성하지_않으면_빈_리스트로_생성된다_성공() throws Exception {
                 studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId);
                 final List<Study> studies = studyRepository.findAll();
                 final Study study = studies.get(0);

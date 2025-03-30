@@ -47,8 +47,8 @@ class MemberTeamControllerTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("정상적으로 팀원 목록을 조회한다.")
-    void 정상적으로_팀원_목록을_조회한다_성공() throws Exception {
+    @DisplayName("[성공] 정상적으로 팀원 목록을 조회한다.")
+    void getMemberTeam_정상적으로_팀원_목록을_조회한다_성공() throws Exception {
         memberTeamRepository.save(
                 MemberTeam.builder()
                         .teamId(team.getId())

@@ -27,8 +27,8 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("참여자를 추가한다.")
-    void 참여자를_추가한다_성공() throws Exception {
+    @DisplayName("[성공] 참여자를 추가한다.")
+    void createParticipant_참여자를_추가한다_성공() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/members/{memberId}", 1, 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isCreated())
@@ -40,8 +40,8 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("참여자를 삭제한다.")
-    void 참여자를_삭제한다_성공() throws Exception {
+    @DisplayName("[성공] 참여자를 삭제한다.")
+    void deleteParticipant_참여자를_삭제한다_성공() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members/{memberId}", 1, 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
@@ -53,8 +53,8 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("참여자가 탈퇴한다.")
-    void 참여자가_탈퇴한다_성공() throws Exception {
+    @DisplayName("[성공] 참여자가 탈퇴한다.")
+    void withdrawParticipant_참여자가_탈퇴한다_성공() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}/members", 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())
@@ -64,8 +64,8 @@ public class ParticipantApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("참여자를 조회한다.")
-    void 참여자를_조회한다_성공() throws Exception {
+    @DisplayName("[성공] 참여자를 조회한다.")
+    void getParticipants_참여자를_조회한다_성공() throws Exception {
         final ParticipantResponse participantResponse = new ParticipantResponse(
                 1L, "팜", "pom@gmail.com", "imageUrl", StudyRoleType.ROLE_스터디원);
 

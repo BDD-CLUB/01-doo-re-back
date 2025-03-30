@@ -73,7 +73,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 커리큘럼 관리가 정상적으로 이루어진다.")
-    public void manageCurriculum_커리큘럼_관리가_정상적으로_이루어진다() throws Exception {
+    public void manageCurriculum_커리큘럼_관리가_정상적으로_이루어진다_성공() throws Exception {
         doNothing().when(curriculumItemCommandService).manageCurriculum(any(), any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/studies/{studyId}/curriculums", 1)
@@ -98,7 +98,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 커리큘럼 상태가 정상적으로 변경된다.")
-    public void checkCurriculum_커리큘럼_상태가_정상적으로_변경된다() throws Exception {
+    public void checkCurriculum_커리큘럼_상태가_정상적으로_변경된다_성공() throws Exception {
         doNothing().when(curriculumItemCommandService).checkCurriculum(any(), any(), any());
 
         mockMvc.perform(
@@ -113,7 +113,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 스터디의 커리큘럼을 정상적으로 조회할 수 있다.")
-    public void getCurriculums_스터디의_커리큘럼을_정상적으로_조회할_수_있다() throws Exception {
+    public void getCurriculums_스터디의_커리큘럼을_정상적으로_조회할_수_있다_성공() throws Exception {
         //when
         when(curriculumItemQueryService.getCurriculums(any())).thenReturn(List.of(curriculumItemResponse));
 
@@ -129,7 +129,7 @@ public class CurriculumItemApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 스터디의 특정 회원의 커리큘럼을 정상적으로 조회할 수 있다.")
-    public void getMyCurriculum_스터디의_특정_회원의_커리큘럼을_정상적으로_조회할_수_있다() throws Exception {
+    public void getMyCurriculum_스터디의_특정_회원의_커리큘럼을_정상적으로_조회할_수_있다_성공() throws Exception {
         //given
         final CurriculumItemResponse otherCurriculumItemResponse = new CurriculumItemResponse(
                 1L, "chapter2. DFS", 0, false,

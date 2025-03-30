@@ -44,8 +44,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("스터디를 생성한다.")
-    public void 스터디를_생성한다() throws Exception {
+    @DisplayName("[성공] 스터디를 생성한다.")
+    public void createStudy_스터디를_생성한다_성공() throws Exception {
         final StudyCreateRequest request = StudyCreateRequest.builder()
                 .name("알고리즘")
                 .description("알고리즘 스터디 입니다.")
@@ -73,8 +73,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("스터디 정보를 조회한다.")
-    public void 스터디_정보를_조회한다() throws Exception {
+    @DisplayName("[성공] 스터디 정보를 조회한다.")
+    public void getStudy_스터디_정보를_조회한다_성공() throws Exception {
         final StudyResponse studyResponse = getStudyResponse();
 
         when(studyQueryService.getStudy(any())).thenReturn(studyResponse);
@@ -118,8 +118,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("스터디를 삭제한다.")
-    public void 스터디를_삭제한다() throws Exception {
+    @DisplayName("[성공] 스터디를 삭제한다.")
+    public void deleteStudy_스터디를_삭제한다_성공() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/studies/{studyId}", 1))
                 .andExpect(status().isNoContent())
                 .andDo(document("study-delete", pathParameters(
@@ -129,8 +129,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("스터디를 수정한다.")
-    public void 스터디를_수정한다() throws Exception {
+    @DisplayName("[성공] 스터디를 수정한다.")
+    public void updateStudy_스터디를_수정한다_성공() throws Exception {
         final StudyUpdateRequest request = StudyUpdateRequest.builder()
                 .name("스프링")
                 .description("스프링 스터디 입니다.")
@@ -159,8 +159,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("스터디의 상태를 수정한다.")
-    public void 스터디의_상태를_수정한다() throws Exception {
+    @DisplayName("[성공] 스터디의 상태를 수정한다.")
+    public void changeStudyStatus_스터디의_상태를_수정한다_성공() throws Exception {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.patch("/studies/{studyId}/status?status={status}", 1, "IN_PROGRESS"))
                 .andExpect(status().isNoContent())
@@ -175,8 +175,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("스터디를 종료한다.")
-    public void 스터디를_종료한다() throws Exception {
+    @DisplayName("[성공] 스터디를 종료한다.")
+    public void terminateStudy_스터디를_종료한다_성공() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/studies/{studyId}/termination", 1))
                 .andExpect(status().isNoContent())
                 .andDo(document("study-terminate", pathParameters(
@@ -186,8 +186,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("나의 스터디 목록을 조회한다.")
-    public void 나의_스터디_목록을_조회한다() throws Exception {
+    @DisplayName("[성공] 나의 스터디 목록을 조회한다.")
+    public void getMyStudies_나의_스터디_목록을_조회한다_성공() throws Exception {
         final Long memberId = 1L;
         final List<StudyReferenceResponse> response = List.of(
                 getStudyReferenceResponse(),
@@ -218,8 +218,8 @@ public class StudyApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀의 스터디 목록(스터디 랭킹)을 조회한다.")
-    public void 팀의_스터디_목록스터디_랭킹을_조회한다() throws Exception {
+    @DisplayName("[성공] 팀의 스터디 목록(스터디 랭킹)을 조회한다.")
+    public void getTeamStudies_팀의_스터디_목록스터디_랭킹을_조회한다_성공() throws Exception {
         final StudyReferenceResponse studyReferenceResponse =
                 new StudyReferenceResponse(1L, "study1", "this is study 1", LocalDate.of(2024, 7, 6),
                         LocalDate.of(2024, 7, 7), StudyStatus.IN_PROGRESS, 1L, 60L);

@@ -213,7 +213,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 팀장이 아닌 사람이 팀장 위임을 시도하면 실패한다")
-    void transferTeamLeader_팀장이_아닌_사람이_팀장_위임을_시도하면_실패한다() {
+    void transferTeamLeader_팀장이_아닌_사람이_팀장_위임을_시도하면_실패한다_실패() {
         final Member notTeamLeaderMember = memberRepository.save(미나());
 
         assertThatThrownBy(() -> {
@@ -223,7 +223,7 @@ class MemberCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 스터디장이 아닌 사람이 스터디장 위임을 시도하면 실패한다")
-    void transferStudyLeader_스터디장이_아닌_사람이_스터디장_위임을_시도하면_실패한다() {
+    void transferStudyLeader_스터디장이_아닌_사람이_스터디장_위임을_시도하면_실패한다_실패() {
         final Member notStudyLeaderMember = memberRepository.save(미나());
 
         assertThatThrownBy(() -> {

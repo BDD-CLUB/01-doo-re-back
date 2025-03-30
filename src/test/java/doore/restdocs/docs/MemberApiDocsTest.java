@@ -44,7 +44,7 @@ public class MemberApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 유효한 요청이면 팀장 권한이 정상적으로 위임된다.")
-    void transferTeamLeader_유효한_요청이면_팀장_권한이_정상적으로_위임된다() throws Exception {
+    void transferTeamLeader_유효한_요청이면_팀장_권한이_정상적으로_위임된다_성공() throws Exception {
         doNothing().when(memberCommandService).transferTeamLeader(any(), any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/teams/{teamId}/mandate/{newTeamLeaderId}", 1, 1)
@@ -57,7 +57,7 @@ public class MemberApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 유효한 요청이면 스터디장 권한이 정상적으로 위임된다.")
-    void transferStudyLeader_유효한_요청이면_스터디장_권한이_정상적으로_위임된다() throws Exception {
+    void transferStudyLeader_유효한_요청이면_스터디장_권한이_정상적으로_위임된다_성공() throws Exception {
         doNothing().when(memberCommandService).transferStudyLeader(any(), any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/study/{studyId}/mandate/{newStudyLeaderId}", 1, 1)
@@ -70,7 +70,7 @@ public class MemberApiDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 유효한 요청이면 회원 탈퇴에 성공한다.")
-    void deleteMember_유효한_요청이면_회원_탈퇴에_성공한다() throws Exception {
+    void deleteMember_유효한_요청이면_회원_탈퇴에_성공한다_성공() throws Exception {
         doNothing().when(memberCommandService).deleteMember(any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/members")

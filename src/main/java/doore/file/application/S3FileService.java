@@ -102,7 +102,7 @@ public abstract class S3FileService {
         return String.format("%s/%s", baseUrl, getFileFolder() + fileName);
     }
 
-    public String generatePresignedUrl(String fileName) {
+    public String generatePreSignedUrl(String fileName) {
         ObjectMetadata metadata = amazonS3.getObjectMetadata(bucket, getFileFolder() + fileName);
         String originalFileName = metadata.getUserMetaDataOf("original-file-name");
 
