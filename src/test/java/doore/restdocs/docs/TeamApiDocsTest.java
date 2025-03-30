@@ -56,8 +56,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀을 생성한다.")
-    public void 팀을_생성한다() throws Exception {
+    @DisplayName("[성공] 팀을 생성한다.")
+    public void createTeam_팀을_생성한다_성공() throws Exception {
         //given
         final TeamCreateRequest request = new TeamCreateRequest("BDD", "개발 동아리 입니다.");
         final MockPart mockPart = getMockPart("request", request);
@@ -89,8 +89,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀의 정보를 수정한다.")
-    public void 팀의_정보를_수정한다() throws Exception {
+    @DisplayName("[성공] 팀의 정보를 수정한다.")
+    public void updateTeam_팀의_정보를_수정한다_성공() throws Exception {
         //given
         final TeamUpdateRequest request = new TeamUpdateRequest("BDD", "개발 동아리 입니다.");
 
@@ -115,8 +115,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀의 이미지를 수정한다.")
-    public void 팀의_이미지를_수정한다() throws Exception {
+    @DisplayName("[성공] 팀의 이미지를 수정한다.")
+    public void updateTeamImage_팀의_이미지를_수정한다_성공() throws Exception {
         //given
         final MockMultipartFile file = getMockImageFile();
 
@@ -144,8 +144,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀의 이미지를 삭제한다.")
-    public void 팀의_이미지를_삭제한다() throws Exception {
+    @DisplayName("[성공] 팀의 이미지를 삭제한다.")
+    public void deleteTeamImage_팀의_이미지를_삭제한다_성공() throws Exception {
         // when
         final Long teamId = 1L;
         doNothing().when(teamCommandService).deleteTeamImage(eq(teamId), any());
@@ -161,8 +161,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀을 삭제한다.")
-    public void 팀을_삭제한다() throws Exception {
+    @DisplayName("[성공] 팀을 삭제한다.")
+    public void deleteTeam_팀을_삭제한다_성공() throws Exception {
         // when
         final Long teamId = 1L;
         doNothing().when(teamCommandService).deleteTeam(eq(teamId), any());
@@ -178,8 +178,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀의 초대코드를 생성한다.")
-    public void 팀의_초대코드를_생성한다() throws Exception {
+    @DisplayName("[성공] 팀의 초대코드를 생성한다.")
+    public void generateTeamInviteCode_팀의_초대코드를_생성한다_성공() throws Exception {
         // given
         final Long teamId = 1L;
         final TeamInviteCodeResponse response = new TeamInviteCodeResponse("asdf");
@@ -202,8 +202,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("초대코드를 통해 팀에 가입한다.")
-    public void 초대코드를_통해_팀에_가입한다() throws Exception {
+    @DisplayName("[성공] 초대코드를 통해 팀에 가입한다.")
+    public void joinTeam_초대코드를_통해_팀에_가입한다_성공() throws Exception {
         // given
         final Long teamId = 1L;
         final TeamInviteCodeRequest request = new TeamInviteCodeRequest("asdf");
@@ -227,8 +227,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("나의 팀 목록을 조회한다")
-    void 나의_팀_목록을_조회한다() throws Exception {
+    @DisplayName("[성공] 나의 팀 목록을 조회한다")
+    void getMyTeams_나의_팀_목록을_조회한다_성공() throws Exception {
         //given
         final Long memberId = 1L;
         final List<TeamReferenceResponse> response = List.of(
@@ -260,11 +260,11 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀 상세목록을 조회한다.")
-    void 팀_상세목록을_조회한다() throws Exception {
+    @DisplayName("[성공] 팀 상세목록을 조회한다.")
+    void getTeams_팀_상세목록을_조회한다_성공() throws Exception {
         final Long teamId = 1L;
 
-        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50, 1L);
+        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 1L);
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("조회하고자 하는 팀 ID")
         );
@@ -274,7 +274,6 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("name", "팀 이름"),
                 stringFieldWithPath("description", "팀 설명"),
                 stringFieldWithPath("imageUrl", "이미지 url"),
-                numberFieldWithPath("attendanceRatio", "출석률"),
                 numberFieldWithPath("teamLeaderId", "팀장 ID")
         );
 
@@ -287,8 +286,8 @@ public class TeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀 목록(팀 랭킹)을 조회한다.")
-    public void 팀_목록팀_랭킹을_조회한다() throws Exception {
+    @DisplayName("[성공] 팀 목록(팀 랭킹)을 조회한다.")
+    public void getTeamRanks_팀_목록팀_랭킹을_조회한다_성공() throws Exception {
         //given
         final List<TeamRankResponse> teamRankResponses = new ArrayList<>();
         final List<DayGardenResponse> gardenResponse = List.of(

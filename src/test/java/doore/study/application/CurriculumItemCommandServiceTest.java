@@ -118,7 +118,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 존재하지 않는 커리큘럼의 완료 상태를 변경할 수 없다.")
-    public void checkCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다() throws Exception {
+    public void checkCurriculum_존재하지_않는_커리큘럼의_완료_상태를_변경할_수_없다_실패() throws Exception {
         assertThatThrownBy(() -> {
             curriculumItemCommandService.checkCurriculum(1L, invalidCurriculumItemId, memberId);
         }).isInstanceOf(StudyException.class).hasMessage(NOT_FOUND_PARTICIPANT.errorMessage());
@@ -126,7 +126,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 커리큘럼의 상태 변경이 가능하다.")
-    public void checkCurriculum_커리큘럼의_상태_변경이_가능하다() throws Exception {
+    public void checkCurriculum_커리큘럼의_상태_변경이_가능하다_성공() throws Exception {
         final Member member = MemberFixture.아마란스();
         memberRepository.save(member);
 
@@ -150,7 +150,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 아이디가 없으면 커리큘럼을 생성한다.")
-    public void createCurriculum_아이디가_없으면_커리큘럼을_생성한다() throws Exception {
+    public void createCurriculum_아이디가_없으면_커리큘럼을_생성한다_성공() throws Exception {
         curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
         final CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
 
@@ -161,7 +161,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     @Test
     @Disabled // 권한 처리 코드 주석 후 테스트 필요
     @DisplayName("[실패] 존재하지 않는 스터디는 커리큘럼이 생성되지 않는다.")
-    public void createCurriculum_존재하지_않는_스터디는_커리큘럼이_생성되지_않는다() throws Exception {
+    public void createCurriculum_존재하지_않는_스터디는_커리큘럼이_생성되지_않는다_실패() throws Exception {
         assertThatThrownBy(() -> {
             curriculumItemCommandService.manageCurriculum(request, invalidStudyId, memberId);
         }).isInstanceOf(StudyException.class).hasMessage(NOT_FOUND_STUDY.errorMessage());
@@ -169,7 +169,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 아이디가 존재하고 아이템 순서가 다르다면 커리큘럼의 아이템 순서를 변경한다.")
-    public void updateCurriculum_아이디가_존재하고_아이템_순서가_다르다면_커리큘럼의_아이템_순서를_변경한다() throws Exception {
+    public void updateCurriculum_아이디가_존재하고_아이템_순서가_다르다면_커리큘럼의_아이템_순서를_변경한다_성공() throws Exception {
         curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
         final CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(2L).orElseThrow();
 
@@ -178,7 +178,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 아이디가 존재하고 내용이 다르다면 커리큘럼의 내용을 변경한다.")
-    public void updateCurriculum_아이디가_존재하고_내용이_다르다면_커리큘럼의_내용을_변경한다() throws Exception {
+    public void updateCurriculum_아이디가_존재하고_내용이_다르다면_커리큘럼의_내용을_변경한다_성공() throws Exception {
         curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
         final CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(1L).orElseThrow();
 
@@ -187,7 +187,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 커리큘럼을 삭제하면 정상적으로 삭제된다.")
-    public void deleteCurriculum_커리큘럼을_삭제하면_정상적으로_삭제된다() throws Exception {
+    public void deleteCurriculum_커리큘럼을_삭제하면_정상적으로_삭제된다_성공() throws Exception {
         curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
 
         assertThat(curriculumItemRepository.count()).isEqualTo(3);
@@ -195,7 +195,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 커리큘럼을 삭제하면 커리큘럼 아이템도 삭제된다.")
-    public void deleteCurriculum_커리큘럼을_삭제하면_커리큘럼_아이템도_삭제된다() throws Exception {
+    public void deleteCurriculum_커리큘럼을_삭제하면_커리큘럼_아이템도_삭제된다_성공() throws Exception {
         final ParticipantCurriculumItem participantCurriculumItem = ParticipantCurriculumItem.builder()
                 .participantId(1L)
                 .curriculumItem(curriculumItem3)
@@ -215,7 +215,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 모든 과정이 끝나면 아이템 순서에 대해 연속적인 오름차순으로 정렬된다.")
-    public void sortCurriculum_모든_과정이_끝나면_아이템_순서에_대해_연속적인_오름차순으로_정렬된다() throws Exception {
+    public void sortCurriculum_모든_과정이_끝나면_아이템_순서에_대해_연속적인_오름차순으로_정렬된다_성공() throws Exception {
         curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
 
         final List<CurriculumItem> curriculumItems = curriculumItemRepository.findAll();
@@ -230,7 +230,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 스터디장이 아니라면 커리큘럼을 수정할 수 없다.")
-    void manageCurriculum_스터디장이_아니라면_커리큘럼을_수정할_수_없다() throws Exception {
+    void manageCurriculum_스터디장이_아니라면_커리큘럼을_수정할_수_없다_실패() throws Exception {
         final Member member = memberRepository.save(아마란스());
         studyRoleRepository.save(StudyRole.builder()
                 .memberId(member.getId())
@@ -245,7 +245,7 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
 
     @Test
-    @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 생성할 수 있다. ")
+    @DisplayName("[성공] 커리큘럼 타입의 텃밭을 정상적으로 생성할 수 있다.")
     public void createGarden_커리큘럼_타입의_텃밭을_정상적으로_생성할_수_있다_성공() throws Exception {
         final Member member = memberRepository.save(보름());
         final Participant participant = participantRepository.save(Participant.builder()

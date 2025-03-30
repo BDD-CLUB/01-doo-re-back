@@ -14,6 +14,7 @@ import doore.document.exception.DocumentException;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
+import doore.member.domain.Member;
 import doore.study.application.convenience.StudyConvenience;
 import doore.study.domain.Study;
 import java.util.List;
@@ -48,11 +49,11 @@ public class DocumentQueryService {
         final Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
         final DocumentGroupType documentGroupType = document.getGroupType();
-        final Study study = studyConvenience.findByDocumentId(documentId);
         if (documentGroupType == STUDY) {
+            final Study study = studyConvenience.findByDocumentId(documentId);
             studyRoleValidateAccessPermission.validateExistParticipant(study.getId(), memberId);
         } else if (documentGroupType == TEAM && document.getAccessType() == DocumentAccessType.TEAM) {
-            teamRoleValidateAccessPermission.validateExistMemberTeam(study.getTeamId(), memberId);
+            teamRoleValidateAccessPermission.validateExistMemberTeam(document.getGroupId(), memberId);
         }
         return toDocumentResponse(document);
     }
@@ -62,9 +63,8 @@ public class DocumentQueryService {
                 .map(file -> new FileResponse(file.getId(), file.getName(), file.getUrl()))
                 .toList();
 
-        final String uploaderName = memberValidateAccessPermission.getValidateExistMember(document.getUploaderId())
-                .getName();
+        final Member member = memberValidateAccessPermission.getValidateExistMember(document.getUploaderId());
 
-        return DocumentResponse.of(document, fileResponses, uploaderName);
+        return DocumentResponse.of(document, fileResponses, member.getName(), member.getId());
     }
 }

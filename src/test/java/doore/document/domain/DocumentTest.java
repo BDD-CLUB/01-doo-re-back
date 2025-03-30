@@ -18,7 +18,7 @@ public class DocumentTest {
 
     @Test
     @DisplayName("[성공] 학습자료가 정상적으로 수정된다.")
-    public void 학습자료가_정상적으로_수정된다_성공() {
+    public void update_학습자료가_정상적으로_수정된다_성공() {
         //given
         final Document document = new DocumentFixture()
                 .buildDocument();
@@ -39,7 +39,7 @@ public class DocumentTest {
 
     @Test
     @DisplayName("[성공] 학습자료의 파일이 정상적으로 수정된다.")
-    public void 학습자료의_파일이_정상적으로_수정된다_성공() {
+    public void updateFiles_학습자료의_파일이_정상적으로_수정된다_성공() {
         //given
         final String url = "blog link";
         final Document document = new DocumentFixture()

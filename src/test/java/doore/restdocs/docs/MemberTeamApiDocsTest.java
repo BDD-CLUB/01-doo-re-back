@@ -36,8 +36,8 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀원 목록을 조회한다.")
-    public void 팀원_목록을_조회한다() throws Exception {
+    @DisplayName("[성공] 팀원 목록을 조회한다.")
+    public void findMemberTeams_팀원_목록을_조회한다_성공() throws Exception {
         //given
         final QueryParametersSnippet queryParameters = queryParameters(
                 parameterWithName("keyword").optional().description("검색 단어(option)")
@@ -70,8 +70,8 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀원 목록을 검색해서 조회한다.")
-    public void 팀원_목록을_검색해서_조회한다() throws Exception {
+    @DisplayName("[성공] 팀원 목록을 검색해서 조회한다.")
+    public void findMemberTeams_팀원_목록을_검색해서_조회한다_성공() throws Exception {
         //given
         final QueryParametersSnippet queryParameters = queryParameters(
                 parameterWithName("keyword").optional().description("검색 단어(option)")
@@ -103,8 +103,8 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀원을 삭제할 수 있다.")
-    public void 팀원을_삭제할_수_있다() throws Exception {
+    @DisplayName("[성공] 팀원을 삭제할 수 있다.")
+    public void deleteMemberTeam_팀원을_삭제할_수_있다_성공() throws Exception {
         //when
         doNothing().when(memberTeamCommandService).deleteMemberTeam(any(), any(), any());
 
@@ -118,8 +118,8 @@ public class MemberTeamApiDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("팀원이 스스로 탈퇴할 수 있다.")
-    public void 팀원이_스스로_탈퇴할_수_있다() throws Exception {
+    @DisplayName("[성공] 팀원이 스스로 탈퇴할 수 있다.")
+    public void withdrawMemberTeam_팀원이_스스로_탈퇴할_수_있다_성공() throws Exception {
         //when
         doNothing().when(memberTeamCommandService).withdrawMemberTeam(any(), any());
 

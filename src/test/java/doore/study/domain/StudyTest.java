@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 public class StudyTest {
 
     @Test
-    @DisplayName("커리큘럼을 생성할 수 있다.")
-    public void 커리큘럼을_생성할_수_있다_성공() {
+    @DisplayName("[성공] 커리큘럼을 생성할 수 있다.")
+    public void createCurriculumItems_커리큘럼을_생성할_수_있다_성공() {
         final Study study = algorithmStudy();
         final CurriculumItem curriculumItem = CurriculumItem.builder()
                 .name("커리큘럼 1단계")
@@ -32,8 +32,8 @@ public class StudyTest {
     }
 
     @Test
-    @DisplayName("스터디의 내용을 변경할 수 있다.")
-    public void 스터디의_내용을_변경할_수_있다_성공() {
+    @DisplayName("[성공] 스터디의 내용을 변경할 수 있다.")
+    public void update_스터디의_내용을_변경할_수_있다_성공() {
         final Study study = algorithmStudy();
         final StudyUpdateRequest request = StudyUpdateRequest.builder()
                 .name("스프링")

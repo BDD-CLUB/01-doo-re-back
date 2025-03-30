@@ -17,7 +17,7 @@ public class FileDocsTest extends RestDocsTest {
 
     @Test
     @DisplayName("[성공] 이미지 파일의 URL을 조회한다.")
-    public void 이미지_파일_URL_조회한다_성공() throws Exception {
+    public void getS3Url_이미지_파일_URL_조회한다_성공() throws Exception {
         String uuid = "8a463aa4-b1dc-4f27-9c3f-53b94dc45e74.jpg";
         String s3Url = "https://s3.amazonaws.com/my-bucket/images/" + uuid;
         when(s3ImageFileService.getS3Url(uuid)).thenReturn(s3Url);
@@ -35,20 +35,20 @@ public class FileDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("[성공] 문서 파일의 Presigned URL을 생성")
-    public void 문서_파일_Presigned_URL_생성한다_성공() throws Exception {
+    @DisplayName("[성공] 문서 파일의 PreSigned URL을 생성")
+    public void generatePreSignedUrl_문서_파일_PreSigned_URL_생성한다_성공() throws Exception {
         String uuid = "8a463aa4-b1dc-4f27-9c3f-53b94dc45e74.pdf";
-        String presignedUrl = "https://s3.amazonaws.com/my-bucket/documents/" + uuid + "?signature=123";
-        when(s3DocumentFileService.generatePresignedUrl(uuid)).thenReturn(presignedUrl);
+        String preSignedUrl = "https://s3.amazonaws.com/my-bucket/documents/" + uuid + "?signature=123";
+        when(s3DocumentFileService.generatePreSignedUrl(uuid)).thenReturn(preSignedUrl);
 
         mockMvc.perform(get("/files/documents/{uuid}", uuid))
                 .andExpect(status().isFound())
-                .andDo(document("file-generate-presigned-url",
+                .andDo(document("file-generate-preSigned-url",
                         pathParameters(
-                                parameterWithName("uuid").description("Presigned URL을 생성할 문서의 UUID")
+                                parameterWithName("uuid").description("PreSigned URL을 생성할 문서의 UUID")
                         ),
                         responseHeaders(
-                                headerWithName("Location").description("S3에서 제공되는 Presigned URL")
+                                headerWithName("Location").description("S3에서 제공되는 PreSigned URL")
                         )
                 ));
     }

@@ -4,8 +4,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
-import doore.attendance.api.AttendanceController;
-import doore.attendance.application.AttendanceCommandService;
 import doore.config.WebMvcConfig;
 import doore.document.api.DocumentController;
 import doore.document.application.DocumentCommandService;
@@ -61,7 +59,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
         MemberTeamController.class,
         TeamController.class,
         DocumentController.class,
-        AttendanceController.class,
         CurriculumItemController.class,
         LoginController.class,
         MemberController.class,
@@ -90,9 +87,6 @@ public abstract class RestDocsTest extends ApiTestHelper {
 
     @MockBean
     protected TeamCommandService teamCommandService;
-
-    @MockBean
-    protected AttendanceCommandService attendanceCommandService;
 
     @MockBean
     protected StudyCommandService studyCommandService;

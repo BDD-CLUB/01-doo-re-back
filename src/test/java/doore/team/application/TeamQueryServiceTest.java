@@ -9,8 +9,6 @@ import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import doore.attendance.domain.Attendance;
-import doore.attendance.domain.repository.AttendanceRepository;
 import doore.helper.IntegrationTest;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
@@ -39,8 +37,6 @@ class TeamQueryServiceTest extends IntegrationTest {
     private MemberTeamRepository memberTeamRepository;
     @Autowired
     private MemberRepository memberRepository;
-    @Autowired
-    private AttendanceRepository attendanceRepository;
     @Autowired
     private TeamRoleRepository teamRoleRepository;
 
@@ -100,11 +96,8 @@ class TeamQueryServiceTest extends IntegrationTest {
         memberTeamRepository.save(MemberTeam.builder().teamId(team.getId()).member(member).isDeleted(false).build());
         memberTeamRepository.save(
                 MemberTeam.builder().teamId(team.getId()).member(anotherMember).isDeleted(false).build());
-        attendanceRepository.save(Attendance.builder().memberId(anotherMember.getId()).build());
 
-        final long attendanceRatio = 50L;
-
-        final TeamResponse expectTeamResponse = TeamResponse.of(team, attendanceRatio, member.getId());
+        final TeamResponse expectTeamResponse = TeamResponse.of(team, member.getId());
         final TeamResponse actualTeamResponse = teamQueryService.getTeams(team.getId());
 
         assertThat(actualTeamResponse).isEqualTo(expectTeamResponse);
