@@ -26,8 +26,8 @@ public class TeamTest {
     }
 
     @Test
-    @DisplayName("필수값이 Null일 경우, 예외를 발생시킨다.")
-    public void builder_필수값이_Null일_경우_예외를_발생시킨다() {
+    @DisplayName("[실패] 필수값이 Null일 경우, 예외를 발생시킨다.")
+    public void builder_필수값이_Null일_경우_예외를_발생시킨다_실패() {
         //when & then
         assertThatThrownBy(() -> {
             Team.builder()
