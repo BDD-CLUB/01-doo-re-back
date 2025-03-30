@@ -264,7 +264,7 @@ public class TeamApiDocsTest extends RestDocsTest {
     void getTeams_팀_상세목록을_조회한다_성공() throws Exception {
         final Long teamId = 1L;
 
-        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 50, 1L);
+        final TeamResponse teamResponse = new TeamResponse(1L, "팀 이름", "팀 설명", "1234", 1L);
         final PathParametersSnippet pathParameters = pathParameters(
                 parameterWithName("teamId").description("조회하고자 하는 팀 ID")
         );
@@ -274,7 +274,6 @@ public class TeamApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("name", "팀 이름"),
                 stringFieldWithPath("description", "팀 설명"),
                 stringFieldWithPath("imageUrl", "이미지 url"),
-                numberFieldWithPath("attendanceRatio", "출석률"),
                 numberFieldWithPath("teamLeaderId", "팀장 ID")
         );
 
