@@ -39,7 +39,7 @@ include::{snippets}/transfer-study-Leader/path-parameters.adoc[]
 == `DELETE`: 회원 탈퇴
 
 .HTTP Request
-include::{snippets}/delete-member/http-response.adoc[]
+include::{snippets}/delete-member/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/delete-member/http-response.adoc[]
