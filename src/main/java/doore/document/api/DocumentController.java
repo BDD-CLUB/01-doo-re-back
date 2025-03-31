@@ -65,7 +65,9 @@ public class DocumentController {
 
     @GetMapping("/{documentId}")
     // 팀 학습자료 - 전체 공개 -> 회원 이상, 팀 학습자료 - 팀 공개 -> 팀원 이상, 스터디 학습자료 -> 스터디 구성원
-    // DocumentGroupType 의 STUDY(studies)는 기획 상 삭제
+    // AccessType : All, GroupType : Team -> 회원공개(팀 학습자료)
+    // AccessType : Team, GroupType : Team -> 팀원 공개(팀 학습자료)
+    // AccessType : (All or Team) 프론트 고정 (의미 없는 값이기 때문), GroupType : Study -> 스터디원 공개(스터디 학습자료)
     public ResponseEntity<DocumentResponse> getDocument(@PathVariable final Long documentId,
                                                         @LoginMember final Member member) {
         final DocumentResponse response = documentQueryService.getDocument(documentId, member.getId());
