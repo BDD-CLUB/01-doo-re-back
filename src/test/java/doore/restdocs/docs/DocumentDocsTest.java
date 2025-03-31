@@ -53,8 +53,8 @@ public class DocumentDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("학습자료를 생성한다.")
-    public void 학습자료를_생성한다() throws Exception {
+    @DisplayName("[성공] 학습자료를 생성한다.")
+    public void createDocument_학습자료를_생성한다_성공() throws Exception {
         final DocumentCreateRequest request = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
                 DocumentAccessType.TEAM, IMAGE, null, 1L);
         final MockPart mockPart = getMockPart("request", request);
@@ -94,8 +94,8 @@ public class DocumentDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("학습자료 목록을 조회한다.")
-    public void 학습자료_목록을_조회한다() throws Exception {
+    @DisplayName("[성공] 학습자료 목록을 조회한다.")
+    public void getAllDocument_학습자료_목록을_조회한다_성공() throws Exception {
         //given
         final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "s3 url");
         final DocumentResponse document = DocumentResponse.builder()
@@ -145,8 +145,8 @@ public class DocumentDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("학습자료를 조회한다.")
-    public void 학습자료를_조회한다() throws Exception {
+    @DisplayName("[성공] 학습자료를 조회한다.")
+    public void getDocument_학습자료를_조회한다_성공() throws Exception {
         //given
         final FileResponse fileResponse = new FileResponse(1L, "첨부파일명", "s3 url");
         final DocumentResponse documentResponse = DocumentResponse.builder()
@@ -188,8 +188,8 @@ public class DocumentDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("학습자료를 수정한다.")
-    public void 학습자료를_수정한다() throws Exception {
+    @DisplayName("[성공] 학습자료를 수정한다.")
+    public void updateDocument_학습자료를_수정한다_성공() throws Exception {
         //given
         final DocumentUpdateRequest request = new DocumentUpdateRequest("수정된 제목", "수정된 설명", TEAM);
 
@@ -212,8 +212,8 @@ public class DocumentDocsTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("학습자료를 삭제한다.")
-    public void 학습자료를_삭제한다() throws Exception {
+    @DisplayName("[성공] 학습자료를 삭제한다.")
+    public void deleteDocument_학습자료를_삭제한다_성공() throws Exception {
         mockMvc.perform(delete("/documents/{documentId}", 1)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isNoContent())

@@ -10,7 +10,6 @@ drop table if exists doore.study_role;
 drop table if exists doore.team_role;
 drop table if exists doore.document;
 drop table if exists doore.file;
-drop table if exists doore.attendance;
 
 create table member
 (
@@ -104,15 +103,6 @@ create table garden
     member_id        bigint       not null,
     created_at       datetime(6),
     updated_at       datetime(6)
-);
-
--- 수정 날짜: 2024-02-16
-create table attendance
-(
-    id         bigint auto_increment primary key,
-    member_id  bigint not null,
-    created_at datetime(6),
-    updated_at datetime(6)
 );
 
 -- 수정 날짜: 2024-02-29

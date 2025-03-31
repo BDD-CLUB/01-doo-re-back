@@ -28,10 +28,10 @@ public class FileController {
 
     @GetMapping("/documents/{uuid}")
     public ResponseEntity<Void> getDocumentUrl(@PathVariable String uuid) {
-        final String presignedUrl = s3DocumentFileService.generatePresignedUrl(uuid);
+        final String preSignedUrl = s3DocumentFileService.generatePreSignedUrl(uuid);
 
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", presignedUrl)
+                .header("Location", preSignedUrl)
                 .build();
     }
 }

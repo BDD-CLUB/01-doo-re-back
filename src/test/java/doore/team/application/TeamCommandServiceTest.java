@@ -241,7 +241,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
         @Test
         @Disabled // todo : S3 문제 해결 (06/02/24)
         @DisplayName("[성공] 팀이 삭제되면 연관된 스터디도 삭제된다.")
-        void deleteTeam_팀이_삭제되면_연관된_스터디도_삭제된다() {
+        void deleteTeam_팀이_삭제되면_연관된_스터디도_삭제된다_성공() {
             final List<Study> beforeStudies = studyRepository.findAllByTeamId(teamId);
             assertThat(beforeStudies.size()).isEqualTo(2);
 
@@ -255,7 +255,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
         @Test
         @Disabled // todo : S3 문제 해결 (06/02/24)
         @DisplayName("[성공] 팀이 삭제되면 연관된 커리큘럼도 삭제된다.")
-        void deleteTeam_팀이_삭제되면_연관된_커리큘럼도_삭제된다() {
+        void deleteTeam_팀이_삭제되면_연관된_커리큘럼도_삭제된다_성공() {
             final List<CurriculumItem> beforeCurriculumItems = curriculumItemRepository.findAll();
 
             teamCommandService.deleteTeam(teamId, memberId);
@@ -268,7 +268,7 @@ public class TeamCommandServiceTest extends IntegrationTest {
         @Test
         @Disabled // todo : S3 문제 해결 (06/02/24)
         @DisplayName("[성공] 팀이 삭제되면 연관된 참여자 커리큘럼도 삭제된다.")
-        void deleteTeam_팀이_삭제되면_연관된_참여자_커리큘럼_삭제된다() {
+        void deleteTeam_팀이_삭제되면_연관된_참여자_커리큘럼_삭제된다_성공() {
             final List<ParticipantCurriculumItem> beforeParticipantCurriculumItem = participantCurriculumItemRepository.findAll();
 
             teamCommandService.deleteTeam(teamId, memberId);

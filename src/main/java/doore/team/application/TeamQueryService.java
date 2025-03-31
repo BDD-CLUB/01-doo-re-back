@@ -2,14 +2,10 @@ package doore.team.application;
 
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 
-import doore.attendance.domain.Attendance;
-import doore.attendance.domain.repository.AttendanceRepository;
 import doore.garden.application.GardenQueryService;
 import doore.garden.application.dto.response.DayGardenResponse;
 import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
-import doore.member.domain.Member;
-import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.study.application.dto.response.StudyNameResponse;
@@ -33,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamQueryService {
     private final TeamRepository teamRepository;
     private final StudyRepository studyRepository;
-    private final AttendanceRepository attendanceRepository;
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRoleRepository teamRoleRepository;
     private final GardenQueryService gardenQueryService;
@@ -66,21 +61,9 @@ public class TeamQueryService {
 
     public TeamResponse getTeams(final Long teamId) {
         final Team team = teamRepository.findById(teamId).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
-        final List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
-        final List<Long> memberIds = memberTeams.stream()
-                .map(MemberTeam::getMember)
-                .map(Member::getId)
-                .toList();
-
-        final List<Attendance> attendances = attendanceRepository.findAllByMemberIdIn(memberIds);
-
-        final long countMemberTeam = memberIds.size();
-        final long countAttendanceMemberTeam = attendances.size();
-        final long attendanceRatio =
-                countMemberTeam > 0 ? (long) ((countAttendanceMemberTeam * 100.0) / countMemberTeam) : 0;
         final Long teamLeaderId = teamRoleRepository.findLeaderIdByTeamId(teamId);
 
-        return TeamResponse.of(team, attendanceRatio, teamLeaderId);
+        return TeamResponse.of(team, teamLeaderId);
     }
 
     public List<TeamRankResponse> getTeamRanks() {
