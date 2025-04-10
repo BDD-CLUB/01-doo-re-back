@@ -1,5 +1,10 @@
 package doore.study.application;
 
+import static doore.study.domain.StudyStatus.ENDED;
+import static doore.study.domain.StudyStatus.IN_PROGRESS;
+import static doore.study.domain.StudyStatus.UPCOMING;
+
+import doore.document.application.convenience.DocumentConvenience;
 import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.domain.Participant;
@@ -9,14 +14,17 @@ import doore.study.application.dto.response.StudyRankResponse;
 import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
+import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
 import doore.team.application.convenience.TeamValidateAccessPermission;
 import doore.team.domain.Team;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +40,7 @@ public class StudyQueryService {
 
     private final StudyRoleConvenience studyRoleConvenience;
     private final MemberConvenience memberConvenience;
+    private final DocumentConvenience documentConvenience;
 
     private final TeamValidateAccessPermission teamValidateAccessPermission;
     private final StudyValidateAccessPermission studyValidateAccessPermission;
@@ -58,30 +67,55 @@ public class StudyQueryService {
                 .map(study -> StudyReferenceResponse.of(study, checkStudyProgressRatio(study.getId())))
                 .toList();
     }
-    
+
     public Page<StudyRankResponse> getTeamStudies(final Long teamId, final Pageable pageable) {
-        return studyRepository.findAllByTeamId(teamId, pageable)
-                .map(this::convertStudyToStudyRankResponse);
-        //todo: (24.07.09) point 기반 정렬 로직 추가;
+        final List<Study> studies = studyRepository.findAllByTeamId(teamId);
+        final List<StudyRankResponse> sortedStudyList = studies.stream()
+                .map(this::convertStudyToStudyRankResponse)
+                .sorted(Comparator.comparing(
+                                (StudyRankResponse r) -> getStatusOrder(r.studyReferenceResponse().status()))
+                        .thenComparing(StudyRankResponse::point, Comparator.reverseOrder()))
+                .toList();
+
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min(start + pageable.getPageSize(), sortedStudyList.size());
+        final List<StudyRankResponse> pagedList = sortedStudyList.subList(start, end);
+
+        return new PageImpl<>(pagedList, pageable, sortedStudyList.size());
     }
 
-    private long checkStudyProgressRatio(final Long studyId) {
+    private int getStatusOrder(final StudyStatus status) {
+        if (status == IN_PROGRESS) {
+            return 1;
+        }
+        if (status == UPCOMING) {
+            return 2;
+        }
+        if (status == ENDED) {
+            return 3;
+        }
+        return 4;
+    }
+
+    private int checkStudyProgressRatio(final Long studyId) {
         final List<Long> curriculumItemIds = curriculumItemRepository.findIdsByStudyId(studyId);
-        final long totalCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdIn(
+        final int totalCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdIn(
                 curriculumItemIds);
-        final long checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(
+        final int checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(
                 curriculumItemIds);
         return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
     }
 
-    private StudyRankResponse convertStudyToStudyRankResponse(final Study study) {
-        StudyReferenceResponse studyReferenceResponse = StudyReferenceResponse.of(study,
-                checkStudyProgressRatio(study.getId()));
-        return new StudyRankResponse(calculatePoint(study), studyReferenceResponse);
+    private int calculatePoint(final Study study, final int progressRatio) {
+        final int documentCount = documentConvenience.countByGroupId(study.getId());
+        return progressRatio + documentCount;
     }
 
-    private int calculatePoint(final Study study) {
-        //todo: (24.07.09) 스터디 점수 계산 방식에 대해 논의 후 로직 추가 (디스커션 #163 참고)
-        return 0;
+    private StudyRankResponse convertStudyToStudyRankResponse(final Study study) {
+        final int checkStudyProgressRatio = checkStudyProgressRatio(study.getId());
+        final StudyReferenceResponse studyReferenceResponse = StudyReferenceResponse.of(study,
+                checkStudyProgressRatio(study.getId()));
+        final int point = calculatePoint(study, checkStudyProgressRatio);
+        return new StudyRankResponse(point, studyReferenceResponse);
     }
 }

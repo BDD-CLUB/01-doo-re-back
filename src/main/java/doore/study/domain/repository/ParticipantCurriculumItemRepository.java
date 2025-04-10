@@ -19,7 +19,7 @@ public interface ParticipantCurriculumItemRepository extends JpaRepository<Parti
 
     void deleteAllByCurriculumItemId(Long curriculumItemId);
 
-    long countByCurriculumItemIdIn(List<Long> curriculumIds);
+    int countByCurriculumItemIdIn(List<Long> curriculumIds);
 
-    long countByCurriculumItemIdInAndIsCheckedTrue(List<Long> curriculumIds);
+    int countByCurriculumItemIdInAndIsCheckedTrue(List<Long> curriculumIds);
 }
