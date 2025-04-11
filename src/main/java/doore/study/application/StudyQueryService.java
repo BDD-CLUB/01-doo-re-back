@@ -1,9 +1,5 @@
 package doore.study.application;
 
-import static doore.study.domain.StudyStatus.ENDED;
-import static doore.study.domain.StudyStatus.IN_PROGRESS;
-import static doore.study.domain.StudyStatus.UPCOMING;
-
 import doore.document.application.convenience.DocumentConvenience;
 import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.StudyRoleConvenience;
@@ -14,7 +10,6 @@ import doore.study.application.dto.response.StudyRankResponse;
 import doore.study.application.dto.response.StudyReferenceResponse;
 import doore.study.application.dto.response.StudyResponse;
 import doore.study.domain.Study;
-import doore.study.domain.StudyStatus;
 import doore.study.domain.repository.CurriculumItemRepository;
 import doore.study.domain.repository.ParticipantCurriculumItemRepository;
 import doore.study.domain.repository.StudyRepository;
@@ -73,7 +68,7 @@ public class StudyQueryService {
         final List<StudyRankResponse> sortedStudyList = studies.stream()
                 .map(this::convertStudyToStudyRankResponse)
                 .sorted(Comparator.comparing(
-                                (StudyRankResponse r) -> getStatusOrder(r.studyReferenceResponse().status()))
+                                (StudyRankResponse r) -> r.studyReferenceResponse().status().getOrder())
                         .thenComparing(StudyRankResponse::point, Comparator.reverseOrder()))
                 .toList();
 
@@ -82,19 +77,6 @@ public class StudyQueryService {
         final List<StudyRankResponse> pagedList = sortedStudyList.subList(start, end);
 
         return new PageImpl<>(pagedList, pageable, sortedStudyList.size());
-    }
-
-    private int getStatusOrder(final StudyStatus status) {
-        if (status == IN_PROGRESS) {
-            return 1;
-        }
-        if (status == UPCOMING) {
-            return 2;
-        }
-        if (status == ENDED) {
-            return 3;
-        }
-        return 4;
     }
 
     private int checkStudyProgressRatio(final Long studyId) {
