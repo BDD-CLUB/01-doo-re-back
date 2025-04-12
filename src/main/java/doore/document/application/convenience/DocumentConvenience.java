@@ -12,7 +12,7 @@ public class DocumentConvenience {
 
     private final DocumentRepository documentRepository;
 
-    public int countByGroupId(final Long groupId) {
+    public Long countByGroupId(final Long groupId) {
         return documentRepository.countByGroupId(groupId);
     }
 }

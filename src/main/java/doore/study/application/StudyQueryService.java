@@ -81,16 +81,16 @@ public class StudyQueryService {
 
     private int checkStudyProgressRatio(final Long studyId) {
         final List<Long> curriculumItemIds = curriculumItemRepository.findIdsByStudyId(studyId);
-        final int totalCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdIn(
+        final long totalCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdIn(
                 curriculumItemIds);
-        final int checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(
+        final long checkedTrueCurriculumItems = participantCurriculumItemRepository.countByCurriculumItemIdInAndIsCheckedTrue(
                 curriculumItemIds);
-        return totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0;
+        return (int)(totalCurriculumItems > 0 ? (checkedTrueCurriculumItems * 100) / totalCurriculumItems : 0);
     }
 
     private int calculatePoint(final Study study, final int progressRatio) {
-        final int documentCount = documentConvenience.countByGroupId(study.getId());
-        return progressRatio + documentCount;
+        final long documentCount = documentConvenience.countByGroupId(study.getId());
+        return (int)(progressRatio + documentCount);
     }
 
     private StudyRankResponse convertStudyToStudyRankResponse(final Study study) {
