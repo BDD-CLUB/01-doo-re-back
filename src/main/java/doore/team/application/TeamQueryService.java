@@ -68,7 +68,7 @@ public class TeamQueryService {
 
     public List<TeamRankResponse> getTeamRanks() {
         final List<Team> teams = teamRepository.findAll();
-        List<TeamRankResponse> teamRanks = teams.stream().map(this::convertTeamToTeamRankResponse).toList();
+        final List<TeamRankResponse> teamRanks = teams.stream().map(this::convertTeamToTeamRankResponse).toList();
         return teamRanks.stream()
                 .sorted(Comparator.comparingInt(TeamRankResponse::point).reversed())
                 .toList();
