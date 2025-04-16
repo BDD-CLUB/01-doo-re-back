@@ -1,5 +1,6 @@
 package doore.study.application;
 
+import static doore.study.exception.StudyExceptionType.CANNOT_CREATE_STUDY;
 import static doore.study.exception.StudyExceptionType.INVALID_ENDDATE;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 
@@ -47,6 +48,7 @@ public class StudyCommandService {
     public void createStudy(final StudyCreateRequest request, final Long teamId, final Long memberId) {
         teamRoleValidateAccessPermission.validateExistMemberTeam(teamId, memberId);
         teamValidateAccessPermission.validateExistTeam(teamId);
+        checkStudyCount(teamId);
         checkEndDateValid(request.startDate(), request.endDate());
 
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
@@ -87,6 +89,13 @@ public class StudyCommandService {
             study.changeStatus(changedStatus);
         } catch (final IllegalArgumentException e) {
             throw new StudyException(NOT_FOUND_STATUS);
+        }
+    }
+
+    private void checkStudyCount(final Long teamId) {
+        final List<Study> studies = studyRepository.findAllByTeamId(teamId);
+        if (studies.size() >= 99) {
+            throw new StudyException(CANNOT_CREATE_STUDY);
         }
     }
 
