@@ -11,6 +11,7 @@ import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.domain.StudyStatus.IN_PROGRESS;
 import static doore.study.domain.StudyStatus.UPCOMING;
+import static doore.study.exception.StudyExceptionType.CANNOT_CREATE_STUDY;
 import static doore.study.exception.StudyExceptionType.INVALID_ENDDATE;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
@@ -48,8 +49,10 @@ import doore.team.domain.Team;
 import doore.team.domain.repository.TeamRepository;
 import doore.team.exception.TeamException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -86,7 +89,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        member =  memberRepository.save(미나());
+        member = memberRepository.save(미나());
         memberId = member.getId();
         study = studyRepository.save(algorithmStudy());
         studyRole = studyRoleRepository.save(StudyRole.builder()
@@ -196,6 +199,28 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 assertThatThrownBy(() -> {
                     studyCommandService.createStudy(studyCreateRequest, team.getId(), notTeamMemberId);
                 }).isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());
+            }
+
+            @Test
+            @DisplayName("[실패] 스터디 개수가 99개를 초과하면 스터디 생성은 불가하다.")
+            void createStudy_스터디_개수가_99개를_초과하면_스터디_생성은_불가하다_실패() throws Exception {
+                IntStream.range(0, 99)
+                        .forEach(i -> studyRepository.save(Study.builder()
+                                .name("알고리즘")
+                                .description("알고리즘 스터디 입니다.")
+                                .startDate(LocalDate.parse("2025-01-01"))
+                                .endDate(LocalDate.parse("2026-01-01"))
+                                .teamId(team.getId())
+                                .status(IN_PROGRESS)
+                                .isDeleted(false)
+                                .cropId(1L)
+                                .curriculumItems(new ArrayList<CurriculumItem>())
+                                .build()));
+
+                assertThatThrownBy(
+                        () -> studyCommandService.createStudy(studyCreateRequest, team.getId(), memberId))
+                        .isInstanceOf(StudyException.class)
+                        .hasMessage(CANNOT_CREATE_STUDY.errorMessage());
             }
         }
 
