@@ -2,6 +2,8 @@ package doore.garden.application;
 
 import static doore.member.MemberFixture.미나;
 import static doore.team.TeamFixture.team;
+import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.garden.application.dto.response.DayGardenResponse;
@@ -13,6 +15,7 @@ import doore.member.domain.Member;
 import doore.member.domain.repository.MemberRepository;
 import doore.team.domain.Team;
 import doore.team.domain.repository.TeamRepository;
+import doore.team.exception.TeamException;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +86,11 @@ public class GardenQueryServiceTest extends IntegrationTest {
     @Test
     @DisplayName("[실패] 존재하지 않는 팀의 텃밭을 조회하면 실패한다.")
     public void getGardens_존재하지_않는_팀의_텃밭을_조회하면_실패한다_실패() {
+        final Long invalidTeamId = 10L;
 
+        assertThatThrownBy(() -> {
+            gardenQueryService.getGardens(invalidTeamId);
+        }).isInstanceOf(TeamException.class).hasMessage(NOT_FOUND_TEAM.errorMessage());
     }
 
     @Test
