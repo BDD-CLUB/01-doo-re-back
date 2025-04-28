@@ -1,6 +1,7 @@
 package doore.garden.application;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static doore.member.MemberFixture.미나;
+import static doore.team.TeamFixture.team;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.garden.application.dto.response.DayGardenResponse;
@@ -8,9 +9,13 @@ import doore.garden.domain.Garden;
 import doore.garden.domain.GardenType;
 import doore.garden.domain.repository.GardenRepository;
 import doore.helper.IntegrationTest;
+import doore.member.domain.Member;
+import doore.member.domain.repository.MemberRepository;
+import doore.team.domain.Team;
+import doore.team.domain.repository.TeamRepository;
 import java.time.LocalDate;
 import java.util.List;
-import net.bytebuddy.asm.Advice.Local;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,31 +27,44 @@ public class GardenQueryServiceTest extends IntegrationTest {
 
     @Autowired
     GardenRepository gardenRepository;
+    @Autowired
+    TeamRepository teamRepository;
+    @Autowired
+    MemberRepository memberRepository;
+
+    private Member member;
+    private Team team;
+    private Team otherTeam;
+
+    @BeforeEach
+    void setUp() {
+        member = memberRepository.save(미나());
+        team = teamRepository.save(team());
+        otherTeam = teamRepository.save(team());
+    }
 
     @Test
     @DisplayName("[성공] 팀의 텃밭을 정상적으로 조회할 수 있다.")
     public void getGardens_팀의_텃밭을_정상적으로_조회할_수_있다_성공() throws Exception {
         //given
-        final Long teamId = 1L;
-        final Long otherTeamId = 2L;
         final Garden garden = Garden.builder()
                 .contributedDate(LocalDate.now())
-                .teamId(teamId)
-                .memberId(1L)
+                .teamId(team.getId())
+                .memberId(member.getId())
                 .contributionId(1L)
                 .type(GardenType.DOCUMENT_UPLOAD)
                 .build();
         final Garden before15WeeksGarden = Garden.builder()
                 .contributedDate(LocalDate.now().minusWeeks(15))
-                .teamId(teamId)
-                .memberId(1L)
+                .teamId(otherTeam.getId())
+                .memberId(member.getId())
                 .contributionId(2L)
                 .type(GardenType.STUDY_CURRICULUM_COMPLETION)
                 .build();
         final Garden otherTeamGarden = Garden.builder()
                 .contributedDate(LocalDate.now())
-                .teamId(otherTeamId)
-                .memberId(1L)
+                .teamId(otherTeam.getId())
+                .memberId(member.getId())
                 .contributionId(3L)
                 .type(GardenType.STUDY_CURRICULUM_COMPLETION)
                 .build();
@@ -55,11 +73,17 @@ public class GardenQueryServiceTest extends IntegrationTest {
 
         //when
         final List<Garden> allGardens = gardenRepository.findAll();
-        final List<DayGardenResponse> gardenResponses = gardenQueryService.getGardens(teamId);
+        final List<DayGardenResponse> gardenResponses = gardenQueryService.getGardens(team.getId());
 
         //then
         assertEquals(3, allGardens.size());
         assertEquals(1, gardenResponses.size()); //최근 15주의 텃밭 데이터만 가져온다, 우리 팀의 텃밭 데이터만 가져온다.
+    }
+
+    @Test
+    @DisplayName("[실패] 존재하지 않는 팀의 텃밭을 조회하면 실패한다.")
+    public void getGardens_존재하지_않는_팀의_텃밭을_조회하면_실패한다_실패() {
+
     }
 
     @Test
