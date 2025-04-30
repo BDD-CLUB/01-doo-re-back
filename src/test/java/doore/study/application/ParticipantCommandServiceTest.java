@@ -8,6 +8,7 @@ import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.member.exception.ParticipantExceptionType.ALREADY_JOINED_STUDY;
 import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER_SELF;
 import static doore.study.StudyFixture.algorithmStudy;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import doore.helper.IntegrationTest;
+import doore.member.MemberFixture;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
@@ -103,6 +105,35 @@ public class ParticipantCommandServiceTest extends IntegrationTest {
                     () -> assertThat(participantResponses).hasSize(1),
                     () -> assertEquals(memberId, participantResponses.get(0).memberId())
             );
+        }
+
+        @Test
+        @DisplayName("[실패] 이미 스터디에 가입되어 있다면 참여자 추가는 실패한다.")
+        void createParticipant_이미_스터디에_가입되어_있다면_참여자_추가는_실패한다_실패() {
+            participantCommandService.createParticipant(study.getId(), member.getId(), member.getId());
+
+            assertThatThrownBy(
+                    () -> participantCommandService.createParticipant(study.getId(), member.getId(),
+                            member.getId()))
+                    .isInstanceOf(ParticipantException.class).hasMessage(ALREADY_JOINED_STUDY.errorMessage());
+        }
+
+        @Test
+        @DisplayName("[성공] 스터디 탈퇴 후 스터디 재참여 시 참여자 추가 가능하다.")
+        void createParticipant_스터디_탈퇴_후_스터디_재참여_시_참여자_추가_가능하다_성공() {
+            final Member anotherMember = memberRepository.save(MemberFixture.아마스());
+            teamRoleRepository.save(TeamRole.builder()
+                    .memberId(anotherMember.getId())
+                    .teamRoleType(ROLE_팀원)
+                    .teamId(study.getTeamId())
+                    .build());
+
+            participantCommandService.createParticipant(study.getId(), anotherMember.getId(), member.getId());
+            participantCommandService.withdrawParticipant(study.getId(), anotherMember.getId());
+
+            participantCommandService.createParticipant(study.getId(), anotherMember.getId(), member.getId());
+
+            assertThat(participantRepository.count()).isEqualTo(2);
         }
 
         @Test
