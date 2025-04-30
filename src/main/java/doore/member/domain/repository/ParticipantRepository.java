@@ -15,4 +15,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     List<Participant> findByMemberId(Long memberId);
 
     void deleteByStudyIdAndMemberId(Long studyId, Long memberId);
+
+    boolean existsByStudyIdAndMemberIdAndIsDeletedFalse(Long studyId, Long memberId);
+
 }
