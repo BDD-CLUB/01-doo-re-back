@@ -4,7 +4,9 @@ import static doore.garden.domain.GardenType.STUDY_CURRICULUM_COMPLETION;
 import static doore.member.MemberFixture.미나;
 import static doore.member.MemberFixture.보름;
 import static doore.member.MemberFixture.아마란스;
+import static doore.member.MemberFixture.아마스;
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
+import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_PARTICIPANT;
@@ -20,7 +22,6 @@ import doore.member.MemberFixture;
 import doore.member.domain.Member;
 import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
-import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
@@ -69,6 +70,10 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
     private CurriculumItemManageRequest request;
     private StudyRole studyRole;
     private Long memberId;
+    private Participant participant;
+    private StudyRole otherStudyRole;
+    private Long otherMemberId;
+    private Participant otherParticipant;
 
     @BeforeEach
     void setUp() {
@@ -90,10 +95,26 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
                 .build();
 
         memberId = memberRepository.save(미나()).getId();
+        otherMemberId = memberRepository.save(아마스()).getId();
+
+        participant = participantRepository.save(Participant.builder()
+                .member(memberRepository.findById(memberId).orElseThrow())
+                .studyId(study.getId())
+                .build());
+        otherParticipant = participantRepository.save(Participant.builder()
+                .member(memberRepository.findById(otherMemberId).orElseThrow())
+                .studyId(study.getId())
+                .build());
+
         studyRole = studyRoleRepository.save(StudyRole.builder()
-                .studyRoleType(StudyRoleType.ROLE_스터디장)
+                .studyRoleType(ROLE_스터디장)
                 .studyId(study.getId())
                 .memberId(memberId)
+                .build());
+        otherStudyRole = studyRoleRepository.save(StudyRole.builder()
+                .studyRoleType(ROLE_스터디원)
+                .studyId(study.getId())
+                .memberId(otherMemberId)
                 .build());
     }
 
@@ -156,6 +177,21 @@ public class CurriculumItemCommandServiceTest extends IntegrationTest {
 
         assertThat(resultCurriculumItem.getId()).isEqualTo(4);
         assertThat(resultCurriculumItem.getName()).isEqualTo("Algorithm Study");
+    }
+
+    @Test
+    @DisplayName("[성공] 커리큘럼을 생성하면 모든 참여자에게 참여자 커리큘럼이 생성된다.")
+    public void createCurriculum_커리큘럼을_생성하면_모든_참여자에게_참여자_커리큘럼이_생성된다_성공() throws Exception {
+        curriculumItemCommandService.manageCurriculum(request, study.getId(), memberId);
+        final CurriculumItem resultCurriculumItem = curriculumItemRepository.findById(4L).orElseThrow();
+
+        // manageCurriculum 에서 생성된 커리큘럼은 1개라서 참여자 커리큘럼이 2(총 참여자는 2명)로 나옵니다.
+        // 모든 커리큘럼을 manageCurriculum 으로 호출 & 생성하면 참여자 커리큘럼이 각각 저장되는 것을 확인할 수 있습니다.
+        assertThat(participantCurriculumItemRepository.count()).isEqualTo(2);
+        assertThat(participantCurriculumItemRepository.findAllByCurriculumItemId(resultCurriculumItem.getId()).get(0)
+                .getParticipantId()).isEqualTo(memberId);
+        assertThat(participantCurriculumItemRepository.findAllByCurriculumItemId(resultCurriculumItem.getId()).get(1)
+                .getParticipantId()).isEqualTo(otherMemberId);
     }
 
     @Test
