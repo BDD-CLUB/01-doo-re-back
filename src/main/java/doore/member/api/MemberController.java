@@ -1,14 +1,12 @@
 package doore.member.api;
 
 import doore.document.application.DocumentQueryService;
-import doore.document.application.dto.response.DocumentResponse;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberQueryService;
 import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.application.dto.response.MemberAndMyTeamsAndStudiesResponse;
 import doore.member.domain.Member;
 import doore.resolver.LoginMember;
-import java.util.List;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,12 +55,6 @@ public class MemberController {
     public ResponseEntity<MemberAndMyTeamsAndStudiesResponse> getSideBarInfo(@PathVariable final Long memberId,
                                                                              @LoginMember final Member member) {
         return ResponseEntity.ok(memberQueryService.getSideBarInfo(memberId, member.getId()));
-    }
-
-
-    @GetMapping("/members/me/documents")
-    public ResponseEntity<List<DocumentResponse>> getDocuments(@LoginMember final Member member) {
-        return ResponseEntity.ok(documentQueryService.getDocumentsByMemberId(member.getId()));
     }
 
     @PatchMapping("/members/me") // 개인
