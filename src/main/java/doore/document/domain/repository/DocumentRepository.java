@@ -11,4 +11,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     Page<Document> findAllByGroupTypeAndGroupId(DocumentGroupType groupType, Long groupId, Pageable pageable);
 
     List<Document> findAllByUploaderId(Long uploaderId);
+
+    Long countByGroupId(Long groupId);
+
 }

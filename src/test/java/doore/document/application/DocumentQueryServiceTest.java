@@ -198,8 +198,8 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("[실패] 팀원은 팀 학습자료 상세 조회를 할 수 없다.")
-    public void getDocument_회원은_팀_학습자료_상세_조회를_할_수_없다_실패() {
+    @DisplayName("[실패] 팀원은 스터디 학습자료 상세 조회를 할 수 없다.")
+    public void getDocument_팀원은_스터디_학습자료_상세_조회를_할_수_없다_실패() {
         assertThatThrownBy(
                 () -> documentQueryService.getDocument(studyDocument.getId(), notParticipantMember.getId()))
                 .isInstanceOf(MemberException.class).hasMessage(UNAUTHORIZED.errorMessage());

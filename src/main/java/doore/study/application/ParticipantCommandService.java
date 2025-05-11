@@ -1,6 +1,7 @@
 package doore.study.application;
 
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.member.exception.ParticipantExceptionType.ALREADY_JOINED_STUDY;
 import static doore.member.exception.ParticipantExceptionType.CANNOT_DELETE_STUDY_LEADER_SELF;
 
 import doore.member.application.convenience.MemberConvenience;
@@ -38,6 +39,7 @@ public class ParticipantCommandService {
 
     public void createParticipant(final Long studyId, final Long memberId, final Long studyLeaderId) {
         studyRoleValidateAccessPermission.validateExistStudyLeader(studyId, studyLeaderId);
+        isAlreadyExistParticipant(studyId, memberId);
         final Study study = studyValidateAccessPermission.getValidateExistStudy(studyId);
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         final Long teamId = study.getTeamId();
@@ -100,6 +102,12 @@ public class ParticipantCommandService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    private void isAlreadyExistParticipant(final Long studyId, final Long memberId) {
+        if (participantRepository.existsByStudyIdAndMemberIdAndIsDeletedFalse(studyId, memberId)) {
+            throw new ParticipantException(ALREADY_JOINED_STUDY);
+        }
     }
 
 }

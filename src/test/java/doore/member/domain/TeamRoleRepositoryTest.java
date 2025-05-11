@@ -26,7 +26,7 @@ public class TeamRoleRepositoryTest extends RepositorySliceTest {
 
     @Test
     @DisplayName("[성공] 팀 정보와 멤버 정보가 유효하다면 팀 내 역할을 조회할 수 있다")
-    void findTeamRoleByTeamIdAndMemberId_팀_정보와_멤버_정보가_유효하다면_팀_내_역할을_조회할_수_있다() {
+    void findTeamRoleByTeamIdAndMemberId_팀_정보와_멤버_정보가_유효하다면_팀_내_역할을_조회할_수_있다_성공() {
         final Team team = TeamFixture.team();
         teamRepository.save(team);
         final Member member = MemberFixture.아마란스();

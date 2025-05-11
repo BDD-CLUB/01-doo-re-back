@@ -3,6 +3,7 @@ package doore.garden.application;
 import doore.garden.application.dto.response.DayGardenResponse;
 import doore.garden.domain.Garden;
 import doore.garden.domain.repository.GardenRepository;
+import doore.team.application.convenience.TeamValidateAccessPermission;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GardenQueryService {
     private final GardenRepository gardenRepository;
+
+    private final TeamValidateAccessPermission teamValidateAccessPermission;
+
     private static final int RECENT_WEEK_NUMBER = 13;
 
     public List<DayGardenResponse> getGardens(final Long teamId) {
+        teamValidateAccessPermission.validateExistTeam(teamId);
         final List<Garden> gardens = gardenRepository.findRecentNthWeekGardenByTeamIdOrderByContributedDateAsc(teamId,
                 RECENT_WEEK_NUMBER);
         return calculateContributes(gardens);

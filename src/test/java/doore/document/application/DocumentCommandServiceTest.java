@@ -271,7 +271,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
         @Test
         @DisplayName("[실패] 파일과 이미지 학습자료에는 파일이 첨부돼야 한다.")
-        public void 파일과_이미지_학습자료에는_파일이_첨부돼야_한다_실패() {
+        public void createDocument_파일과_이미지_학습자료에는_파일이_첨부돼야_한다_실패() {
             //given
             final DocumentCreateRequest ImageRequest = new DocumentCreateRequest("사진 자료", "사진 자료입니다.",
                     DocumentAccessType.TEAM, DocumentType.IMAGE, null, mock(Member.class).getId());
@@ -320,7 +320,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 학습자료를 정상적으로 삭제할 수 있다.")
-    void deleteDocument_학습자료를_정상적으로_삭제할_수_있다() {
+    void deleteDocument_학습자료를_정상적으로_삭제할_수_있다_성공() {
         //given
         final Document document = new DocumentFixture().buildDocument();
         assertThat(documentRepository.findAll()).hasSize(1);
@@ -346,7 +346,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[실패] 회원이 아니라면 학습자료를 등록할 수 없다.")
-    void createDocument_회원이_아니라면_학습자료를_등록할_수_없다() {
+    void createDocument_회원이_아니라면_학습자료를_등록할_수_없다_실패() {
         final Long invalidMemberId = 10L;
 
         final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",

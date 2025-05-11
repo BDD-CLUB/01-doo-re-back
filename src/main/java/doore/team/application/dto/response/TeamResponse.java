@@ -9,16 +9,14 @@ public record TeamResponse(
         String name,
         String description,
         String imageUrl,
-        long attendanceRatio,
         Long teamLeaderId
 ) {
-    public static TeamResponse of(final Team team, final long attendanceRatio, final Long teamLeaderId) {
+    public static TeamResponse of(final Team team, final Long teamLeaderId) {
         return TeamResponse.builder()
                 .id(team.getId())
                 .name(team.getName())
                 .description(team.getDescription())
                 .imageUrl(team.getImageUrl())
-                .attendanceRatio(attendanceRatio)
                 .teamLeaderId(teamLeaderId)
                 .build();
     }

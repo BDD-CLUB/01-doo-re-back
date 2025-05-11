@@ -54,11 +54,11 @@ public class DocumentQueryService {
         final Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentException(NOT_FOUND_DOCUMENT));
         final DocumentGroupType documentGroupType = document.getGroupType();
-        final Study study = studyConvenience.findByDocumentId(documentId);
         if (documentGroupType == STUDY) {
+            final Study study = studyConvenience.findByDocumentId(documentId);
             studyRoleValidateAccessPermission.validateExistParticipant(study.getId(), memberId);
         } else if (documentGroupType == TEAM && document.getAccessType() == DocumentAccessType.TEAM) {
-            teamRoleValidateAccessPermission.validateExistMemberTeam(study.getTeamId(), memberId);
+            teamRoleValidateAccessPermission.validateExistMemberTeam(document.getGroupId(), memberId);
         }
         return toDocumentResponse(document);
     }

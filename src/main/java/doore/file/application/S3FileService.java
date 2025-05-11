@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -46,7 +47,8 @@ public abstract class S3FileService {
         final String newFileName = createFileName(fileExtension);
         final ObjectMetadata objectMetadata = getObjectMetadata(file);
 
-        objectMetadata.addUserMetadata("original-file-name", originalFileName);
+        String encodedFileName = Base64.getEncoder().encodeToString(originalFileName.getBytes(StandardCharsets.UTF_8));
+        objectMetadata.addUserMetadata("original-file-name", encodedFileName);
 
         try (final InputStream inputStream = file.getInputStream()) {
             amazonS3.putObject(new PutObjectRequest(bucket, newFileName, inputStream, objectMetadata));
@@ -102,9 +104,15 @@ public abstract class S3FileService {
         return String.format("%s/%s", baseUrl, getFileFolder() + fileName);
     }
 
-    public String generatePresignedUrl(String fileName) {
+    public String generatePreSignedUrl(String fileName) {
         ObjectMetadata metadata = amazonS3.getObjectMetadata(bucket, getFileFolder() + fileName);
-        String originalFileName = metadata.getUserMetaDataOf("original-file-name");
+        String encodedFileName = metadata.getUserMetaDataOf("original-file-name");
+        String originalFileName = "";
+
+        if (encodedFileName != null) {
+            byte[] decodedBytes = Base64.getDecoder().decode(encodedFileName);
+            originalFileName = new String(decodedBytes, StandardCharsets.UTF_8);
+        }
 
         Date expiration = new Date();
         expiration.setTime(System.currentTimeMillis() + 1000 * 60 * 60);
