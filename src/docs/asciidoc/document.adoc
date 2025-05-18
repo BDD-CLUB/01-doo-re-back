@@ -75,7 +75,7 @@ include::{snippets}/document-delete/path-parameters.adoc[]
 .HTTP Response
 include::{snippets}/document-delete/http-response.adoc[]
 
-== `GET`: Document 조회
+== `GET`: 나의 학습자료 목록 조회
 .Http Request
 include::{snippets}/document-member-get-list/http-request.adoc[]
 
