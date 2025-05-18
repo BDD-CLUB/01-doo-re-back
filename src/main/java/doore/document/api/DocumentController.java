@@ -88,8 +88,8 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/members/me/documents") //회원
+    @GetMapping("/documents/members/me") //회원
     public ResponseEntity<List<DocumentResponse>> getMyDocuments(@LoginMember final Member member) {
-        return ResponseEntity.ok(documentQueryService.getDocumentsByMemberId(member.getId()));
+        return ResponseEntity.ok(documentQueryService.getDocuments(member.getId()));
     }
 }

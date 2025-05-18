@@ -74,3 +74,13 @@ include::{snippets}/document-delete/path-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/document-delete/http-response.adoc[]
+
+== `GET`: Document 조회
+.Http Request
+include::{snippets}/document-member-get-list/http-request.adoc[]
+
+.Path Parameters
+include::{snippets}/document-member-get-list/path-parameters.adoc[]
+
+.Http Response
+include::{snippets}/document-member-get-list/http-response.adoc[]

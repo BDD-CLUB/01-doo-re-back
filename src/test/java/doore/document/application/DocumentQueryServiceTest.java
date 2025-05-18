@@ -207,9 +207,9 @@ public class DocumentQueryServiceTest extends IntegrationTest {
 
     @Test
     @DisplayName("[성공] 본인이 업로드한 학습자료 목록을 조회할 수 있다")
-    public void getMyDocument_본인이_업로드한_학습자료를_목록을_조회할_수_있다_성공() {
+    public void getDocuments_본인이_업로드한_학습자료를_목록을_조회할_수_있다_성공() {
         final List<DocumentResponse> responses =
-                documentQueryService.getDocumentsByMemberId(participant.getId());
+                documentQueryService.getDocuments(participant.getId());
         final String uploaderName = memberRepository.findById(allOpenTeamDocument.getUploaderId()).orElseThrow()
                 .getName();
 
@@ -219,10 +219,10 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("[실패] 내가 올린 학습자료가 아니라면 나의 학습자료에는 조회되지 않는다.")
-    public void getDocument_내가_올린_학습자료가_아니라면_나의_학습자료에는_조회되지_않는다_실패() {
+    @DisplayName("[성공] 내가 올린 학습자료가 아니라면 나의 학습자료에는 조회되지 않는다.")
+    public void getDocuments_내가_올린_학습자료가_아니라면_나의_학습자료에는_조회되지_않는다_성공() {
         final List<DocumentResponse> responses =
-                documentQueryService.getDocumentsByMemberId(notParticipantMember.getId());
+                documentQueryService.getDocuments(notParticipantMember.getId());
 
         assertThat(responses).isEmpty();
     }

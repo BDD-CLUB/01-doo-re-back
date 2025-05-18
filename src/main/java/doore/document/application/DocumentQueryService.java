@@ -44,7 +44,7 @@ public class DocumentQueryService {
                 .map(this::toDocumentResponse);
     }
 
-    public List<DocumentResponse> getDocumentsByMemberId(final Long memberId) {
+    public List<DocumentResponse> getDocuments(final Long memberId) {
         return documentRepository.findAllByUploaderId(memberId).stream()
                 .map(this::toDocumentResponse).toList();
     }
