@@ -166,5 +166,4 @@ public class MemberApiDocsTest extends RestDocsTest {
                 .andExpect(status().isNoContent())
                 .andDo(document("myPage-image-delete"));
     }
-
 }

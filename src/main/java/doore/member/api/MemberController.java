@@ -1,5 +1,6 @@
 package doore.member.api;
 
+import doore.document.application.DocumentQueryService;
 import doore.member.application.MemberCommandService;
 import doore.member.application.MemberQueryService;
 import doore.member.application.dto.request.MyPageUpdateRequest;
@@ -26,6 +27,7 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
     private final MemberQueryService memberQueryService;
+    private final DocumentQueryService documentQueryService;
 
     @PatchMapping("/teams/{teamId}/mandate/{newTeamLeaderId}") // 팀장
     public ResponseEntity<Void> transferTeamLeader(@PathVariable final Long teamId,

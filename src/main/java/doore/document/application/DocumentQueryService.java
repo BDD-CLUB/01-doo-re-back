@@ -44,6 +44,11 @@ public class DocumentQueryService {
                 .map(this::toDocumentResponse);
     }
 
+    public List<DocumentResponse> getDocuments(final Long memberId) {
+        return documentRepository.findAllByUploaderId(memberId).stream()
+                .map(this::toDocumentResponse).toList();
+    }
+
     public DocumentResponse getDocument(final Long documentId, final Long memberId) {
         memberValidateAccessPermission.validateExistMember(memberId);
         final Document document = documentRepository.findById(documentId)
