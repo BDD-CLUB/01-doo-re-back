@@ -2,9 +2,9 @@ package doore.member.application;
 
 import doore.file.application.S3ImageFileService;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
-import doore.member.application.convenience.MemberConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
+import doore.member.application.convenience.TeamRoleConvenience;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
 import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.domain.Member;
@@ -12,7 +12,10 @@ import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.application.convenience.StudyValidateAccessPermission;
+import doore.team.application.convenience.TeamConvenience;
 import doore.team.application.convenience.TeamValidateAccessPermission;
+import doore.team.domain.Team;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +28,8 @@ public class MemberCommandService {
 
     private final MemberRepository memberRepository;
 
-    private final MemberConvenience memberConvenience;
+    private final TeamConvenience teamConvenience;
+    private final TeamRoleConvenience teamRoleConvenience;
 
     private final S3ImageFileService s3ImageFileService;
 
@@ -75,6 +79,8 @@ public class MemberCommandService {
 
     public void deleteMember(final Long memberId) {
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
+        List<Team> teams = teamConvenience.findAllByMemberId(memberId);
+        teamRoleConvenience.isTeamLeader(teams, memberId);
         memberRepository.delete(member);
     }
 
