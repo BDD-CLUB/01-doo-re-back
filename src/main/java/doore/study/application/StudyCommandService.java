@@ -91,7 +91,8 @@ public class StudyCommandService {
     }
 
     private void checkEndDateValid(final LocalDate startDate, final LocalDate endDate) {
-        if (endDate != null && startDate.isAfter(endDate)) {
+        final LocalDate now = LocalDate.now();
+        if (endDate != null && (startDate.isAfter(endDate) || endDate.isBefore(now))) {
             throw new StudyException(INVALID_ENDDATE);
         }
     }
