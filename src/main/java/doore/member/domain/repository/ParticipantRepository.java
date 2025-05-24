@@ -12,7 +12,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
     List<Participant> findAllByStudyIdAndIsDeletedFalse(Long studyId);
 
-    List<Participant> findByMemberId(Long memberId);
+    List<Participant> findByMemberIdAndIsDeletedFalse(Long memberId);
 
     void deleteByStudyIdAndMemberId(Long studyId, Long memberId);
 

@@ -52,7 +52,7 @@ public class StudyQueryService {
     public List<StudyReferenceResponse> getMyStudies(final Long memberId, final Long tokenMemberId) {
         memberConvenience.checkSameMemberIdAndTokenMemberId(memberId, tokenMemberId);
 
-        final List<Participant> participants = participantRepository.findByMemberId(memberId);
+        final List<Participant> participants = participantRepository.findByMemberIdAndIsDeletedFalse(memberId);
         final List<Long> studyIds = participants.stream()
                 .map(Participant::getStudyId)
                 .toList();
