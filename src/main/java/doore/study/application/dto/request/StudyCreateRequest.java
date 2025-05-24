@@ -1,9 +1,11 @@
 package doore.study.application.dto.request;
 
+import static doore.study.domain.StudyStatus.IN_PROGRESS;
 import static doore.study.domain.StudyStatus.UPCOMING;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import doore.study.domain.Study;
+import doore.study.domain.StudyStatus;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -38,12 +40,20 @@ public record StudyCreateRequest(
     }
 
     public Study toStudy(final Long teamId) {
+        final LocalDate now = LocalDate.now();
+        final StudyStatus status;
+
+        if (now.isBefore(this.startDate)) status = UPCOMING;
+        else if (this.endDate != null
+                && (!now.isBefore(this.startDate) && !now.isAfter(this.endDate))) status = IN_PROGRESS;
+        else status = IN_PROGRESS;
+
         return Study.builder()
                 .name(this.name)
                 .description(this.description)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
-                .status(UPCOMING)
+                .status(status)
                 .isDeleted(false)
                 .teamId(teamId)
                 .cropId(this.cropId)
