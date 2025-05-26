@@ -34,13 +34,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/documents")
 public class DocumentController {
 
     private final DocumentCommandService documentCommandService;
     private final DocumentQueryService documentQueryService;
 
-    @PostMapping(value = "/documents/{groupType}/{groupId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{groupType}/{groupId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE}) // 회원
     public ResponseEntity<Void> createDocument(@Valid @RequestPart final DocumentCreateRequest request,
                                                @RequestPart(required = false) final List<MultipartFile> files,
@@ -51,7 +51,7 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/documents/{groupType}/{groupId}") // 비회원
+    @GetMapping("/{groupType}/{groupId}") // 비회원
     public ResponseEntity<Page<DocumentResponse>> getAllDocument(
             @PathVariable final String groupType,
             @PathVariable final Long groupId,
@@ -64,7 +64,7 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(documents);
     }
 
-    @GetMapping("/documents/{documentId}")
+    @GetMapping("/{documentId}")
     // 팀 학습자료 - 전체 공개 -> 회원 이상, 팀 학습자료 - 팀 공개 -> 팀원 이상, 스터디 학습자료 -> 스터디 구성원
     // AccessType : All, GroupType : Team -> 회원공개(팀 학습자료)
     // AccessType : Team, GroupType : Team -> 팀원 공개(팀 학습자료)
@@ -75,20 +75,20 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping("/documents/{documentId}") // 회원
+    @PutMapping("/{documentId}") // 회원
     public ResponseEntity<Void> updateDocument(@Valid @RequestBody final DocumentUpdateRequest request,
                                                @PathVariable final Long documentId, @LoginMember final Member member) {
         documentCommandService.updateDocument(request, documentId, member.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/documents/{documentId}") // 회원
+    @DeleteMapping("/{documentId}") // 회원
     public ResponseEntity<Void> deleteDocument(@PathVariable final Long documentId, @LoginMember final Member member) {
         documentCommandService.deleteDocument(documentId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/documents/members/me") //회원
+    @GetMapping("/members/me") //회원
     public ResponseEntity<List<DocumentResponse>> getMyDocuments(@LoginMember final Member member) {
         return ResponseEntity.ok(documentQueryService.getDocuments(member.getId()));
     }
