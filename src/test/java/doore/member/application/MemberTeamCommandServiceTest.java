@@ -6,8 +6,8 @@ import static doore.member.MemberFixture.아마란스;
 import static doore.member.MemberFixture.짱구;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
-import static doore.member.exception.MemberExceptionType.CANNOT_DELETE_STUDY_LEADER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
+import static doore.member.exception.MemberTeamExceptionType.CANNOT_DELETE_STUDY_LEADER;
 import static doore.member.exception.MemberTeamExceptionType.CANNOT_DELETE_TEAM_LEADER_SELF;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.team.TeamFixture.team;
@@ -163,7 +163,7 @@ public class MemberTeamCommandServiceTest extends IntegrationTest {
 
         assertThatThrownBy(() -> {
             memberTeamCommandService.deleteMemberTeam(team.getId(), studyLeaderMember.getId(), teamLeader.getId());
-        }).isInstanceOf(MemberException.class).hasMessage(expectedMessage);
+        }).isInstanceOf(MemberTeamException.class).hasMessage(expectedMessage);
     }
 
     @Test

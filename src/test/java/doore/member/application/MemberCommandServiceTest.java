@@ -6,6 +6,7 @@ import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
 import static doore.member.domain.TeamRoleType.ROLE_팀원;
 import static doore.member.domain.TeamRoleType.ROLE_팀장;
+import static doore.member.exception.MemberExceptionType.CANNOT_DELETE_TEAM_LEADER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.team.exception.TeamExceptionType.NOT_FOUND_TEAM;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,9 +17,11 @@ import doore.helper.IntegrationTest;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.domain.Member;
+import doore.member.domain.MemberTeam;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
@@ -47,9 +50,12 @@ class MemberCommandServiceTest extends IntegrationTest {
     private TeamRoleRepository teamRoleRepository;
     @Autowired
     private StudyRoleRepository studyRoleRepository;
+    @Autowired
+    private MemberTeamRepository memberTeamRepository;
 
     private Member member;
     private Team team;
+    private MemberTeam memberTeam;
     private Study study;
     private TeamRole previousTeamLeaderRole;
     private StudyRole previousStudyLeaderRole;
@@ -59,6 +65,10 @@ class MemberCommandServiceTest extends IntegrationTest {
         member = memberRepository.save(아마란스());
         team = teamRepository.save(TeamFixture.team());
         study = studyRepository.save(StudyFixture.algorithmStudy());
+        memberTeam = memberTeamRepository.save(MemberTeam.builder()
+                .teamId(team.getId())
+                .member(member)
+                .build());
         previousTeamLeaderRole = TeamRole.builder()
                 .teamId(team.getId())
                 .teamRoleType(ROLE_팀장)
@@ -244,4 +254,13 @@ class MemberCommandServiceTest extends IntegrationTest {
         assertThat(afterMemberInfo.getName()).isEqualTo(request.name());
     }
 
+    @Test
+    @DisplayName("[실패] 팀장을 맡고 있다면 회원 탈퇴는 불가하다.")
+    void deleteMember_팀장을_맡고_있다면_회원_탈퇴는_불가하다_실패() {
+        final String expectedMessage = String.format(CANNOT_DELETE_TEAM_LEADER.errorMessage(), "BDD");
+
+        assertThatThrownBy(() -> {
+            memberCommandService.deleteMember(member.getId());
+        }).isInstanceOf(MemberException.class).hasMessage(expectedMessage);
+    }
 }

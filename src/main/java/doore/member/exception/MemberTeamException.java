@@ -11,6 +11,11 @@ public class MemberTeamException extends BaseException {
         this.exceptionType = exceptionType;
     }
 
+    public MemberTeamException(final MemberTeamExceptionType exceptionType, final String message) {
+        super(message);
+        this.exceptionType = exceptionType;
+    }
+
     @Override
     public BaseExceptionType exceptionType() {
         return exceptionType;
