@@ -105,7 +105,7 @@ public class ParticipantCommandService {
     }
 
     private void isAlreadyExistParticipant(final Long studyId, final Long memberId) {
-        if (participantRepository.existsByStudyIdAndMemberIdAndIsDeletedFalse(studyId, memberId)) {
+        if (participantRepository.existsByStudyIdAndMemberId(studyId, memberId)) {
             throw new ParticipantException(ALREADY_JOINED_STUDY);
         }
     }
