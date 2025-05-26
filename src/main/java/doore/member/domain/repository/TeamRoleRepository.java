@@ -15,4 +15,5 @@ public interface TeamRoleRepository extends JpaRepository<TeamRole, Long> {
     Long findLeaderIdByTeamId(Long teamId);
     List<TeamRole> findAllByTeamId(final Long teamId);
     void deleteByTeamIdAndMemberId(final Long teamId, final Long memberId);
+    boolean existsByTeamIdAndMemberIdAndTeamRoleType(Long teamId, Long memberId, TeamRoleType teamRoleType);
 }

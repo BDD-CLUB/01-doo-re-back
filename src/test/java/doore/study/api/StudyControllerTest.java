@@ -73,7 +73,7 @@ public class StudyControllerTest extends IntegrationTest {
         void createStudy_정상적으로_스터디를_생성한다_성공() throws Exception {
             final String url = "/teams/" + team.getId() + "/studies";
             final StudyCreateRequest request = new StudyCreateRequest("알고리즘", "알고리즘 스터디 입니다.",
-                    LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05"), 1L);
+                    LocalDate.parse("2020-01-01"), LocalDate.parse("2029-01-05"), 1L);
 
             callPostApi(url, request, token).andExpect(status().isCreated());
         }

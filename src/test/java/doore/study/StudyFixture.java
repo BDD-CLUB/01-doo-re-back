@@ -37,7 +37,7 @@ public class StudyFixture {
                 .name("알고리즘")
                 .description("알고리즘 스터디 입니다.")
                 .startDate(LocalDate.parse("2023-01-01"))
-                .endDate(LocalDate.parse("2024-01-01"))
+                .endDate(LocalDate.parse("2029-01-01"))
                 .teamId(teamId)
                 .status(IN_PROGRESS)
                 .isDeleted(false)

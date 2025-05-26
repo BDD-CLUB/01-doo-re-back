@@ -10,7 +10,6 @@ import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.domain.StudyStatus.ENDED;
 import static doore.study.domain.StudyStatus.IN_PROGRESS;
-import static doore.study.domain.StudyStatus.UPCOMING;
 import static doore.study.exception.StudyExceptionType.INVALID_ENDDATE;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STATUS;
 import static doore.study.exception.StudyExceptionType.NOT_FOUND_STUDY;
@@ -148,7 +147,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
                 final List<Study> studies = studyRepository.findAll();
                 final Study study = studies.get(1);
                 assertAll(
-                        () -> assertEquals(UPCOMING, study.getStatus()),
+                        () -> assertEquals(IN_PROGRESS, study.getStatus()),
                         () -> assertEquals(false, study.getIsDeleted())
                 );
 
@@ -302,7 +301,7 @@ public class StudyCommandServiceTest extends IntegrationTest {
                     .name("스프링")
                     .description("스프링 스터디 입니다.")
                     .startDate(LocalDate.parse("2023-01-01"))
-                    .endDate(LocalDate.parse("2024-01-01"))
+                    .endDate(LocalDate.parse("2029-01-01"))
                     .status(IN_PROGRESS)
                     .build();
 

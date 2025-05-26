@@ -2,13 +2,14 @@ package doore.member.application.convenience;
 
 import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.domain.StudyRoleType.ROLE_스터디장;
-import static doore.member.exception.MemberExceptionType.CANNOT_DELETE_STUDY_LEADER;
 import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER_ROLE_IN_STUDY;
+import static doore.member.exception.MemberTeamExceptionType.CANNOT_DELETE_STUDY_LEADER;
 
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.exception.MemberException;
+import doore.member.exception.MemberTeamException;
 import doore.study.domain.Study;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class StudyRoleConvenience {
         if (!leaderStudyNames.isEmpty()) {
             String joinedNames = String.join(", ", leaderStudyNames);
             String formattedMessage = String.format(CANNOT_DELETE_STUDY_LEADER.errorMessage(), joinedNames);
-            throw new MemberException(CANNOT_DELETE_STUDY_LEADER, formattedMessage);
+            throw new MemberTeamException(CANNOT_DELETE_STUDY_LEADER, formattedMessage);
         }
     }
 
