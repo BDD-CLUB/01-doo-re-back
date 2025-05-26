@@ -17,10 +17,11 @@ public record StudyReferenceResponse(
         LocalDate endDate,
         StudyStatus status,
         Long cropId,
-        long studyProgressRatio
+        long studyProgressRatio,
+        Long teamId
 ) {
     public static StudyReferenceResponse of(final Study study, final long studyProgressRatio) {
         return new StudyReferenceResponse(study.getId(), study.getName(), study.getDescription(), study.getStartDate(),
-                study.getEndDate(), study.getStatus(), study.getCropId(), studyProgressRatio);
+                study.getEndDate(), study.getStatus(), study.getCropId(), studyProgressRatio, study.getTeamId());
     }
 }

@@ -114,6 +114,7 @@ public class StudyApiDocsTest extends RestDocsTest {
                 .status(StudyStatus.IN_PROGRESS)
                 .cropId(1L)
                 .studyProgressRatio(50)
+                .teamId(1L)
                 .build();
     }
 
@@ -202,7 +203,8 @@ public class StudyApiDocsTest extends RestDocsTest {
                 stringFieldWithPath("[].endDate", "스터디의 종료일"),
                 stringFieldWithPath("[].status", "스터디의 진행 상태"),
                 numberFieldWithPath("[].cropId", "스터디의 작물 ID"),
-                numberFieldWithPath("[].studyProgressRatio", "스터디 진행률")
+                numberFieldWithPath("[].studyProgressRatio", "스터디 진행률"),
+                numberFieldWithPath("[].teamId", "팀 ID")
         );
 
         when(studyQueryService.getMyStudies(any(), any())).thenReturn(response);
@@ -222,11 +224,11 @@ public class StudyApiDocsTest extends RestDocsTest {
     public void getTeamStudies_팀의_스터디_목록스터디_랭킹을_조회한다_성공() throws Exception {
         final StudyReferenceResponse studyReferenceResponse =
                 new StudyReferenceResponse(1L, "study1", "this is study 1", LocalDate.of(2024, 7, 6),
-                        LocalDate.of(2024, 7, 7), StudyStatus.IN_PROGRESS, 1L, 60L);
+                        LocalDate.of(2024, 7, 7), StudyStatus.IN_PROGRESS, 1L, 60L, 1L);
         final StudyRankResponse studyRankResponse = new StudyRankResponse(0, studyReferenceResponse);
         final StudyReferenceResponse otherStudyReferenceResponse =
                 new StudyReferenceResponse(2L, "study2", "this is study 2", LocalDate.of(2024, 7, 6),
-                        LocalDate.of(2024, 8, 7), StudyStatus.IN_PROGRESS, 2L, 50L);
+                        LocalDate.of(2024, 8, 7), StudyStatus.IN_PROGRESS, 2L, 50L, 1L);
         final StudyRankResponse otherStudyRankResponse = new StudyRankResponse(20, otherStudyReferenceResponse);
         final List<StudyRankResponse> studies = List.of(studyRankResponse, otherStudyRankResponse);
         final Page<StudyRankResponse> studyRankResponsePage = new PageImpl<>(studies, PageRequest.of(0,4),studies.size());

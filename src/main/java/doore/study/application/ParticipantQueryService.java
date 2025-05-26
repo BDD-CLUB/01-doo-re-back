@@ -35,7 +35,7 @@ public class ParticipantQueryService {
         final Study study = studyConvenience.findById(studyId);
         studyValidateAccessPermission.validateExistStudy(studyId);
         checkStudyLeaderOrParticipantOrTeamLeader(studyId, memberId, study);
-        List<Participant> participants = participantRepository.findAllByStudyIdAndIsDeletedFalse(studyId);
+        List<Participant> participants = participantRepository.findAllByStudyId(studyId);
         return participants.stream()
                 .map(participant -> ParticipantResponse.of(participant,
                         studyRoleConvenience.findStudyRoleType(studyId, participant.getMember().getId()))).toList();
