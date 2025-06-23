@@ -2,7 +2,9 @@ package doore.member.application;
 
 import doore.file.application.S3ImageFileService;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
+import doore.member.application.convenience.MemberTeamConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
+import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleConvenience;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
@@ -11,6 +13,7 @@ import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.study.application.convenience.ParticipantConvenience;
 import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.team.application.convenience.TeamConvenience;
 import doore.team.application.convenience.TeamValidateAccessPermission;
@@ -30,6 +33,9 @@ public class MemberCommandService {
 
     private final TeamConvenience teamConvenience;
     private final TeamRoleConvenience teamRoleConvenience;
+    private final MemberTeamConvenience memberTeamConvenience;
+    private final ParticipantConvenience participantConvenience;
+    private final StudyRoleConvenience studyRoleConvenience;
 
     private final S3ImageFileService s3ImageFileService;
 
@@ -81,6 +87,10 @@ public class MemberCommandService {
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
         List<Team> teams = teamConvenience.findAllByMemberId(memberId);
         teamRoleConvenience.isTeamLeader(teams, memberId);
+
+        deleteAboutTeam(memberId);
+        deleteAboutStudy(memberId);
+
         memberRepository.delete(member);
     }
 
@@ -108,6 +118,16 @@ public class MemberCommandService {
         if (member.hasImage()) {
             s3ImageFileService.deleteFile(member.getImageUrl());
         }
+    }
+
+    private void deleteAboutTeam(final Long memberId) {
+        memberTeamConvenience.deleteAllMemberTeams(memberId);
+        teamRoleConvenience.deleteAllTeamRoles(memberId);
+    }
+
+    private void deleteAboutStudy(final Long memberId) {
+        participantConvenience.deleteAllParticipantsByMemberId(memberId);
+        studyRoleConvenience.deleteAllStudyRoles(memberId);
     }
 
 }

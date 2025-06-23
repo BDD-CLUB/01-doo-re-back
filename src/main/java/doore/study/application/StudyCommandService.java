@@ -62,7 +62,7 @@ public class StudyCommandService {
         studyValidateAccessPermission.validateExistStudy(studyId);
 
         deleteCurriculumItemAndParticipantCurriculumItem(studyId);
-        participantConvenience.deleteAllParticipant(studyId);
+        participantConvenience.deleteAllParticipantsByStudyId(studyId);
         studyRepository.deleteById(studyId);
     }
 

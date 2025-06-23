@@ -6,6 +6,7 @@ import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
 import doore.member.domain.repository.MemberTeamRepository;
 import doore.member.exception.MemberException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,5 +29,10 @@ public class MemberTeamConvenience {
                 .isDeleted(false)
                 .teamId(teamId)
                 .build());
+    }
+
+    public void deleteAllMemberTeams(final Long memberId) {
+        final List<MemberTeam> memberTeams = memberTeamRepository.findAllByMemberId(memberId);
+        memberTeamRepository.deleteAll(memberTeams);
     }
 }

@@ -1,10 +1,7 @@
 package doore.member.domain.repository;
 
 import doore.member.domain.MemberTeam;
-
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,4 +18,6 @@ public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
 	void deleteByTeamIdAndMemberId(final Long teamId, final Long memberId);
 
 	Boolean existsByTeamIdAndMemberId(final Long teamId, final Long memberId);
+
+	List<MemberTeam> findAllByMemberId(final Long memberId);
 }
