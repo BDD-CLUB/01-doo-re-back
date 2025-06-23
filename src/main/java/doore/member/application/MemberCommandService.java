@@ -3,6 +3,7 @@ package doore.member.application;
 import doore.file.application.S3ImageFileService;
 import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.application.convenience.MemberValidateAccessPermission;
+import doore.member.application.convenience.StudyRoleConvenience;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleConvenience;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
@@ -11,7 +12,9 @@ import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
+import doore.study.application.convenience.StudyConvenience;
 import doore.study.application.convenience.StudyValidateAccessPermission;
+import doore.study.domain.Study;
 import doore.team.application.convenience.TeamConvenience;
 import doore.team.application.convenience.TeamValidateAccessPermission;
 import doore.team.domain.Team;
@@ -29,7 +32,9 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
 
     private final TeamConvenience teamConvenience;
+    private final StudyConvenience studyConvenience;
     private final TeamRoleConvenience teamRoleConvenience;
+    private final StudyRoleConvenience studyRoleConvenience;
 
     private final S3ImageFileService s3ImageFileService;
 
@@ -79,8 +84,13 @@ public class MemberCommandService {
 
     public void deleteMember(final Long memberId) {
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
-        List<Team> teams = teamConvenience.findAllByMemberId(memberId);
+
+        final List<Team> teams = teamConvenience.findAllByMemberId(memberId);
         teamRoleConvenience.isTeamLeader(teams, memberId);
+
+        final List<Study> studies = studyConvenience.findAllByMemberId(memberId);
+        studyRoleConvenience.isStudyLeader(studies, memberId);
+
         memberRepository.delete(member);
     }
 
