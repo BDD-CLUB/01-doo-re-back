@@ -18,10 +18,12 @@ import doore.login.application.dto.response.GoogleAccountProfileResponse;
 import doore.member.application.dto.request.MyPageUpdateRequest;
 import doore.member.domain.Member;
 import doore.member.domain.MemberTeam;
+import doore.member.domain.Participant;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.member.domain.repository.MemberTeamRepository;
+import doore.member.domain.repository.ParticipantRepository;
 import doore.member.domain.repository.StudyRoleRepository;
 import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
@@ -52,6 +54,8 @@ class MemberCommandServiceTest extends IntegrationTest {
     private StudyRoleRepository studyRoleRepository;
     @Autowired
     private MemberTeamRepository memberTeamRepository;
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     private Member member;
     private Team team;
@@ -262,5 +266,45 @@ class MemberCommandServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> {
             memberCommandService.deleteMember(member.getId());
         }).isInstanceOf(MemberException.class).hasMessage(expectedMessage);
+    }
+
+    @Test
+    @DisplayName("[성공] 회원 탈퇴 시 팀과 스터디 관련 정보는 삭제된다.")
+    void deleteMember_회원_탈퇴_시_팀과_스터디_관련_정보는_삭제된다_성공() {
+        final Member generalMember = memberRepository.save(미나());
+
+        memberTeamRepository.save(MemberTeam.builder()
+                .member(generalMember)
+                .teamId(team.getId())
+                .build());
+        teamRoleRepository.save(TeamRole.builder()
+                .teamId(team.getId())
+                .memberId(generalMember.getId())
+                .teamRoleType(ROLE_팀원)
+                .build());
+
+        participantRepository.save(Participant.builder()
+                .studyId(study.getId())
+                .member(generalMember)
+                .build());
+        studyRoleRepository.save(StudyRole.builder()
+                .studyId(study.getId())
+                .memberId(generalMember.getId())
+                .studyRoleType(ROLE_스터디원)
+                .build());
+
+        assertThat(memberRepository.count()).isEqualTo(2);
+        assertThat(memberTeamRepository.count()).isEqualTo(2);
+        assertThat(studyRoleRepository.count()).isEqualTo(2);
+        assertThat(participantRepository.count()).isEqualTo(1);
+        assertThat(studyRoleRepository.count()).isEqualTo(2);
+
+        memberCommandService.deleteMember(generalMember.getId());
+
+        assertThat(memberRepository.count()).isEqualTo(1);
+        assertThat(memberTeamRepository.count()).isEqualTo(1);
+        assertThat(studyRoleRepository.count()).isEqualTo(1);
+        assertThat(participantRepository.count()).isEqualTo(0);
+        assertThat(studyRoleRepository.count()).isEqualTo(1);
     }
 }

@@ -2,6 +2,7 @@ package doore.member.domain.repository;
 
 import doore.member.domain.StudyRole;
 import doore.member.domain.StudyRoleType;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,5 @@ public interface StudyRoleRepository extends JpaRepository<StudyRole, Long> {
     Long findLeaderIdByStudyId(Long studyId);
     boolean existsByStudyIdAndMemberIdAndStudyRoleType(Long studyId, Long memberId, StudyRoleType studyRoleType);
     void deleteByStudyIdAndMemberId(final Long studyId, final Long memberId);
+    List<StudyRole> findAllByMemberId(final Long memberId);
 }

@@ -52,4 +52,9 @@ public class TeamRoleConvenience {
             throw new MemberException(CANNOT_DELETE_TEAM_LEADER, formattedMessage);
         }
     }
+
+    public void deleteAllTeamRoles(final Long memberId) {
+        final List<TeamRole> teamRoles = teamRoleRepository.findAllByMemberId(memberId);
+        teamRoleRepository.deleteAll(teamRoles);
+    }
 }

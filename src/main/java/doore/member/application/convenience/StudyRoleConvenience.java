@@ -72,4 +72,9 @@ public class StudyRoleConvenience {
     public Optional<StudyRole> findStudyRoleByStudyIdAndMemberId(final Long studyId, final Long memberId) {
         return studyRoleRepository.findStudyRoleByStudyIdAndMemberId(studyId, memberId);
     }
+
+    public void deleteAllStudyRoles(final Long memberId) {
+        final List<StudyRole> studyRoles = studyRoleRepository.findAllByMemberId(memberId);
+        studyRoleRepository.deleteAll(studyRoles);
+    }
 }
