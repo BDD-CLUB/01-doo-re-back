@@ -14,7 +14,9 @@ import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
 import doore.member.domain.repository.MemberRepository;
 import doore.study.application.convenience.ParticipantConvenience;
+import doore.study.application.convenience.StudyConvenience;
 import doore.study.application.convenience.StudyValidateAccessPermission;
+import doore.study.domain.Study;
 import doore.team.application.convenience.TeamConvenience;
 import doore.team.application.convenience.TeamValidateAccessPermission;
 import doore.team.domain.Team;
@@ -32,6 +34,7 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
 
     private final TeamConvenience teamConvenience;
+    private final StudyConvenience studyConvenience;
     private final TeamRoleConvenience teamRoleConvenience;
     private final MemberTeamConvenience memberTeamConvenience;
     private final ParticipantConvenience participantConvenience;
@@ -85,8 +88,12 @@ public class MemberCommandService {
 
     public void deleteMember(final Long memberId) {
         final Member member = memberValidateAccessPermission.getValidateExistMember(memberId);
-        List<Team> teams = teamConvenience.findAllByMemberId(memberId);
+
+        final List<Team> teams = teamConvenience.findAllByMemberId(memberId);
         teamRoleConvenience.isTeamLeader(teams, memberId);
+
+        final List<Study> studies = studyConvenience.findAllByMemberId(memberId);
+        studyRoleConvenience.isStudyLeader(studies, memberId);
 
         deleteAboutTeam(memberId);
         deleteAboutStudy(memberId);
