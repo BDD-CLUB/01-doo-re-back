@@ -31,4 +31,8 @@ public class StudyConvenience {
     public Study findById(final Long studyId) {
         return studyRepository.findById(studyId).orElseThrow(() -> new StudyException(NOT_FOUND_STUDY));
     }
+
+    public List<Study> findAllByMemberId(final Long memberId) {
+        return studyRepository.findAllByMemberId(memberId);
+    }
 }
