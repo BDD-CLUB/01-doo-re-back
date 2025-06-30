@@ -22,6 +22,7 @@ import doore.document.domain.Document;
 import doore.document.domain.DocumentAccessType;
 import doore.document.domain.repository.DocumentRepository;
 import doore.helper.IntegrationTest;
+import doore.member.application.MemberCommandService;
 import doore.member.domain.Member;
 import doore.member.domain.StudyRole;
 import doore.member.domain.TeamRole;
@@ -48,6 +49,8 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     private DocumentQueryService documentQueryService;
     @Autowired
     private DocumentCommandService documentCommandService;
+    @Autowired
+    private MemberCommandService memberCommandService;
 
     @Autowired
     private StudyRepository studyRepository;
@@ -71,6 +74,7 @@ public class DocumentQueryServiceTest extends IntegrationTest {
     private Member notParticipantMember; // 회원 + 팀원
     private StudyRole studyRole;
     private TeamRole teamRole;
+    private TeamRole otherTeamRole;
     private Team team;
 
     @BeforeEach
@@ -80,6 +84,11 @@ public class DocumentQueryServiceTest extends IntegrationTest {
         participant = memberRepository.save(아마란스());
         notMemberTeamNotParticipantMember = memberRepository.save(미나());
         notParticipantMember = memberRepository.save(아마());
+        otherTeamRole = teamRoleRepository.save(TeamRole.builder()
+                .teamRoleType(TeamRoleType.ROLE_팀원)
+                .memberId(participant.getId())
+                .teamId(study.getTeamId())
+                .build());
         teamRole = teamRoleRepository.save(TeamRole.builder()
                 .teamRoleType(TeamRoleType.ROLE_팀원)
                 .memberId(notParticipantMember.getId())
@@ -225,5 +234,49 @@ public class DocumentQueryServiceTest extends IntegrationTest {
                 documentQueryService.getDocuments(notParticipantMember.getId());
 
         assertThat(responses).isEmpty();
+    }
+
+    @Test
+    @DisplayName("[성공] 회원 탈퇴 시 탈퇴한 회원이 올린 학습자료의 정보는 유지된다.")
+    public void getDocument_회원_탈퇴_시_탈퇴한_회원이_올린_학습자료의_정보는_유지된다_성공() {
+        final Document otherTeamOpenTeamDocument = new DocumentFixture()
+                .groupType(TEAM)
+                .groupId(team.getId())
+                .type(URL)
+                .accessType(DocumentAccessType.TEAM)
+                .uploaderId(notParticipantMember.getId())
+                .buildDocument();
+
+        memberCommandService.deleteMember(notParticipantMember.getId());
+
+        final DocumentResponse response = documentQueryService.getDocument(otherTeamOpenTeamDocument.getId(),
+                participant.getId());
+
+        assertAll(
+                () -> assertEquals(response.title(), otherTeamOpenTeamDocument.getName()),
+                () -> assertEquals(response.description(), otherTeamOpenTeamDocument.getDescription()),
+                () -> assertEquals(response.date(), otherTeamOpenTeamDocument.getCreatedAt().toLocalDate()),
+                () -> assertEquals(response.accessType(), otherTeamOpenTeamDocument.getAccessType()),
+                () -> assertEquals(response.uploaderName(), notParticipantMember.getName()),
+                () -> assertEquals(response.uploaderMemberId(), notParticipantMember.getId())
+        );
+    }
+
+    @Test
+    @DisplayName("[성공] 탈퇴한 회원이 있어도 학습자료는 정상적으로 조회된다.")
+    public void getAllDocuments_탈퇴한_회원이_있어도_학습자료는_정상적으로_조회된다_성공() {
+        memberCommandService.deleteMember(participant.getId());
+
+        final Page<DocumentResponse> responses =
+                documentQueryService.getAllDocument(TEAM, team.getId(), PageRequest.of(0, 4));
+
+        assertAll(
+                () -> assertThat(responses.getTotalElements()).isNotZero(),
+                () -> assertEquals(responses.getContent().get(0).title(), allOpenTeamDocument.getName()),
+                () -> assertEquals(responses.getContent().get(0).description(), allOpenTeamDocument.getDescription()),
+                () -> assertEquals(responses.getContent().get(0).date(),
+                        allOpenTeamDocument.getCreatedAt().toLocalDate()),
+                () -> assertEquals(responses.getContent().get(0).uploaderName(), participant.getName())
+        );
     }
 }
