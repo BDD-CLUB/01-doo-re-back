@@ -14,7 +14,6 @@ import doore.document.exception.DocumentException;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
 import doore.member.application.convenience.TeamRoleValidateAccessPermission;
-import doore.member.domain.Member;
 import doore.study.application.convenience.StudyConvenience;
 import doore.study.domain.Study;
 import java.util.List;
@@ -68,8 +67,8 @@ public class DocumentQueryService {
                 .map(file -> new FileResponse(file.getId(), file.getName(), file.getUrl()))
                 .toList();
 
-        final Member member = memberValidateAccessPermission.getValidateExistMember(document.getUploaderId());
+        final String uploaderName = memberValidateAccessPermission.getUploaderNameByMemberId(document.getUploaderId());
 
-        return DocumentResponse.of(document, fileResponses, member.getName(), member.getId());
+        return DocumentResponse.of(document, fileResponses, uploaderName, document.getUploaderId());
     }
 }

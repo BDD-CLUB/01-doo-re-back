@@ -1,5 +1,6 @@
 package doore.member.application.convenience;
 
+import static doore.member.exception.MemberExceptionType.NOT_FOUND_MEMBER;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.member.domain.Member;
@@ -21,5 +22,9 @@ public class MemberValidateAccessPermission {
 
     public Member getValidateExistMember(final Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(UNAUTHORIZED));
+    }
+
+    public String getUploaderNameByMemberId(final Long memberId) {
+        return memberRepository.findNameByIdNative(memberId).orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }
