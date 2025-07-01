@@ -16,7 +16,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
 
 ## 🧑🏻‍💻 코드 유지 관리자
 
-<div align="center">
+<div align="left">
   <table>
   <tr>
     <td align="center">
