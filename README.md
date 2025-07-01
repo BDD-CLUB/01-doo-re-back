@@ -1,10 +1,10 @@
 ![image](https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/4ba1e7fc-06ac-4c98-9f2f-e34744e888a2)
 # <div align="center">01-doo-re-back</div> 
-<div align="center">BDD 1기 프로젝트 두레(DooRe)의 백엔드 레파지토리입니다.</div>
+<div align="center">BDD 1기 프로젝트 두레(DOORE)의 백엔드 레파지토리입니다.</div>
 <br>
 
 
-두레(DooRe)는 **팀이 함께 협업하여 다른 팀과 경쟁하기 위한 팀간 경쟁 서비스**로, 주민들이 마을 단위로 둔 공동 노동 조직 '**두레**'에서 이름을 따왔습니다.
+두레(DOORE)는 **팀이 함께 협업하여 다른 팀과 경쟁하기 위한 팀간 경쟁 서비스**로, 주민들이 마을 단위로 둔 공동 노동 조직 '**두레**'에서 이름을 따왔습니다.
 
 - **경쟁**: Github의 잔디를 모티브로 한 '텃밭'이 팀별로 존재 하며, 이름 지표로 팀 랭킹이 매겨집니다.
 - **협업**: 팀원들은 스터디, 학습자료 업로드 등의 활동을 통해 팀의 '텃밭'에 기여할 수 있습니다.
@@ -62,6 +62,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
 
 [![contributors](https://contrib.rocks/image?repo=BDD-CLUB/01-doo-re-front)](https://github.com/BDD-CLUB/01-doo-re-front/graphs/contributors)
 [![contributors](https://contrib.rocks/image?repo=BDD-CLUB/01-doo-re-back)](https://github.com/BDD-CLUB/01-doo-re-back/graphs/contributors)  
+<br>
 
 ## :pencil2: 기술 스택
 
@@ -94,6 +95,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
 ![Gradle](https://img.shields.io/badge/Gradle%207.6-02303A?style=for-the-badge&logo=gradle&logoColor=white)
 ![IntelliJ](https://img.shields.io/badge/IntelliJ-000000?style=for-the-badge&logo=intellijidea&logoColor=white)
 </div>
+<br>
 
 ## :desktop_computer: Structure
 ```
@@ -131,6 +133,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
    │     └─ schema.sql
    └─ test
 ```
+<br>
 
 ## :seedling: Features
 
@@ -150,7 +153,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
-
+<br>
 
 ### 팀 랭킹
 - **텃밭**: Github의 잔디를 모티브로 한 '텃밭'이 팀별로 주어지며, 이름 지표로 팀 랭킹이 매겨집니다.
@@ -183,6 +186,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
+<br>
 
 ### 스터디
 - **참여자 목록**: 해당 스터디에 참여하고 있는 회원 목록을 제공합니다.
@@ -208,7 +212,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
-
+<br>
 
 ### 학습자료
 - **학습자료**: 스터디에서 공부한 내용을 학습자료 형태로 업로드 할 수 있습니다. 스터디에 업로드한 학습자료는 팀에도 공유됩니다.
@@ -239,6 +243,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
+<br>
 
 ### 마이페이지
 
@@ -260,6 +265,7 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
+<br>
 
 ### 스터디 카드
 
