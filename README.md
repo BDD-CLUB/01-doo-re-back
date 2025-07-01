@@ -106,19 +106,26 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
    │  │     │  ├─ BaseEntity.java
    │  │     │  ├─ BaseException.java
    │  │     │  └─ BaseExceptionType.java
-   │  │     ├─ crop
+   │  │     ├─ config
+   │  │     ├─ document
+   │  │     ├─ exception
+   │  │     ├─ file
    │  │     ├─ garden
+   │  │     ├─ login
    │  │     ├─ member
+   │  │     ├─ resolver
    │  │     ├─ study
-   │  │     └─ team
-   │  │        ├─ api
-   │  │        ├─ application
-   │  │        │  └─ dto
-   │  │        ├─ domain
-   │  │        │  └─ repository
-   │  │        └─ exception
-   │  │           ├─ TeamException.java
-   │  │           └─ TeamExceptionType.java
+   │  │     ├─ team
+   │  │     │  ├─ api
+   │  │     │  ├─ application
+   │  │     │  │  ├─ convenience
+   │  │     │  │  └─ dto
+   │  │     │  ├─ domain
+   │  │     │  │  └─ repository
+   │  │     │  └─ exception
+   │  │     │     ├─ TeamException.java
+   │  │     │     └─ TeamExceptionType.java
+   │  │     └─ util
    │  └─ resources
    │     ├─ application.yml
    │     └─ schema.sql
