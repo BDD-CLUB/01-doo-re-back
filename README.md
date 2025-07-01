@@ -14,153 +14,16 @@
 Rest Docs: https://doore.pnu.app/api/docs/doore.html
 <br><br>
 
-## 🧑🏻‍💻 기획 & 개발
+## 🧑🏻‍💻 코드 유지 관리자
 
-### 2023.11.12 ~2024.3.1
 <div align="center">
   <table>
   <tr>
     <td align="center">
-      임연후
+      이지민
     </td>    
     <td align="center">
-      이수빈
-    </td>
-    <td align="center">
-      손현경
-    </td>
-    <td align="center">
-      송세연
-    </td>
-    <td align="center">
-      이지민 
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/lcqff">
-        <img src="https://github.com/lcqff.png" width="80" alt="lcqff"/>
-        <br/>
-        <sub><b>lcqff</b></sub>
-      </a>
-      <br/>
-    </td>
-    <td align="center">
-      <a href="https://github.com/02ggang9">
-      <img src="https://github.com/02ggang9.png" width="80" alt="02ggang9"/>
-      <br />
-      <sub><b>02ggang9</b></sub>
-      </a>
-      <br/>
-    </td>
-    <td align="center">
-      <a href="https://github.com/shkisme">
-      <img src="https://github.com/shkisme.png" width="80" alt="shkisme"/>
-      <br />
-      <sub><b>shkisme</b></sub>
-      </a>
-      <br/>
-    </td>
-        <td align="center">
-      <a href="https://github.com/amaran-th">
-      <img src="https://github.com/amaran-th.png" width="80" alt="amaran-th"/>
-      <br />
-      <sub><b>amaranth</b></sub>
-      </a>
-      <br/>
-    </td>
-        <td align="center">
-      <a href="https://github.com/JJimini">
-      <img src="https://github.com/JJimini.png" width="80" alt="JJimini"/>
-      <br />
-      <sub><b>JJimini</b></sub>
-      </a>
-      <br/>
-    </td>
-  </tr>
-      <tr>
-    <td align="center">
-       BackEnd
-    </td>    
-    <td align="center">
-      Infra
-    </td>
-    <td align="center">
-       BackEnd, Infra
-    </td>
-    <td align="center">
-       BackEnd, Infra
-    </td>
-    <td align="center">
-       BackEnd
-    </td>
-  </tr>
-</table>
-</div>
-
-
-### 2024.3.1 ~ 2024.10.31
-<div align="center">
-  <table>
-  <tr>
-    <td align="center">
-      임연후
-    </td>    
-    </td>
-    <td align="center">
-      이지민 
-    </td>
-    <td align="center">
-      임지민
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/lcqff">
-        <img src="https://github.com/lcqff.png" width="80" alt="lcqff"/>
-        <br/>
-        <sub><b>lcqff</b></sub>
-      </a>
-      <br/>
-    </td>
-    <td align="center">
-      <a href="https://github.com/JJimini">
-      <img src="https://github.com/JJimini.png" width="80" alt="JJimini"/>
-      <br />
-      <sub><b>JJimini</b></sub>
-      </a>
-      <br/>
-    </td>
-    <td align="center">
-      <a href="https://github.com/jimini1026">
-      <img src="https://github.com/jimini1026.png" width="80" alt="jimini1026"/>
-      <br />
-      <sub><b>jimini1026</b></sub>
-      </a>
-      <br/>
-    </td>
-  </tr>
-      <tr>
-    <td align="center">
-       BackEnd, Infra
-    </td>    
-    <td align="center">
-      BackEnd
-    </td>
-    <td align="center">
-       BackEnd
-    </td>
-  </tr>
-  </table>
-</div>
-
-### 2024.11.1 ~ 진행중
-<div align="center">
-  <table>
-  <tr> 
-    </td>
-    <td align="center">
-      이지민 
+      이서연
     </td>
     <td align="center">
       신예준
@@ -169,9 +32,17 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   <tr>
     <td align="center">
       <a href="https://github.com/JJimini">
-      <img src="https://github.com/JJimini.png" width="80" alt="JJimini"/>
+        <img src="https://github.com/JJimini.png" width="80" alt="JJimini"/>
+        <br/>
+        <sub><b>JJimini</b></sub>
+      </a>
+      <br/>
+    </td>
+    <td align="center">
+      <a href="https://github.com/yeonddori">
+      <img src="https://github.com/yeonddori.png" width="80" alt="yeonddori"/>
       <br />
-      <sub><b>JJimini</b></sub>
+      <sub><b>yeonddori</b></sub>
       </a>
       <br/>
     </td>
@@ -184,16 +55,13 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
       <br/>
     </td>
   </tr>
-      <tr>
-    <td align="center">
-      BackEnd
-    </td>
-    <td align="center">
-       BackEnd
-    </td>
-  </tr>
-  </table>
+</table>
 </div>
+
+### 기여자
+
+[![contributors](https://contrib.rocks/image?repo=BDD-CLUB/01-doo-re-front)](https://github.com/BDD-CLUB/01-doo-re-front/graphs/contributors)
+[![contributors](https://contrib.rocks/image?repo=BDD-CLUB/01-doo-re-back)](https://github.com/BDD-CLUB/01-doo-re-back/graphs/contributors)  
 
 ## :pencil2: 기술 스택
 
