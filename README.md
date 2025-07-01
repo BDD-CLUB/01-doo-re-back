@@ -290,22 +290,3 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
-
-### 알림
-- **알림**: 회원은 팀 내 스터디 개설, 팀원 초대, 직책 변경등의 소식을 알림으로 받을 수 있습니다.
-  - 읽지 않은 알림과 읽은 알림을 분리하여 제공합니다. 
-  - 알림을 선택하여 읽음 처리할 수 있습니다.   
-<div align="center">
-  <table>
-  <tr>
-    <td align="center">
-      <strong>알림 페이지</strong>
-    </td>    
-  </tr>
-  <tr>
-    <td>
-    <img width="600px" src="https://github.com/BDD-CLUB/01-doo-re-back/assets/71930280/4a4949fb-015d-47ca-97ef-3566b17a6b2f"/>
-    </td>
-  </tr>
-  </table>
-</div>
