@@ -296,3 +296,19 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
   </tr>
   </table>
 </div>
+<br>
+
+## 💾 Database
+- FK를 사용하지 않는 전략을 선택했습니다.
+- [schema.sql 자세히 보기](https://github.com/BDD-CLUB/01-doo-re-back/blob/develop/src/main/resources/schema.sql)
+  
+<div align="center">
+  <table>
+  <tr>
+    <td>
+    <img width="600px" src="https://github.com/user-attachments/assets/2e30de85-b157-4e73-b1be-d56640218931"/>
+    </td>
+  </tr>
+  </table>
+</div>
+<br>
