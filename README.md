@@ -299,6 +299,9 @@ Rest Docs: https://doore.pnu.app/api/docs/doore.html
 </div>
 <br>
 
+## 🌐 Infra Structure
+
+
 ## 💾 Database
 - FK를 사용하지 않는 전략을 선택했습니다.
 - [schema.sql 자세히 보기](https://github.com/BDD-CLUB/01-doo-re-back/blob/develop/src/main/resources/schema.sql)
