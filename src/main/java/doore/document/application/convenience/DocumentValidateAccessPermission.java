@@ -42,4 +42,8 @@ public class DocumentValidateAccessPermission {
             throw new MemberException(UNAUTHORIZED);
         }
     }
+
+    public boolean isMyDocument(final Document document, final Long memberId) {
+        return document.isMine(memberId);
+    }
 }

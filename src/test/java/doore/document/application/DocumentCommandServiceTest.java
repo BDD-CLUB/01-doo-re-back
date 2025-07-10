@@ -1,6 +1,8 @@
 package doore.document.application;
 
+import static doore.document.domain.DocumentAccessType.ALL;
 import static doore.document.domain.DocumentGroupType.STUDY;
+import static doore.document.domain.DocumentType.DOCUMENT;
 import static doore.document.exception.DocumentExceptionType.LINK_DOCUMENT_NEEDS_URL;
 import static doore.document.exception.DocumentExceptionType.NO_FILE_ATTACHED;
 import static doore.garden.domain.GardenType.DOCUMENT_UPLOAD;
@@ -11,6 +13,7 @@ import static doore.member.domain.StudyRoleType.ROLE_스터디원;
 import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 import static doore.study.StudyFixture.algorithmStudy;
 import static doore.study.StudyFixture.createStudy;
+import static doore.team.TeamFixture.team;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,6 +48,8 @@ import doore.member.domain.repository.TeamRoleRepository;
 import doore.member.exception.MemberException;
 import doore.study.domain.Study;
 import doore.study.domain.repository.StudyRepository;
+import doore.team.domain.Team;
+import doore.team.domain.repository.TeamRepository;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -72,6 +77,8 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     private StudyRoleRepository studyRoleRepository;
     @Autowired
     private TeamRoleRepository teamRoleRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
     @Autowired
     private DocumentCommandService documentCommandService;
@@ -92,7 +99,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         documentRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.", DocumentAccessType.TEAM,
-                DocumentType.DOCUMENT, null, mock(Member.class).getId());
+                DOCUMENT, null, mock(Member.class).getId());
         study = createStudy();
         study = studyRepository.save(algorithmStudy());
         member = memberRepository.save(미나());
@@ -292,7 +299,7 @@ public class DocumentCommandServiceTest extends IntegrationTest {
 
         //when
         final DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
-                DocumentAccessType.ALL);
+                ALL);
         documentCommandService.updateDocument(updatedRequest, document.getId(), member.getId());
 
         //then
@@ -310,10 +317,49 @@ public class DocumentCommandServiceTest extends IntegrationTest {
         final Member notUploader = createMember();
 
         final DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
-                DocumentAccessType.ALL);
+                ALL);
 
         assertThatThrownBy(() ->
                 documentCommandService.updateDocument(updatedRequest, document.getId(), notUploader.getId()))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
+    @DisplayName("[성공] 팀장이라면 자료 업로더가 아니라도 업데이트 할 수 있다.")
+    void updateDocument_팀장이라면_자료_업로더가_아니라도_업데이트_할_수_있다_성공() {
+        final Document document = new DocumentFixture().buildDocument();
+
+        final DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
+                ALL);
+        documentCommandService.updateDocument(updatedRequest, document.getId(), notParticipantMember.getId());
+
+        assertAll(
+                () -> assertEquals(updatedRequest.title(), document.getName()),
+                () -> assertEquals(updatedRequest.description(), document.getDescription()),
+                () -> assertEquals(updatedRequest.accessType(), document.getAccessType())
+        );
+    }
+
+    @Test
+    @DisplayName("[실패] 팀장은 본인의 팀이 아닌 팀의 자료를 업데이트 할 수 없다.")
+    void updateDocument_팀장은_본인의_팀이_아닌_팀의_자료를_업데이트_할_수_없다_실패() {
+        final Team otherTeam = teamRepository.save(team());
+        final Document document = documentRepository.save(Document.builder()
+                .accessType(ALL)
+                .description("설명")
+                .groupId(otherTeam.getId())
+                .groupType(STUDY)
+                .name("이름")
+                .type(DOCUMENT)
+                .uploaderId(member.getId())
+                .build());
+
+        final DocumentUpdateRequest updatedRequest = new DocumentUpdateRequest("강의 학습 인증(수정)", "강의 학습 인증샷입니다. 수정",
+                ALL);
+
+        assertThatThrownBy(() ->
+                documentCommandService.updateDocument(updatedRequest, document.getId(), notParticipantMember.getId()))
                 .isInstanceOf(MemberException.class)
                 .hasMessage(UNAUTHORIZED.errorMessage());
     }
@@ -345,12 +391,42 @@ public class DocumentCommandServiceTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("[성공] 팀장이라면 자료 업로더가 아니라도 삭제할 수 있다.")
+    void deleteDocument_팀장이라면_자료_업로더가_아니라도_삭제할_수_있다_성공() {
+        final Document document = new DocumentFixture().buildDocument();
+
+        documentCommandService.deleteDocument(document.getId(), notParticipantMember.getId());
+
+        assertThat(documentRepository.count()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("[실패] 팀장은 본인의 팀이 아닌 팀의 자료를 삭제할 수 없다.")
+    void deleteDocument_팀장은_본인의_팀이_아닌_팀의_자료를_삭제할_수_없다_실패() {
+        final Team otherTeam = teamRepository.save(team());
+        final Document document = documentRepository.save(Document.builder()
+                .accessType(ALL)
+                .description("설명")
+                .groupId(otherTeam.getId())
+                .groupType(STUDY)
+                .name("이름")
+                .type(DOCUMENT)
+                .uploaderId(member.getId())
+                .build());
+
+        assertThatThrownBy(() ->
+                documentCommandService.deleteDocument(document.getId(), notParticipantMember.getId()))
+                .isInstanceOf(MemberException.class)
+                .hasMessage(UNAUTHORIZED.errorMessage());
+    }
+
+    @Test
     @DisplayName("[실패] 회원이 아니라면 학습자료를 등록할 수 없다.")
     void createDocument_회원이_아니라면_학습자료를_등록할_수_없다_실패() {
         final Long invalidMemberId = 10L;
 
         final DocumentCreateRequest fileRequest = new DocumentCreateRequest("발표 자료", "이번주 발표자료입니다.",
-                DocumentAccessType.TEAM, DocumentType.DOCUMENT, null, mock(Member.class).getId());
+                DocumentAccessType.TEAM, DOCUMENT, null, mock(Member.class).getId());
 
         assertThatThrownBy(() ->
                 documentCommandService.createDocument(fileRequest, null, STUDY, study.getId(), invalidMemberId))

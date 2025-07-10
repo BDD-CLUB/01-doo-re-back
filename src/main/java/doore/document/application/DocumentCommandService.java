@@ -3,6 +3,7 @@ package doore.document.application;
 import static doore.document.domain.DocumentGroupType.STUDY;
 import static doore.document.domain.DocumentGroupType.TEAM;
 import static doore.document.exception.DocumentExceptionType.INVALID_DOCUMENT_TYPE;
+import static doore.member.exception.MemberExceptionType.UNAUTHORIZED;
 
 import doore.document.application.convenience.DocumentValidateAccessPermission;
 import doore.document.application.dto.request.DocumentCreateRequest;
@@ -19,6 +20,8 @@ import doore.file.application.S3ImageFileService;
 import doore.garden.application.convenience.GardenConvenience;
 import doore.member.application.convenience.MemberValidateAccessPermission;
 import doore.member.application.convenience.StudyRoleValidateAccessPermission;
+import doore.member.application.convenience.TeamRoleValidateAccessPermission;
+import doore.member.exception.MemberException;
 import doore.study.application.convenience.StudyValidateAccessPermission;
 import doore.team.application.convenience.TeamValidateAccessPermission;
 import java.util.List;
@@ -39,6 +42,7 @@ public class DocumentCommandService {
 
     private final GardenConvenience gardenCommandService;
     private final TeamValidateAccessPermission teamValidateAccessPermission;
+    private final TeamRoleValidateAccessPermission teamRoleValidateAccessPermission;
     private final StudyValidateAccessPermission studyValidateAccessPermission;
     private final StudyRoleValidateAccessPermission studyRoleValidateAccessPermission;
     private final MemberValidateAccessPermission memberValidateAccessPermission;
@@ -63,14 +67,14 @@ public class DocumentCommandService {
     public void updateDocument(final DocumentUpdateRequest request, final Long documentId, final Long memberId) {
         memberValidateAccessPermission.validateExistMember(memberId);
         final Document document = documentValidateAccessPermission.getValidateExistDocument(documentId);
-        documentValidateAccessPermission.validateMyDocument(document, memberId);
+        checkTeamLeaderOrMyDocument(document, memberId);
         document.update(request.title(), request.description(), request.accessType());
     }
 
     public void deleteDocument(final Long documentId, final Long memberId) {
         memberValidateAccessPermission.validateExistMember(memberId);
         final Document document = documentValidateAccessPermission.getValidateExistDocument(documentId);
-        documentValidateAccessPermission.validateMyDocument(document, memberId);
+        checkTeamLeaderOrMyDocument(document, memberId);
         gardenCommandService.deleteDocumentGarden(document);
         documentRepository.deleteById(documentId);
     }
@@ -81,6 +85,14 @@ public class DocumentCommandService {
         }
         if (groupType.equals(STUDY)) {
             studyValidateAccessPermission.validateExistStudy(groupId);
+        }
+    }
+
+    private void checkTeamLeaderOrMyDocument(final Document document, final Long memberId) {
+        boolean isTeamLeader = teamRoleValidateAccessPermission.isTeamLeader(document.getGroupId(), memberId);
+        boolean isMyDocument = documentValidateAccessPermission.isMyDocument(document, memberId);
+        if (!isTeamLeader && !isMyDocument) {
+            throw new MemberException(UNAUTHORIZED);
         }
     }
 
